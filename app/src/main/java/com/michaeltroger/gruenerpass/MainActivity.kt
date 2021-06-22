@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private var bitmap: Bitmap? = null
     private lateinit var certificateImage: ImageView
-    private lateinit var deleteButton: Button
+    private lateinit var addButton: Button
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -39,14 +39,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
 
         certificateImage = findViewById(R.id.certificate)
-        deleteButton = findViewById(R.id.add)
+        addButton = findViewById(R.id.add)
 
         val file = getFile()
         if (file.exists()) {
             renderPdf(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY))
         }
 
-        deleteButton.setOnClickListener {
+        addButton.setOnClickListener {
             openFilePicker()
         }
     }
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 file.delete()
             }
             certificateImage.setImageResource(0)
-            showDeleteButton()
+            showAddButton()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -93,13 +93,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun getFile() = File(cacheDir, FILENAME)
 
-    private fun showDeleteButton() {
-        deleteButton.isVisible = true
+    private fun showAddButton() {
+        addButton.isVisible = true
         certificateImage.isVisible = false
     }
 
     private fun showCertificate() {
-        deleteButton.isVisible = false
+        addButton.isVisible = false
         certificateImage.isVisible = true
     }
 
