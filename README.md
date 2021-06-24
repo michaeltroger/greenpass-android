@@ -11,4 +11,4 @@ Does one require this app? Not really. The PDF from gesundheit.gv.at is complete
 
 Privacy and safety is important! This app doesn't need any permissions. Also no internet connection is required. The document is solely copied to the app's cache and is merely read out for displaying. The document doesn't ever leave the app and can be removed from the cache by the user whenever he/she wishes. The QR code is not directly read out (only displayed). Neither is any other data collected or read out. No ads. The app is fully open source
 
-![Screenshot](/screenshot.jpg)
+![Screenshot](/screenshot.png) | ![Screenshot](/screenshot1.png)
