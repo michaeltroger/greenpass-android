@@ -21,7 +21,9 @@ private const val FILENAME = "certificate.pdf"
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var file: File
     private var bitmap: Bitmap? = null
+
     private var certificateImage: ImageView? = null
     private var addButton: Button? = null
     private var deleteMenuItem: MenuItem? = null
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
-                val file = copyFileToCache(uri)
+                copyFileToCache(uri)
                 renderPdf(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY))
             }
         }
@@ -42,7 +44,8 @@ class MainActivity : AppCompatActivity() {
         certificateImage = findViewById(R.id.certificate)
         addButton = findViewById(R.id.add)
 
-        val file = getFile()
+        file = File(cacheDir, FILENAME)
+
         if (file.exists()) {
             renderPdf(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY))
         }
@@ -55,13 +58,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         deleteMenuItem = menu.findItem(R.id.delete)
-        deleteMenuItem?.isEnabled = getFile().exists()
+        deleteMenuItem?.isEnabled = file.exists()
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
-            val file = getFile()
             if (file.exists()) {
                 file.delete()
             }
@@ -94,8 +96,6 @@ class MainActivity : AppCompatActivity() {
         showCertificateState()
     }
 
-    private fun getFile() = File(cacheDir, FILENAME)
-
     private fun showEmptyState() {
         addButton?.isVisible = true
         certificateImage?.isVisible = false
@@ -108,9 +108,8 @@ class MainActivity : AppCompatActivity() {
         deleteMenuItem?.isEnabled = true
     }
 
-    private fun copyFileToCache(uri: Uri): File {
+    private fun copyFileToCache(uri: Uri) {
         val inputStream = contentResolver.openInputStream(uri)!!
-        val file = getFile()
 
         val output = FileOutputStream(file)
         val buffer = ByteArray(1024)
@@ -121,8 +120,6 @@ class MainActivity : AppCompatActivity() {
 
         inputStream.close()
         output.close()
-
-        return file
     }
 
 }
