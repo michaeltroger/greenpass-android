@@ -22,8 +22,9 @@ private const val FILENAME = "certificate.pdf"
 class MainActivity : AppCompatActivity() {
 
     private var bitmap: Bitmap? = null
-    private lateinit var certificateImage: ImageView
-    private lateinit var addButton: Button
+    private var certificateImage: ImageView? = null
+    private var addButton: Button? = null
+    private var deleteMenuItem: MenuItem? = null
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -46,13 +47,15 @@ class MainActivity : AppCompatActivity() {
             renderPdf(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY))
         }
 
-        addButton.setOnClickListener {
+        addButton?.setOnClickListener {
             openFilePicker()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+        deleteMenuItem = menu.findItem(R.id.delete)
+        deleteMenuItem?.isEnabled = getFile().exists()
         return true
     }
 
@@ -62,8 +65,8 @@ class MainActivity : AppCompatActivity() {
             if (file.exists()) {
                 file.delete()
             }
-            certificateImage.setImageResource(0)
-            showAddButton()
+            certificateImage?.setImageResource(0)
+            showEmptyState()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -83,24 +86,26 @@ class MainActivity : AppCompatActivity() {
 
         bitmap = Bitmap.createBitmap(page.width * 3, page.height * 3, Bitmap.Config.ARGB_8888)
         page.render(bitmap!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-        certificateImage.setImageBitmap(bitmap)
+        certificateImage?.setImageBitmap(bitmap)
 
         page.close()
         renderer.close()
 
-        showCertificate()
+        showCertificateState()
     }
 
     private fun getFile() = File(cacheDir, FILENAME)
 
-    private fun showAddButton() {
-        addButton.isVisible = true
-        certificateImage.isVisible = false
+    private fun showEmptyState() {
+        addButton?.isVisible = true
+        certificateImage?.isVisible = false
+        deleteMenuItem?.isEnabled = false
     }
 
-    private fun showCertificate() {
-        addButton.isVisible = false
-        certificateImage.isVisible = true
+    private fun showCertificateState() {
+        addButton?.isVisible = false
+        certificateImage?.isVisible = true
+        deleteMenuItem?.isEnabled = true
     }
 
     private fun copyFileToCache(uri: Uri): File {
