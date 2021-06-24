@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity() {
         R.id.delete -> {
             if (file.exists()) {
                 file.delete()
+                bitmap = null
             }
-            certificateImage?.setImageResource(0)
             showEmptyState()
             true
         }
@@ -98,6 +98,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showEmptyState() {
         addButton?.isVisible = true
+        certificateImage?.setImageResource(0)
         certificateImage?.isVisible = false
         deleteMenuItem?.isEnabled = false
     }
