@@ -3,7 +3,25 @@ plugins {
     id 'kotlin-android'
 }
 
+def keystoreProperties = new Properties()
+try {
+    def keystorePropertiesFile = rootProject.file("keystore.properties");
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} catch(IOException ignored) {
+    // We don't have release keys, ignoring
+}
+
 android {
+    signingConfigs {
+        release {
+            if (keystoreProperties['STORE_FILE']) {
+                storeFile rootProject.file(keystoreProperties['STORE_FILE'])
+                storePassword keystoreProperties['STORE_PASSWORD']
+                keyAlias keystoreProperties['KEY_ALIAS']
+                keyPassword keystoreProperties['KEY_PASSWORD']
+            }
+        }
+    }
     compileSdk 30
     buildToolsVersion "30.0.3"
 
@@ -19,8 +37,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
