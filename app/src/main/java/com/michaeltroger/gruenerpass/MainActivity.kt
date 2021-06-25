@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         file = File(cacheDir, FILENAME)
 
         lifecycleScope.launch {
-            if (file.exists()) {
+            if (doesFileExist()) {
                 parsePdfIntoBitmap()
                 showCertificateState()
             } else {
@@ -70,14 +70,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         deleteMenuItem = menu.findItem(R.id.delete)
-        deleteMenuItem?.isEnabled = file.exists()
+
+        lifecycleScope.launch {
+            deleteMenuItem?.isEnabled = doesFileExist()
+        }
+
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
             lifecycleScope.launch {
-                deleteFile()
+                if (doesFileExist()) {
+                    deleteFile()
+                }
                 bitmap = null
                 showEmptyState()
             }
@@ -108,10 +114,12 @@ class MainActivity : AppCompatActivity() {
         deleteMenuItem?.isEnabled = true
     }
 
+    private suspend fun doesFileExist(): Boolean = withContext(Dispatchers.IO) {
+        file.exists()
+    }
+
     private suspend fun deleteFile() = withContext(Dispatchers.IO) {
-        if (file.exists()) {
-            file.delete()
-        }
+        file.delete()
     }
 
     private suspend fun parsePdfIntoBitmap() = withContext(Dispatchers.IO) {
