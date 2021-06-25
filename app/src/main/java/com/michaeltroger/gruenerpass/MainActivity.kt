@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var addButton: Button? = null
     private var deleteMenuItem: MenuItem? = null
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
@@ -76,11 +76,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
-            if (file.exists()) {
-                file.delete()
+            lifecycleScope.launch {
+                deleteFile()
                 bitmap = null
+                showEmptyState()
             }
-            showEmptyState()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -106,6 +106,12 @@ class MainActivity : AppCompatActivity() {
         certificateImage?.setImageBitmap(bitmap)
         certificateImage?.isVisible = true
         deleteMenuItem?.isEnabled = true
+    }
+
+    private suspend fun deleteFile() = withContext(Dispatchers.IO) {
+        if (file.exists()) {
+            file.delete()
+        }
     }
 
     private suspend fun parsePdfIntoBitmap() = withContext(Dispatchers.IO) {
