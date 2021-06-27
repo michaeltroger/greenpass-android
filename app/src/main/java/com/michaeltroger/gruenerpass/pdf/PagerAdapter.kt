@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.pdf
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -13,8 +13,14 @@ class PagerAdapter(fragment: Fragment, private val pdfHandler: PdfHandler): Frag
         }
     }
 
-    override fun createFragment(position: Int): Fragment {
-        return PagerFragment(position = position, size = itemCount, pdfHandler = pdfHandler)
+    override fun createFragment(position: Int): Fragment = when (itemCount) {
+        1 -> PdfPagerFragment(pdfHandler = pdfHandler)
+        else -> {
+            when (position) {
+                0 -> QrPagerFragment(pdfHandler = pdfHandler)
+                else -> PdfPagerFragment(pdfHandler = pdfHandler)
+            }
+        }
     }
 
     /**

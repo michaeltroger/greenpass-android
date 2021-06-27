@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.pdf
 
 import android.content.Context
 import android.graphics.Bitmap

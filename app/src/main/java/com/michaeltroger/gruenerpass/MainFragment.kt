@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.michaeltroger.gruenerpass.pdf.PagerAdapter
+import com.michaeltroger.gruenerpass.pdf.PdfHandler
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment() {
