@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
 
 class PagerFragment(private val position: Int, private val size: Int, private val pdfHandler: PdfHandler) : Fragment() {
 

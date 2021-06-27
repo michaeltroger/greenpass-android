@@ -18,6 +18,7 @@ class MainFragment : Fragment() {
 
     private lateinit var adapter: PagerAdapter
     private lateinit var pdfHandler: PdfHandler
+    private lateinit var layoutMediator: TabLayoutMediator
 
     private var addButton: Button? = null
     private var deleteMenuItem: MenuItem? = null
@@ -54,9 +55,8 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
 
         viewPager = view.findViewById(R.id.pager)
-        viewPager?.adapter = adapter
         tabLayout = view.findViewById(R.id.tab_layout)
-        TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
+        layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes = when (adapter.itemCount) {
                 1 -> R.string.tab_title_pdf
                 else -> {
@@ -67,7 +67,7 @@ class MainFragment : Fragment() {
                 }
             }
             tab.text = getString(textRes)
-        }.attach()
+        }
 
         addButton = view.findViewById(R.id.add)
         addButton?.setOnClickListener {
@@ -118,14 +118,17 @@ class MainFragment : Fragment() {
         viewPager?.isVisible = false
         tabLayout?.isVisible = false
         deleteMenuItem?.isEnabled = false
+        viewPager?.adapter = null
+        layoutMediator.detach()
     }
 
     private fun showCertificateState() {
-        adapter.notifyDataSetChanged()
         addButton?.isVisible = false
         tabLayout?.isVisible = true
         viewPager?.isVisible = true
         deleteMenuItem?.isEnabled = true
+        viewPager?.adapter = adapter
+        layoutMediator.attach()
     }
 
 }

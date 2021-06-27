@@ -46,9 +46,6 @@ class PdfHandler(ctx: Context) {
     }
 
     suspend fun parsePdfIntoBitmap() = withContext(Dispatchers.IO) {
-        bitmapQrCode = null
-        bitmapDocument = null
-
         val renderer = PdfRenderer(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY))
         val page: PdfRenderer.Page = renderer.openPage(0)
 
