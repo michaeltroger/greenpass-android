@@ -16,7 +16,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 private const val FILENAME = "certificate.pdf"
-private const val QR_CODE_SIZE = 600
+private const val QR_CODE_SIZE = 1920
 
 class PdfHandler(ctx: Context) {
 
