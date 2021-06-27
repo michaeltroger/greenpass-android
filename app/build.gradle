@@ -3,7 +3,25 @@ plugins {
     id 'kotlin-android'
 }
 
+def keystoreProperties = new Properties()
+try {
+    def keystorePropertiesFile = rootProject.file("keystore.properties");
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} catch(IOException ignored) {
+    // We don't have release keys, ignoring
+}
+
 android {
+    signingConfigs {
+        release {
+            if (keystoreProperties['STORE_FILE']) {
+                storeFile rootProject.file(keystoreProperties['STORE_FILE'])
+                storePassword keystoreProperties['STORE_PASSWORD']
+                keyAlias keystoreProperties['KEY_ALIAS']
+                keyPassword keystoreProperties['KEY_PASSWORD']
+            }
+        }
+    }
     compileSdk 30
     buildToolsVersion "30.0.3"
 
@@ -11,16 +29,18 @@ android {
         applicationId "com.michaeltroger.gruenerpass"
         minSdk 21
         targetSdk 30
-        versionCode 2
-        versionName "1.1"
+        versionCode 6
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -35,10 +55,13 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.5.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    implementation 'com.google.zxing:core:3.4.1'
 }
