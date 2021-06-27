@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 
 class PagerFragment(private val position: Int, private val size: Int, private val pdfHandler: PdfHandler) : Fragment() {
 
-    private var image: ImageView? = null
+    private var certificate: ImageView? = null
+    private var qrCode: ImageView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,15 +22,31 @@ class PagerFragment(private val position: Int, private val size: Int, private va
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        image = view.findViewById(R.id.certificate)
-        val bitmap = when (size) {
-            1 -> pdfHandler.getPdfBitmap()
+        certificate = view.findViewById(R.id.certificate)
+        qrCode = view.findViewById(R.id.qrcode)
+
+         when (size) {
+            1 -> {
+                certificate?.setImageBitmap(pdfHandler.getPdfBitmap())
+                qrCode?.setImageBitmap(null)
+                certificate?.isVisible = true
+                qrCode?.isVisible = false
+            }
             else -> when (position) {
-                0 -> pdfHandler.getQrBitmap()
-                else -> pdfHandler.getPdfBitmap()
+                0 -> {
+                    qrCode?.setImageBitmap(pdfHandler.getQrBitmap())
+                    certificate?.setImageBitmap(null)
+                    certificate?.isVisible = false
+                    qrCode?.isVisible = true
+                }
+                else -> {
+                    certificate?.setImageBitmap(pdfHandler.getPdfBitmap())
+                    qrCode?.setImageBitmap(null)
+                    certificate?.isVisible = true
+                    qrCode?.isVisible = false
+                }
             }
         }
-        image?.setImageBitmap(bitmap)
     }
 
 }
