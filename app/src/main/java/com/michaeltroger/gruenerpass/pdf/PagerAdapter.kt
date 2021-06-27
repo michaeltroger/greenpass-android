@@ -22,14 +22,4 @@ class PagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
             }
         }
     }
-
-//    /**
-//     * Makes sure the Fragments are recreated when the bitmaps change
-//     */
-//    override fun getItemId(position: Int): Long {
-//        val pdf = pdfHandler.getPdfBitmap()?.generationId?.toLong()?: 0L
-//        val qr = pdfHandler.getQrBitmap()?.generationId?.toLong()?: 0L
-//        return itemCount.toLong() + (1000 * position.toLong()) + (3 * pdf) + (5 * qr)
-//    }
-
 }

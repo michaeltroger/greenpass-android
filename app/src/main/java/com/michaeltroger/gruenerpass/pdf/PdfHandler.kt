@@ -1,6 +1,5 @@
 package com.michaeltroger.gruenerpass.pdf
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
