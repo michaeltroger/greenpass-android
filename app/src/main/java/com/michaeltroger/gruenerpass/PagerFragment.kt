@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class PagerFragment(private val position: Int, private val adapter: FragmentStateAdapter, private val pdfHandler: PdfHandler) : Fragment() {
+class PagerFragment(private val position: Int, private val size: Int, private val pdfHandler: PdfHandler) : Fragment() {
 
     private var image: ImageView? = null
 
@@ -22,7 +22,7 @@ class PagerFragment(private val position: Int, private val adapter: FragmentStat
         super.onViewCreated(view, savedInstanceState)
 
         image = view.findViewById(R.id.certificate)
-        val bitmap = when (adapter.itemCount) {
+        val bitmap = when (size) {
             1 -> pdfHandler.getPdfBitmap()
             else -> when (position) {
                 0 -> pdfHandler.getQrBitmap()

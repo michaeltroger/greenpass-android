@@ -14,9 +14,12 @@ class PagerAdapter(fragment: Fragment, private val pdfHandler: PdfHandler): Frag
     }
 
     override fun createFragment(position: Int): Fragment {
-        return PagerFragment(position = position, adapter = this, pdfHandler = pdfHandler)
+        return PagerFragment(position = position, size = itemCount, pdfHandler = pdfHandler)
     }
 
+    /**
+     * Makes sure the Fragments are recreated when the bitmaps change
+     */
     override fun getItemId(position: Int): Long {
         val pdf = pdfHandler.getPdfBitmap()?.generationId?.toLong()?: 0L
         val qr = pdfHandler.getQrBitmap()?.generationId?.toLong()?: 0L
