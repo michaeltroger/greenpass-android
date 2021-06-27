@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.michaeltroger.gruenerpass.R
 
-class QrPagerFragment(private val pdfHandler: PdfHandler) : Fragment() {
+class QrPagerFragment : Fragment() {
 
     private var qrCode: ImageView? = null
 
@@ -22,7 +22,7 @@ class QrPagerFragment(private val pdfHandler: PdfHandler) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         qrCode = view.findViewById(R.id.qrcode)
-        qrCode?.setImageBitmap(pdfHandler.getQrBitmap())
+        qrCode?.setImageBitmap(PdfHandler.getQrBitmap())
     }
 
 }

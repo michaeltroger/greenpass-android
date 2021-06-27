@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 class MainFragment : Fragment() {
 
     private lateinit var adapter: PagerAdapter
-    private lateinit var pdfHandler: PdfHandler
     private lateinit var layoutMediator: TabLayoutMediator
 
     private var addButton: Button? = null
@@ -31,8 +30,8 @@ class MainFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
-                    pdfHandler.copyPdfToCache(uri)
-                    pdfHandler.parsePdfIntoBitmap()
+                    PdfHandler.copyPdfToCache(uri)
+                    PdfHandler.parsePdfIntoBitmap()
                     showCertificateState()
                 }
             }
@@ -41,9 +40,7 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        pdfHandler = PdfHandler(requireContext())
-        adapter = PagerAdapter(this, pdfHandler)
+        adapter = PagerAdapter(this)
     }
 
     override fun onCreateView(
@@ -77,8 +74,8 @@ class MainFragment : Fragment() {
         }
 
         lifecycleScope.launch {
-            if (pdfHandler.doesFileExist()) {
-                pdfHandler.parsePdfIntoBitmap()
+            if (PdfHandler.doesFileExist()) {
+                PdfHandler.parsePdfIntoBitmap()
                 showCertificateState()
             } else {
                 showEmptyState()
@@ -91,7 +88,7 @@ class MainFragment : Fragment() {
         deleteMenuItem = menu.findItem(R.id.delete)
 
         lifecycleScope.launch {
-            deleteMenuItem?.isEnabled = pdfHandler.doesFileExist()
+            deleteMenuItem?.isEnabled = PdfHandler.doesFileExist()
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -99,7 +96,7 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
             lifecycleScope.launch {
-                pdfHandler.deleteFile()
+                PdfHandler.deleteFile()
                 showEmptyState()
             }
             true

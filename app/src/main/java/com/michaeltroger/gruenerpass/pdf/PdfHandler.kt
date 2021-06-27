@@ -10,6 +10,7 @@ import com.google.zxing.*
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
+import com.michaeltroger.gruenerpass.GruenerPassApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -18,9 +19,9 @@ import java.io.FileOutputStream
 private const val FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 1920
 
-class PdfHandler(ctx: Context) {
+object PdfHandler {
 
-    private val context = ctx.applicationContext
+    private val context = GruenerPassApplication.instance
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()

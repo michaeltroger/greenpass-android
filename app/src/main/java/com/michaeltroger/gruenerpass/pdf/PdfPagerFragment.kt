@@ -8,7 +8,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.michaeltroger.gruenerpass.R
 
-class PdfPagerFragment(private val pdfHandler: PdfHandler) : Fragment() {
+class PdfPagerFragment : Fragment() {
 
     private var certificate: ImageView? = null
 
@@ -22,7 +22,7 @@ class PdfPagerFragment(private val pdfHandler: PdfHandler) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         certificate = view.findViewById(R.id.certificate)
-        certificate?.setImageBitmap(pdfHandler.getPdfBitmap())
+        certificate?.setImageBitmap(PdfHandler.getPdfBitmap())
     }
 
 }
