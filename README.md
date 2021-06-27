@@ -11,4 +11,4 @@ Does one require this app? Not really. The PDF from gesundheit.gv.at is complete
 
 Privacy and safety is important! This app doesn't need any permissions. Also no internet connection is required. The document is solely copied to the app's cache and is merely read out for displaying. The document doesn't ever leave the app and can be removed from the cache by the user whenever he/she wishes. No ads, no tracking. The app is fully open source
 
-![Screenshot](/screenshot.jpg) ![Screenshot](/screenshot1.jpg)
+![Screenshot](/screenshot.jpg) ![Screenshot](/screenshot1.jpg) ![Screenshot](/screenshot2.jpg)
