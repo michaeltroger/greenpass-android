@@ -5,5 +5,5 @@
     <string name="add">Hinzufügen</string>
     <string name="tab_title_pdf">PDF</string>
     <string name="tab_title_qr">QR Code</string>
-    <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei / einen anderen Speicherort</string>
+    <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
 </resources>
