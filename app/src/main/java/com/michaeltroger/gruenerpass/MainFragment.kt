@@ -56,10 +56,15 @@ class MainFragment : Fragment() {
         viewPager = view.findViewById(R.id.pager)
         tabLayout = view.findViewById(R.id.tab_layout)
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-            val textRes = when (adapter.itemCount) {
-                1 -> R.string.tab_title_pdf
+            val textRes: Int
+            when (adapter.itemCount) {
+                1 -> {
+                    tabLayout?.isVisible = false
+                    textRes = R.string.tab_title_pdf
+                }
                 else -> {
-                    when(position) {
+                    tabLayout?.isVisible = true
+                    textRes = when(position) {
                         0 -> R.string.tab_title_qr
                         else -> R.string.tab_title_pdf
                     }
