@@ -7,9 +7,11 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
@@ -25,14 +27,18 @@ class MainFragment : Fragment() {
     private var deleteMenuItem: MenuItem? = null
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
+    private var root: ConstraintLayout? = null
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
                     PdfHandler.copyPdfToCache(uri)
-                    PdfHandler.parsePdfIntoBitmap()
-                    showCertificateState()
+                    if (PdfHandler.parsePdfIntoBitmap()) {
+                        showCertificateState()
+                    } else {
+                        showErrorState()
+                    }
                 }
             }
         }
@@ -52,6 +58,8 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
+
+        root = view.findViewById(R.id.root)
 
         viewPager = view.findViewById(R.id.pager)
         tabLayout = view.findViewById(R.id.tab_layout)
@@ -80,8 +88,11 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launch {
             if (PdfHandler.doesFileExist()) {
-                PdfHandler.parsePdfIntoBitmap()
-                showCertificateState()
+                if (PdfHandler.parsePdfIntoBitmap()) {
+                    showCertificateState()
+                } else {
+                    showErrorState()
+                }
             } else {
                 showEmptyState()
             }
@@ -134,6 +145,13 @@ class MainFragment : Fragment() {
         viewPager?.adapter = adapter
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
+        }
+    }
+
+    private fun showErrorState() {
+        showEmptyState()
+        root?.let {
+            Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }
 

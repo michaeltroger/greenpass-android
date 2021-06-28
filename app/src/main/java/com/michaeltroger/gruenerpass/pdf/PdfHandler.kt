@@ -45,9 +45,19 @@ object PdfHandler {
         bitmapQrCode = null
     }
 
-    suspend fun parsePdfIntoBitmap() = withContext(Dispatchers.IO) {
+    /**
+     * @return true if successful
+     */
+    suspend fun parsePdfIntoBitmap(): Boolean = withContext(Dispatchers.IO) {
         val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-        val renderer = PdfRenderer(fileDescriptor)
+        val renderer: PdfRenderer
+        try {
+            renderer = PdfRenderer(fileDescriptor)
+        } catch (exception: Exception) {
+            deleteFile()
+            return@withContext false
+        }
+
         val page: PdfRenderer.Page = renderer.openPage(0)
 
         bitmapDocument = Bitmap.createBitmap(page.width * 3, page.height * 3, Bitmap.Config.ARGB_8888)!!
@@ -57,6 +67,7 @@ object PdfHandler {
         renderer.close()
 
         extractQrCodeIfAvailable(bitmapDocument!!)
+        return@withContext true
     }
 
     private fun extractQrCodeIfAvailable(bitmap: Bitmap) {
