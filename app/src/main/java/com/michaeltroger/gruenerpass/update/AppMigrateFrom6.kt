@@ -12,6 +12,7 @@ class AppMigrateFrom6 {
         if (src.exists()) {
             val dest = File(context.filesDir, FILENAME)
             src.copyTo(dest)
+            src.delete()
         }
 
     }

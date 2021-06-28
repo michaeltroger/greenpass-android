@@ -50,5 +50,5 @@ class AppMigrator(ctx: Context) {
 
         persistCurrentAppVersionCode()
     }
-    
+
 }
