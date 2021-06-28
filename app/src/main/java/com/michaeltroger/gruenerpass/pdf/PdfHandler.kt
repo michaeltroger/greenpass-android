@@ -60,7 +60,7 @@ object PdfHandler {
 
         val page: PdfRenderer.Page = renderer.openPage(0)
 
-        bitmapDocument = Bitmap.createBitmap(page.width * 3, page.height * 3, Bitmap.Config.ARGB_8888)!!
+        bitmapDocument = Bitmap.createBitmap(page.width * 2, page.height * 2, Bitmap.Config.ARGB_8888)!!
         page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         page.close()
