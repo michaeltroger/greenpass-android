@@ -132,7 +132,9 @@ class MainFragment : Fragment() {
         viewPager?.isVisible = true
         deleteMenuItem?.isEnabled = true
         viewPager?.adapter = adapter
-        layoutMediator.attach()
+        if (!layoutMediator.isAttached) {
+            layoutMediator.attach()
+        }
     }
 
 }
