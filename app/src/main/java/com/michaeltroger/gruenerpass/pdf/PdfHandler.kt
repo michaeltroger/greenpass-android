@@ -15,7 +15,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
-private const val FILENAME = "certificate.pdf"
+const val FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 1920
 
 object PdfHandler {
@@ -28,7 +28,7 @@ object PdfHandler {
     private var bitmapDocument: Bitmap? = null
     private var bitmapQrCode: Bitmap? = null
 
-    private val file = File(context.cacheDir, FILENAME)
+    private val file = File(context.filesDir, FILENAME)
 
     fun getQrBitmap() = bitmapQrCode
     fun getPdfBitmap() = bitmapDocument
@@ -95,15 +95,6 @@ object PdfHandler {
 
     suspend fun copyPdfToCache(uri: Uri) = withContext(Dispatchers.IO) {
         val inputStream = context.contentResolver.openInputStream(uri)!!
-
-        val output = FileOutputStream(file)
-        val buffer = ByteArray(1024)
-        var size: Int
-        while (inputStream.read(buffer).also { size = it } != -1) {
-            output.write(buffer, 0, size)
-        }
-
-        inputStream.close()
-        output.close()
+        inputStream.copyTo(FileOutputStream(file))
     }
 }
