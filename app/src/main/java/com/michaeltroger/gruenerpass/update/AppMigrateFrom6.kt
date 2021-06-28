@@ -1,7 +1,7 @@
 package com.michaeltroger.gruenerpass.update
 
 import android.content.Context
-import com.michaeltroger.gruenerpass.pdf.FILENAME
+import com.michaeltroger.gruenerpass.pdf.PDF_FILENAME
 import java.io.File
 
 class AppMigrateFrom6 {
@@ -10,7 +10,7 @@ class AppMigrateFrom6 {
         val src = File(context.cacheDir, "certificate.pdf")
 
         if (src.exists()) {
-            val dest = File(context.filesDir, FILENAME)
+            val dest = File(context.filesDir, PDF_FILENAME)
             src.copyTo(dest)
             src.delete()
         }

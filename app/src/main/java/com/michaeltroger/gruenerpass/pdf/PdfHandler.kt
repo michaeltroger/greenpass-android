@@ -18,7 +18,7 @@ import android.app.ActivityManager
 import android.content.Context
 
 
-const val FILENAME = "certificate.pdf"
+const val PDF_FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 400
 private const val MULTIPLIER_PDF_RESOLUTION = 2
 
@@ -33,7 +33,7 @@ object PdfHandler {
     private var bitmapDocument: Bitmap? = null
     private var bitmapQrCode: Bitmap? = null
 
-    private val file = File(context.filesDir, FILENAME)
+    private val file = File(context.filesDir, PDF_FILENAME)
 
     fun getQrBitmap() = bitmapQrCode
     fun getPdfBitmap() = bitmapDocument
