@@ -14,13 +14,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import android.app.ActivityManager
+import android.content.Context
 
-private const val FILENAME = "certificate.pdf"
-private const val QR_CODE_SIZE = 1920
+
+const val PDF_FILENAME = "certificate.pdf"
+private const val QR_CODE_SIZE = 400
+private const val MULTIPLIER_PDF_RESOLUTION = 2
 
 object PdfHandler {
 
     private val context = GruenerPassApplication.instance
+    private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
@@ -28,7 +33,7 @@ object PdfHandler {
     private var bitmapDocument: Bitmap? = null
     private var bitmapQrCode: Bitmap? = null
 
-    private val file = File(context.cacheDir, FILENAME)
+    private val file = File(context.filesDir, PDF_FILENAME)
 
     fun getQrBitmap() = bitmapQrCode
     fun getPdfBitmap() = bitmapDocument
@@ -45,17 +50,35 @@ object PdfHandler {
         bitmapQrCode = null
     }
 
-    suspend fun parsePdfIntoBitmap() = withContext(Dispatchers.IO) {
-        val renderer = PdfRenderer(ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY))
+    /**
+     * @return true if successful
+     */
+    suspend fun parsePdfIntoBitmap(): Boolean = withContext(Dispatchers.IO) {
+        val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+        val renderer: PdfRenderer
+        try {
+            renderer = PdfRenderer(fileDescriptor)
+        } catch (exception: Exception) {
+            deleteFile()
+            return@withContext false
+        }
+
         val page: PdfRenderer.Page = renderer.openPage(0)
 
-        bitmapDocument = Bitmap.createBitmap(page.width * 3, page.height * 3, Bitmap.Config.ARGB_8888)!!
+        var width: Int = page.width
+        var height: Int = page.height
+        if (!activityManager.isLowRamDevice) {
+            width *= MULTIPLIER_PDF_RESOLUTION
+            height *= MULTIPLIER_PDF_RESOLUTION
+        }
+        bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
         page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         page.close()
         renderer.close()
 
         extractQrCodeIfAvailable(bitmapDocument!!)
+        return@withContext true
     }
 
     private fun extractQrCodeIfAvailable(bitmap: Bitmap) {
@@ -89,21 +112,20 @@ object PdfHandler {
             }
         }
 
-        bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
 
-    suspend fun copyPdfToCache(uri: Uri) = withContext(Dispatchers.IO) {
-        val inputStream = context.contentResolver.openInputStream(uri)!!
-
-        val output = FileOutputStream(file)
-        val buffer = ByteArray(1024)
-        var size: Int
-        while (inputStream.read(buffer).also { size = it } != -1) {
-            output.write(buffer, 0, size)
+    /**
+     * @return true if successful
+     */
+    suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri)!!
+            inputStream.copyTo(FileOutputStream(file))
+            return@withContext true
+        } catch (exception: Exception) {
+            return@withContext false
         }
-
-        inputStream.close()
-        output.close()
     }
 }
