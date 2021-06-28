@@ -116,8 +116,16 @@ object PdfHandler {
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
 
-    suspend fun copyPdfToCache(uri: Uri) = withContext(Dispatchers.IO) {
-        val inputStream = context.contentResolver.openInputStream(uri)!!
-        inputStream.copyTo(FileOutputStream(file))
+    /**
+     * @return true if successful
+     */
+    suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val inputStream = context.contentResolver.openInputStream(uri)!!
+            inputStream.copyTo(FileOutputStream(file))
+            return@withContext true
+        } catch (exception: Exception) {
+            return@withContext false
+        }
     }
 }

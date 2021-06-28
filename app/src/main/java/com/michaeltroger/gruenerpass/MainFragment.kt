@@ -33,8 +33,7 @@ class MainFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
-                    PdfHandler.copyPdfToCache(uri)
-                    if (PdfHandler.parsePdfIntoBitmap()) {
+                    if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
                         showCertificateState()
                     } else {
                         showErrorState()
