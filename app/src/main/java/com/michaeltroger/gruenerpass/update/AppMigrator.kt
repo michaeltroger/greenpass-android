@@ -22,19 +22,25 @@ class AppMigrator(ctx: Context) {
     private val context = ctx.applicationContext
 
     private val appVersionCode = longPreferencesKey("app_version_code")
-    private val appVersionFlow: Flow<Long> = context.dataStore.data
-        .map { preferences ->
-            preferences[appVersionCode] ?: 0
+    private val appVersionCodeFlow: Flow<Long> = context.dataStore.data
+        .map { settings ->
+            settings[appVersionCode] ?: 0
         }
 
     private val previousVersionCode: Long by lazy {
         runBlocking {
-            appVersionFlow.first()
+            appVersionCodeFlow.first()
         }
     }
 
     private val currentVersionCode: Long by lazy {
         context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toLong()
+    }
+
+    private fun persistCurrentAppVersionCode() = GlobalScope.launch(Dispatchers.IO) {
+        context.dataStore.edit { settings ->
+            settings[appVersionCode] = currentVersionCode
+        }
     }
 
     fun performMigration(previousVersion: Long = previousVersionCode, currentVersion: Long = currentVersionCode) {
@@ -44,11 +50,5 @@ class AppMigrator(ctx: Context) {
 
         persistCurrentAppVersionCode()
     }
-
-    private fun persistCurrentAppVersionCode() = GlobalScope.launch(Dispatchers.IO) {
-        context.dataStore.edit { settings ->
-            settings[appVersionCode] = currentVersionCode
-        }
-    }
-
+    
 }
