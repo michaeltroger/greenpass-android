@@ -16,7 +16,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 const val FILENAME = "certificate.pdf"
-private const val QR_CODE_SIZE = 1920
+private const val QR_CODE_SIZE = 400
 
 object PdfHandler {
 
@@ -101,7 +101,7 @@ object PdfHandler {
             }
         }
 
-        bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
 
