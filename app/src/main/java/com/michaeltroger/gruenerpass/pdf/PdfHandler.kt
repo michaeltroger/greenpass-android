@@ -14,13 +14,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import android.app.ActivityManager
+import android.content.Context
+
 
 const val FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 400
+private const val MULTIPLIER_PDF_RESOLUTION = 2
 
 object PdfHandler {
 
     private val context = GruenerPassApplication.instance
+    private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
@@ -60,7 +65,13 @@ object PdfHandler {
 
         val page: PdfRenderer.Page = renderer.openPage(0)
 
-        bitmapDocument = Bitmap.createBitmap(page.width * 2, page.height * 2, Bitmap.Config.ARGB_8888)!!
+        var width: Int = page.width
+        var height: Int = page.height
+        if (!activityManager.isLowRamDevice) {
+            width *= MULTIPLIER_PDF_RESOLUTION
+            height *= MULTIPLIER_PDF_RESOLUTION
+        }
+        bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
         page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         page.close()
