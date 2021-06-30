@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.michaeltroger.gruenerpass.pdf.CopyPdfState
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
 import kotlinx.coroutines.launch
@@ -36,18 +37,15 @@ class MainFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
-                    val (success, uri) = PdfHandler.copyPdfToCache(uri)
-                    if (success) {
-                        if (PdfHandler.parsePdfIntoBitmap()) {
-                            showCertificateState()
-                        } else {
-                            showErrorState()
-                        }
-                    } else {
-                        if (uri == null) {
-                            showErrorState()
-                        } else {
-                            showEnterPasswordDialog(uri)
+                    when (PdfHandler.copyPdfToCache(uri)) {
+                        CopyPdfState.ERROR_ENCRYPTED -> showEnterPasswordDialog(uri)
+                        CopyPdfState.ERROR_GENERIC -> showErrorState()
+                        CopyPdfState.SUCCESS -> {
+                            if (PdfHandler.parsePdfIntoBitmap()) {
+                                showCertificateState()
+                            } else {
+                                showErrorState()
+                            }
                         }
                     }
                 }
