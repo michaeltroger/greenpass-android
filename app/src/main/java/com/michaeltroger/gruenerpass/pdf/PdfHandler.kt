@@ -133,8 +133,10 @@ object PdfHandler {
                     true
                 }
                 if (isEncrypted) return@withContext CopyPdfState.ERROR_ENCRYPTED
+            }
 
-                // pdf is not password protected -> proceed
+            // pdf is not password protected -> proceed
+            context.contentResolver.openInputStream(uri)!!.use {
                 it.copyTo(FileOutputStream(file))
                 return@withContext CopyPdfState.SUCCESS
             }
