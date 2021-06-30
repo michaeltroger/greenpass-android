@@ -120,10 +120,8 @@ object PdfHandler {
 
     /**
      * @return true if succesful
-     *         false without uri for generic issues
-     *         false with uri if password protected
      */
-    suspend fun copyPdfToCache(uri: Uri): Pair<Boolean, Uri?> = withContext(Dispatchers.IO) {
+    suspend fun copyPdfToCache(uri: Uri): CopyPdfState = withContext(Dispatchers.IO) {
         try {
             context.contentResolver.openInputStream(uri)!!.use {
                 val isEncrypted: Boolean = try {
@@ -134,14 +132,14 @@ object PdfHandler {
                 } catch (exception: InvalidPasswordException) {
                     true
                 }
-                if (isEncrypted) return@withContext false to uri
+                if (isEncrypted) return@withContext CopyPdfState.ERROR_ENCRYPTED
 
                 // pdf is not password protected -> proceed
                 it.copyTo(FileOutputStream(file))
-                return@withContext true to null
+                return@withContext CopyPdfState.SUCCESS
             }
         } catch (exception: Exception) {
-            return@withContext false to null
+            return@withContext CopyPdfState.ERROR_GENERIC
         }
     }
 
