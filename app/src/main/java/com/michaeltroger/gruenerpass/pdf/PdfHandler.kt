@@ -9,7 +9,7 @@ import com.google.zxing.*
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
-import com.michaeltroger.gruenerpass.GruenerPassApplication
+import com.michaeltroger.gruenerpass.GreenPassApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -26,7 +26,7 @@ private const val MULTIPLIER_PDF_RESOLUTION = 2
 
 object PdfHandler {
 
-    private val context = GruenerPassApplication.instance
+    private val context = GreenPassApplication.instance
     private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
     private val qrCodeReader = QRCodeReader()
