@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
@@ -6,4 +5,8 @@
     <string name="tab_title_pdf">PDF</string>
     <string name="tab_title_qr">QR Code</string>
     <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
+    <string name="dialog_password_protection_title">Passwortgeschütztes PDF entschlüsseln</string>
+    <string name="dialog_password_protection_hint">Passwort eingeben</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
 </resources>
