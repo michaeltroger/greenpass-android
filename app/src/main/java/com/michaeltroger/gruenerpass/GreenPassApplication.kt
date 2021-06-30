@@ -5,7 +5,7 @@ import android.app.Application
 import com.michaeltroger.gruenerpass.update.AppMigrator
 import com.tom_roush.pdfbox.util.PDFBoxResourceLoader
 
-class GruenerPassApplication : Application() {
+class GreenPassApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -16,7 +16,7 @@ class GruenerPassApplication : Application() {
 
     companion object {
         @SuppressLint("StaticFieldLeak")
-        lateinit var instance: GruenerPassApplication
+        lateinit var instance: GreenPassApplication
             private set
     }
 }
