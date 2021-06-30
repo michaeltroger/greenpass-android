@@ -14,9 +14,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.pdf.CopyPdfState
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
@@ -158,14 +161,17 @@ class MainFragment : Fragment() {
     }
 
     private fun showEnterPasswordDialog(uri: Uri) {
-        val editText = EditText(requireContext());
-        val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Title")
-            .setMessage("Message")
-            .setView(editText)
-            .setPositiveButton("OK")  { dialog, which ->
+        val customAlertDialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.layout_password_dialog, null, false)
+
+        val passwordTextField = customAlertDialogView.findViewById<TextInputLayout>(R.id.password_text_field)
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.dialog_password_protection_title))
+            .setView(customAlertDialogView)
+            .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
-                    if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = editText.text.toString())) {
+                    if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
                         if (PdfHandler.parsePdfIntoBitmap()) {
                             showCertificateState()
                         } else {
@@ -176,7 +182,7 @@ class MainFragment : Fragment() {
                     }
                 }
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .create();
         dialog.show();
     }
