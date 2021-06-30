@@ -2,11 +2,14 @@ package com.michaeltroger.gruenerpass
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
+import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -33,10 +36,19 @@ class MainFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
-                    if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
-                        showCertificateState()
+                    val (success, uri) = PdfHandler.copyPdfToCache(uri)
+                    if (success) {
+                        if (PdfHandler.parsePdfIntoBitmap()) {
+                            showCertificateState()
+                        } else {
+                            showErrorState()
+                        }
                     } else {
-                        showErrorState()
+                        if (uri == null) {
+                            showErrorState()
+                        } else {
+                            showEnterPasswordDialog(uri)
+                        }
                     }
                 }
             }
@@ -145,6 +157,30 @@ class MainFragment : Fragment() {
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
         }
+    }
+
+    private fun showEnterPasswordDialog(uri: Uri) {
+        val editText = EditText(requireContext());
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Title")
+            .setMessage("Message")
+            .setView(editText)
+            .setPositiveButton("OK")  { dialog, which ->
+                lifecycleScope.launch {
+                    if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = editText.text.toString())) {
+                        if (PdfHandler.parsePdfIntoBitmap()) {
+                            showCertificateState()
+                        } else {
+                            showErrorState()
+                        }
+                    } else {
+                        showEnterPasswordDialog(uri)
+                    }
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create();
+        dialog.show();
     }
 
     private fun showErrorState() {

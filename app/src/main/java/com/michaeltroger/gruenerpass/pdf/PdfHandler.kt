@@ -16,6 +16,9 @@ import java.io.File
 import java.io.FileOutputStream
 import android.app.ActivityManager
 import android.content.Context
+import com.itextpdf.text.pdf.PdfReader
+import com.itextpdf.text.pdf.PdfStamper
+import java.io.InputStream
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -116,16 +119,48 @@ object PdfHandler {
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
 
-    /**
-     * @return true if successful
-     */
-    suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    suspend fun copyPdfToCache(uri: Uri): Pair<Boolean, Uri?> = withContext(Dispatchers.IO) {
+        var inputStream: InputStream
         try {
-            val inputStream = context.contentResolver.openInputStream(uri)!!
+            inputStream = context.contentResolver.openInputStream(uri)!!
+        } catch (exception: Exception) {
+            return@withContext false to null
+        }
+
+        try {
+            PdfReader(inputStream)
+        } catch (exception: Exception) {
+            // file is password protected
+            return@withContext false to uri
+        } finally {
+            inputStream.close()
+        }
+
+        // pdf is not password protected -> proceed
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)!! // reopen input stream, was closed by PdfReader
             inputStream.copyTo(FileOutputStream(file))
+            return@withContext true to null
+        } catch (exception: Exception) {
+            return@withContext false to null
+        } finally {
+            inputStream.close()
+        }
+    }
+
+    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
+        var inputStream: InputStream? = null
+        try {
+            inputStream = context.contentResolver.openInputStream(uri)!!
+            val reader = PdfReader(inputStream, password.toByteArray())
+            val stamper = PdfStamper(reader, FileOutputStream(file))
+            stamper.close()
+            reader.close()
             return@withContext true
         } catch (exception: Exception) {
             return@withContext false
+        } finally {
+            inputStream?.close()
         }
     }
 }
