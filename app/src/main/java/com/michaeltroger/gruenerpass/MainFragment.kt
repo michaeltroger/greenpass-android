@@ -2,18 +2,25 @@ package com.michaeltroger.gruenerpass
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
+import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.michaeltroger.gruenerpass.pdf.CopyPdfState
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
 import kotlinx.coroutines.launch
@@ -33,10 +40,16 @@ class MainFragment : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
-                    if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
-                        showCertificateState()
-                    } else {
-                        showErrorState()
+                    when (PdfHandler.copyPdfToCache(uri)) {
+                        CopyPdfState.ERROR_ENCRYPTED -> showEnterPasswordDialog(uri)
+                        CopyPdfState.ERROR_GENERIC -> showErrorState()
+                        CopyPdfState.SUCCESS -> {
+                            if (PdfHandler.parsePdfIntoBitmap()) {
+                                showCertificateState()
+                            } else {
+                                showErrorState()
+                            }
+                        }
                     }
                 }
             }
@@ -145,6 +158,33 @@ class MainFragment : Fragment() {
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
         }
+    }
+
+    private fun showEnterPasswordDialog(uri: Uri) {
+        val customAlertDialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.layout_password_dialog, null, false)
+
+        val passwordTextField = customAlertDialogView.findViewById<TextInputLayout>(R.id.password_text_field)
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.dialog_password_protection_title))
+            .setView(customAlertDialogView)
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                lifecycleScope.launch {
+                    if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
+                        if (PdfHandler.parsePdfIntoBitmap()) {
+                            showCertificateState()
+                        } else {
+                            showErrorState()
+                        }
+                    } else {
+                        showEnterPasswordDialog(uri)
+                    }
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create();
+        dialog.show();
     }
 
     private fun showErrorState() {

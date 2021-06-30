@@ -1,7 +1,5 @@
 package com.michaeltroger.gruenerpass.pdf
 
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
@@ -9,13 +7,17 @@ import com.google.zxing.*
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
-import com.michaeltroger.gruenerpass.GruenerPassApplication
+import com.michaeltroger.gruenerpass.GreenPassApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -24,7 +26,7 @@ private const val MULTIPLIER_PDF_RESOLUTION = 2
 
 object PdfHandler {
 
-    private val context = GruenerPassApplication.instance
+    private val context = GreenPassApplication.instance
     private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
     private val qrCodeReader = QRCodeReader()
@@ -115,15 +117,43 @@ object PdfHandler {
         bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
+    
+    suspend fun copyPdfToCache(uri: Uri): CopyPdfState = withContext(Dispatchers.IO) {
+        try {
+            context.contentResolver.openInputStream(uri)!!.use {
+                val isEncrypted: Boolean = try {
+                    val doc = PDDocument.load(it)
+                    val encr = doc.isEncrypted
+                    doc.close()
+                    encr
+                } catch (exception: InvalidPasswordException) {
+                    true
+                }
+                if (isEncrypted) return@withContext CopyPdfState.ERROR_ENCRYPTED
+            }
+
+            // pdf is not password protected -> proceed
+            context.contentResolver.openInputStream(uri)!!.use {
+                it.copyTo(FileOutputStream(file))
+                return@withContext CopyPdfState.SUCCESS
+            }
+        } catch (exception: Exception) {
+            return@withContext CopyPdfState.ERROR_GENERIC
+        }
+    }
 
     /**
-     * @return true if successful
+     * @return true if succesful
      */
-    suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
         try {
-            val inputStream = context.contentResolver.openInputStream(uri)!!
-            inputStream.copyTo(FileOutputStream(file))
-            return@withContext true
+            context.contentResolver.openInputStream(uri)!!.use {
+                val pdd = PDDocument.load(it, password)
+                pdd.isAllSecurityToBeRemoved = true
+                pdd.save(FileOutputStream(file))
+                pdd.close()
+                return@withContext true
+            }
         } catch (exception: Exception) {
             return@withContext false
         }

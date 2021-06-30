@@ -44,6 +44,10 @@ class AppMigrator(ctx: Context) {
     }
 
     fun performMigration(previousVersion: Long = previousVersionCode, currentVersion: Long = currentVersionCode) {
+        if (previousVersion == currentVersion) {
+            return
+        }
+
         if (previousVersion < 7) {
             AppMigrateFrom6().invoke(context)
         }
