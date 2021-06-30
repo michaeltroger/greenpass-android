@@ -16,9 +16,8 @@ import java.io.File
 import java.io.FileOutputStream
 import android.app.ActivityManager
 import android.content.Context
-import com.itextpdf.text.pdf.PdfReader
-import com.itextpdf.text.pdf.PdfStamper
-import java.io.InputStream
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -119,48 +118,47 @@ object PdfHandler {
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
 
+    /**
+     * @return true if succesful
+     *         false without uri for generic issues
+     *         false with uri if password protected
+     */
     suspend fun copyPdfToCache(uri: Uri): Pair<Boolean, Uri?> = withContext(Dispatchers.IO) {
-        var inputStream: InputStream
         try {
-            inputStream = context.contentResolver.openInputStream(uri)!!
+            context.contentResolver.openInputStream(uri)!!.use {
+                val isEncrypted: Boolean = try {
+                    val doc = PDDocument.load(it)
+                    val encr = doc.isEncrypted
+                    doc.close()
+                    encr
+                } catch (exception: InvalidPasswordException) {
+                    true
+                }
+                if (isEncrypted) return@withContext false to uri
+
+                // pdf is not password protected -> proceed
+                it.copyTo(FileOutputStream(file))
+                return@withContext true to null
+            }
         } catch (exception: Exception) {
             return@withContext false to null
-        }
-
-        try {
-            PdfReader(inputStream)
-        } catch (exception: Exception) {
-            // file is password protected
-            return@withContext false to uri
-        } finally {
-            inputStream.close()
-        }
-
-        // pdf is not password protected -> proceed
-        try {
-            inputStream = context.contentResolver.openInputStream(uri)!! // reopen input stream, was closed by PdfReader
-            inputStream.copyTo(FileOutputStream(file))
-            return@withContext true to null
-        } catch (exception: Exception) {
-            return@withContext false to null
-        } finally {
-            inputStream.close()
         }
     }
 
+    /**
+     * @return true if succesful
+     */
     suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
-        var inputStream: InputStream? = null
         try {
-            inputStream = context.contentResolver.openInputStream(uri)!!
-            val reader = PdfReader(inputStream, password.toByteArray())
-            val stamper = PdfStamper(reader, FileOutputStream(file))
-            stamper.close()
-            reader.close()
-            return@withContext true
+            context.contentResolver.openInputStream(uri)!!.use {
+                val pdd = PDDocument.load(it, password)
+                pdd.isAllSecurityToBeRemoved = true
+                pdd.save(FileOutputStream(file))
+                pdd.close()
+                return@withContext true
+            }
         } catch (exception: Exception) {
             return@withContext false
-        } finally {
-            inputStream?.close()
         }
     }
 }
