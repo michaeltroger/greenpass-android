@@ -11,7 +11,7 @@ class GreenPassApplication : Application() {
         super.onCreate()
         instance = this
         AppMigrator(applicationContext).performMigration()
-        PDFBoxResourceLoader.init(this);
+        PDFBoxResourceLoader.init(this)
     }
 
     companion object {
