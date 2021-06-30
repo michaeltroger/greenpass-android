@@ -117,10 +117,7 @@ object PdfHandler {
         bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
-
-    /**
-     * @return true if succesful
-     */
+    
     suspend fun copyPdfToCache(uri: Uri): CopyPdfState = withContext(Dispatchers.IO) {
         try {
             context.contentResolver.openInputStream(uri)!!.use {
