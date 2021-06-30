@@ -1,4 +1,4 @@
-# Green Pass Android App | A PDF Reader for COVID Certificates
+# Green Pass Android App | A PDF Reader for COVID Certificates (EU Digital COVID  Certificate)
 ## Offers a convenient access to a single one-sided PDF document like e.g. a COVID PDF Certificate
 [Download in Google Play Store](https://play.google.com/store/apps/details?id=com.michaeltroger.gruenerpass) 
 
