@@ -10,6 +10,7 @@ import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -19,9 +20,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment(R.layout.fragment_main) {
+
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var adapter: PagerAdapter
     private lateinit var layoutMediator: TabLayoutMediator
@@ -85,6 +89,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     showDoYouWantToReplaceDialog(sharedFile)
                 } else {
                     handleFileFromUri(sharedFile)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            mainViewModel.updatedUri.collect {
+                if (PdfHandler.doesFileExist()) {
+                    showDoYouWantToReplaceDialog(it)
+                } else {
+                    handleFileFromUri(it)
                 }
             }
         }
