@@ -18,23 +18,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            val uri: Uri? = when {
-                intent.data != null -> {
-                    intent.data
-                }
-                intent.action == Intent.ACTION_SEND -> {
-                    if (intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
-                        intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
-                    } else {
-                        null
-                    }
-                }
-                else -> {
-                    null
-                }
-            }
             supportFragmentManager.commit {
-                val bundle = bundleOf(BUNDLE_KEY_URI to uri)
+                val bundle = bundleOf(BUNDLE_KEY_URI to getUriFromIntent())
                 setReorderingAllowed(true)
                 add<MainFragment>(R.id.fragment_container_view, args = bundle)
             }
@@ -43,8 +28,27 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (intent?.data == null) return
-        myViewModel.updatedUri.tryEmit(intent.data!!)
+        getUriFromIntent()?.let {
+            myViewModel.updatedUri.tryEmit(it)
+        }
+    }
+
+    private fun getUriFromIntent(): Uri? {
+        return when {
+            intent.data != null -> {
+                intent.data
+            }
+            intent.action == Intent.ACTION_SEND -> {
+                if (intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
+                    intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                } else {
+                    null
+                }
+            }
+            else -> {
+                null
+            }
+        }
     }
 
     companion object {
