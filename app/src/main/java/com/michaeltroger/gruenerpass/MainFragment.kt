@@ -80,7 +80,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
         if (sharedFile != null) {
-            showDoYouWantToReplaceDialog(sharedFile)
+            lifecycleScope.launch {
+                if (PdfHandler.doesFileExist()) {
+                    showDoYouWantToReplaceDialog(sharedFile)
+                } else {
+                    handleFileFromUri(sharedFile)
+                }
+            }
         }
 
         lifecycleScope.launch {
