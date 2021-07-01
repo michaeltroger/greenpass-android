@@ -84,14 +84,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             openFilePicker()
         }
 
-        val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
-        if (sharedFile != null) {
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            if (PdfHandler.doesFileExist()) {
+                if (PdfHandler.parsePdfIntoBitmap()) {
+                    showCertificateState()
+                } else {
+                    showErrorState()
+                }
+            } else {
+                showEmptyState()
+            }
+
+            val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
+            if (sharedFile != null) {
                 if (PdfHandler.doesFileExist()) {
                     showDoYouWantToReplaceDialog(sharedFile)
                 } else {
                     handleFileFromUri(sharedFile)
                 }
+                requireArguments().remove(MainActivity.BUNDLE_KEY_URI) // avoid showing the dialog again on configuration change
             }
         }
 
@@ -102,18 +113,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 } else {
                     handleFileFromUri(it)
                 }
-            }
-        }
-
-        lifecycleScope.launch {
-            if (PdfHandler.doesFileExist()) {
-                if (PdfHandler.parsePdfIntoBitmap()) {
-                    showCertificateState()
-                } else {
-                    showErrorState()
-                }
-            } else {
-                showEmptyState()
             }
         }
     }
