@@ -181,7 +181,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun showDoYouWantToDeleteDialog() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.dialog_delete_confirmation_title))
+            .setMessage(getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
                     PdfHandler.deleteFile()
@@ -195,7 +195,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun showDoYouWantToReplaceDialog(uri: Uri) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.dialog_replace_confirmation_title))
+            .setMessage(getString(R.string.dialog_replace_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
                     handleFileFromUri(uri)

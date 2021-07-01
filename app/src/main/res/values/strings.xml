@@ -10,6 +10,6 @@
     <string name="dialog_password_protection_hint">Enter password</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="dialog_delete_confirmation_title">Do you really want to delete the document from the app?</string>
-    <string name="dialog_replace_confirmation_title">Do you really want to replace the current document with the one provided?</string>
+    <string name="dialog_delete_confirmation_message">Do you really want to delete the document from the app?</string>
+    <string name="dialog_replace_confirmation_message">Do you really want to replace the current document with the one provided?</string>
 </resources>
