@@ -18,8 +18,23 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            val bundle = bundleOf(BUNDLE_KEY_URI to intent.data)
+            val uri: Uri? = when {
+                intent.data != null -> {
+                    intent.data
+                }
+                intent.action == Intent.ACTION_SEND -> {
+                    if (intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                    } else {
+                        null
+                    }
+                }
+                else -> {
+                    null
+                }
+            }
             supportFragmentManager.commit {
+                val bundle = bundleOf(BUNDLE_KEY_URI to uri)
                 setReorderingAllowed(true)
                 add<MainFragment>(R.id.fragment_container_view, args = bundle)
             }
