@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Green Pass</string>
     <string name="delete">Delete</string>
+    <string name="replace">Replace</string>
     <string name="add">Add</string>
     <string name="tab_title_pdf">PDF</string>
     <string name="tab_title_qr">QR Code</string>
