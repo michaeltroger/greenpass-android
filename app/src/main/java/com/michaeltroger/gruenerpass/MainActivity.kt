@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
-                val bundle = bundleOf(BUNDLE_KEY_URI to getUriFromIntent())
+                val bundle = bundleOf(BUNDLE_KEY_URI to intent?.getUri())
                 setReorderingAllowed(true)
                 add<MainFragment>(R.id.fragment_container_view, args = bundle)
             }
@@ -28,19 +28,19 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        getUriFromIntent()?.let {
-            myViewModel.updatedUri.tryEmit(it)
+        intent?.getUri()?.let { uri ->
+            myViewModel.updatedUri.tryEmit(uri)
         }
     }
 
-    private fun getUriFromIntent(): Uri? {
+    private fun Intent.getUri(): Uri? {
         return when {
-            intent.data != null -> {
-                intent.data
+            data != null -> {
+                data
             }
-            intent.action == Intent.ACTION_SEND -> {
-                if (intent.extras?.containsKey(Intent.EXTRA_STREAM) == true) {
-                    intent.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+            action == Intent.ACTION_SEND -> {
+                if (extras?.containsKey(Intent.EXTRA_STREAM) == true) {
+                    getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
                 } else {
                     null
                 }
@@ -54,8 +54,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     companion object {
         const val BUNDLE_KEY_URI = "uri"
     }
-}
 
+}
 class MainViewModel: ViewModel() {
     val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
 }
