@@ -120,10 +120,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         inflater.inflate(R.menu.menu, menu)
         deleteMenuItem = menu.findItem(R.id.delete)
         replaceMenuItem = menu.findItem(R.id.replace)
-
-        lifecycleScope.launch {
-            deleteMenuItem?.isEnabled = PdfHandler.doesFileExist()
-        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
