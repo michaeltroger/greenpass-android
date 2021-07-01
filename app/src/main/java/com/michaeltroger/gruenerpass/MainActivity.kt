@@ -33,29 +33,29 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-    private fun Intent.getUri(): Uri? {
-        return when {
-            data != null -> {
-                data
-            }
-            action == Intent.ACTION_SEND -> {
-                if (extras?.containsKey(Intent.EXTRA_STREAM) == true) {
-                    getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
-                } else {
-                    null
-                }
-            }
-            else -> {
-                null
-            }
-        }
-    }
-
     companion object {
         const val BUNDLE_KEY_URI = "uri"
     }
-
 }
+
+private fun Intent.getUri(): Uri? {
+    return when {
+        data != null -> {
+            data
+        }
+        action == Intent.ACTION_SEND -> {
+            if (extras?.containsKey(Intent.EXTRA_STREAM) == true) {
+                getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+            } else {
+                null
+            }
+        }
+        else -> {
+            null
+        }
+    }
+}
+
 class MainViewModel: ViewModel() {
     val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
 }
