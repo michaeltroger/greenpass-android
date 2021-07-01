@@ -9,4 +9,5 @@
     <string name="dialog_password_protection_hint">Passwort eingeben</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
+    <string name="dialog_delete_confirmation_title">Willst du das Dokument wirklich aus der App löschen?</string>
 </resources>

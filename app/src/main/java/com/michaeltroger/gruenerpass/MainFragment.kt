@@ -72,9 +72,10 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
 
         root = view.findViewById(R.id.root)
-
         viewPager = view.findViewById(R.id.pager)
         tabLayout = view.findViewById(R.id.tab_layout)
+        addButton = view.findViewById(R.id.add)
+
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
@@ -93,7 +94,6 @@ class MainFragment : Fragment() {
             tab.text = getString(textRes)
         }
 
-        addButton = view.findViewById(R.id.add)
         addButton?.setOnClickListener {
             openFilePicker()
         }
@@ -123,10 +123,7 @@ class MainFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
-            lifecycleScope.launch {
-                PdfHandler.deleteFile()
-                showEmptyState()
-            }
+            showDoYouWantToDeleteDialog()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -158,6 +155,20 @@ class MainFragment : Fragment() {
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
         }
+    }
+
+    private fun showDoYouWantToDeleteDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.dialog_delete_confirmation_title))
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                lifecycleScope.launch {
+                    PdfHandler.deleteFile()
+                    showEmptyState()
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create();
+        dialog.show();
     }
 
     private fun showEnterPasswordDialog(uri: Uri) {
