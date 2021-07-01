@@ -32,7 +32,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private var addButton: Button? = null
     private var deleteMenuItem: MenuItem? = null
-    private var replaceMenuItem: MenuItem? = null
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
     private var root: ConstraintLayout? = null
@@ -120,17 +119,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
         deleteMenuItem = menu.findItem(R.id.delete)
-        replaceMenuItem = menu.findItem(R.id.replace)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
             showDoYouWantToDeleteDialog()
-            true
-        }
-        R.id.replace -> {
-            openFilePicker()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -162,7 +156,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewPager?.isVisible = false
         tabLayout?.isVisible = false
         deleteMenuItem?.isVisible = false
-        replaceMenuItem?.isVisible = false
         viewPager?.adapter = null
         layoutMediator.detach()
     }
@@ -172,7 +165,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         tabLayout?.isVisible = true
         viewPager?.isVisible = true
         deleteMenuItem?.isVisible = true
-        replaceMenuItem?.isVisible = true
         viewPager?.adapter = adapter
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
