@@ -40,7 +40,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
-                handleFileFromUri(uri)
+                lifecycleScope.launch {
+                    handleFileFromUri(uri)
+                }
             }
         }
     }
@@ -135,17 +137,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun handleFileFromUri(uri: Uri) {
-        lifecycleScope.launch {
-            if (PdfHandler.isPdfPasswordProtected(uri)) {
-                showEnterPasswordDialog(uri)
+    private suspend fun handleFileFromUri(uri: Uri) {
+        if (PdfHandler.isPdfPasswordProtected(uri)) {
+            showEnterPasswordDialog(uri)
+        } else {
+            showEmptyState()
+            if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
+                showCertificateState()
             } else {
-                showEmptyState()
-                if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
-                    showCertificateState()
-                } else {
-                    showErrorState()
-                }
+                showErrorState()
             }
         }
     }
@@ -198,7 +198,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_replace_confirmation_title))
             .setPositiveButton(R.string.ok)  { _, _ ->
-                handleFileFromUri(uri)
+                lifecycleScope.launch {
+                    handleFileFromUri(uri)
+                }
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create();
