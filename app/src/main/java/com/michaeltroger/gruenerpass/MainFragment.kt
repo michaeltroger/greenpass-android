@@ -8,6 +8,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -35,6 +36,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
     private var root: ConstraintLayout? = null
+
+    private var dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -107,6 +110,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         lifecycleScope.launch {
             mainViewModel.updatedUri.collect {
+                closeAllDialogs()
                 if (PdfHandler.doesFileExist()) {
                     showDoYouWantToReplaceDialog(it)
                 } else {
@@ -181,8 +185,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
             .setNegativeButton(getString(R.string.cancel), null)
-            .create();
-        dialog.show();
+            .create()
+        dialogs["delete"] = dialog
+        dialog.show()
     }
 
     private fun showDoYouWantToReplaceDialog(uri: Uri) {
@@ -194,8 +199,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
             .setNegativeButton(getString(R.string.cancel), null)
-            .create();
-        dialog.show();
+            .create()
+        dialogs["replace"] = dialog
+        dialog.show()
     }
 
     private fun showEnterPasswordDialog(uri: Uri) {
@@ -222,14 +228,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
             .setNegativeButton(getString(R.string.cancel), null)
-            .create();
-        dialog.show();
+            .create()
+        dialogs["password"] = dialog
+        dialog.show()
     }
 
     private fun showErrorState() {
         showEmptyState()
         root?.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun closeAllDialogs() {
+        dialogs.values.filterNotNull().forEach {
+            if (it.isShowing) it.dismiss()
         }
     }
 
