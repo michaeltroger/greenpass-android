@@ -17,7 +17,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pdf.CopyPdfState
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
 import kotlinx.coroutines.launch
@@ -128,17 +127,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun handleFileFromUri(uri: Uri) {
         lifecycleScope.launch {
-            PdfHandler.deleteFile()
-            showEmptyState()
-            when (PdfHandler.copyPdfToCache(uri)) {
-                CopyPdfState.ERROR_ENCRYPTED -> showEnterPasswordDialog(uri)
-                CopyPdfState.ERROR_GENERIC -> showErrorState()
-                CopyPdfState.SUCCESS -> {
-                    if (PdfHandler.parsePdfIntoBitmap()) {
-                        showCertificateState()
-                    } else {
-                        showErrorState()
-                    }
+            if (PdfHandler.isPdfPasswordProtected(uri)) {
+                showEnterPasswordDialog(uri)
+            } else {
+                showEmptyState()
+                if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
+                    showCertificateState()
+                } else {
+                    showErrorState()
                 }
             }
         }
@@ -211,6 +207,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
                     if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
+                        showEmptyState()
                         if (PdfHandler.parsePdfIntoBitmap()) {
                             showCertificateState()
                         } else {

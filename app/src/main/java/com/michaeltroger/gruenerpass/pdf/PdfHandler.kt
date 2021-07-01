@@ -122,28 +122,35 @@ object PdfHandler {
         bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
-    
-    suspend fun copyPdfToCache(uri: Uri): CopyPdfState = withContext(Dispatchers.IO) {
+
+    suspend fun isPdfPasswordProtected(uri: Uri): Boolean = withContext(Dispatchers.IO) {
         try {
             context.contentResolver.openInputStream(uri)!!.use {
-                val isEncrypted: Boolean = try {
+                try {
                     val doc = PDDocument.load(it)
                     val encr = doc.isEncrypted
                     doc.close()
-                    encr
+                    return@withContext encr
                 } catch (exception: InvalidPasswordException) {
-                    true
+                    return@withContext true
                 }
-                if (isEncrypted) return@withContext CopyPdfState.ERROR_ENCRYPTED
-            }
-
-            // pdf is not password protected -> proceed
-            context.contentResolver.openInputStream(uri)!!.use {
-                it.copyTo(FileOutputStream(file))
-                return@withContext CopyPdfState.SUCCESS
             }
         } catch (exception: Exception) {
-            return@withContext CopyPdfState.ERROR_GENERIC
+            return@withContext false
+        }
+    }
+    /**
+     * @return true if successful
+     */
+    suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+        try {
+            context.contentResolver.openInputStream(uri)!!.use {
+                deleteFile() // clear old file first if it exists
+                it.copyTo(FileOutputStream(file))
+                return@withContext true
+            }
+        } catch (exception: Exception) {
+            return@withContext false
         }
     }
 
@@ -155,6 +162,7 @@ object PdfHandler {
             context.contentResolver.openInputStream(uri)!!.use {
                 val pdd = PDDocument.load(it, password)
                 pdd.isAllSecurityToBeRemoved = true
+                deleteFile() // clear old file first if it exists
                 pdd.save(FileOutputStream(file))
                 pdd.close()
                 return@withContext true
