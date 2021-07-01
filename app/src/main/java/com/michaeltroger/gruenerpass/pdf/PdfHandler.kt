@@ -18,6 +18,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
+import android.graphics.Canvas
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -73,7 +74,11 @@ object PdfHandler {
             width *= MULTIPLIER_PDF_RESOLUTION
             height *= MULTIPLIER_PDF_RESOLUTION
         }
+
         bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
+        val canvas = Canvas(bitmapDocument!!)
+        canvas.drawColor(Color.WHITE)
+        canvas.drawBitmap(bitmapDocument!!, 0f, 0f, null)
         page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         page.close()
@@ -143,7 +148,7 @@ object PdfHandler {
     }
 
     /**
-     * @return true if succesful
+     * @return true if successful
      */
     suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
         try {
