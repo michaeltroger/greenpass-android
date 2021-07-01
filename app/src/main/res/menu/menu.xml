@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/delete"
-        android:icon="@drawable/baseline_delete_24"
         android:title="@string/delete"
         android:enabled="false"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 </menu>
