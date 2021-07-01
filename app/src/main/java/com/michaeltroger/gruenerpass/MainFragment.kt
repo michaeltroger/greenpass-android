@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
-import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -18,14 +16,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.pdf.CopyPdfState
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
 import kotlinx.coroutines.launch
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var adapter: PagerAdapter
     private lateinit var layoutMediator: TabLayoutMediator
@@ -39,19 +36,7 @@ class MainFragment : Fragment() {
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
-                lifecycleScope.launch {
-                    when (PdfHandler.copyPdfToCache(uri)) {
-                        CopyPdfState.ERROR_ENCRYPTED -> showEnterPasswordDialog(uri)
-                        CopyPdfState.ERROR_GENERIC -> showErrorState()
-                        CopyPdfState.SUCCESS -> {
-                            if (PdfHandler.parsePdfIntoBitmap()) {
-                                showCertificateState()
-                            } else {
-                                showErrorState()
-                            }
-                        }
-                    }
-                }
+                handleFileFromUri(uri)
             }
         }
     }
@@ -60,11 +45,6 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
         adapter = PagerAdapter(this)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_main, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,6 +78,11 @@ class MainFragment : Fragment() {
             openFilePicker()
         }
 
+        val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
+        if (sharedFile != null) {
+            showDoYouWantToReplaceDialog(sharedFile)
+        }
+
         lifecycleScope.launch {
             if (PdfHandler.doesFileExist()) {
                 if (PdfHandler.parsePdfIntoBitmap()) {
@@ -127,6 +112,24 @@ class MainFragment : Fragment() {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun handleFileFromUri(uri: Uri) {
+        lifecycleScope.launch {
+            PdfHandler.deleteFile()
+            showEmptyState()
+            when (PdfHandler.copyPdfToCache(uri)) {
+                CopyPdfState.ERROR_ENCRYPTED -> showEnterPasswordDialog(uri)
+                CopyPdfState.ERROR_GENERIC -> showErrorState()
+                CopyPdfState.SUCCESS -> {
+                    if (PdfHandler.parsePdfIntoBitmap()) {
+                        showCertificateState()
+                    } else {
+                        showErrorState()
+                    }
+                }
+            }
+        }
     }
 
     private fun openFilePicker() {
@@ -165,6 +168,17 @@ class MainFragment : Fragment() {
                     PdfHandler.deleteFile()
                     showEmptyState()
                 }
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create();
+        dialog.show();
+    }
+
+    private fun showDoYouWantToReplaceDialog(uri: Uri) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.dialog_replace_confirmation_title))
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                handleFileFromUri(uri)
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create();
