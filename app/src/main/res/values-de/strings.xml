@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
+    <string name="replace">Ersetzen</string>
     <string name="add">Hinzufügen</string>
     <string name="tab_title_pdf">PDF</string>
     <string name="tab_title_qr">QR Code</string>
@@ -9,4 +10,6 @@
     <string name="dialog_password_protection_hint">Passwort eingeben</string>
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
+    <string name="dialog_delete_confirmation_message">Willst du das Dokument wirklich aus der App löschen?</string>
+    <string name="dialog_replace_confirmation_message">Willst du das aktuelle Dokument wirklich durch das neue ersetzen?</string>
 </resources>

@@ -7,25 +7,26 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Button
-import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pdf.CopyPdfState
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
 import com.michaeltroger.gruenerpass.pdf.PdfHandler
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(R.layout.fragment_main) {
+
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var adapter: PagerAdapter
     private lateinit var layoutMediator: TabLayoutMediator
@@ -36,21 +37,13 @@ class MainFragment : Fragment() {
     private var tabLayout: TabLayout? = null
     private var root: ConstraintLayout? = null
 
+    private var dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
+
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
                 lifecycleScope.launch {
-                    when (PdfHandler.copyPdfToCache(uri)) {
-                        CopyPdfState.ERROR_ENCRYPTED -> showEnterPasswordDialog(uri)
-                        CopyPdfState.ERROR_GENERIC -> showErrorState()
-                        CopyPdfState.SUCCESS -> {
-                            if (PdfHandler.parsePdfIntoBitmap()) {
-                                showCertificateState()
-                            } else {
-                                showErrorState()
-                            }
-                        }
-                    }
+                    handleFileFromUri(uri)
                 }
             }
         }
@@ -61,20 +54,16 @@ class MainFragment : Fragment() {
         adapter = PagerAdapter(this)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_main, container, false)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
 
         root = view.findViewById(R.id.root)
-
         viewPager = view.findViewById(R.id.pager)
         tabLayout = view.findViewById(R.id.tab_layout)
+        addButton = view.findViewById(R.id.add)
+
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
@@ -93,7 +82,6 @@ class MainFragment : Fragment() {
             tab.text = getString(textRes)
         }
 
-        addButton = view.findViewById(R.id.add)
         addButton?.setOnClickListener {
             openFilePicker()
         }
@@ -108,28 +96,55 @@ class MainFragment : Fragment() {
             } else {
                 showEmptyState()
             }
+
+            val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
+            if (sharedFile != null) {
+                if (PdfHandler.doesFileExist()) {
+                    showDoYouWantToReplaceDialog(sharedFile)
+                } else {
+                    handleFileFromUri(sharedFile)
+                }
+                requireArguments().remove(MainActivity.BUNDLE_KEY_URI) // avoid showing the dialog again on configuration change
+            }
+        }
+
+        lifecycleScope.launch {
+            mainViewModel.updatedUri.collect {
+                closeAllDialogs()
+                if (PdfHandler.doesFileExist()) {
+                    showDoYouWantToReplaceDialog(it)
+                } else {
+                    handleFileFromUri(it)
+                }
+            }
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
         deleteMenuItem = menu.findItem(R.id.delete)
-
-        lifecycleScope.launch {
-            deleteMenuItem?.isEnabled = PdfHandler.doesFileExist()
-        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.delete -> {
-            lifecycleScope.launch {
-                PdfHandler.deleteFile()
-                showEmptyState()
-            }
+            showDoYouWantToDeleteDialog()
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private suspend fun handleFileFromUri(uri: Uri) {
+        if (PdfHandler.isPdfPasswordProtected(uri)) {
+            showEnterPasswordDialog(uri)
+        } else {
+            showEmptyState()
+            if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
+                showCertificateState()
+            } else {
+                showErrorState()
+            }
+        }
     }
 
     private fun openFilePicker() {
@@ -144,7 +159,7 @@ class MainFragment : Fragment() {
         addButton?.isVisible = true
         viewPager?.isVisible = false
         tabLayout?.isVisible = false
-        deleteMenuItem?.isEnabled = false
+        deleteMenuItem?.isVisible = false
         viewPager?.adapter = null
         layoutMediator.detach()
     }
@@ -153,11 +168,40 @@ class MainFragment : Fragment() {
         addButton?.isVisible = false
         tabLayout?.isVisible = true
         viewPager?.isVisible = true
-        deleteMenuItem?.isEnabled = true
+        deleteMenuItem?.isVisible = true
         viewPager?.adapter = adapter
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
         }
+    }
+
+    private fun showDoYouWantToDeleteDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.dialog_delete_confirmation_message))
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                lifecycleScope.launch {
+                    PdfHandler.deleteFile()
+                    showEmptyState()
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create()
+        dialogs["delete"] = dialog
+        dialog.show()
+    }
+
+    private fun showDoYouWantToReplaceDialog(uri: Uri) {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.dialog_replace_confirmation_message))
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                lifecycleScope.launch {
+                    handleFileFromUri(uri)
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create()
+        dialogs["replace"] = dialog
+        dialog.show()
     }
 
     private fun showEnterPasswordDialog(uri: Uri) {
@@ -172,6 +216,7 @@ class MainFragment : Fragment() {
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
                     if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
+                        showEmptyState()
                         if (PdfHandler.parsePdfIntoBitmap()) {
                             showCertificateState()
                         } else {
@@ -183,14 +228,21 @@ class MainFragment : Fragment() {
                 }
             }
             .setNegativeButton(getString(R.string.cancel), null)
-            .create();
-        dialog.show();
+            .create()
+        dialogs["password"] = dialog
+        dialog.show()
     }
 
     private fun showErrorState() {
         showEmptyState()
         root?.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun closeAllDialogs() {
+        dialogs.values.filterNotNull().forEach {
+            if (it.isShowing) it.dismiss()
         }
     }
 

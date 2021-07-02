@@ -5,6 +5,6 @@
         android:id="@+id/delete"
         android:icon="@drawable/baseline_delete_24"
         android:title="@string/delete"
-        android:enabled="false"
+        android:visible="false"
         app:showAsAction="ifRoom"/>
 </menu>
