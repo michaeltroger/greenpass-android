@@ -19,6 +19,7 @@ import android.graphics.Color
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import android.graphics.Canvas
+import java.io.FileDescriptor
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -57,16 +58,22 @@ object PdfHandler {
      * @return true if successful
      */
     suspend fun parsePdfIntoBitmap(): Boolean = withContext(Dispatchers.IO) {
-        val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-        val renderer: PdfRenderer
+        var fileDescriptor: ParcelFileDescriptor? = null
+        var renderer: PdfRenderer? = null
+        var page: PdfRenderer.Page? = null
         try {
+            fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor)
+            page = renderer.openPage(0)
         } catch (exception: Exception) {
+            try {
+                page?.close()
+                renderer?.close()
+                fileDescriptor?.close()
+            } catch (ignore: Exception) {}
             deleteFile()
             return@withContext false
         }
-
-        val page: PdfRenderer.Page = renderer.openPage(0)
 
         var width: Int = page.width
         var height: Int = page.height
@@ -83,6 +90,7 @@ object PdfHandler {
 
         page.close()
         renderer.close()
+        fileDescriptor.close()
 
         extractQrCodeIfAvailable(bitmapDocument!!)
         return@withContext true
