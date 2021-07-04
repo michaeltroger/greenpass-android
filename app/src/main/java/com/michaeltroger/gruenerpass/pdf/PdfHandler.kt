@@ -85,6 +85,9 @@ object PdfHandler {
         }
 
         bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
+        if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
+            bitmapDocument = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
+        }
         val canvas = Canvas(bitmapDocument!!)
         canvas.drawColor(Color.WHITE)
         canvas.drawBitmap(bitmapDocument!!, 0f, 0f, null)
