@@ -89,12 +89,12 @@ object PdfHandler {
     }
 
     private fun extractQrCodeIfAvailable(bitmap: Bitmap) {
-        val intArray = IntArray(bitmap.width * bitmap.height)
-        bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-        val source: LuminanceSource = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
-        val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
-
         try {
+            val intArray = IntArray(bitmap.width * bitmap.height)
+            bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+            val source: LuminanceSource = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
+            val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+
             qrCodeReader.decode(binaryBitmap).text?.let {
                 encodeQrCodeAsBitmap(it)
             }
