@@ -49,11 +49,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        adapter = PagerAdapter(this)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,6 +59,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         tabLayout = view.findViewById(R.id.tab_layout)
         addButton = view.findViewById(R.id.add)
 
+        adapter = PagerAdapter(this)
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
