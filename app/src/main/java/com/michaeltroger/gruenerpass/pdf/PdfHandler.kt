@@ -19,7 +19,6 @@ import android.graphics.Color
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import android.graphics.Canvas
-import java.io.FileDescriptor
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -29,7 +28,9 @@ private const val MULTIPLIER_PDF_RESOLUTION = 2
 object PdfHandler {
 
     private val context = GreenPassApplication.instance
-    private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    private val activityManager: ActivityManager? by lazy {
+        context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+    }
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
@@ -77,7 +78,7 @@ object PdfHandler {
 
         var width: Int = page.width
         var height: Int = page.height
-        if (!activityManager.isLowRamDevice) {
+        if (activityManager?.isLowRamDevice == false) {
             width *= MULTIPLIER_PDF_RESOLUTION
             height *= MULTIPLIER_PDF_RESOLUTION
         }
