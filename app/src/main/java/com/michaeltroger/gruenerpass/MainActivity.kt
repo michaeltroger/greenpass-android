@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 
@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (savedInstanceState == null) {
             supportFragmentManager.commit {
                 val bundle = bundleOf(BUNDLE_KEY_URI to intent?.getUri())
-                setReorderingAllowed(true)
-                add<MainFragment>(R.id.fragment_container_view, args = bundle)
+                replace<MainFragment>(R.id.fragment_container_view, args = bundle)
             }
         }
     }
