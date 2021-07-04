@@ -24,11 +24,14 @@ import android.graphics.Canvas
 const val PDF_FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 400
 private const val MULTIPLIER_PDF_RESOLUTION = 2
+private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 object PdfHandler {
 
     private val context = GreenPassApplication.instance
-    private val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    private val activityManager: ActivityManager? by lazy {
+        context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+    }
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
@@ -57,44 +60,61 @@ object PdfHandler {
      * @return true if successful
      */
     suspend fun parsePdfIntoBitmap(): Boolean = withContext(Dispatchers.IO) {
-        val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-        val renderer: PdfRenderer
+        var fileDescriptor: ParcelFileDescriptor? = null
+        var renderer: PdfRenderer? = null
+        var page: PdfRenderer.Page? = null
         try {
+            fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor)
+            page = renderer.openPage(0)
         } catch (exception: Exception) {
+            try {
+                page?.close()
+                renderer?.close()
+                fileDescriptor?.close()
+            } catch (ignore: Exception) {}
             deleteFile()
             return@withContext false
         }
 
-        val page: PdfRenderer.Page = renderer.openPage(0)
-
         var width: Int = page.width
         var height: Int = page.height
-        if (!activityManager.isLowRamDevice) {
+        if (activityManager?.isLowRamDevice == false) {
             width *= MULTIPLIER_PDF_RESOLUTION
             height *= MULTIPLIER_PDF_RESOLUTION
         }
 
         bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
+        if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
+            bitmapDocument = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
+        }
         val canvas = Canvas(bitmapDocument!!)
         canvas.drawColor(Color.WHITE)
         canvas.drawBitmap(bitmapDocument!!, 0f, 0f, null)
         page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-        page.close()
-        renderer.close()
+        try {
+            page.close()
+            renderer.close()
+            fileDescriptor.close()
+        } catch (ignore: Exception) {}
+
+        if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
+            deleteFile()
+            return@withContext false
+        }
 
         extractQrCodeIfAvailable(bitmapDocument!!)
         return@withContext true
     }
 
     private fun extractQrCodeIfAvailable(bitmap: Bitmap) {
-        val intArray = IntArray(bitmap.width * bitmap.height)
-        bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-        val source: LuminanceSource = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
-        val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
-
         try {
+            val intArray = IntArray(bitmap.width * bitmap.height)
+            bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
+            val source: LuminanceSource = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
+            val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+
             qrCodeReader.decode(binaryBitmap).text?.let {
                 encodeQrCodeAsBitmap(it)
             }
