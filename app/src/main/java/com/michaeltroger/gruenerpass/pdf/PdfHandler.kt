@@ -90,12 +90,13 @@ object PdfHandler {
         canvas.drawBitmap(bitmapDocument!!, 0f, 0f, null)
         page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-        page.close()
-        renderer.close()
-        fileDescriptor.close()
+        try {
+            page.close()
+            renderer.close()
+            fileDescriptor.close()
+        } catch (ignore: Exception) {}
 
-        val bitmapSize: Int = bitmapDocument!!.byteCount
-        if (bitmapSize > MAX_BITMAP_SIZE) {
+        if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
             deleteFile()
             return@withContext false
         }
