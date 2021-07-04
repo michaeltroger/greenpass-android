@@ -24,6 +24,7 @@ import android.graphics.Canvas
 const val PDF_FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 400
 private const val MULTIPLIER_PDF_RESOLUTION = 2
+private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 object PdfHandler {
 
@@ -92,6 +93,12 @@ object PdfHandler {
         page.close()
         renderer.close()
         fileDescriptor.close()
+
+        val bitmapSize: Int = bitmapDocument!!.byteCount
+        if (bitmapSize > MAX_BITMAP_SIZE) {
+            deleteFile()
+            return@withContext false
+        }
 
         extractQrCodeIfAvailable(bitmapDocument!!)
         return@withContext true
