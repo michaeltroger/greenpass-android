@@ -23,6 +23,7 @@ The Green Pass PDF (EU Digital COVID Certificate) file that you downloaded from 
 <b>More Features</b>
 - PDFs can be opened and shared from other apps
 - Dark Mode support
+- Supports also password protected PDFs
 
 <b>Does one require this app?</b>
 Not really. For the Green Pass PDF from gesundheit.gv.at any casual PDF-Reader is completely sufficient. The use case for this app is solely the improved usability. One saves the time for searching the PDF and zooming in for the QR code (if present in the document).
