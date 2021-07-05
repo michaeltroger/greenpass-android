@@ -84,8 +84,10 @@ object PdfHandler {
             height *= MULTIPLIER_PDF_RESOLUTION
         }
 
+        bitmapDocument = null
         bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
         if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
+            bitmapDocument = null
             bitmapDocument = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
         }
         val canvas = Canvas(bitmapDocument!!)
@@ -139,6 +141,7 @@ object PdfHandler {
             }
         }
 
+        bitmapQrCode = null
         bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
     }
