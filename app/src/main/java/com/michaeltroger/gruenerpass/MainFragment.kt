@@ -58,7 +58,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         tabLayout = view.findViewById(R.id.tab_layout)
         addButton = view.findViewById(R.id.add)
 
-        adapter = PagerAdapter(this, vm.pdfHandler)
+        adapter = PagerAdapter(this, hasQrCode = { vm.getQrBitmap() != null })
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
@@ -82,8 +82,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         lifecycleScope.launch {
-            if (vm.pdfHandler.doesFileExist()) {
-                if (vm.pdfHandler.parsePdfIntoBitmap()) {
+            if (vm.doesFileExist()) {
+                if (vm.parsePdfIntoBitmap()) {
                     showCertificateState()
                 } else {
                     showErrorState()
@@ -94,7 +94,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
             if (sharedFile != null) {
-                if (vm.pdfHandler.doesFileExist()) {
+                if (vm.doesFileExist()) {
                     showDoYouWantToReplaceDialog(sharedFile)
                 } else {
                     handleFileFromUri(sharedFile)
@@ -106,7 +106,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         lifecycleScope.launch {
             vm.updatedUri.collect {
                 closeAllDialogs()
-                if (vm.pdfHandler.doesFileExist()) {
+                if (vm.doesFileExist()) {
                     showDoYouWantToReplaceDialog(it)
                 } else {
                     handleFileFromUri(it)
@@ -130,11 +130,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private suspend fun handleFileFromUri(uri: Uri) {
-        if (vm.pdfHandler.isPdfPasswordProtected(uri)) {
+        if (vm.isPdfPasswordProtected(uri)) {
             showEnterPasswordDialog(uri)
         } else {
             showEmptyState()
-            if (vm.pdfHandler.copyPdfToCache(uri) && vm.pdfHandler.parsePdfIntoBitmap()) {
+            if (vm.copyPdfToCache(uri) && vm.parsePdfIntoBitmap()) {
                 showCertificateState()
             } else {
                 showErrorState()
@@ -175,7 +175,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setMessage(getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
-                    vm.pdfHandler.deleteFile()
+                    vm.deleteFile()
                     showEmptyState()
                 }
             }
@@ -210,9 +210,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
-                    if (vm.pdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
+                    if (vm.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
                         showEmptyState()
-                        if (vm.pdfHandler.parsePdfIntoBitmap()) {
+                        if (vm.parsePdfIntoBitmap()) {
                             showCertificateState()
                         } else {
                             showErrorState()

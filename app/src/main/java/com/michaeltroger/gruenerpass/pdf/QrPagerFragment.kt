@@ -25,7 +25,7 @@ class QrPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         qrCode = view.findViewById(R.id.qrcode)
-        qrCode?.setImageBitmap(vm.pdfHandler.getQrBitmap())
+        qrCode?.setImageBitmap(vm.getQrBitmap())
     }
 
 }

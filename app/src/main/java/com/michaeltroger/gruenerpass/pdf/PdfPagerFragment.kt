@@ -25,7 +25,7 @@ class PdfPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         certificate = view.findViewById(R.id.certificate)
-        certificate?.setImageBitmap(vm.pdfHandler.getPdfBitmap())
+        certificate?.setImageBitmap(vm.getPdfBitmap())
     }
 
 }
