@@ -30,6 +30,7 @@ private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 class MainViewModel(app: Application): AndroidViewModel(app) {
     val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
+    val areBitmapsReady = MutableSharedFlow<Boolean>(extraBufferCapacity = 1)
 
     private val context: Context
         get() = getApplication<Application>()
@@ -111,6 +112,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         }
 
         extractQrCodeIfAvailable(bitmapDocument!!)
+        areBitmapsReady.emit(true)
         return@withContext true
     }
 
