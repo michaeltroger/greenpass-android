@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
 
 class QrPagerFragment : Fragment() {
 
+    private val vm by activityViewModels<MainViewModel>()
     private var qrCode: ImageView? = null
 
     override fun onCreateView(
@@ -22,7 +25,13 @@ class QrPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         qrCode = view.findViewById(R.id.qrcode)
-        qrCode?.setImageBitmap(PdfHandler.getQrBitmap())
+        qrCode?.setImageBitmap(vm.getQrBitmap())
+        if (vm.getQrBitmap() == null) {
+            requireActivity().apply {
+                invalidateOptionsMenu()
+                recreate()
+            }
+        }
     }
 
 }

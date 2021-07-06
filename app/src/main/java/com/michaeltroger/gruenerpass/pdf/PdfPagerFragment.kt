@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
 
 class PdfPagerFragment : Fragment() {
 
+    private val vm by activityViewModels<MainViewModel>()
     private var certificate: ImageView? = null
 
     override fun onCreateView(
@@ -22,7 +25,13 @@ class PdfPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         certificate = view.findViewById(R.id.certificate)
-        certificate?.setImageBitmap(PdfHandler.getPdfBitmap())
+        certificate?.setImageBitmap(vm.getPdfBitmap())
+        if (vm.getPdfBitmap() == null) {
+            requireActivity().apply {
+                invalidateOptionsMenu()
+                recreate()
+            }
+        }
     }
 
 }

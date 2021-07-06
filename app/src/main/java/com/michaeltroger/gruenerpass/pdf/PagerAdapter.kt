@@ -3,10 +3,10 @@ package com.michaeltroger.gruenerpass.pdf
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class PagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
+class PagerAdapter(fragment: Fragment, private val hasQrCode: () -> Boolean): FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int {
-        return if (PdfHandler.getQrBitmap() == null) {
+        return if (!hasQrCode()) {
             1
         } else {
             2

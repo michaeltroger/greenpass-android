@@ -1,43 +1,41 @@
-package com.michaeltroger.gruenerpass.pdf
+package com.michaeltroger.gruenerpass
 
+import android.app.ActivityManager
+import android.app.Application
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
+import androidx.lifecycle.AndroidViewModel
 import com.google.zxing.*
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
-import com.michaeltroger.gruenerpass.GreenPassApplication
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import android.app.ActivityManager
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Color
-import com.tom_roush.pdfbox.pdmodel.PDDocument
-import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
-import android.graphics.Canvas
-import com.google.zxing.EncodeHintType
-
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-
-
-
-
 
 const val PDF_FILENAME = "certificate.pdf"
 private const val QR_CODE_SIZE = 400
 private const val MULTIPLIER_PDF_RESOLUTION = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
-object PdfHandler {
+class MainViewModel(app: Application): AndroidViewModel(app) {
+    val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
 
-    private val context = GreenPassApplication.instance
-    private val activityManager: ActivityManager? by lazy {
-        context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
-    }
+    private val context: Context
+        get() = getApplication<Application>()
+
+    private val activityManager: ActivityManager?
+        get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
