@@ -26,6 +26,9 @@ class QrPagerFragment : Fragment() {
 
         qrCode = view.findViewById(R.id.qrcode)
         qrCode?.setImageBitmap(vm.getQrBitmap())
+        if (vm.getQrBitmap() == null) {
+            requireActivity().recreate()
+        }
     }
 
 }
