@@ -27,7 +27,10 @@ class PdfPagerFragment : Fragment() {
         certificate = view.findViewById(R.id.certificate)
         certificate?.setImageBitmap(vm.getPdfBitmap())
         if (vm.getPdfBitmap() == null) {
-            requireActivity().recreate()
+            requireActivity().apply {
+                invalidateOptionsMenu()
+                recreate()
+            }
         }
     }
 
