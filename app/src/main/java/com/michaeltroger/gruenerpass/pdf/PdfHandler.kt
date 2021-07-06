@@ -32,7 +32,7 @@ private const val QR_CODE_SIZE = 400
 private const val MULTIPLIER_PDF_RESOLUTION = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
-object PdfHandler {
+class PdfHandler {
 
     private val context = GreenPassApplication.instance
     private val activityManager: ActivityManager? by lazy {

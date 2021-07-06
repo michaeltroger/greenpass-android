@@ -20,13 +20,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.pdf.PagerAdapter
-import com.michaeltroger.gruenerpass.pdf.PdfHandler
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private val mainViewModel by activityViewModels<MainViewModel>()
+    private val vm by activityViewModels<MainViewModel>()
 
     private lateinit var adapter: PagerAdapter
     private lateinit var layoutMediator: TabLayoutMediator
@@ -59,7 +58,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         tabLayout = view.findViewById(R.id.tab_layout)
         addButton = view.findViewById(R.id.add)
 
-        adapter = PagerAdapter(this)
+        adapter = PagerAdapter(this, vm.pdfHandler)
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
@@ -83,8 +82,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         lifecycleScope.launch {
-            if (PdfHandler.doesFileExist()) {
-                if (PdfHandler.parsePdfIntoBitmap()) {
+            if (vm.pdfHandler.doesFileExist()) {
+                if (vm.pdfHandler.parsePdfIntoBitmap()) {
                     showCertificateState()
                 } else {
                     showErrorState()
@@ -95,7 +94,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
             if (sharedFile != null) {
-                if (PdfHandler.doesFileExist()) {
+                if (vm.pdfHandler.doesFileExist()) {
                     showDoYouWantToReplaceDialog(sharedFile)
                 } else {
                     handleFileFromUri(sharedFile)
@@ -105,9 +104,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         lifecycleScope.launch {
-            mainViewModel.updatedUri.collect {
+            vm.updatedUri.collect {
                 closeAllDialogs()
-                if (PdfHandler.doesFileExist()) {
+                if (vm.pdfHandler.doesFileExist()) {
                     showDoYouWantToReplaceDialog(it)
                 } else {
                     handleFileFromUri(it)
@@ -131,11 +130,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private suspend fun handleFileFromUri(uri: Uri) {
-        if (PdfHandler.isPdfPasswordProtected(uri)) {
+        if (vm.pdfHandler.isPdfPasswordProtected(uri)) {
             showEnterPasswordDialog(uri)
         } else {
             showEmptyState()
-            if (PdfHandler.copyPdfToCache(uri) && PdfHandler.parsePdfIntoBitmap()) {
+            if (vm.pdfHandler.copyPdfToCache(uri) && vm.pdfHandler.parsePdfIntoBitmap()) {
                 showCertificateState()
             } else {
                 showErrorState()
@@ -176,7 +175,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setMessage(getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
-                    PdfHandler.deleteFile()
+                    vm.pdfHandler.deleteFile()
                     showEmptyState()
                 }
             }
@@ -211,9 +210,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok)  { _, _ ->
                 lifecycleScope.launch {
-                    if (PdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
+                    if (vm.pdfHandler.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
                         showEmptyState()
-                        if (PdfHandler.parsePdfIntoBitmap()) {
+                        if (vm.pdfHandler.parsePdfIntoBitmap()) {
                             showCertificateState()
                         } else {
                             showErrorState()

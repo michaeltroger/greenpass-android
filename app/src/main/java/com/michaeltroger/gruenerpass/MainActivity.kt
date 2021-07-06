@@ -8,8 +8,6 @@ import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
@@ -53,8 +51,4 @@ private fun Intent.getUri(): Uri? {
             null
         }
     }
-}
-
-class MainViewModel: ViewModel() {
-    val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
 }
