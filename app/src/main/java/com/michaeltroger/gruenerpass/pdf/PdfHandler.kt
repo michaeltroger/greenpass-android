@@ -133,7 +133,6 @@ object PdfHandler {
         val result: BitMatrix = try {
             val hintMap = HashMap<EncodeHintType, Any>()
             hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
-            hintMap[EncodeHintType.MARGIN] = 0
             qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE, hintMap)
         } catch (ignore: Exception) {
             return
