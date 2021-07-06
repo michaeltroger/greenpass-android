@@ -186,8 +186,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     /**
      * @return true if successful
      */
-    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(
-        Dispatchers.IO) {
+    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
         try {
             context.contentResolver.openInputStream(uri)!!.use {
                 val pdd = PDDocument.load(it, password)
