@@ -19,6 +19,12 @@ import android.graphics.Color
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import android.graphics.Canvas
+import com.google.zxing.EncodeHintType
+
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+
+
+
 
 
 const val PDF_FILENAME = "certificate.pdf"
@@ -125,7 +131,10 @@ object PdfHandler {
 
     private fun encodeQrCodeAsBitmap(source: String) {
         val result: BitMatrix = try {
-            qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE, null)
+            val hintMap = HashMap<EncodeHintType, Any>()
+            hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
+            hintMap[EncodeHintType.MARGIN] = 0
+            qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE, hintMap)
         } catch (ignore: Exception) {
             return
         }
