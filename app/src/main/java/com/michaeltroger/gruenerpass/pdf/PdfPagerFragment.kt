@@ -30,14 +30,14 @@ class PdfPagerFragment : Fragment() {
 
         certificate = view.findViewById(R.id.certificate)
 
-        if(vm.getPdfBitmap() == null) {
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            if (vm.getPdfBitmap() == null) {
                 if (vm.areBitmapsReady.filter { it }.first()) { // bitmap was not ready in time, wait for it
                     certificate?.setImageBitmap(vm.getPdfBitmap())
                 }
+            } else {
+                certificate?.setImageBitmap(vm.getPdfBitmap())
             }
-        } else {
-            certificate?.setImageBitmap(vm.getPdfBitmap())
         }
     }
 

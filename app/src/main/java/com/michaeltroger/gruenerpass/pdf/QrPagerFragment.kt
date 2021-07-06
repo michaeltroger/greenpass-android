@@ -30,14 +30,14 @@ class QrPagerFragment : Fragment() {
 
         qrCode = view.findViewById(R.id.qrcode)
 
-        if(vm.getQrBitmap() == null) {
-            lifecycleScope.launch {
+        lifecycleScope.launch {
+            if (vm.getQrBitmap() == null) {
                 if (vm.areBitmapsReady.filter { it }.first()) { // bitmap was not ready in time, wait for it
                     qrCode?.setImageBitmap(vm.getQrBitmap())
                 }
+            } else {
+                qrCode?.setImageBitmap(vm.getQrBitmap())
             }
-        } else {
-            qrCode?.setImageBitmap(vm.getQrBitmap())
         }
     }
 
