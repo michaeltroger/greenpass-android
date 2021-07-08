@@ -21,7 +21,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private val _viewState = MutableStateFlow(ViewState.Empty)
     val viewState: StateFlow<ViewState> = _viewState
 
-    private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 2)
+    private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var uriReceived: Uri? = null
