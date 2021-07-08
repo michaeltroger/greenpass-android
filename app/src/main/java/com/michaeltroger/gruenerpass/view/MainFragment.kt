@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.view
 
 import android.app.Activity
 import android.content.Intent
@@ -20,7 +20,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pdf.PagerAdapter
+import com.michaeltroger.gruenerpass.MainViewModel
+import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.states.ViewEvent
+import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -81,7 +84,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 vm.viewState.collect {
                     when (it) {
                         ViewState.Certificate -> showCertificateState()
@@ -93,7 +96,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 vm.viewEvent.collect {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()

@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.pdf
+package com.michaeltroger.gruenerpass.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,11 +30,10 @@ class QrPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         qrCode = view.findViewById(R.id.qrcode)
-        qrCode?.setImageBitmap(vm.getQrBitmap())
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.areBitmapsReady.collect { // bitmap was not ready in time, wait for it
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                vm.bitmapState.collect { // bitmap was not ready in time, wait for it
                     qrCode?.setImageBitmap(vm.getQrBitmap())
                 }
             }

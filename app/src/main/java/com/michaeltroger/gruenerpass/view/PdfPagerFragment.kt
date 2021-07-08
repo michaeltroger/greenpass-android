@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.pdf
+package com.michaeltroger.gruenerpass.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.states.BitmapState
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class PdfPagerFragment : Fragment() {
@@ -30,11 +32,10 @@ class PdfPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         certificate = view.findViewById(R.id.certificate)
-        certificate?.setImageBitmap(vm.getPdfBitmap())
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.areBitmapsReady.collect { // bitmap was not ready in time, wait for it
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                vm.bitmapState.collect { // bitmap was not ready in time, wait for it
                     certificate?.setImageBitmap(vm.getPdfBitmap())
                 }
             }

@@ -4,7 +4,10 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.michaeltroger.gruenerpass.pdf.Pdf
+import com.michaeltroger.gruenerpass.model.Pdf
+import com.michaeltroger.gruenerpass.states.BitmapState
+import com.michaeltroger.gruenerpass.states.ViewEvent
+import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -12,8 +15,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(app: Application): AndroidViewModel(app) {
     val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
 
-    private val _areBitmapsReady = MutableSharedFlow<Boolean>(extraBufferCapacity = 1)
-    val areBitmapsReady: SharedFlow<Boolean> = _areBitmapsReady
+    private val _bitmapState = MutableStateFlow(BitmapState.Unready)
+    val bitmapState: Flow<BitmapState> = _bitmapState.filter { it == BitmapState.Ready }
 
     private val _viewState = MutableStateFlow(ViewState.Empty)
     val viewState: StateFlow<ViewState> = _viewState
@@ -69,7 +72,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private suspend fun parsePdfIntoBitmap(): Boolean {
         val success = pdf.parsePdfIntoBitmap()
         if (success) {
-            _areBitmapsReady.emit(true)
+            _bitmapState.emit(BitmapState.Ready)
         }
         return success
     }
@@ -97,6 +100,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             pdf.deleteFile()
             _viewState.emit(ViewState.Empty)
+            _bitmapState.emit(BitmapState.Unready)
         }
     }
 
