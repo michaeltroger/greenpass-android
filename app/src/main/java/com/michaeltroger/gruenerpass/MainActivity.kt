@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val  myViewModel by viewModels<MainViewModel>()
+    private val myViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
