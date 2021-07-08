@@ -1,7 +1,7 @@
 package com.michaeltroger.gruenerpass.update
 
 import android.content.Context
-import com.michaeltroger.gruenerpass.PDF_FILENAME
+import com.michaeltroger.gruenerpass.model.PDF_FILENAME
 import java.io.File
 import java.lang.Exception
 

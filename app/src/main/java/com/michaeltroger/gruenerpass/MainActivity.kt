@@ -5,33 +5,21 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.os.bundleOf
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val  myViewModel by viewModels<MainViewModel>()
+    private val vm by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            supportFragmentManager.commit {
-                val bundle = bundleOf(BUNDLE_KEY_URI to intent?.getUri())
-                replace<MainFragment>(R.id.fragment_container_view, args = bundle)
-            }
+            intent?.getUri()?.let(vm::setUri)
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.getUri()?.let { uri ->
-            myViewModel.updatedUri.tryEmit(uri)
-        }
-    }
-
-    companion object {
-        const val BUNDLE_KEY_URI = "uri"
+        intent?.getUri()?.let(vm::setUri)
     }
 }
 

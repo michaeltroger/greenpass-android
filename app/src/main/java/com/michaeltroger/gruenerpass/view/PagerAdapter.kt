@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.pdf
+package com.michaeltroger.gruenerpass.view
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
