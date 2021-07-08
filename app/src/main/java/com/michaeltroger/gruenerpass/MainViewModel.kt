@@ -98,7 +98,6 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             pdf.deleteFile()
             _viewState.emit(ViewState.Empty)
-            _bitmapState.emit(BitmapState.Unready)
         }
     }
 
