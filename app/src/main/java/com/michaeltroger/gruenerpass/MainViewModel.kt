@@ -90,7 +90,12 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         }
 
         bitmapDocument = null
-        bitmapDocument = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
+        bitmapDocument = try {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
+        } catch (e: OutOfMemoryError) {
+            Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
+        }
+
         if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
             bitmapDocument = null
             bitmapDocument = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
