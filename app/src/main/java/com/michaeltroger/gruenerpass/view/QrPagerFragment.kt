@@ -33,7 +33,7 @@ class QrPagerFragment : Fragment() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                vm.bitmapState.collect { // bitmap was not ready in time, wait for it
+                vm.bitmapState.collect {
                     qrCode?.setImageBitmap(vm.getQrBitmap())
                 }
             }
