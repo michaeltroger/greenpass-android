@@ -98,8 +98,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
                         ViewEvent.ShowDeleteDialog -> showDoYouWantToDeleteDialog()
-                        is ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
-                        is ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
+                        ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
+                        ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
                     }
                 }
             }
