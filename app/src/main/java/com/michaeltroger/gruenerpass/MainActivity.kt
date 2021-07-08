@@ -5,9 +5,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.core.os.bundleOf
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
@@ -16,9 +13,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            supportFragmentManager.commit {
-                val bundle = bundleOf(BUNDLE_KEY_URI to intent?.getUri())
-                replace<MainFragment>(R.id.fragment_container_view, args = bundle)
+            intent?.getUri()?.let {  uri ->
+                myViewModel.updatedUri.tryEmit(uri)
             }
         }
     }
@@ -28,10 +24,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         intent?.getUri()?.let { uri ->
             myViewModel.updatedUri.tryEmit(uri)
         }
-    }
-
-    companion object {
-        const val BUNDLE_KEY_URI = "uri"
     }
 }
 

@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,7 +11,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -41,9 +42,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.also { uri ->
-                lifecycleScope.launch {
-                    handleFileFromUri(uri)
-                }
+                vm.updatedUri.tryEmit(uri)
             }
         }
     }
@@ -82,34 +81,26 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         lifecycleScope.launch {
-            if (vm.doesFileExist()) {
-                if (vm.parsePdfIntoBitmap()) {
-                    showCertificateState()
-                } else {
-                    showErrorState()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.viewState.collect {
+                    when (it) {
+                        ViewState.Certificate -> showCertificateState()
+                        ViewState.Empty -> showEmptyState()
+                        ViewState.Error -> showErrorState()
+                    }
                 }
-            } else {
-                showEmptyState()
-            }
-
-            val sharedFile: Uri? = arguments?.get(MainActivity.BUNDLE_KEY_URI) as? Uri
-            if (sharedFile != null) {
-                if (vm.doesFileExist()) {
-                    showDoYouWantToReplaceDialog(sharedFile)
-                } else {
-                    handleFileFromUri(sharedFile)
-                }
-                requireArguments().remove(MainActivity.BUNDLE_KEY_URI) // avoid showing the dialog again on configuration change
             }
         }
 
         lifecycleScope.launch {
-            vm.updatedUri.collect {
-                closeAllDialogs()
-                if (vm.doesFileExist()) {
-                    showDoYouWantToReplaceDialog(it)
-                } else {
-                    handleFileFromUri(it)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.viewEvent.collect {
+                    when (it) {
+                        ViewEvent.CloseAllDialogs -> closeAllDialogs()
+                        ViewEvent.ShowDeleteDialog -> showDoYouWantToDeleteDialog()
+                        is ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
+                        is ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
+                    }
                 }
             }
         }
@@ -127,19 +118,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             true
         }
         else -> super.onOptionsItemSelected(item)
-    }
-
-    private suspend fun handleFileFromUri(uri: Uri) {
-        if (vm.isPdfPasswordProtected(uri)) {
-            showEnterPasswordDialog(uri)
-        } else {
-            showEmptyState()
-            if (vm.copyPdfToCache(uri) && vm.parsePdfIntoBitmap()) {
-                showCertificateState()
-            } else {
-                showErrorState()
-            }
-        }
     }
 
     private fun openFilePicker() {
@@ -174,10 +152,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
-                lifecycleScope.launch {
-                    vm.deleteFile()
-                    showEmptyState()
-                }
+                vm.onDeleteConfirmed()
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
@@ -185,13 +160,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         dialog.show()
     }
 
-    private fun showDoYouWantToReplaceDialog(uri: Uri) {
+    private fun showDoYouWantToReplaceDialog() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(getString(R.string.dialog_replace_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
-                lifecycleScope.launch {
-                    handleFileFromUri(uri)
-                }
+                vm.onReplaceConfirmed()
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
@@ -199,7 +172,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         dialog.show()
     }
 
-    private fun showEnterPasswordDialog(uri: Uri) {
+    private fun showEnterPasswordDialog() {
         val customAlertDialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.layout_password_dialog, null, false)
 
@@ -209,18 +182,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setTitle(getString(R.string.dialog_password_protection_title))
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok)  { _, _ ->
-                lifecycleScope.launch {
-                    if (vm.decryptAndCopyPdfToCache(uri = uri, password = passwordTextField.editText!!.text.toString())) {
-                        showEmptyState()
-                        if (vm.parsePdfIntoBitmap()) {
-                            showCertificateState()
-                        } else {
-                            showErrorState()
-                        }
-                    } else {
-                        showEnterPasswordDialog(uri)
-                    }
-                }
+                vm.onPasswordEntered(passwordTextField.editText!!.text.toString())
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
