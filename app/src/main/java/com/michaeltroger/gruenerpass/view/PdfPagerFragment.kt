@@ -12,9 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.states.BitmapState
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class PdfPagerFragment : Fragment() {
