@@ -44,9 +44,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.also { uri ->
-                vm.updatedUri.tryEmit(uri)
-            }
+            result.data?.data?.also(vm::setUri)
         }
     }
 

@@ -13,8 +13,6 @@ import kotlinx.coroutines.launch
 
 
 class MainViewModel(app: Application): AndroidViewModel(app) {
-    val updatedUri = MutableSharedFlow<Uri>(extraBufferCapacity = 1)
-
     private val _bitmapState = MutableStateFlow(BitmapState.Unready)
     val bitmapState: Flow<BitmapState> = _bitmapState.filter { it == BitmapState.Ready }
 
@@ -24,7 +22,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
-    private var uriReceived: Uri? = null
+    private var uri: Uri? = null
 
     private val pdf = Pdf(getApplication<Application>())
 
@@ -40,21 +38,22 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
                 _viewState.emit(ViewState.Empty)
             }
         }
+    }
 
+    fun setUri(uri: Uri) {
+        this.uri = uri
         viewModelScope.launch {
-            updatedUri.collect {
-                uriReceived = it
-                _viewEvent.emit(ViewEvent.CloseAllDialogs)
-                if (pdf.doesFileExist()) {
-                    _viewEvent.emit(ViewEvent.ShowReplaceDialog)
-                } else {
-                    handleFileFromUri(it)
-                }
+            _viewEvent.emit(ViewEvent.CloseAllDialogs)
+            if (pdf.doesFileExist()) {
+                _viewEvent.emit(ViewEvent.ShowReplaceDialog)
+            } else {
+                loadFileFromUri()
             }
         }
     }
 
-    private fun handleFileFromUri(uri: Uri) {
+    private fun loadFileFromUri() {
+        val uri = uri!!
         viewModelScope.launch {
             if (pdf.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
@@ -78,12 +77,12 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     }
 
     fun onReplaceConfirmed() {
-        handleFileFromUri(uriReceived!!)
+        loadFileFromUri()
     }
 
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            if (pdf.decryptAndCopyPdfToCache(uri = uriReceived!!, password = password)) {
+            if (pdf.decryptAndCopyPdfToCache(uri = uri!!, password = password)) {
                 _viewState.emit(ViewState.Empty)
                 if (parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)

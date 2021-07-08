@@ -8,22 +8,18 @@ import androidx.activity.viewModels
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val myViewModel by viewModels<MainViewModel>()
+    private val vm by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            intent?.getUri()?.let {  uri ->
-                myViewModel.updatedUri.tryEmit(uri)
-            }
+            intent?.getUri()?.let(vm::setUri)
         }
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.getUri()?.let { uri ->
-            myViewModel.updatedUri.tryEmit(uri)
-        }
+        intent?.getUri()?.let(vm::setUri)
     }
 }
 
