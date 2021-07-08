@@ -23,7 +23,6 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var uri: Uri? = null
-
     private val pdf = Pdf(getApplication<Application>())
 
     init {
