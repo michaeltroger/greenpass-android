@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class QrPagerFragment : Fragment() {
@@ -29,14 +30,13 @@ class QrPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         qrCode = view.findViewById(R.id.qrcode)
+        qrCode?.setImageBitmap(vm.getQrBitmap())
 
         lifecycleScope.launch {
-            if (vm.getQrBitmap() == null) {
-                if (vm.areBitmapsReady.filter { it }.first()) { // bitmap was not ready in time, wait for it
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.areBitmapsReady.collect { // bitmap was not ready in time, wait for it
                     qrCode?.setImageBitmap(vm.getQrBitmap())
                 }
-            } else {
-                qrCode?.setImageBitmap(vm.getQrBitmap())
             }
         }
     }
