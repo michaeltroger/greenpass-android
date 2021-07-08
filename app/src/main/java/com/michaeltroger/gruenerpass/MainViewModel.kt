@@ -15,7 +15,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private val _areBitmapsReady = MutableSharedFlow<Boolean>(extraBufferCapacity = 1)
     val areBitmapsReady: SharedFlow<Boolean> = _areBitmapsReady
 
-    private val _viewState = MutableStateFlow<ViewState>(ViewState.Empty)
+    private val _viewState = MutableStateFlow(ViewState.Empty)
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
