@@ -81,8 +81,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             openFilePicker()
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
                         ViewState.Certificate -> showCertificateState()
@@ -93,8 +93,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
@@ -143,10 +143,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         tabLayout?.isVisible = true
         viewPager?.isVisible = true
         deleteMenuItem?.isVisible = true
-        viewPager?.adapter = adapter
-        if (!layoutMediator.isAttached) {
-            layoutMediator.attach()
+        if (viewPager?.adapter == null) {
+            viewPager?.adapter = adapter
         }
+        if (layoutMediator.isAttached) {
+            layoutMediator.detach()
+        }
+        layoutMediator.attach()
     }
 
     private fun showDoYouWantToDeleteDialog() {
