@@ -146,9 +146,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         if (viewPager?.adapter == null) {
             viewPager?.adapter = adapter
         }
-        if (!layoutMediator.isAttached) {
-            layoutMediator.attach()
+        if (layoutMediator.isAttached) {
+            layoutMediator.detach()
         }
+        layoutMediator.attach()
     }
 
     private fun showDoYouWantToDeleteDialog() {
