@@ -81,8 +81,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             openFilePicker()
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
                         ViewState.Certificate -> showCertificateState()
@@ -93,8 +93,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()

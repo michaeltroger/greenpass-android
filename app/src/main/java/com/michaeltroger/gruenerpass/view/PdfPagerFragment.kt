@@ -31,8 +31,8 @@ class PdfPagerFragment : Fragment() {
 
         certificate = view.findViewById(R.id.certificate)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.bitmapState.collect {
                     certificate?.setImageBitmap(vm.getPdfBitmap())
                 }
