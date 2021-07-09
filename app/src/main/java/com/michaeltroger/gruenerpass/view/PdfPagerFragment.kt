@@ -34,7 +34,10 @@ class PdfPagerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.bitmapState.collect {
-                    certificate?.setImageBitmap(vm.getPdfBitmap())
+                    if (vm.getPdfBitmap()?.generationId != certificate?.tag) {
+                        certificate?.setImageBitmap(vm.getPdfBitmap())
+                        certificate?.tag = vm.getPdfBitmap()?.generationId
+                    }
                 }
             }
         }

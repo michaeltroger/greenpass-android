@@ -34,7 +34,10 @@ class QrPagerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.bitmapState.collect {
-                    qrCode?.setImageBitmap(vm.getQrBitmap())
+                    if (vm.getQrBitmap()?.generationId != qrCode?.tag) {
+                        qrCode?.setImageBitmap(vm.getQrBitmap())
+                        qrCode?.tag = vm.getQrBitmap()?.generationId
+                    }
                 }
             }
         }
