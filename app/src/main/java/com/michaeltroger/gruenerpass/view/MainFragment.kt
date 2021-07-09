@@ -143,7 +143,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         tabLayout?.isVisible = true
         viewPager?.isVisible = true
         deleteMenuItem?.isVisible = true
-        viewPager?.adapter = adapter
+        if (viewPager?.adapter == null) {
+            viewPager?.adapter = adapter
+        }
         if (!layoutMediator.isAttached) {
             layoutMediator.attach()
         }
