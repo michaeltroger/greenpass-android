@@ -29,8 +29,8 @@ android {
         applicationId "com.michaeltroger.gruenerpass"
         minSdk 21
         targetSdk 30
-        versionCode 21
-        versionName "1.46"
+        versionCode 23
+        versionName "1.47"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
