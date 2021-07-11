@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -39,6 +40,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
     private var root: ConstraintLayout? = null
+    private var progressIndicator: CircularProgressIndicator? = null
 
     private var dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
@@ -57,6 +59,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewPager = view.findViewById(R.id.pager)
         tabLayout = view.findViewById(R.id.tab_layout)
         addButton = view.findViewById(R.id.add)
+        progressIndicator = view.findViewById(R.id.progress_indicator)
 
         adapter = PagerAdapter(this, hasQrCode = { vm.getQrBitmap() != null })
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
@@ -87,8 +90,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     when (it) {
                         ViewState.Certificate -> showCertificateState()
                         ViewState.Empty -> showEmptyState()
-                        ViewState.Error -> showErrorState()
-                    }
+                        ViewState.Loading -> showLoadingState()
+                    }.let{}
                 }
             }
         }
@@ -101,7 +104,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         ViewEvent.ShowDeleteDialog -> showDoYouWantToDeleteDialog()
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
                         ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
-                    }
+                        ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+                    }.let{}
                 }
             }
         }
@@ -129,7 +133,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         resultLauncher.launch(intent)
     }
 
+    private fun showLoadingState() {
+        progressIndicator?.isVisible = true
+        progressIndicator?.show()
+    }
+
     private fun showEmptyState() {
+        progressIndicator?.isVisible = false
         addButton?.isVisible = true
         viewPager?.isVisible = false
         tabLayout?.isVisible = false
@@ -139,6 +149,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showCertificateState() {
+        progressIndicator?.isVisible = false
         addButton?.isVisible = false
         tabLayout?.isVisible = true
         viewPager?.isVisible = true
@@ -194,8 +205,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         dialog.show()
     }
 
-    private fun showErrorState() {
-        showEmptyState()
+    private fun showFileCanNotBeReadError() {
         root?.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
