@@ -16,7 +16,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private val _bitmapState = MutableStateFlow(BitmapState.Unready)
     val bitmapState: Flow<BitmapState> = _bitmapState.filter { it == BitmapState.Ready }
 
-    private val _viewState = MutableStateFlow(ViewState.Empty)
+    private val _viewState = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
@@ -31,6 +31,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
                 if (parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
+                    _viewState.emit(ViewState.Empty)
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
             } else {
