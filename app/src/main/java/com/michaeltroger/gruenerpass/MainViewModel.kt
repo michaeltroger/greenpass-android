@@ -31,7 +31,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
                 if (parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
-                    _viewState.emit(ViewState.Error)
+                    _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
             } else {
                 _viewState.emit(ViewState.Empty)
@@ -61,7 +61,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
                 if (pdf.copyPdfToCache(uri) && parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
-                    _viewState.emit(ViewState.Error)
+                    _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
             }
         }
@@ -86,7 +86,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
                 if (parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
-                    _viewState.emit(ViewState.Error)
+                    _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
             } else {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)

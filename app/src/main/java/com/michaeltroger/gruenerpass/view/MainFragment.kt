@@ -87,8 +87,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     when (it) {
                         ViewState.Certificate -> showCertificateState()
                         ViewState.Empty -> showEmptyState()
-                        ViewState.Error -> showErrorState()
-                    }
+                    }.let{}
                 }
             }
         }
@@ -101,7 +100,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         ViewEvent.ShowDeleteDialog -> showDoYouWantToDeleteDialog()
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
                         ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
-                    }
+                        ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+                    }.let{}
                 }
             }
         }
@@ -194,8 +194,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         dialog.show()
     }
 
-    private fun showErrorState() {
-        showEmptyState()
+    private fun showFileCanNotBeReadError() {
         root?.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }

@@ -4,5 +4,6 @@ enum class ViewEvent {
     ShowPasswordDialog,
     ShowReplaceDialog,
     ShowDeleteDialog,
-    CloseAllDialogs
+    CloseAllDialogs,
+    ErrorParsingFile
 }
