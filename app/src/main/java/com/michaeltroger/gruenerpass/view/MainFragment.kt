@@ -25,6 +25,7 @@ import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -61,26 +62,26 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            adapter = PagerAdapter(this@MainFragment, hasQrCode = { vm.hasQrCode() })
-            layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-                val textRes: Int
-                when (adapter.itemCount) {
-                    1 -> {
-                        tabLayout?.isVisible = false
-                        textRes = R.string.tab_title_pdf
-                    }
-                    else -> {
-                        tabLayout?.isVisible = true
-                        textRes = when(position) {
-                            0 -> R.string.tab_title_qr
-                            else -> R.string.tab_title_pdf
-                        }
+        adapter = PagerAdapter(this@MainFragment, hasQrCode = { vm.hasQrCode() })
+        layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
+            val textRes: Int
+            when (adapter.itemCount) {
+                1 -> {
+                    tabLayout?.isVisible = false
+                    textRes = R.string.tab_title_pdf
+                }
+                else -> {
+                    tabLayout?.isVisible = true
+                    textRes = when(position) {
+                        0 -> R.string.tab_title_qr
+                        else -> R.string.tab_title_pdf
                     }
                 }
-                tab.text = getString(textRes)
             }
+            tab.text = getString(textRes)
+        }
 
+        viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
