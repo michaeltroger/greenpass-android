@@ -154,10 +154,7 @@ class Pdf(private val context: Context) {
         try {
             context.contentResolver.openInputStream(uri)!!.use {
                 try {
-                    val doc = PDDocument.load(it)
-                    val encr = doc.isEncrypted
-                    doc.close()
-                    return@withContext encr
+                    return@withContext PDDocument.load(it).checkIfPasswordProtectedAndClose()
                 } catch (exception: InvalidPasswordException) {
                     return@withContext true
                 }
@@ -187,15 +184,23 @@ class Pdf(private val context: Context) {
     suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
         try {
             context.contentResolver.openInputStream(uri)!!.use {
-                val pdd = PDDocument.load(it, password)
-                pdd.isAllSecurityToBeRemoved = true
-                deleteFile() // clear old file first if it exists
-                pdd.save(FileOutputStream(file))
-                pdd.close()
+                with(PDDocument.load(it, password)) {
+                    deleteFile() // clear old file first if it exists
+                    removePasswordCopyAndClose()
+                }
                 return@withContext true
             }
         } catch (exception: Exception) {
             return@withContext false
         }
+    }
+
+    private fun PDDocument.removePasswordCopyAndClose() = use {
+        isAllSecurityToBeRemoved = true
+        save(FileOutputStream(file))
+    }
+
+    private fun PDDocument.checkIfPasswordProtectedAndClose(): Boolean = use {
+        return isEncrypted
     }
 }
