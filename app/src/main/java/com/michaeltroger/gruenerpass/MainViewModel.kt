@@ -4,7 +4,8 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.michaeltroger.gruenerpass.model.Pdf
+import com.michaeltroger.gruenerpass.model.PdfHandler
+import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.michaeltroger.gruenerpass.states.BitmapState
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -23,11 +24,12 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var uri: Uri? = null
-    private val pdf = Pdf(getApplication<Application>())
+    private val pdfHandler = PdfHandler(getApplication<Application>())
+    private val pdfRenderer = PdfRenderer(getApplication<Application>())
 
     init {
         viewModelScope.launch {
-            if (pdf.doesFileExist()) {
+            if (pdfHandler.doesFileExist()) {
                 if (parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
@@ -44,7 +46,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         this.uri = uri
         viewModelScope.launch {
             _viewEvent.emit(ViewEvent.CloseAllDialogs)
-            if (pdf.doesFileExist()) {
+            if (pdfHandler.doesFileExist()) {
                 _viewEvent.emit(ViewEvent.ShowReplaceDialog)
             } else {
                 loadFileFromUri()
@@ -55,11 +57,11 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private fun loadFileFromUri() {
         val uri = uri!!
         viewModelScope.launch {
-            if (pdf.isPdfPasswordProtected(uri)) {
+            if (pdfHandler.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
                 _viewState.emit(ViewState.Empty)
-                if (pdf.copyPdfToCache(uri) && parsePdfIntoBitmap()) {
+                if (pdfHandler.copyPdfToCache(uri) && parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -69,7 +71,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     }
 
     private suspend fun parsePdfIntoBitmap(): Boolean {
-        val success = pdf.parsePdfIntoBitmap()
+        val success = pdfRenderer.parsePdfIntoBitmap()
         if (success) {
             _bitmapState.emit(BitmapState.Ready)
         }
@@ -82,7 +84,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
 
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            if (pdf.decryptAndCopyPdfToCache(uri = uri!!, password = password)) {
+            if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password)) {
                 _viewState.emit(ViewState.Empty)
                 if (parsePdfIntoBitmap()) {
                     _viewState.emit(ViewState.Certificate)
@@ -97,12 +99,12 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
 
     fun onDeleteConfirmed() {
         viewModelScope.launch {
-            pdf.deleteFile()
+            pdfHandler.deleteFile()
             _viewState.emit(ViewState.Empty)
         }
     }
 
-    fun getQrBitmap() = pdf.getQrBitmap()
-    fun getPdfBitmap() = pdf.getPdfBitmap()
+    fun getQrBitmap() = pdfRenderer.getQrBitmap()
+    fun getPdfBitmap() = pdfRenderer.getPdfBitmap()
 
 }
