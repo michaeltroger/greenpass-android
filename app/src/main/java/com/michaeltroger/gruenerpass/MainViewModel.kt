@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.model.PdfHandler
 import com.michaeltroger.gruenerpass.model.PdfRenderer
-import com.michaeltroger.gruenerpass.states.BitmapState
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.*
@@ -14,9 +13,6 @@ import kotlinx.coroutines.launch
 
 
 class MainViewModel(app: Application): AndroidViewModel(app) {
-    private val _bitmapState = MutableStateFlow(BitmapState.Unready)
-    val bitmapState: Flow<BitmapState> = _bitmapState.filter { it == BitmapState.Ready }
-
     private val _viewState = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -26,11 +22,12 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     private var uri: Uri? = null
     private val pdfHandler = PdfHandler(getApplication<Application>())
     private val pdfRenderer = PdfRenderer(getApplication<Application>())
+    private var hasQrCode = false
 
     init {
         viewModelScope.launch {
             if (pdfHandler.doesFileExist()) {
-                if (parsePdfIntoBitmap()) {
+                if (loadFile()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
                     _viewState.emit(ViewState.Empty)
@@ -61,21 +58,13 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
                 _viewState.emit(ViewState.Empty)
-                if (pdfHandler.copyPdfToCache(uri) && parsePdfIntoBitmap()) {
+                if (pdfHandler.copyPdfToCache(uri) && loadFile()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
             }
         }
-    }
-
-    private suspend fun parsePdfIntoBitmap(): Boolean {
-        val success = pdfRenderer.parsePdfIntoBitmap()
-        if (success) {
-            _bitmapState.emit(BitmapState.Ready)
-        }
-        return success
     }
 
     fun onReplaceConfirmed() {
@@ -86,7 +75,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password)) {
                 _viewState.emit(ViewState.Empty)
-                if (parsePdfIntoBitmap()) {
+                if (loadFile()) {
                     _viewState.emit(ViewState.Certificate)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -104,7 +93,19 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
-    fun getQrBitmap() = pdfRenderer.getQrBitmap()
-    fun getPdfBitmap() = pdfRenderer.getPdfBitmap()
+    private suspend fun loadFile(): Boolean {
+        val success = pdfRenderer.loadFile()
+        hasQrCode = pdfRenderer.getQrCodeIfPresent(0) != null
+        return success
+    }
+
+    fun hasQrCode() = hasQrCode
+
+    fun getRenderer(): PdfRenderer = pdfRenderer
+
+    override fun onCleared() {
+        super.onCleared()
+        pdfRenderer.onCleared()
+    }
 
 }

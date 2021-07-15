@@ -61,30 +61,26 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
 
-        adapter = PagerAdapter(this, hasQrCode = { vm.getQrBitmap() != null })
-        layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-            val textRes: Int
-            when (adapter.itemCount) {
-                1 -> {
-                    tabLayout?.isVisible = false
-                    textRes = R.string.tab_title_pdf
-                }
-                else -> {
-                    tabLayout?.isVisible = true
-                    textRes = when(position) {
-                        0 -> R.string.tab_title_qr
-                        else -> R.string.tab_title_pdf
+        viewLifecycleOwner.lifecycleScope.launch {
+            adapter = PagerAdapter(this@MainFragment, vm.getRenderer(), hasQrCode = { vm.hasQrCode() })
+            layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
+                val textRes: Int
+                when (adapter.itemCount) {
+                    1 -> {
+                        tabLayout?.isVisible = false
+                        textRes = R.string.tab_title_pdf
+                    }
+                    else -> {
+                        tabLayout?.isVisible = true
+                        textRes = when(position) {
+                            0 -> R.string.tab_title_qr
+                            else -> R.string.tab_title_pdf
+                        }
                     }
                 }
+                tab.text = getString(textRes)
             }
-            tab.text = getString(textRes)
-        }
 
-        addButton?.setOnClickListener {
-            openFilePicker()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
@@ -94,6 +90,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     }.let{}
                 }
             }
+        }
+
+        addButton?.setOnClickListener {
+            openFilePicker()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

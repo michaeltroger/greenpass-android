@@ -4,21 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.michaeltroger.gruenerpass.MainViewModel
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import com.michaeltroger.gruenerpass.model.PdfRenderer
 
-class PdfPagerFragment : Fragment() {
-
-    private val vm by activityViewModels<MainViewModel>()
-    private var certificate: ImageView? = null
+class PdfPagerFragment(pdfRenderer: PdfRenderer) : Fragment() {
+    private var certificate: RecyclerView? = null
+    private val pageAdapter = PdfPageAdapter(pdfRenderer)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,17 +24,8 @@ class PdfPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         certificate = view.findViewById(R.id.certificate)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.bitmapState.collect {
-                    if (vm.getPdfBitmap()?.generationId != certificate?.tag) {
-                        certificate?.setImageBitmap(vm.getPdfBitmap())
-                        certificate?.tag = vm.getPdfBitmap()?.generationId
-                    }
-                }
-            }
-        }
+        certificate!!.layoutManager = LinearLayoutManager(requireContext())
+        certificate!!.adapter = pageAdapter
     }
 
 }

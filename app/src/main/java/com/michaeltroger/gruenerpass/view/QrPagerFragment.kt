@@ -6,18 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
-import kotlinx.coroutines.flow.collect
+import com.michaeltroger.gruenerpass.model.PdfRenderer
 import kotlinx.coroutines.launch
 
-class QrPagerFragment : Fragment() {
+class QrPagerFragment(private val pdfRenderer: PdfRenderer) : Fragment() {
 
-    private val vm by activityViewModels<MainViewModel>()
     private var qrCode: ImageView? = null
 
     override fun onCreateView(
@@ -31,13 +26,12 @@ class QrPagerFragment : Fragment() {
 
         qrCode = view.findViewById(R.id.qrcode)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.bitmapState.collect {
-                    if (vm.getQrBitmap()?.generationId != qrCode?.tag) {
-                        qrCode?.setImageBitmap(vm.getQrBitmap())
-                        qrCode?.tag = vm.getQrBitmap()?.generationId
-                    }
+        lifecycleScope.launch {
+            val bitmap = pdfRenderer.getQrCodeIfPresent(0)
+            bitmap?.let {
+                if (it.generationId != qrCode?.tag) {
+                    qrCode?.setImageBitmap(it)
+                    qrCode?.tag = it.generationId
                 }
             }
         }

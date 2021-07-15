@@ -13,16 +13,18 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.io.File
 
 private const val QR_CODE_SIZE = 400
-private const val MULTIPLIER_PDF_RESOLUTION = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
+
 
 class PdfRenderer(private val context: Context) {
 
     private val file = File(context.filesDir, PDF_FILENAME)
+    private val documentWidth = 500
 
     private val activityManager: ActivityManager?
         get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
@@ -30,91 +32,77 @@ class PdfRenderer(private val context: Context) {
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
 
-    private var bitmapDocument: Bitmap? = null
-    private var bitmapQrCode: Bitmap? = null
+    private var renderer: PdfRenderer? = null
+    private var fileDescriptor: ParcelFileDescriptor? = null
 
-    fun getQrBitmap() = bitmapQrCode
-    fun getPdfBitmap() = bitmapDocument
+    private val counterContext = newSingleThreadContext("CounterContext")
 
-    /**
-     * @return true if successful
-     */
-    suspend fun parsePdfIntoBitmap(): Boolean = withContext(Dispatchers.IO) {
-        var fileDescriptor: ParcelFileDescriptor? = null
-        var renderer: PdfRenderer? = null
-        var page: PdfRenderer.Page? = null
+    suspend fun loadFile(): Boolean = withContext(Dispatchers.IO) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-            renderer = PdfRenderer(fileDescriptor)
-            page = renderer.openPage(0)
+            renderer = PdfRenderer(fileDescriptor!!)
+            return@withContext true
         } catch (exception: Exception) {
-            try {
-                page?.close()
-                renderer?.close()
-                fileDescriptor?.close()
-            } catch (ignore: Exception) {}
-            //deleteFile() TODO
             return@withContext false
         }
-
-        var width: Int = page.width
-        var height: Int = page.height
-        if (activityManager?.isLowRamDevice == false) {
-            width *= MULTIPLIER_PDF_RESOLUTION
-            height *= MULTIPLIER_PDF_RESOLUTION
-        }
-
-        bitmapDocument = null
-        bitmapDocument = try {
-            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)!!
-        } catch (e: OutOfMemoryError) {
-            Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
-        }
-
-        if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
-            bitmapDocument = null
-            bitmapDocument = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)!!
-        }
-        val canvas = Canvas(bitmapDocument!!)
-        canvas.drawColor(Color.WHITE)
-        canvas.drawBitmap(bitmapDocument!!, 0f, 0f, null)
-        page.render(bitmapDocument!!, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-
-        try {
-            page.close()
-            renderer.close()
-            fileDescriptor.close()
-        } catch (ignore: Exception) {}
-
-        if (bitmapDocument!!.byteCount > MAX_BITMAP_SIZE) {
-            //deleteFile() TODO
-            return@withContext false
-        }
-
-        extractQrCodeIfAvailable(bitmapDocument!!)
-        return@withContext true
     }
 
-    private fun extractQrCodeIfAvailable(bitmap: Bitmap) {
+    fun getPageCount(): Int {
+        return renderer!!.pageCount
+    }
+
+    fun onCleared() {
+        renderer?.use {}
+        fileDescriptor?.use {}
+    }
+
+    suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(counterContext) {
+       return@withContext renderPage(pageIndex).extractQrCodeIfAvailable()
+    }
+
+    suspend fun renderPage(pageIndex: Int): Bitmap = withContext(counterContext) {
+        return@withContext renderer!!.openPage(pageIndex).renderAndClose()
+    }
+
+    private fun PdfRenderer.Page.renderAndClose(): Bitmap = use {
+        val bitmap = createBitmap()
+        render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        bitmap
+    }
+
+    private fun PdfRenderer.Page.createBitmap(): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            documentWidth, (documentWidth.toFloat() / documentWidth * height).toInt(), Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+        canvas.drawColor(Color.WHITE)
+        canvas.drawBitmap(bitmap, 0f, 0f, null)
+
+        return bitmap
+    }
+
+    private fun Bitmap.extractQrCodeIfAvailable(): Bitmap? {
         try {
-            val intArray = IntArray(bitmap.width * bitmap.height)
-            bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-            val source: LuminanceSource = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
+            val intArray = IntArray(width * height)
+            getPixels(intArray, 0, width, 0, 0, width, height)
+            val source: LuminanceSource = RGBLuminanceSource(width, height, intArray)
             val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
 
             qrCodeReader.decode(binaryBitmap).text?.let {
-                encodeQrCodeAsBitmap(it)
+                return encodeQrCodeAsBitmap(it)
             }
         } catch (ignore: Exception) {}
+        return null
     }
 
-    private fun encodeQrCodeAsBitmap(source: String) {
+    private fun encodeQrCodeAsBitmap(source: String): Bitmap? {
         val result: BitMatrix = try {
             val hintMap = HashMap<EncodeHintType, Any>()
             hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
             qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE, hintMap)
         } catch (ignore: Exception) {
-            return
+            return null
         }
 
         val w = result.width
@@ -128,8 +116,8 @@ class PdfRenderer(private val context: Context) {
             }
         }
 
-        bitmapQrCode = null
-        bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
+        val bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
         bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
+        return bitmapQrCode
     }
 }
