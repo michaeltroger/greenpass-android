@@ -62,7 +62,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         progressIndicator = view.findViewById(R.id.progress_indicator)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            adapter = PagerAdapter(this@MainFragment, vm.getRenderer(), hasQrCode = { vm.hasQrCode() })
+            adapter = PagerAdapter(this@MainFragment, hasQrCode = { vm.hasQrCode() })
             layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
                 val textRes: Int
                 when (adapter.itemCount) {

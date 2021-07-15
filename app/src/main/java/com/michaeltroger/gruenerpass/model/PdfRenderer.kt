@@ -37,7 +37,7 @@ class PdfRenderer(private val context: Context) {
 
     private val counterContext = newSingleThreadContext("CounterContext")
 
-    suspend fun loadFile(): Boolean = withContext(Dispatchers.IO) {
+    suspend fun loadFile(): Boolean = withContext(counterContext) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor!!)
@@ -61,6 +61,9 @@ class PdfRenderer(private val context: Context) {
     }
 
     suspend fun renderPage(pageIndex: Int): Bitmap = withContext(counterContext) {
+        if (renderer == null) {
+            loadFile()
+        }
         return@withContext renderer!!.openPage(pageIndex).renderAndClose()
     }
 

@@ -2,9 +2,8 @@ package com.michaeltroger.gruenerpass.view
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.michaeltroger.gruenerpass.model.PdfRenderer
 
-class PagerAdapter(fragment: Fragment, private val pdfRenderer: PdfRenderer, private val hasQrCode: () -> Boolean): FragmentStateAdapter(fragment) {
+class PagerAdapter(fragment: Fragment, private val hasQrCode: () -> Boolean): FragmentStateAdapter(fragment) {
 
     override fun getItemCount(): Int {
         return if (!hasQrCode()) {
@@ -15,11 +14,11 @@ class PagerAdapter(fragment: Fragment, private val pdfRenderer: PdfRenderer, pri
     }
 
     override fun createFragment(position: Int): Fragment = when (itemCount) {
-        1 -> PdfPagerFragment(pdfRenderer)
+        1 -> PdfPagerFragment()
         else -> {
             when (position) {
-                0 -> QrPagerFragment(pdfRenderer)
-                else -> PdfPagerFragment(pdfRenderer)
+                0 -> QrPagerFragment()
+                else -> PdfPagerFragment()
             }
         }
     }

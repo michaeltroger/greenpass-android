@@ -5,14 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 
-class PdfPagerFragment(pdfRenderer: PdfRenderer) : Fragment() {
+class PdfPagerFragment : Fragment() {
+
+    private val vm by activityViewModels<MainViewModel>()
     private var certificate: RecyclerView? = null
-    private val pageAdapter = PdfPageAdapter(pdfRenderer)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,7 +28,7 @@ class PdfPagerFragment(pdfRenderer: PdfRenderer) : Fragment() {
 
         certificate = view.findViewById(R.id.certificate)
         certificate!!.layoutManager = LinearLayoutManager(requireContext())
-        certificate!!.adapter = pageAdapter
+        certificate!!.adapter = PdfPageAdapter(vm.getRenderer())
     }
 
 }
