@@ -17,15 +17,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 private const val QR_CODE_SIZE = 400
-private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
-
 
 class PdfRenderer(private val context: Context) {
 
     private val file = File(context.filesDir, PDF_FILENAME)
-
-    private val activityManager: ActivityManager?
-        get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
 
     private val screenWidth
         get() = context.resources.displayMetrics.widthPixels
