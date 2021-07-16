@@ -79,6 +79,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             tab.text = getString(textRes)
         }
 
+        addButton?.setOnClickListener {
+            openFilePicker()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
@@ -90,11 +94,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-
-        addButton?.setOnClickListener {
-            openFilePicker()
-        }
-
+        
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
