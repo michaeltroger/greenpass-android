@@ -12,7 +12,6 @@ import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -35,9 +34,12 @@ class PdfRenderer(private val context: Context) {
     private var renderer: PdfRenderer? = null
     private var fileDescriptor: ParcelFileDescriptor? = null
 
-    private val counterContext = newSingleThreadContext("CounterContext")
+    private val renderContext = newSingleThreadContext("RenderContext")
 
-    suspend fun loadFile(): Boolean = withContext(counterContext) {
+    /**
+     * @return true if successful
+     */
+    suspend fun loadFile(): Boolean = withContext(renderContext) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor!!)
@@ -47,20 +49,18 @@ class PdfRenderer(private val context: Context) {
         }
     }
 
-    fun getPageCount(): Int {
-        return renderer!!.pageCount
-    }
+    fun getPageCount(): Int = renderer?.pageCount ?: 0
 
     fun onCleared() {
         renderer?.use {}
         fileDescriptor?.use {}
     }
 
-    suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(counterContext) {
+    suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
        return@withContext renderPage(pageIndex).extractQrCodeIfAvailable()
     }
 
-    suspend fun renderPage(pageIndex: Int): Bitmap = withContext(counterContext) {
+    suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
         if (renderer == null) {
             loadFile()
         }
