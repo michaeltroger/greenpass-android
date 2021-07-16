@@ -45,9 +45,11 @@ class PdfHandler(private val context: Context) {
      */
     suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
         try {
-            getInputStream(uri).use {
+            getInputStream(uri).use { inputStream ->
                 deleteFile() // clear old file first if it exists
-                it.copyTo(FileOutputStream(file))
+                FileOutputStream(file).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
                 return@withContext true
             }
         } catch (exception: Exception) {
@@ -60,8 +62,8 @@ class PdfHandler(private val context: Context) {
      */
     suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
         try {
-            getInputStream(uri).use {
-                with(PDDocument.load(it, password)) {
+            getInputStream(uri).use { inputStream ->
+                with(PDDocument.load(inputStream, password)) {
                     deleteFile() // clear old file first if it exists
                     removePasswordCopyAndClose()
                 }
