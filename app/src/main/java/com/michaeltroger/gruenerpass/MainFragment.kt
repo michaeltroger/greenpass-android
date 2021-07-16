@@ -94,7 +94,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
