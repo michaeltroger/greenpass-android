@@ -31,10 +31,7 @@ class QrCodeFragment : Fragment() {
         lifecycleScope.launch {
             val bitmap = vm.pdfRenderer.getQrCodeIfPresent(0)
             bitmap?.let {
-                if (it.generationId != qrCode?.tag) {
-                    qrCode?.setImageBitmap(it)
-                    qrCode?.tag = it.generationId
-                }
+                qrCode?.setImageBitmap(it)
             }
         }
     }
