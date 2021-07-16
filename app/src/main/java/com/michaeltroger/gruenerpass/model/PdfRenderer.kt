@@ -23,10 +23,12 @@ private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 class PdfRenderer(private val context: Context) {
 
     private val file = File(context.filesDir, PDF_FILENAME)
-    private val documentWidth = 500
 
     private val activityManager: ActivityManager?
         get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+
+    private val screenWidth
+        get() = context.resources.displayMetrics.widthPixels
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
@@ -75,7 +77,7 @@ class PdfRenderer(private val context: Context) {
 
     private fun PdfRenderer.Page.createBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(
-            documentWidth, (documentWidth.toFloat() / width * height).toInt(), Bitmap.Config.ARGB_8888
+            screenWidth, (screenWidth.toFloat() / width * height).toInt(), Bitmap.Config.ARGB_8888
         )
 
         val canvas = Canvas(bitmap)
