@@ -28,8 +28,8 @@ class SinglePageAdapter(
         }
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
         scope.cancel()
     }
 
