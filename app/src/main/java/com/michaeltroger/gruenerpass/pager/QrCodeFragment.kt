@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.view
+package com.michaeltroger.gruenerpass.pager
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
 import kotlinx.coroutines.launch
 
-class QrPagerFragment : Fragment() {
+class QrCodeFragment : Fragment() {
 
     private val vm by activityViewModels<MainViewModel>()
     private var qrCode: ImageView? = null

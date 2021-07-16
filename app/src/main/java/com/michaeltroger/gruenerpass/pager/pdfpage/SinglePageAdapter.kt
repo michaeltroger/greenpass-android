@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.view
+package com.michaeltroger.gruenerpass.pager.pdfpage
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,21 +9,13 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import kotlinx.coroutines.*
 
-class PdfPageAdapter(
+class SinglePageAdapter(
     private val renderer: PdfRenderer,
-) : RecyclerView.Adapter<PdfPageAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SinglePageAdapter.ViewHolder>() {
 
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
     )
-
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var imageView: ImageView? = null
-        init {
-            imageView = view.findViewById(R.id.page)
-        }
-
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_item_pdf_page, parent, false))
@@ -41,4 +33,10 @@ class PdfPageAdapter(
         scope.cancel()
     }
 
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var imageView: ImageView? = null
+        init {
+            imageView = view.findViewById(R.id.page)
+        }
+    }
 }

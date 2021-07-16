@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.view
+package com.michaeltroger.gruenerpass.pager
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.pager.pdfpage.SinglePageAdapter
 
-class PdfPagerFragment : Fragment() {
+class CertificateFragment : Fragment() {
 
     private val vm by activityViewModels<MainViewModel>()
     private var certificate: RecyclerView? = null
@@ -28,7 +28,7 @@ class PdfPagerFragment : Fragment() {
 
         certificate = view.findViewById(R.id.certificate)
         certificate!!.layoutManager = LinearLayoutManager(requireContext())
-        certificate!!.adapter = PdfPageAdapter(vm.pdfRenderer)
+        certificate!!.adapter = SinglePageAdapter(vm.pdfRenderer)
     }
 
 }

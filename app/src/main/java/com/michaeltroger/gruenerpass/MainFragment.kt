@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.view
+package com.michaeltroger.gruenerpass
 
 import android.app.Activity
 import android.content.Intent
@@ -21,8 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.MainViewModel
-import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.pager.PagerAdapter
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.collect
