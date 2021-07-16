@@ -29,9 +29,9 @@ class PdfHandler(private val context: Context) {
 
     suspend fun isPdfPasswordProtected(uri: Uri): Boolean = withContext(Dispatchers.IO) {
         try {
-            getInputStream(uri).use {
+            getInputStream(uri).use { inputStream ->
                 try {
-                    return@withContext PDDocument.load(it).checkIfPasswordProtectedAndClose()
+                    return@withContext PDDocument.load(inputStream).checkIfPasswordProtectedAndClose()
                 } catch (exception: InvalidPasswordException) {
                     return@withContext true
                 }
@@ -50,8 +50,8 @@ class PdfHandler(private val context: Context) {
                 FileOutputStream(file).use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
-                return@withContext true
             }
+            return@withContext true
         } catch (exception: Exception) {
             return@withContext false
         }
@@ -67,8 +67,8 @@ class PdfHandler(private val context: Context) {
                     deleteFile() // clear old file first if it exists
                     removePasswordCopyAndClose()
                 }
-                return@withContext true
             }
+            return@withContext true
         } catch (exception: Exception) {
             return@withContext false
         }
@@ -78,7 +78,9 @@ class PdfHandler(private val context: Context) {
 
     private fun PDDocument.removePasswordCopyAndClose() = use {
         isAllSecurityToBeRemoved = true
-        save(FileOutputStream(file))
+        FileOutputStream(file).use { outputStream ->
+            save(outputStream)
+        }
     }
 
     private fun PDDocument.checkIfPasswordProtectedAndClose(): Boolean = use {

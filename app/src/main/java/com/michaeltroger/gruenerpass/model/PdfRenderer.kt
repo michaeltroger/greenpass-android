@@ -1,6 +1,5 @@
 package com.michaeltroger.gruenerpass.model
 
-import android.app.ActivityManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
