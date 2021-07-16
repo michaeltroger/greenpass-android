@@ -28,7 +28,7 @@ class PdfPagerFragment : Fragment() {
 
         certificate = view.findViewById(R.id.certificate)
         certificate!!.layoutManager = LinearLayoutManager(requireContext())
-        certificate!!.adapter = PdfPageAdapter(vm.getRenderer())
+        certificate!!.adapter = PdfPageAdapter(vm.pdfRenderer)
     }
 
 }

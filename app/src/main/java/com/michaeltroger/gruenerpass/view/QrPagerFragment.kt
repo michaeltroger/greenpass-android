@@ -29,7 +29,7 @@ class QrPagerFragment : Fragment() {
         qrCode = view.findViewById(R.id.qrcode)
 
         lifecycleScope.launch {
-            val bitmap = vm.getRenderer().getQrCodeIfPresent(0)
+            val bitmap = vm.pdfRenderer.getQrCodeIfPresent(0)
             bitmap?.let {
                 if (it.generationId != qrCode?.tag) {
                     qrCode?.setImageBitmap(it)

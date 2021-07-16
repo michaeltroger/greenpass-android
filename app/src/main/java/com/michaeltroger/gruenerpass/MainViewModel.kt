@@ -21,8 +21,11 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
 
     private var uri: Uri? = null
     private val pdfHandler = PdfHandler(getApplication<Application>())
-    private val pdfRenderer = PdfRenderer(getApplication<Application>())
-    private var hasQrCode = false
+
+    val pdfRenderer = PdfRenderer(getApplication<Application>())
+
+    var hasQrCode = false
+        private set
 
     init {
         viewModelScope.launch {
@@ -98,10 +101,6 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
         hasQrCode = pdfRenderer.getQrCodeIfPresent(0) != null
         return success
     }
-
-    fun hasQrCode() = hasQrCode
-
-    fun getRenderer(): PdfRenderer = pdfRenderer
 
     override fun onCleared() {
         super.onCleared()

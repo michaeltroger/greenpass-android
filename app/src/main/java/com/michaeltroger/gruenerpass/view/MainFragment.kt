@@ -25,7 +25,6 @@ import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -62,7 +61,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
 
-        adapter = PagerAdapter(this@MainFragment, hasQrCode = { vm.hasQrCode() })
+        adapter = PagerAdapter(this@MainFragment, hasQrCode = { vm.hasQrCode })
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
