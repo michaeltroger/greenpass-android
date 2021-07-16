@@ -75,7 +75,7 @@ class PdfRenderer(private val context: Context) {
 
     private fun PdfRenderer.Page.createBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(
-            documentWidth, (documentWidth.toFloat() / documentWidth * height).toInt(), Bitmap.Config.ARGB_8888
+            documentWidth, (documentWidth.toFloat() / width * height).toInt(), Bitmap.Config.ARGB_8888
         )
 
         val canvas = Canvas(bitmap)
