@@ -60,7 +60,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
 
-        adapter = PagerAdapter(this@MainFragment, hasQrCode = { vm.hasQrCode })
+        adapter = PagerAdapter(this, hasQrCode = { vm.hasQrCode })
         layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
             val textRes: Int
             when (adapter.itemCount) {
