@@ -1,5 +1,6 @@
 package com.michaeltroger.gruenerpass.model
 
+import android.app.ActivityManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -16,13 +17,15 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 private const val QR_CODE_SIZE = 400
+private const val PDF_RESOLUTION_MULTIPLIER = 2
+private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 class PdfRenderer(private val context: Context) {
 
     private val file = File(context.filesDir, PDF_FILENAME)
 
-    private val screenWidth
-        get() = context.resources.displayMetrics.widthPixels
+    private val activityManager: ActivityManager?
+        get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
 
     private val qrCodeReader = QRCodeReader()
     private val qrCodeWriter = MultiFormatWriter()
@@ -70,9 +73,20 @@ class PdfRenderer(private val context: Context) {
     }
 
     private fun PdfRenderer.Page.createBitmap(): Bitmap {
-        val bitmap = Bitmap.createBitmap(
-            screenWidth, (screenWidth.toFloat() / width * height).toInt(), Bitmap.Config.ARGB_8888
-        )
+        var renderWidth: Int = width
+        var renderHeight: Int = height
+        if (activityManager?.isLowRamDevice == false) {
+            renderWidth *= PDF_RESOLUTION_MULTIPLIER
+            renderHeight *= PDF_RESOLUTION_MULTIPLIER
+        }
+        var bitmap = try {
+            Bitmap.createBitmap(renderWidth, renderHeight, Bitmap.Config.ARGB_8888)
+        } catch (e: OutOfMemoryError) {
+            Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        }
+        if (bitmap.byteCount > MAX_BITMAP_SIZE) {
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        }
 
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.WHITE)
