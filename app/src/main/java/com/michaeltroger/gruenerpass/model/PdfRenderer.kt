@@ -133,7 +133,7 @@ class PdfRenderer(private val context: Context) {
         }
 
         val bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
-        bitmapQrCode!!.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
+        bitmapQrCode.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
         return bitmapQrCode
     }
 }
