@@ -56,8 +56,10 @@ class PdfRenderer(private val context: Context) {
     fun getPageCount(): Int = renderer?.pageCount ?: 0
 
     fun onCleared() {
-        renderer?.use {}
-        fileDescriptor?.use {}
+        try {
+            renderer?.use {}
+            fileDescriptor?.use {}
+        } catch (ignore: Exception) {}
     }
 
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
