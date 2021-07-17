@@ -6,7 +6,7 @@
     <string name="tab_title_pdf">PDF</string>
     <string name="tab_title_qr">QR Code</string>
     <string name="error_reading_pdf">Error while reading the PDF. Try another file or file location</string>
-    <string name="dialog_password_protection_title">Password protected PDF</string>
+    <string name="dialog_password_protection_title">Decrypt password protected PDF</string>
     <string name="dialog_password_protection_hint">Enter password</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
