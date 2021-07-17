@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import com.michaeltroger.gruenerpass.model.PdfHandler
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -98,7 +99,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
 
     private suspend fun loadFile(): Boolean {
         val success = pdfRenderer.loadFile()
-        hasQrCode = pdfRenderer.getQrCodeIfPresent(0) != null
+        hasQrCode = pdfRenderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE) != null
         return success
     }
 

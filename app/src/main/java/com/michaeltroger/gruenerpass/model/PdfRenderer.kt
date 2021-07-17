@@ -20,6 +20,8 @@ private const val QR_CODE_SIZE = 400
 private const val PDF_RESOLUTION_MULTIPLIER = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
+const val PAGE_INDEX_QR_CODE = 0
+
 class PdfRenderer(private val context: Context) {
 
     private val file = File(context.filesDir, PDF_FILENAME)
@@ -44,6 +46,9 @@ class PdfRenderer(private val context: Context) {
             renderer = PdfRenderer(fileDescriptor!!)
             return@withContext true
         } catch (exception: Exception) {
+            if (file.exists()) {
+                file.delete()
+            }
             return@withContext false
         }
     }
@@ -51,8 +56,10 @@ class PdfRenderer(private val context: Context) {
     fun getPageCount(): Int = renderer?.pageCount ?: 0
 
     fun onCleared() {
-        renderer?.use {}
-        fileDescriptor?.use {}
+        try {
+            renderer?.use {}
+            fileDescriptor?.use {}
+        } catch (ignore: Exception) {}
     }
 
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
