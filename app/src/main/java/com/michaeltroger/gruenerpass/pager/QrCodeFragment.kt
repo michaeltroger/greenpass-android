@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.michaeltroger.gruenerpass.MainViewModel
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import kotlinx.coroutines.launch
 
 class QrCodeFragment : Fragment() {
@@ -29,7 +30,7 @@ class QrCodeFragment : Fragment() {
         qrCode = view.findViewById(R.id.qrcode)
 
         lifecycleScope.launch {
-            val bitmap = vm.pdfRenderer.getQrCodeIfPresent(0)
+            val bitmap = vm.pdfRenderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE)
             bitmap?.let {
                 qrCode?.setImageBitmap(it)
             }

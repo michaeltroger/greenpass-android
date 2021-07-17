@@ -20,6 +20,8 @@ private const val QR_CODE_SIZE = 400
 private const val PDF_RESOLUTION_MULTIPLIER = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
+const val PAGE_INDEX_QR_CODE = 0
+
 class PdfRenderer(private val context: Context) {
 
     private val file = File(context.filesDir, PDF_FILENAME)
