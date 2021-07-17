@@ -44,6 +44,9 @@ class PdfRenderer(private val context: Context) {
             renderer = PdfRenderer(fileDescriptor!!)
             return@withContext true
         } catch (exception: Exception) {
+            if (file.exists()) {
+                file.delete()
+            }
             return@withContext false
         }
     }
