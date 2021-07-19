@@ -99,7 +99,7 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
 
     private suspend fun loadFile(): Boolean {
         val success = pdfRenderer.loadFile()
-        hasQrCode = pdfRenderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE) != null
+        hasQrCode = pdfRenderer.hasQrCode(PAGE_INDEX_QR_CODE)
         return success
     }
 

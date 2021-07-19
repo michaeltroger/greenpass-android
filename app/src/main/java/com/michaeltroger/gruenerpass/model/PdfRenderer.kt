@@ -62,8 +62,13 @@ class PdfRenderer(private val context: Context) {
         } catch (ignore: Exception) {}
     }
 
+    suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
+        return@withContext !renderPage(pageIndex).extractQrCodeText().isNullOrEmpty()
+    }
+
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
-       return@withContext renderPage(pageIndex).extractQrCodeIfAvailable()
+       val qrText = renderPage(pageIndex).extractQrCodeText() ?: return@withContext null
+       return@withContext encodeQrCodeAsBitmap(qrText)
     }
 
     suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
@@ -102,16 +107,14 @@ class PdfRenderer(private val context: Context) {
         return bitmap
     }
 
-    private fun Bitmap.extractQrCodeIfAvailable(): Bitmap? {
+    private fun Bitmap.extractQrCodeText(): String? {
         try {
             val intArray = IntArray(width * height)
             getPixels(intArray, 0, width, 0, 0, width, height)
             val source: LuminanceSource = RGBLuminanceSource(width, height, intArray)
             val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
 
-            qrCodeReader.decode(binaryBitmap).text?.let {
-                return encodeQrCodeAsBitmap(it)
-            }
+            return qrCodeReader.decode(binaryBitmap).text
         } catch (ignore: Exception) {}
         catch (ignore: OutOfMemoryError) {}
         return null
