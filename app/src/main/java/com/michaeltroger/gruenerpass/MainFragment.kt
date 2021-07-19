@@ -112,7 +112,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
+
         deleteMenuItem = menu.findItem(R.id.delete)
+        if (vm.viewState.value == ViewState.Certificate) {
+            deleteMenuItem?.isVisible = true
+        }
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
