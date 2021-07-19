@@ -34,6 +34,8 @@ class PdfHandler(private val context: Context) {
                     return@withContext PDDocument.load(inputStream).checkIfPasswordProtectedAndClose()
                 } catch (exception: InvalidPasswordException) {
                     return@withContext true
+                } catch(exception: OutOfMemoryError) {
+                    return@withContext false
                 }
             }
         } catch (exception: Exception) {
