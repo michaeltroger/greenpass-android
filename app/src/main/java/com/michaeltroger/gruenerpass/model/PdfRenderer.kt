@@ -113,6 +113,7 @@ class PdfRenderer(private val context: Context) {
                 return encodeQrCodeAsBitmap(it)
             }
         } catch (ignore: Exception) {}
+        catch (ignore: OutOfMemoryError) {}
         return null
     }
 
