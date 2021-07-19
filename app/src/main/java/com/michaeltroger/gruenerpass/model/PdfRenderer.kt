@@ -44,6 +44,7 @@ class PdfRenderer(private val context: Context) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor!!)
+            renderer!!.openPage(0).use {  }
             return@withContext true
         } catch (exception: Exception) {
             if (file.exists()) {
