@@ -4,6 +4,8 @@
 
 Unofficial app that is fully open source. <b>One PDF can be imported. If you require to import more than that, then please go for one of the other available solutions.</b> This app is basically a super simple PDF reader with convenient fullscreen QR code rendering (if present in the PDF's 1. page).
 
+[![CircleCI](https://circleci.com/gh/michaeltroger/greenpass-android/tree/main.svg?style=svg)](https://circleci.com/gh/michaeltroger/greenpass-android/tree/main)
+
 <b>Brief Instruction</b>
 - Open App
 - Import PDF
