@@ -4,16 +4,18 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
-import com.michaeltroger.gruenerpass.model.PdfHandler
-import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.model.*
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 
-class MainViewModel(app: Application): AndroidViewModel(app) {
+class MainViewModel(
+    app: Application,
+    private val pdfHandler: PdfHandler = PdfHandlerImpl(app),
+    val pdfRenderer: PdfRenderer = PdfRendererImpl(app)
+): AndroidViewModel(app) {
     private val _viewState = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -21,9 +23,6 @@ class MainViewModel(app: Application): AndroidViewModel(app) {
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var uri: Uri? = null
-    private val pdfHandler = PdfHandler(getApplication<Application>())
-
-    val pdfRenderer = PdfRenderer(getApplication<Application>())
 
     var hasQrCode = false
         private set
