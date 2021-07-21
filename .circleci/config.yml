@@ -31,6 +31,11 @@ jobs:
       #    name: Assemble release build
       #    command: |
       #      ./gradlew assembleRelease    
+      - store_artifacts:
+	  path: build/test-results
+	  destination: test-results
+      - store_test_results:
+          path: build/test-results
 
 workflows:
   # Below is the definition of your workflow.
