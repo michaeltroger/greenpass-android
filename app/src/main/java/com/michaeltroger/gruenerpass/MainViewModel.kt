@@ -1,21 +1,26 @@
 package com.michaeltroger.gruenerpass
 
-import android.app.Application
+import android.content.Context
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.model.*
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
 class MainViewModel(
-    app: Application,
-    private val pdfHandler: PdfHandler = PdfHandlerImpl(app),
-    val pdfRenderer: PdfRenderer = PdfRendererImpl(app)
-): AndroidViewModel(app) {
+    context: Context,
+    private val pdfHandler: PdfHandler = Locator.pdfHandler(context),
+    val pdfRenderer: PdfRenderer = Locator.pdfRenderer(context)
+): ViewModel() {
     private val _viewState = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -109,4 +114,10 @@ class MainViewModel(
         pdfRenderer.onCleared()
     }
 
+}
+
+class MainViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return MainViewModel(context.applicationContext) as T
+    }
 }
