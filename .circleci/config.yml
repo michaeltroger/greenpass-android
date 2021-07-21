@@ -27,10 +27,10 @@ jobs:
       #    system-image: system-images;android-25;google_apis;x86
 
       # And finally run the release build
-      - run:
-          name: Assemble release build
-          command: |
-            ./gradlew assembleRelease    
+      #- run:
+      #    name: Assemble release build
+      #    command: |
+      #      ./gradlew assembleRelease    
 
 workflows:
   # Below is the definition of your workflow.
