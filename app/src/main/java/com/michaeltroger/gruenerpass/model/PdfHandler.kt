@@ -13,21 +13,29 @@ import java.io.InputStream
 
 const val PDF_FILENAME = "certificate.pdf"
 
-class PdfHandler(private val context: Context) {
+interface PdfHandler {
+    suspend fun doesFileExist(): Boolean
+    suspend fun deleteFile()
+    suspend fun isPdfPasswordProtected(uri: Uri): Boolean
+    suspend fun copyPdfToCache(uri: Uri): Boolean
+    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean
+}
+
+class PdfHandlerImpl(private val context: Context): PdfHandler {
 
     private val file = File(context.filesDir, PDF_FILENAME)
 
-    suspend fun doesFileExist(): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun doesFileExist(): Boolean = withContext(Dispatchers.IO) {
         file.exists()
     }
 
-    suspend fun deleteFile() = withContext(Dispatchers.IO) {
+    override suspend fun deleteFile() = withContext(Dispatchers.IO) {
         if (doesFileExist()) {
             file.delete()
         }
     }
 
-    suspend fun isPdfPasswordProtected(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun isPdfPasswordProtected(uri: Uri): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
                 try {
@@ -45,7 +53,7 @@ class PdfHandler(private val context: Context) {
     /**
      * @return true if successful
      */
-    suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
                 deleteFile() // clear old file first if it exists
@@ -62,7 +70,7 @@ class PdfHandler(private val context: Context) {
     /**
      * @return true if successful
      */
-    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
                 with(PDDocument.load(inputStream, password)) {

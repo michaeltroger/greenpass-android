@@ -22,7 +22,16 @@ private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 const val PAGE_INDEX_QR_CODE = 0
 
-class PdfRenderer(private val context: Context) {
+interface PdfRenderer {
+    suspend fun loadFile(): Boolean
+    fun getPageCount(): Int
+    fun onCleared()
+    suspend fun hasQrCode(pageIndex: Int): Boolean
+    suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap?
+    suspend fun renderPage(pageIndex: Int): Bitmap
+}
+
+class PdfRendererImpl(private val context: Context): com.michaeltroger.gruenerpass.model.PdfRenderer {
 
     private val file = File(context.filesDir, PDF_FILENAME)
 
@@ -40,7 +49,7 @@ class PdfRenderer(private val context: Context) {
     /**
      * @return true if successful
      */
-    suspend fun loadFile(): Boolean = withContext(renderContext) {
+    override suspend fun loadFile(): Boolean = withContext(renderContext) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor!!)
@@ -54,25 +63,25 @@ class PdfRenderer(private val context: Context) {
         }
     }
 
-    fun getPageCount(): Int = renderer?.pageCount ?: 0
+    override fun getPageCount(): Int = renderer?.pageCount ?: 0
 
-    fun onCleared() {
+    override fun onCleared() {
         try {
             renderer?.use {}
             fileDescriptor?.use {}
         } catch (ignore: Exception) {}
     }
 
-    suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
+    override suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
         return@withContext !renderPage(pageIndex).extractQrCodeText().isNullOrEmpty()
     }
 
-    suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
+    override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
        val qrText = renderPage(pageIndex).extractQrCodeText() ?: return@withContext null
        return@withContext encodeQrCodeAsBitmap(qrText)
     }
 
-    suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
+    override suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
         if (renderer == null) {
             loadFile()
         }
