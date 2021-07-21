@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private val vm by activityViewModels<MainViewModel>()
+    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext())}
 
     private lateinit var adapter: PagerAdapter
     private lateinit var layoutMediator: TabLayoutMediator

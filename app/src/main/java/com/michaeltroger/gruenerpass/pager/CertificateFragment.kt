@@ -9,12 +9,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.MainViewModel
+import com.michaeltroger.gruenerpass.MainViewModelFactory
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.pager.pdfpage.SinglePageAdapter
 
 class CertificateFragment : Fragment() {
 
-    private val vm by activityViewModels<MainViewModel>()
+    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext()) }
     private var certificate: RecyclerView? = null
 
     override fun onCreateView(

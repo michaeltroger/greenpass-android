@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.michaeltroger.gruenerpass.MainViewModel
+import com.michaeltroger.gruenerpass.MainViewModelFactory
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import kotlinx.coroutines.launch
 
 class QrCodeFragment : Fragment() {
 
-    private val vm by activityViewModels<MainViewModel>()
+    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext()) }
     private var qrCode: ImageView? = null
 
     override fun onCreateView(
