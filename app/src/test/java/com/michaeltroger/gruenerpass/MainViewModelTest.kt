@@ -51,7 +51,7 @@ class MainViewModelTest {
                 pdfRenderer = renderer
             )
             assertThat(vm.viewState.value).isEqualTo(ViewState.Certificate)
-            assertThat(vm.hasQrCode).isFalse
+            assertThat(vm.hasQrCode).isTrue
         }
 
         @Test
