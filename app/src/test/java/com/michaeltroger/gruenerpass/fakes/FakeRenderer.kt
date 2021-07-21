@@ -29,7 +29,7 @@ class FakeRenderer(
     }
 
     override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? {
-        return Bitmap.createBitmap(1,1, Bitmap.Config.ALPHA_8)
+        return if (hasQrCode) Bitmap.createBitmap(1,1, Bitmap.Config.ALPHA_8) else null
     }
 
     override suspend fun renderPage(pageIndex: Int): Bitmap {
