@@ -8,7 +8,6 @@ class FakeHandler(
     private val fileInAppCache: Boolean,
     private val isPasswordProtected: Boolean = false,
     private var copySuccess: Boolean = true
-
 ) : PdfHandler {
 
     fun overrideCopySuccess(success: Boolean) {
