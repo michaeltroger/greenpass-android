@@ -3,7 +3,9 @@ package com.michaeltroger.gruenerpass
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -20,7 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pager.pdfpage.SinglePageAdapter
+import com.michaeltroger.gruenerpass.pager.pdfpage.CertificatesAdapter
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.collect
@@ -34,7 +36,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var deleteMenuItem: MenuItem? = null
     private var root: ConstraintLayout? = null
     private var progressIndicator: CircularProgressIndicator? = null
-    private var certificate: RecyclerView? = null
+    private var certificates: RecyclerView? = null
 
     private var dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
@@ -47,13 +49,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setHasOptionsMenu(true)
-
         root = view.findViewById(R.id.root)
         addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
-        certificate = view.findViewById(R.id.certificate)
-        certificate!!.layoutManager = LinearLayoutManager(requireContext())
+        certificates = view.findViewById(R.id.certificates)
+        certificates!!.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
+            override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+                lp.width = (width * 0.95).toInt();
+                return true;
+            }
+        }
 
         addButton?.setOnClickListener {
             openFilePicker()
@@ -76,7 +81,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 vm.viewEvent.collect {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
-                        ViewEvent.ShowDeleteDialog -> showDoYouWantToDeleteDialog()
+                        ViewEvent.ShowDeleteDialog -> {} // TODO
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
                         ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
@@ -84,25 +89,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
-
-        deleteMenuItem = menu.findItem(R.id.delete)
-        if (vm.viewState.value is ViewState.Certificate) {
-            deleteMenuItem?.isVisible = true
-        }
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.delete -> {
-            showDoYouWantToDeleteDialog()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     private fun openFilePicker() {
@@ -122,30 +108,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         progressIndicator?.isVisible = false
         addButton?.isVisible = true
         deleteMenuItem?.isVisible = false
-        certificate?.adapter = null
-        certificate?.isVisible = false
+        certificates?.adapter = null
+        certificates?.isVisible = false
     }
 
     private fun showCertificateState(hasQrCode: Boolean) {
         progressIndicator?.isVisible = false
         addButton?.isVisible = false
-        certificate?.isVisible = true
+        certificates?.isVisible = true
         deleteMenuItem?.isVisible = true
-        if (certificate?.adapter == null) {
-            certificate!!.adapter = SinglePageAdapter(vm.pdfRenderer, hasQrCode = hasQrCode)
+        if (certificates?.adapter == null) {
+            certificates!!.adapter = CertificatesAdapter(vm.pdfRenderer)
         }
-    }
-
-    private fun showDoYouWantToDeleteDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.dialog_delete_confirmation_message))
-            .setPositiveButton(R.string.ok)  { _, _ ->
-                vm.onDeleteConfirmed()
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .create()
-        dialogs["delete"] = dialog
-        dialog.show()
     }
 
     private fun showDoYouWantToReplaceDialog() {

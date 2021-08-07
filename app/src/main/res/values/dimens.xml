@@ -2,4 +2,5 @@
 <resources>
     <dimen name="space_medium">16dp</dimen>
     <dimen name="space_small">8dp</dimen>
+    <dimen name="space_very_small">4dp</dimen>
 </resources>

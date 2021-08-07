@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
     android:background="?colorSecondary"
-    android:padding="@dimen/space_small"
+    android:paddingTop="@dimen/space_small"
+    android:paddingStart="@dimen/space_small"
+    android:paddingEnd="@dimen/space_small"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -18,26 +20,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <EditText
-        android:id="@+id/certificate_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Certificate"
-        android:textAlignment="center"
-        android:padding="@dimen/space_small"
-        android:background="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:id="@+id/certificate"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/certificate_name"/>
+        android:id="@+id/certificates"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <Button
         android:layout_width="wrap_content"
