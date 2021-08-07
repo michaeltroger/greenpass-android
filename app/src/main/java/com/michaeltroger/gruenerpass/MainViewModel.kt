@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.locator.Locator
-import com.michaeltroger.gruenerpass.model.*
+import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
+import com.michaeltroger.gruenerpass.model.PdfHandler
+import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +23,7 @@ class MainViewModel(
     private val pdfHandler: PdfHandler = Locator.pdfHandler(context),
     val pdfRenderer: PdfRenderer = Locator.pdfRenderer(context)
 ): ViewModel() {
-    private val _viewState = MutableStateFlow(ViewState.Loading)
+    private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
@@ -29,14 +31,11 @@ class MainViewModel(
 
     private var uri: Uri? = null
 
-    var hasQrCode = false
-        private set
-
     init {
         viewModelScope.launch {
             if (pdfHandler.doesFileExist()) {
-                if (loadFile()) {
-                    _viewState.emit(ViewState.Certificate)
+                if (pdfRenderer.loadFile()) {
+                    _viewState.emit(ViewState.Certificate(hasQrCode = hasQrCode()))
                 } else {
                     _viewState.emit(ViewState.Empty)
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -66,8 +65,8 @@ class MainViewModel(
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
                 _viewState.emit(ViewState.Empty)
-                if (pdfHandler.copyPdfToCache(uri) && loadFile()) {
-                    _viewState.emit(ViewState.Certificate)
+                if (pdfHandler.copyPdfToCache(uri) && pdfRenderer.loadFile()) {
+                    _viewState.emit(ViewState.Certificate(hasQrCode = hasQrCode()))
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -83,8 +82,8 @@ class MainViewModel(
         viewModelScope.launch {
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password)) {
                 _viewState.emit(ViewState.Empty)
-                if (loadFile()) {
-                    _viewState.emit(ViewState.Certificate)
+                if (pdfRenderer.loadFile()) {
+                    _viewState.emit(ViewState.Certificate(hasQrCode = hasQrCode()))
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -101,13 +100,7 @@ class MainViewModel(
         }
     }
 
-    private suspend fun loadFile(): Boolean {
-        val success = pdfRenderer.loadFile()
-        if (success) {
-            hasQrCode = pdfRenderer.hasQrCode(PAGE_INDEX_QR_CODE)
-        }
-        return success
-    }
+    private suspend fun hasQrCode() = pdfRenderer.hasQrCode(PAGE_INDEX_QR_CODE)
 
     override fun onCleared() {
         super.onCleared()

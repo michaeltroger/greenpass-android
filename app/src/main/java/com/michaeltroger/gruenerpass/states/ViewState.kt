@@ -1,7 +1,7 @@
 package com.michaeltroger.gruenerpass.states
 
-enum class ViewState {
-    Empty,
-    Certificate,
-    Loading
+sealed class ViewState {
+    object Empty : ViewState()
+    data class Certificate(val hasQrCode: Boolean) : ViewState()
+    object Loading : ViewState()
 }
