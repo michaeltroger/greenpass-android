@@ -30,18 +30,19 @@ class MainViewModel(
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var uri: Uri? = null
+    private val documentCountDemo = 3
 
     init {
         viewModelScope.launch {
             if (pdfHandler.doesFileExist()) {
                 if (pdfRenderer.loadFile()) {
-                    _viewState.emit(ViewState.Certificate(hasQrCode = hasQrCode()))
+                    _viewState.emit(ViewState.Certificate(documentCount = documentCountDemo))
                 } else {
-                    _viewState.emit(ViewState.Empty)
+                    _viewState.emit(ViewState.Certificate(documentCount = 0))
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
             } else {
-                _viewState.emit(ViewState.Empty)
+                _viewState.emit(ViewState.Certificate(documentCount = 0))
             }
         }
     }
@@ -60,9 +61,8 @@ class MainViewModel(
             if (pdfHandler.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
-                _viewState.emit(ViewState.Empty)
                 if (pdfHandler.copyPdfToCache(uri) && pdfRenderer.loadFile()) {
-                    _viewState.emit(ViewState.Certificate(hasQrCode = hasQrCode()))
+                    _viewState.emit(ViewState.Certificate(documentCount = documentCountDemo))
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -73,9 +73,8 @@ class MainViewModel(
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password)) {
-                _viewState.emit(ViewState.Empty)
                 if (pdfRenderer.loadFile()) {
-                    _viewState.emit(ViewState.Certificate(hasQrCode = hasQrCode()))
+                    _viewState.emit(ViewState.Certificate(documentCount = documentCountDemo))
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -88,7 +87,7 @@ class MainViewModel(
     fun onDeleteConfirmed() {
         viewModelScope.launch {
             pdfHandler.deleteFile()
-            _viewState.emit(ViewState.Empty)
+            _viewState.emit(ViewState.Certificate(documentCount = 0))
         }
     }
 

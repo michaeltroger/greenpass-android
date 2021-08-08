@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass.states
 
 sealed class ViewState {
-    object Empty : ViewState()
-    data class Certificate(val hasQrCode: Boolean) : ViewState()
+    data class Certificate(val documentCount: Int) : ViewState()
     object Loading : ViewState()
 }

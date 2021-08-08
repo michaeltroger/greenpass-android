@@ -28,6 +28,7 @@ import com.michaeltroger.gruenerpass.pager.certificates.AddCertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -68,6 +69,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
         itemTouchHelper.attachToRecyclerView(certificates)
+        certificates!!.adapter = adapter
 
         addButton?.setOnClickListener {
             openFilePicker()
@@ -77,8 +79,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
-                        is ViewState.Certificate -> showCertificateState(hasQrCode = it.hasQrCode)
-                        ViewState.Empty -> showEmptyState()
+                        is ViewState.Certificate -> showCertificateState(documentCount = it.documentCount)
                         ViewState.Loading -> showLoadingState()
                     }.let{}
                 }
@@ -119,18 +120,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         certificates?.isVisible = false
     }
 
-    private fun showCertificateState(hasQrCode: Boolean) {
+    private fun showCertificateState(documentCount: Int) {
         progressIndicator?.isVisible = false
         addButton?.isVisible = false
         certificates?.isVisible = true
         deleteMenuItem?.isVisible = true
-        if (certificates?.adapter == null) {
-            adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
-            adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
-            adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
-            adapter.add(AddCertificateItem(onAddCalled = { openFilePicker() }))
-            certificates!!.adapter = adapter
+        adapter.clear()
+        val items = mutableListOf<Group>()
+        for (i in 0 until documentCount) {
+            items.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
         }
+        items.add(AddCertificateItem(onAddCalled = { openFilePicker() }))
+        adapter.addAll(items)
     }
 
     private fun showDoYouWantToDeleteDialog() {
