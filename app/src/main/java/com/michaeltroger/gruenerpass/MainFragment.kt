@@ -22,9 +22,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pager.pdfpage.CertificatesAdapter
+import com.michaeltroger.gruenerpass.pager.certificates.AddCertificateItem
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -118,8 +120,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         certificates?.isVisible = true
         deleteMenuItem?.isVisible = true
         if (certificates?.adapter == null) {
-            certificates!!.adapter = CertificatesAdapter(vm.pdfRenderer)
+            val adapter = GroupieAdapter()
+            adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
+            adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
+            adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
+            adapter.add(AddCertificateItem(onAddCalled = { openFilePicker() }))
+            certificates!!.adapter = adapter
         }
+    }
+
+    private fun showDoYouWantToDeleteDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.dialog_delete_confirmation_message))
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                vm.onDeleteConfirmed()
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create()
+        dialogs["delete"] = dialog
+        dialog.show()
     }
 
     private fun showDoYouWantToReplaceDialog() {

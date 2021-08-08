@@ -28,14 +28,4 @@
         app:layout_constraintTop_toTopOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"/>
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/page"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/space_small"
-        android:adjustViewBounds="true"
-        android:paddingBottom="@dimen/space_very_small"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/name"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
