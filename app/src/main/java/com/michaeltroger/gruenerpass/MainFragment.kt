@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -40,7 +41,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var progressIndicator: CircularProgressIndicator? = null
     private var certificates: RecyclerView? = null
 
-    private var dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
+    private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
+
+    private val adapter = GroupieAdapter()
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -55,12 +58,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
         certificates = view.findViewById(R.id.certificates)
+
         certificates!!.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 lp.width = (width * 0.95).toInt();
                 return true;
             }
         }
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
+        itemTouchHelper.attachToRecyclerView(certificates)
 
         addButton?.setOnClickListener {
             openFilePicker()
@@ -120,7 +126,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         certificates?.isVisible = true
         deleteMenuItem?.isVisible = true
         if (certificates?.adapter == null) {
-            val adapter = GroupieAdapter()
             adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
             adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
             adapter.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
