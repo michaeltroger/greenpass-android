@@ -12,6 +12,8 @@
         android:text="Certificate"
         android:background="@color/white"
         android:padding="@dimen/space_small"
+        android:maxLines="1"
+        android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/deleteIcon"
         app:layout_constraintTop_toTopOf="parent"/>
