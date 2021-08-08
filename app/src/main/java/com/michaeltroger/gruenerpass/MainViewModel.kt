@@ -50,11 +50,7 @@ class MainViewModel(
         this.uri = uri
         viewModelScope.launch {
             _viewEvent.emit(ViewEvent.CloseAllDialogs)
-            if (pdfHandler.doesFileExist()) {
-                _viewEvent.emit(ViewEvent.ShowReplaceDialog)
-            } else {
-                loadFileFromUri()
-            }
+            loadFileFromUri()
         }
     }
 
@@ -72,10 +68,6 @@ class MainViewModel(
                 }
             }
         }
-    }
-
-    fun onReplaceConfirmed() {
-        loadFileFromUri()
     }
 
     fun onPasswordEntered(password: String) {

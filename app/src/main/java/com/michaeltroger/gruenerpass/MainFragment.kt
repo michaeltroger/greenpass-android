@@ -90,9 +90,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 vm.viewEvent.collect {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
-                        ViewEvent.ShowDeleteDialog -> {} // TODO
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
-                        ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
                     }.let{}
                 }
@@ -144,18 +142,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
         dialogs["delete"] = dialog
-        dialog.show()
-    }
-
-    private fun showDoYouWantToReplaceDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.dialog_replace_confirmation_message))
-            .setPositiveButton(R.string.ok)  { _, _ ->
-                vm.onReplaceConfirmed()
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .create()
-        dialogs["replace"] = dialog
         dialog.show()
     }
 
