@@ -12,7 +12,7 @@ import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -31,9 +31,9 @@ interface PdfRenderer {
     suspend fun renderPage(pageIndex: Int): Bitmap
 }
 
-class PdfRendererImpl(private val context: Context): com.michaeltroger.gruenerpass.model.PdfRenderer {
+class PdfRendererImpl(private val context: Context, fileName: String, private val renderContext: CoroutineDispatcher): com.michaeltroger.gruenerpass.model.PdfRenderer {
 
-    private val file = File(context.filesDir, PDF_FILENAME)
+    private val file = File(context.filesDir, fileName)
 
     private val activityManager: ActivityManager?
         get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
@@ -43,8 +43,6 @@ class PdfRendererImpl(private val context: Context): com.michaeltroger.gruenerpa
 
     private var renderer: PdfRenderer? = null
     private var fileDescriptor: ParcelFileDescriptor? = null
-
-    private val renderContext = newSingleThreadContext("RenderContext")
 
     /**
      * @return true if successful

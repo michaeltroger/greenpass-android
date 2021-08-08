@@ -24,6 +24,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.pager.certificates.AddCertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -32,6 +33,8 @@ import com.xwray.groupie.Group
 import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
+import java.util.*
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -42,6 +45,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var root: ConstraintLayout? = null
     private var progressIndicator: CircularProgressIndicator? = null
     private var certificates: RecyclerView? = null
+    private val thread = newSingleThreadContext("RenderContext")
 
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
@@ -79,7 +83,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
-                        is ViewState.Certificate -> showCertificateState(documentCount = it.documentCount)
+                        is ViewState.Certificate -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
                     }.let{}
                 }
@@ -112,33 +116,29 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         progressIndicator?.show()
     }
 
-    private fun showEmptyState() {
-        progressIndicator?.isVisible = false
-        addButton?.isVisible = true
-        deleteMenuItem?.isVisible = false
-        certificates?.adapter = null
-        certificates?.isVisible = false
-    }
-
-    private fun showCertificateState(documentCount: Int) {
+    private fun showCertificateState(documents: SortedMap<String, String>) {
         progressIndicator?.isVisible = false
         addButton?.isVisible = false
         certificates?.isVisible = true
         deleteMenuItem?.isVisible = true
         adapter.clear()
         val items = mutableListOf<Group>()
-        for (i in 0 until documentCount) {
-            items.add(CertificateItem(vm.pdfRenderer) { showDoYouWantToDeleteDialog() })
+        documents.forEach {
+            items.add(CertificateItem(
+                PdfRendererImpl(requireContext(), it.key, renderContext = thread),
+                documentName = it.value) {
+                showDoYouWantToDeleteDialog(it.key)
+            })
         }
         items.add(AddCertificateItem(onAddCalled = { openFilePicker() }))
         adapter.addAll(items)
     }
 
-    private fun showDoYouWantToDeleteDialog() {
+    private fun showDoYouWantToDeleteDialog(id: String) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
-                vm.onDeleteConfirmed()
+               vm.onDeleteConfirmed(id)
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create()

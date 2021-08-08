@@ -14,7 +14,7 @@ import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.viewbinding.BindableItem
 import kotlinx.coroutines.*
 
-class CertificateItem(private val renderer: PdfRenderer, private val onDeleteCalled: () -> Unit) : BindableItem<ItemCertificateBinding>() {
+class CertificateItem(private val renderer: PdfRenderer, private val documentName: String, private val onDeleteCalled: () -> Unit) : BindableItem<ItemCertificateBinding>() {
 
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
@@ -26,7 +26,7 @@ class CertificateItem(private val renderer: PdfRenderer, private val onDeleteCal
     override fun bind(viewBinding: ItemCertificateBinding, position: Int) {
         scope.launch {
             val adapter = GroupieAdapter()
-            adapter.add(CertificateHeaderItem(onDeleteCalled = onDeleteCalled))
+            adapter.add(CertificateHeaderItem(documentName, onDeleteCalled = onDeleteCalled))
             if (renderer.hasQrCode(PAGE_INDEX_QR_CODE)) {
                 adapter.add(QrCodeItem(renderer))
             }
