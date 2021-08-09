@@ -57,7 +57,6 @@ class CertificateItem(
     override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
         super.unregisterGroupDataObserver(groupDataObserver)
         scope.cancel()
-        renderer.onCleared()
     }
 
     override fun isSameAs(other: Item<*>): Boolean {
