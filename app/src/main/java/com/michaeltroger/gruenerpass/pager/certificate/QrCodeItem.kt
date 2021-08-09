@@ -6,6 +6,7 @@ import com.michaeltroger.gruenerpass.databinding.ItemQrCodeBinding
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.xwray.groupie.GroupDataObserver
+import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import kotlinx.coroutines.*
 
@@ -27,5 +28,13 @@ class QrCodeItem(private val renderer: PdfRenderer) : BindableItem<ItemQrCodeBin
     override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
         super.unregisterGroupDataObserver(groupDataObserver)
         scope.cancel()
+    }
+
+    override fun isSameAs(other: Item<*>): Boolean {
+        return viewType == other.viewType
+    }
+
+    override fun hasSameContentAs(other: Item<*>): Boolean {
+        return viewType == other.viewType
     }
 }

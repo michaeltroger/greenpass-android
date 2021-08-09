@@ -13,12 +13,13 @@ import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import kotlinx.coroutines.*
 
 class CertificateItem(
     context: Context,
-    fileName: String,
+    private val fileName: String,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
@@ -52,5 +53,13 @@ class CertificateItem(
         super.unregisterGroupDataObserver(groupDataObserver)
         scope.cancel()
         renderer.onCleared()
+    }
+
+    override fun isSameAs(other: Item<*>): Boolean {
+        return viewType == other.viewType
+    }
+
+    override fun hasSameContentAs(other: Item<*>): Boolean {
+        return (other as? CertificateItem)?.fileName == fileName
     }
 }

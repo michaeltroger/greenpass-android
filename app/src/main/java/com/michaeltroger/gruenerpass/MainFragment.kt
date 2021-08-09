@@ -35,7 +35,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext())}
 
-    private var deleteMenuItem: MenuItem? = null
     private var root: ConstraintLayout? = null
     private var progressIndicator: CircularProgressIndicator? = null
     private var certificates: RecyclerView? = null
@@ -124,9 +123,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun showCertificateState(documents: SortedMap<String, String>) {
         progressIndicator?.isVisible = false
-        certificates?.isVisible = true
-        deleteMenuItem?.isVisible = true
-        adapter.clear()
         val items = mutableListOf<Group>()
         documents.forEach {
             items.add(CertificateItem(
@@ -137,7 +133,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 showDoYouWantToDeleteDialog(it.key)
             })
         }
-        adapter.addAll(items)
+        adapter.update(items)
     }
 
     private fun showDoYouWantToDeleteDialog(id: String) {

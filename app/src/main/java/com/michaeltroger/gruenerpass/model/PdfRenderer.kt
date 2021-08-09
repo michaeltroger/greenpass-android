@@ -31,7 +31,7 @@ interface PdfRenderer {
     suspend fun renderPage(pageIndex: Int): Bitmap
 }
 
-class PdfRendererImpl(private val context: Context, fileName: String, private val renderContext: CoroutineDispatcher): com.michaeltroger.gruenerpass.model.PdfRenderer {
+class PdfRendererImpl(private val context: Context, val fileName: String, private val renderContext: CoroutineDispatcher): com.michaeltroger.gruenerpass.model.PdfRenderer {
 
     private val file = File(context.filesDir, fileName)
 

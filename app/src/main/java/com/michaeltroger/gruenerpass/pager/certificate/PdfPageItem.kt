@@ -4,7 +4,9 @@ import android.view.View
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
 import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.xwray.groupie.GroupDataObserver
+import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import kotlinx.coroutines.*
 
@@ -26,5 +28,13 @@ class PdfPageItem(private val renderer: PdfRenderer, private val pageIndex: Int)
     override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
         super.unregisterGroupDataObserver(groupDataObserver)
         scope.cancel()
+    }
+
+    override fun isSameAs(other: Item<*>): Boolean {
+        return viewType == other.viewType
+    }
+
+    override fun hasSameContentAs(other: Item<*>): Boolean {
+        return (other as? PdfPageItem)?.pageIndex == pageIndex
     }
 }
