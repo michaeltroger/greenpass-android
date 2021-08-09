@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
-    android:background="?colorSecondary"
+    android:background="?colorSecondaryVariant"
     android:paddingTop="@dimen/space_small"
     android:paddingStart="@dimen/space_small"
     android:paddingEnd="@dimen/space_small"
