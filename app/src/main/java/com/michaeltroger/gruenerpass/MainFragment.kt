@@ -62,6 +62,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 if (itemCount > 1) {
                     lp.width = (width * 0.95).toInt();
+                } else {
+                    lp.width = width
                 }
                 return true;
             }
