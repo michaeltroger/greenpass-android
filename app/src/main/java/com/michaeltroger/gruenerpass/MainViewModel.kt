@@ -69,7 +69,9 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-           _viewState.emit(ViewState.Certificate(documents = certificateFlow.first()))
+            certificateFlow.collect {
+                _viewState.emit(ViewState.Certificate(documents = it))
+            }
         }
     }
 
@@ -104,7 +106,6 @@ class MainViewModel(
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
                 if (pdfHandler.copyPdfToCache(uri, fileName = filename) && renderer.loadFile()) {
                     writeCertificates(id = filename, name = documentName)
-                    _viewState.emit(ViewState.Certificate(documents = certificateFlow.first()))
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -121,7 +122,6 @@ class MainViewModel(
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
                 if (renderer.loadFile()) {
                     writeCertificates(id = filename, name = documentName)
-                    _viewState.emit(ViewState.Certificate(certificateFlow.first()))
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -136,7 +136,6 @@ class MainViewModel(
         viewModelScope.launch {
             deleteCertificateById(id)
             pdfHandler.deleteFile(id)
-            _viewState.emit(ViewState.Certificate(documents = certificateFlow.first()))
         }
     }
 
