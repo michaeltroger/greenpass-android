@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val vm by viewModels<MainViewModel> { MainViewModelFactory(applicationContext)}
+    private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

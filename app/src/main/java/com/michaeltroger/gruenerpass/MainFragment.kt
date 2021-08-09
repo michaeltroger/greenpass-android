@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -32,7 +33,7 @@ import kotlinx.coroutines.newSingleThreadContext
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext())}
+    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
     private val thread = newSingleThreadContext("RenderContext")
 
@@ -169,7 +170,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showFileCanNotBeReadError() {
-        binding.root?.let {
+        binding.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }

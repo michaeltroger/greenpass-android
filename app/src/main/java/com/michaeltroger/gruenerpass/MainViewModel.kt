@@ -1,7 +1,9 @@
 package com.michaeltroger.gruenerpass
 
+import android.app.Application
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -21,11 +23,11 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class MainViewModel(
-    private val context: Context,
-    private val pdfHandler: PdfHandler = Locator.pdfHandler(context),
-    private val certificateRepo: CertificateRepo = Locator.certificateRepo(context),
-    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(context)
-): ViewModel() {
+    app: Application,
+    private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
+    private val certificateRepo: CertificateRepo = Locator.certificateRepo(app),
+    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app)
+): AndroidViewModel(app) {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -51,40 +53,40 @@ class MainViewModel(
     private fun loadFileFromUri() {
         val uri = uri!!
         viewModelScope.launch {
-            val documentName = documentNameRepo.getDocumentName(uri)
             val filename = UUID.randomUUID().toString() + ".pdf"
             if (pdfHandler.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
-                val renderer = PdfRendererImpl(context, fileName = filename, renderContext = Dispatchers.IO)
-                if (pdfHandler.copyPdfToCache(uri, fileName = filename) && renderer.loadFile()) {
-                    certificateRepo.insert(Certificate(id = filename, name = documentName))
-                    _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
+                if (pdfHandler.copyPdfToCache(uri, fileName = filename)) {
+                    handleFileAfterCopying(filename)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
-                renderer.onCleared()
             }
         }
     }
 
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            val documentName = documentNameRepo.getDocumentName(uri!!)
             val filename = UUID.randomUUID().toString() + ".pdf"
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password, filename)) {
-                val renderer = PdfRendererImpl(context, fileName = filename, renderContext = Dispatchers.IO)
-                if (renderer.loadFile()) {
-                    certificateRepo.insert(Certificate(id = filename, name = documentName))
-                    _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
-                } else {
-                    _viewEvent.emit(ViewEvent.ErrorParsingFile)
-                }
-                renderer.onCleared()
+                handleFileAfterCopying(filename)
             } else {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             }
         }
+    }
+
+    private suspend fun handleFileAfterCopying(filename: String) {
+        val renderer = PdfRendererImpl(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
+        if (renderer.loadFile()) {
+            val documentName = documentNameRepo.getDocumentName(uri!!)
+            certificateRepo.insert(Certificate(id = filename, name = documentName))
+            _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
+        } else {
+            _viewEvent.emit(ViewEvent.ErrorParsingFile)
+        }
+        renderer.onCleared()
     }
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
@@ -116,8 +118,8 @@ class MainViewModel(
 
 }
 
-class MainViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class MainViewModelFactory(private val app: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MainViewModel(context.applicationContext) as T
+        return MainViewModel(app) as T
     }
 }

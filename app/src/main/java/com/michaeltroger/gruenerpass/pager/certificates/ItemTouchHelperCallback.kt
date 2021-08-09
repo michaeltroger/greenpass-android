@@ -1,8 +1,7 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.pager.certificates
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import java.util.*
 import kotlin.math.sign
 
