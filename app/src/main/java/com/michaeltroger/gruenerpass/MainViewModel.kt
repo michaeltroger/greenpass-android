@@ -59,6 +59,9 @@ class MainViewModel(
 
     private suspend fun writeAllCertificates(map: List<Pair<String, String>>) {
         context.dataStore.edit { settings ->
+            settings[certificates] = setOf()
+        }
+        context.dataStore.edit { settings ->
             settings[certificates] = map.map {
                 "${it.first},${it.second}"
             }.toSet()
@@ -176,12 +179,14 @@ class MainViewModel(
         }
     }
 
-    fun onDragFinished(idList: List<String>) {
+    fun onDragFinished(sortedIdList: List<String>) {
         viewModelScope.launch {
-            val original = certificateFlow.first()
-            val sortedMap = mutableListOf<Pair<String, String>>()
-            idList.forEachIndexed { index, filename ->
-                sortedMap.add(Pair(filename, original[index].second))
+            val originalMap = mutableMapOf<String, String>()
+            certificateFlow.first().forEach {
+                originalMap[it.first] = it.second
+            }
+            val sortedMap = sortedIdList.map {
+                Pair(it, originalMap[it]!!)
             }
             writeAllCertificates(sortedMap)
         }
