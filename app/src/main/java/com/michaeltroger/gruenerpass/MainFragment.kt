@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +23,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.pager.certificates.AddCertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -40,7 +38,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext())}
 
-    private var addButton: Button? = null
     private var deleteMenuItem: MenuItem? = null
     private var root: ConstraintLayout? = null
     private var progressIndicator: CircularProgressIndicator? = null
@@ -61,7 +58,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onViewCreated(view, savedInstanceState)
 
         root = view.findViewById(R.id.root)
-        addButton = view.findViewById(R.id.add)
         progressIndicator = view.findViewById(R.id.progress_indicator)
         certificates = view.findViewById(R.id.certificates)
         PagerSnapHelper().attachToRecyclerView(certificates)
@@ -74,10 +70,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
         itemTouchHelper.attachToRecyclerView(certificates)
         certificates!!.adapter = adapter
-
-        addButton?.setOnClickListener {
-            openFilePicker()
-        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -118,7 +110,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun showCertificateState(documents: SortedMap<String, String>) {
         progressIndicator?.isVisible = false
-        addButton?.isVisible = false
         certificates?.isVisible = true
         deleteMenuItem?.isVisible = true
         adapter.clear()
