@@ -21,7 +21,7 @@ class CertificateItem(
     context: Context,
     private val fileName: String,
     dispatcher: CoroutineDispatcher,
-    val documentName: String,
+    private val documentName: String,
     private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit

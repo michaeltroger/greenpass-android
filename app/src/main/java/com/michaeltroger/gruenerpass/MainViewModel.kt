@@ -8,18 +8,14 @@ import androidx.datastore.preferences.core.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.room.Room
 import com.michaeltroger.gruenerpass.db.AppDatabase
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.model.*
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 
@@ -35,11 +31,12 @@ class MainViewModel(
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var uri: Uri? = null
-    private val thread = newSingleThreadContext("RenderContext")
 
     init {
         viewModelScope.launch {
-           _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
+            withContext(Dispatchers.IO) {
+                _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll() ))
+            }
         }
     }
 
@@ -75,11 +72,11 @@ class MainViewModel(
             if (pdfHandler.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
-                val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
+                val renderer = PdfRendererImpl(context, fileName = filename, renderContext = Dispatchers.IO)
                 if (pdfHandler.copyPdfToCache(uri, fileName = filename) && renderer.loadFile()) {
                     withContext(Dispatchers.IO) {
                         db.certificateDao().insertAll(Certificate(id = filename, name = documentName))
-                        _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
+                        _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll() ))
                     }
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -94,11 +91,11 @@ class MainViewModel(
             val documentName = context.getDocumentName(uri!!)
             val filename = UUID.randomUUID().toString() + ".pdf"
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password, filename)) {
-                val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
+                val renderer = PdfRendererImpl(context, fileName = filename, renderContext = Dispatchers.IO)
                 if (renderer.loadFile()) {
                     withContext(Dispatchers.IO) {
                         db.certificateDao().insertAll(Certificate(id = filename, name = documentName))
-                        _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
+                        _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll() ))
                     }
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -122,7 +119,7 @@ class MainViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 db.certificateDao().delete(id)
-                _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
+                _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll() ))
             }
             pdfHandler.deleteFile(id)
         }
@@ -132,7 +129,7 @@ class MainViewModel(
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
             withContext(Dispatchers.IO) {
-                db.certificateDao().getAll().first().forEach {
+                db.certificateDao().getAll().forEach {
                     originalMap[it.id] = it.name
                 }
             }

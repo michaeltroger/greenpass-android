@@ -3,12 +3,11 @@ package com.michaeltroger.gruenerpass.db
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CertificateDao {
     @Query("SELECT * FROM certificates")
-    fun getAll(): Flow<List<Certificate>>
+    fun getAll(): List<Certificate>
 
     @Insert
     fun insertAll(vararg certificates: Certificate)
