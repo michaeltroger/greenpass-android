@@ -4,9 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
-import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -24,8 +22,6 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_data")
 
 class MainViewModel(
     private val context: Context,
@@ -46,9 +42,7 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            db.certificateDao().getAll().collect {
-                _viewState.emit(ViewState.Certificate(documents = it))
-            }
+           _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
         }
     }
 
@@ -72,8 +66,8 @@ class MainViewModel(
             contentResolver.query(uri, null, null, null, null)?.use { cursor ->
                 cursor.moveToFirst()
                 return@use cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME).let(cursor::getString)
-                }
-            }.getOrNull()
+            }
+        }.getOrNull()
     }
 
     private fun loadFileFromUri() {
@@ -88,6 +82,7 @@ class MainViewModel(
                 if (pdfHandler.copyPdfToCache(uri, fileName = filename) && renderer.loadFile()) {
                     withContext(Dispatchers.IO) {
                         db.certificateDao().insertAll(Certificate(id = filename, name = documentName))
+                        _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
                     }
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -106,6 +101,7 @@ class MainViewModel(
                 if (renderer.loadFile()) {
                     withContext(Dispatchers.IO) {
                         db.certificateDao().insertAll(Certificate(id = filename, name = documentName))
+                        _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
                     }
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -129,6 +125,7 @@ class MainViewModel(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 db.certificateDao().delete(id)
+                _viewState.emit(ViewState.Certificate(documents = db.certificateDao().getAll().first() ))
             }
             pdfHandler.deleteFile(id)
         }
