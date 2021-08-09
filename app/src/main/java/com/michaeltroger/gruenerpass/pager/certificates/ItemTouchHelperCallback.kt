@@ -41,7 +41,7 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
         msSinceStartScroll: Long
     ): Int {
         val direction = sign(viewSizeOutOfBounds.toDouble()).toInt()
-        return 3 * direction
+        return 5 * direction
     }
 
     override fun isLongPressDragEnabled(): Boolean {
