@@ -21,15 +21,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.Group
-import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
-import java.util.*
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -42,7 +41,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
-    private val adapter = GroupieAdapter()
+    private val adapter = CertificateAdapter()
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -67,7 +66,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 return true;
             }
         }
-        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter))
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
+            vm.onDragFinished(it)
+        })
         itemTouchHelper.attachToRecyclerView(certificates)
         certificates!!.adapter = adapter
 
@@ -121,20 +122,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         progressIndicator?.show()
     }
 
-    private fun showCertificateState(documents: SortedMap<String, String>) {
+    private fun showCertificateState(documents: List<Pair<String, String>>) {
         progressIndicator?.isVisible = false
         val items = mutableListOf<Group>()
         documents.forEach {
             items.add(CertificateItem(
                 requireContext().applicationContext,
-                fileName = it.key,
-                documentName = it.value,
+                fileName = it.first,
+                documentName = it.second,
                 dispatcher= thread,
-                onDeleteCalled = { showDoYouWantToDeleteDialog(it.key) },
+                onDeleteCalled = { showDoYouWantToDeleteDialog(it.first) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
-                    vm.onDocumentNameChanged(filename = it.key, documentName = updatedDocumentName)
+                    vm.onDocumentNameChanged(filename = it.first, documentName = updatedDocumentName)
                 }
             ))}
+        adapter.setData(documents.map { it.first }.toList())
         adapter.update(items)
     }
 

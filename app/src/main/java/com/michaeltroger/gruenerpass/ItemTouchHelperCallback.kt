@@ -2,10 +2,11 @@ package com.michaeltroger.gruenerpass
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.xwray.groupie.GroupieAdapter
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
+import java.util.*
 import kotlin.math.sign
 
-class ItemTouchHelperCallback(private val adapter: GroupieAdapter) : ItemTouchHelper.Callback()  {
+class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private val onDragFinished: (idList: List<String>) -> Unit) : ItemTouchHelper.Callback()  {
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,
@@ -53,19 +54,24 @@ class ItemTouchHelperCallback(private val adapter: GroupieAdapter) : ItemTouchHe
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+        val fromPosition = viewHolder.adapterPosition
+        val toPosition = target.adapterPosition
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(adapter.list, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(adapter.list, i, i - 1)
+            }
+        }
+        adapter.notifyItemMoved(fromPosition, toPosition)
         return true
-    }
-
-    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-        super.onSelectedChanged(viewHolder, actionState)
-        // Handle action state changes
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        // Called by the ItemTouchHelper when the user interaction with an element is over and it also completed its animation
-        // This is a good place to send update to your backend about changes
+        onDragFinished(adapter.list)
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

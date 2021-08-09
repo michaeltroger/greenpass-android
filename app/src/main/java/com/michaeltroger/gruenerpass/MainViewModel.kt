@@ -38,22 +38,28 @@ class MainViewModel(
     private val thread = newSingleThreadContext("RenderContext")
 
     private val certificates = stringSetPreferencesKey("certificates")
-    private val certificateFlow: Flow<SortedMap<String, String>> = context.dataStore.data
+    private val certificateFlow: Flow<List<Pair<String, String>>> = context.dataStore.data
         .map { settings ->
             val set = settings[certificates] ?: setOf()
-            val map = sortedMapOf<String, String>()
-            set.forEach {
+            set.map {
                 val list = it.split(',', ignoreCase = false, limit = 2)
-                map[list[0]] = list[1]
+                Pair(list[0], list[1])
             }
-            map
         }
 
     private suspend fun addCertificate(id: String, name: String) {
         context.dataStore.edit { settings ->
-            val certs = certificateFlow.first()
-            certs[id] = name
-            settings[certificates] = certs.toList().map {
+            val certs = certificateFlow.first().toMutableList()
+            certs.add(Pair(id, name))
+            settings[certificates] = certs.map {
+                "${it.first},${it.second}"
+            }.toSet()
+        }
+    }
+
+    private suspend fun writeAllCertificates(map: List<Pair<String, String>>) {
+        context.dataStore.edit { settings ->
+            settings[certificates] = map.map {
                 "${it.first},${it.second}"
             }.toSet()
         }
@@ -61,9 +67,12 @@ class MainViewModel(
 
     private suspend fun deleteCertificate(id: String) {
         context.dataStore.edit { settings ->
-            val certs = certificateFlow.first()
-            certs.remove(id)
-            settings[certificates] = certs.toList().map {
+            val certs = certificateFlow.first().toMutableList()
+            val toRemove = certs.find {
+                it.first == id
+            }
+            certs.remove(toRemove)
+            settings[certificates] = certs.map {
                 "${it.first},${it.second}"
             }.toSet()
         }
@@ -71,11 +80,17 @@ class MainViewModel(
 
     private suspend fun renameCertificate(id: String, newDocumentName: String) {
         context.dataStore.edit { settings ->
-            val certs = certificateFlow.first()
-            certs[id] = newDocumentName
-            settings[certificates] = certs.toList().map {
+            val result = certificateFlow.first().toMutableList().map {
+                if (it.first == id) {
+                    Pair(it.first, newDocumentName)
+                } else {
+                    it
+                }
+            }.map {
                 "${it.first},${it.second}"
             }.toSet()
+
+            settings[certificates] = result
         }
     }
 
@@ -158,6 +173,17 @@ class MainViewModel(
         viewModelScope.launch {
             deleteCertificate(id)
             pdfHandler.deleteFile(id)
+        }
+    }
+
+    fun onDragFinished(idList: List<String>) {
+        viewModelScope.launch {
+            val original = certificateFlow.first()
+            val sortedMap = mutableListOf<Pair<String, String>>()
+            idList.forEachIndexed { index, filename ->
+                sortedMap.add(Pair(filename, original[index].second))
+            }
+            writeAllCertificates(sortedMap)
         }
     }
 
