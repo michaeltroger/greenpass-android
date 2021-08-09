@@ -85,14 +85,14 @@ class MainViewModel(
         }
     }
 
-    private suspend fun Context.getFileName(uri: Uri): String? = withContext(Dispatchers.IO) {
+    private suspend fun Context.getDocumentName(uri: Uri): String = withContext(Dispatchers.IO) {
         when(uri.scheme) {
-            ContentResolver.SCHEME_CONTENT -> getContentFileName(uri)
+            ContentResolver.SCHEME_CONTENT -> getDocumentNameFromDb(uri)
             else -> uri.path?.let(::File)?.name
-        }
+        }?.removeSuffix(".pdf")?.removeSuffix(".PDF") ?: "Certificate"
     }
 
-    private suspend fun Context.getContentFileName(uri: Uri): String? = withContext(Dispatchers.IO) {
+    private suspend fun Context.getDocumentNameFromDb(uri: Uri): String? = withContext(Dispatchers.IO) {
         runCatching {
             contentResolver.query(uri, null, null, null, null)?.use { cursor ->
                 cursor.moveToFirst()
@@ -104,7 +104,7 @@ class MainViewModel(
     private fun loadFileFromUri() {
         val uri = uri!!
         viewModelScope.launch {
-            val documentName = context.getFileName(uri) ?: "Certificate"
+            val documentName = context.getDocumentName(uri)
             val filename = UUID.randomUUID().toString() + ".pdf"
             if (pdfHandler.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
@@ -122,7 +122,7 @@ class MainViewModel(
 
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            val documentName = context.getFileName(uri!!) ?: "Certificate"
+            val documentName = context.getDocumentName(uri!!)
             val filename = UUID.randomUUID().toString() + ".pdf"
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password, filename)) {
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
