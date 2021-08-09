@@ -21,6 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -122,21 +123,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         progressIndicator?.show()
     }
 
-    private fun showCertificateState(documents: List<Pair<String, String>>) {
+    private fun showCertificateState(documents: List<Certificate>) {
         progressIndicator?.isVisible = false
         val items = mutableListOf<Group>()
         documents.forEach {
             items.add(CertificateItem(
                 requireContext().applicationContext,
-                fileName = it.first,
-                documentName = it.second,
+                fileName = it.id,
+                documentName = it.name,
                 dispatcher= thread,
-                onDeleteCalled = { showDoYouWantToDeleteDialog(it.first) },
+                onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
-                    vm.onDocumentNameChanged(filename = it.first, documentName = updatedDocumentName)
+                    vm.onDocumentNameChanged(filename = it.id, documentName = updatedDocumentName)
                 }
             ))}
-        adapter.setData(documents.map { it.first }.toList())
+        adapter.setData(documents.map { it.id }.toList())
         adapter.update(items)
     }
 

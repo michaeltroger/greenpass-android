@@ -10,6 +10,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import com.michaeltroger.gruenerpass.db.AppDatabase
+import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.model.*
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -26,7 +29,11 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 class MainViewModel(
     private val context: Context,
-    private val pdfHandler: PdfHandler = Locator.pdfHandler(context)
+    private val pdfHandler: PdfHandler = Locator.pdfHandler(context),
+    private val db: AppDatabase = Room.databaseBuilder(
+        context.applicationContext,
+        AppDatabase::class.java, "greenpass"
+    ).build()
 ): ViewModel() {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
@@ -37,69 +44,9 @@ class MainViewModel(
     private var uri: Uri? = null
     private val thread = newSingleThreadContext("RenderContext")
 
-    private val certificates = stringSetPreferencesKey("certificates")
-    private val certificateFlow: Flow<List<Pair<String, String>>> = context.dataStore.data
-        .map { settings ->
-            val set = settings[certificates] ?: setOf()
-            set.map {
-                val list = it.split(',', ignoreCase = false, limit = 2)
-                Pair(list[0], list[1])
-            }
-        }
-
-    private suspend fun addCertificate(id: String, name: String) {
-        context.dataStore.edit { settings ->
-            val certs = certificateFlow.first().toMutableList()
-            certs.add(Pair(id, name))
-            settings[certificates] = certs.map {
-                "${it.first},${it.second}"
-            }.toSet()
-        }
-    }
-
-    private suspend fun writeAllCertificates(map: List<Pair<String, String>>) {
-        context.dataStore.edit { settings ->
-            settings[certificates] = setOf()
-        }
-        context.dataStore.edit { settings ->
-            settings[certificates] = map.map {
-                "${it.first},${it.second}"
-            }.toSet()
-        }
-    }
-
-    private suspend fun deleteCertificate(id: String) {
-        context.dataStore.edit { settings ->
-            val certs = certificateFlow.first().toMutableList()
-            val toRemove = certs.find {
-                it.first == id
-            }
-            certs.remove(toRemove)
-            settings[certificates] = certs.map {
-                "${it.first},${it.second}"
-            }.toSet()
-        }
-    }
-
-    private suspend fun renameCertificate(id: String, newDocumentName: String) {
-        context.dataStore.edit { settings ->
-            val result = certificateFlow.first().toMutableList().map {
-                if (it.first == id) {
-                    Pair(it.first, newDocumentName)
-                } else {
-                    it
-                }
-            }.map {
-                "${it.first},${it.second}"
-            }.toSet()
-
-            settings[certificates] = result
-        }
-    }
-
     init {
         viewModelScope.launch {
-            certificateFlow.collect {
+            db.certificateDao().getAll().collect {
                 _viewState.emit(ViewState.Certificate(documents = it))
             }
         }
@@ -139,7 +86,9 @@ class MainViewModel(
             } else {
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
                 if (pdfHandler.copyPdfToCache(uri, fileName = filename) && renderer.loadFile()) {
-                    addCertificate(id = filename, name = documentName)
+                    withContext(Dispatchers.IO) {
+                        db.certificateDao().insertAll(Certificate(id = filename, name = documentName))
+                    }
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -155,7 +104,9 @@ class MainViewModel(
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password, filename)) {
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
                 if (renderer.loadFile()) {
-                    addCertificate(id = filename, name = documentName)
+                    withContext(Dispatchers.IO) {
+                        db.certificateDao().insertAll(Certificate(id = filename, name = documentName))
+                    }
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -168,13 +119,17 @@ class MainViewModel(
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
-            renameCertificate(id = filename, newDocumentName = documentName)
+            withContext(Dispatchers.IO) {
+                db.certificateDao().updateName(id = filename, name = documentName)
+            }
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
-            deleteCertificate(id)
+            withContext(Dispatchers.IO) {
+                db.certificateDao().delete(id)
+            }
             pdfHandler.deleteFile(id)
         }
     }
@@ -182,13 +137,18 @@ class MainViewModel(
     fun onDragFinished(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
-            certificateFlow.first().forEach {
-                originalMap[it.first] = it.second
+            withContext(Dispatchers.IO) {
+                db.certificateDao().getAll().first().forEach {
+                    originalMap[it.id] = it.name
+                }
             }
             val sortedMap = sortedIdList.map {
-                Pair(it, originalMap[it]!!)
+                Certificate(id = it, name = originalMap[it]!!)
             }
-            writeAllCertificates(sortedMap)
+            withContext(Dispatchers.IO) {
+                db.certificateDao().deleteAll()
+                db.certificateDao().insertAll(*sortedMap.toTypedArray())
+            }
         }
     }
 
