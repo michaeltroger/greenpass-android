@@ -26,10 +26,7 @@ import java.util.*
 class MainViewModel(
     private val context: Context,
     private val pdfHandler: PdfHandler = Locator.pdfHandler(context),
-    private val db: AppDatabase = Room.databaseBuilder(
-        context.applicationContext,
-        AppDatabase::class.java, "greenpass"
-    ).build()
+    private val db: AppDatabase = Locator.database(context)
 ): ViewModel() {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
