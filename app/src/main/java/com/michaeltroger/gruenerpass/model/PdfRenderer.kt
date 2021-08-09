@@ -72,23 +72,19 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
     }
 
     override suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
-        return@withContext !renderPage(pageIndex)?.extractQrCodeText().isNullOrEmpty()
+        return@withContext !renderPage(pageIndex).extractQrCodeText().isNullOrEmpty()
     }
 
     override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
-       val qrText = renderPage(pageIndex)?.extractQrCodeText() ?: return@withContext null
+       val qrText = renderPage(pageIndex).extractQrCodeText() ?: return@withContext null
        return@withContext encodeQrCodeAsBitmap(qrText)
     }
 
-    override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
+    override suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
         if (renderer == null) {
             loadFile()
         }
-        return@withContext try {
-            renderer?.openPage(pageIndex)?.renderAndClose()
-        } catch (e: IllegalStateException) {
-            null
-        }
+        return@withContext renderer!!.openPage(pageIndex).renderAndClose()
     }
 
     private fun PdfRenderer.Page.renderAndClose(): Bitmap = use {
