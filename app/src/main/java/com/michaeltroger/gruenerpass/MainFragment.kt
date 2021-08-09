@@ -129,10 +129,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 requireContext().applicationContext,
                 fileName = it.key,
                 documentName = it.value,
-                dispatcher= thread) {
-                showDoYouWantToDeleteDialog(it.key)
-            })
-        }
+                dispatcher= thread,
+                onDeleteCalled = { showDoYouWantToDeleteDialog(it.key) },
+                onDocumentNameChanged = { updatedDocumentName: String ->
+                    vm.onDocumentNameChanged(filename = it.key, documentName = updatedDocumentName)
+                }
+            ))}
         adapter.update(items)
     }
 

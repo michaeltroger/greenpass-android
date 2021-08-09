@@ -49,7 +49,7 @@ class MainViewModel(
             map
         }
 
-    private suspend fun writeCertificates(id: String, name: String) {
+    private suspend fun addCertificate(id: String, name: String) {
         context.dataStore.edit { settings ->
             val certs = certificateFlow.first()
             certs[id] = name
@@ -59,10 +59,20 @@ class MainViewModel(
         }
     }
 
-    private suspend fun deleteCertificateById(id: String) {
+    private suspend fun deleteCertificate(id: String) {
         context.dataStore.edit { settings ->
             val certs = certificateFlow.first()
             certs.remove(id)
+            settings[certificates] = certs.toList().map {
+                "${it.first},${it.second}"
+            }.toSet()
+        }
+    }
+
+    private suspend fun renameCertificate(id: String, newDocumentName: String) {
+        context.dataStore.edit { settings ->
+            val certs = certificateFlow.first()
+            certs[id] = newDocumentName
             settings[certificates] = certs.toList().map {
                 "${it.first},${it.second}"
             }.toSet()
@@ -111,7 +121,7 @@ class MainViewModel(
             } else {
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
                 if (pdfHandler.copyPdfToCache(uri, fileName = filename) && renderer.loadFile()) {
-                    writeCertificates(id = filename, name = documentName)
+                    addCertificate(id = filename, name = documentName)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -127,7 +137,7 @@ class MainViewModel(
             if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password, filename)) {
                 val renderer = PdfRendererImpl(context, fileName = filename, renderContext = thread)
                 if (renderer.loadFile()) {
-                    writeCertificates(id = filename, name = documentName)
+                    addCertificate(id = filename, name = documentName)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
                 }
@@ -138,9 +148,15 @@ class MainViewModel(
         }
     }
 
+    fun onDocumentNameChanged(filename: String, documentName: String) {
+        viewModelScope.launch {
+            renameCertificate(id = filename, newDocumentName = documentName)
+        }
+    }
+
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
-            deleteCertificateById(id)
+            deleteCertificate(id)
             pdfHandler.deleteFile(id)
         }
     }

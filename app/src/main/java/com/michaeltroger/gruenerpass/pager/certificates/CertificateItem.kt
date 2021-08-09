@@ -23,7 +23,8 @@ class CertificateItem(
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
-    private val onDeleteCalled: () -> Unit
+    private val onDeleteCalled: () -> Unit,
+    private val onDocumentNameChanged: (String) -> Unit
 ) : BindableItem<ItemCertificateBinding>() {
 
     private val scope = CoroutineScope(
@@ -36,7 +37,11 @@ class CertificateItem(
     override fun bind(viewBinding: ItemCertificateBinding, position: Int) {
         scope.launch {
             val adapter = GroupieAdapter()
-            adapter.add(CertificateHeaderItem(documentName, onDeleteCalled = onDeleteCalled))
+            adapter.add(CertificateHeaderItem(
+                documentName = documentName,
+                onDeleteCalled = onDeleteCalled,
+                onDocumentNameChanged = onDocumentNameChanged
+            ))
             if (renderer.hasQrCode(PAGE_INDEX_QR_CODE)) {
                 adapter.add(QrCodeItem(renderer))
             }
