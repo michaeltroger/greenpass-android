@@ -3,9 +3,7 @@ package com.michaeltroger.gruenerpass
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +21,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pager.certificates.AddCertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -57,13 +54,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
         root = view.findViewById(R.id.root)
         progressIndicator = view.findViewById(R.id.progress_indicator)
         certificates = view.findViewById(R.id.certificates)
         PagerSnapHelper().attachToRecyclerView(certificates)
         certificates!!.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
-                lp.width = (width * 0.95).toInt();
+                if (itemCount > 1) {
+                    lp.width = (width * 0.95).toInt();
+                }
                 return true;
             }
         }
@@ -95,6 +96,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.add -> {
+            openFilePicker()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -123,7 +137,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 showDoYouWantToDeleteDialog(it.key)
             })
         }
-        items.add(AddCertificateItem(onAddCalled = { openFilePicker() }))
         adapter.addAll(items)
     }
 

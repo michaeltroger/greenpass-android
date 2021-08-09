@@ -14,16 +14,13 @@ class ItemTouchHelperCallback(private val adapter: GroupieAdapter) : ItemTouchHe
         val index = viewHolder.adapterPosition
         val indexLastMovableElement = recyclerView.adapter?.itemCount
         fun isFirstElement() = index == 0
-        fun isLastMovableElement() = index == indexLastMovableElement?.minus(2)
         fun isLastElement() = index == indexLastMovableElement?.minus(1)
 
-        val dragFlags = if (isLastElement()) {
-            0
-        } else if (isFirstElement() && !isLastMovableElement()) {
+        val dragFlags = if (isFirstElement() && !isLastElement()) {
             ItemTouchHelper.RIGHT
-        } else if (!isFirstElement() && !isLastMovableElement()) {
+        } else if (!isFirstElement() && !isLastElement()) {
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        } else if (!isFirstElement() && isLastMovableElement()) {
+        } else if (!isFirstElement() && isLastElement()) {
             ItemTouchHelper.LEFT
         } else {
             0
@@ -56,12 +53,8 @@ class ItemTouchHelperCallback(private val adapter: GroupieAdapter) : ItemTouchHe
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        return if (target.adapterPosition == recyclerView.adapter?.itemCount?.minus(1)) {
-            false
-        } else {
-            adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
-            true
-        }
+        adapter.notifyItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+        return true
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
