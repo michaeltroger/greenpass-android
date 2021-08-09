@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
@@ -35,14 +34,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext())}
 
-    private var root: ConstraintLayout? = null
-    private var progressIndicator: CircularProgressIndicator? = null
-    private var certificates: RecyclerView? = null
     private val thread = newSingleThreadContext("RenderContext")
 
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
     private val adapter = CertificateAdapter()
+
+    private lateinit var binding: FragmentMainBinding
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -55,11 +53,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         setHasOptionsMenu(true)
 
-        root = view.findViewById(R.id.root)
-        progressIndicator = view.findViewById(R.id.progress_indicator)
-        certificates = view.findViewById(R.id.certificates)
-        PagerSnapHelper().attachToRecyclerView(certificates)
-        certificates!!.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
+        binding = FragmentMainBinding.bind(view)
+
+        PagerSnapHelper().attachToRecyclerView(binding.certificates)
+        binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 if (itemCount > 1) {
                     lp.width = (width * 0.95).toInt();
@@ -70,8 +67,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         })
-        itemTouchHelper.attachToRecyclerView(certificates)
-        certificates!!.adapter = adapter
+        itemTouchHelper.attachToRecyclerView(binding.certificates)
+        binding.certificates.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -119,12 +116,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showLoadingState() {
-        progressIndicator?.isVisible = true
-        progressIndicator?.show()
+        binding.progressIndicator.isVisible = true
+        binding.progressIndicator.show()
     }
 
     private fun showCertificateState(documents: List<Certificate>) {
-        progressIndicator?.isVisible = false
+        binding.progressIndicator.isVisible = false
         val items = mutableListOf<Group>()
         documents.forEach {
             items.add(CertificateItem(
@@ -172,7 +169,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showFileCanNotBeReadError() {
-        root?.let {
+        binding.root?.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }
