@@ -1,11 +1,13 @@
 package com.michaeltroger.gruenerpass.pager.certificates
 
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
@@ -14,7 +16,14 @@ import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.viewbinding.BindableItem
 import kotlinx.coroutines.*
 
-class CertificateItem(private val renderer: PdfRenderer, private val documentName: String, private val onDeleteCalled: () -> Unit) : BindableItem<ItemCertificateBinding>() {
+class CertificateItem(
+    context: Context,
+    fileName: String,
+    dispatcher: CoroutineDispatcher,
+    private val documentName: String,
+    private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
+    private val onDeleteCalled: () -> Unit
+) : BindableItem<ItemCertificateBinding>() {
 
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
@@ -42,5 +51,6 @@ class CertificateItem(private val renderer: PdfRenderer, private val documentNam
     override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
         super.unregisterGroupDataObserver(groupDataObserver)
         scope.cancel()
+        renderer.onCleared()
     }
 }

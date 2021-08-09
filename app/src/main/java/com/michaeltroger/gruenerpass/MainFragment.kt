@@ -125,8 +125,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val items = mutableListOf<Group>()
         documents.forEach {
             items.add(CertificateItem(
-                PdfRendererImpl(requireContext(), it.key, renderContext = thread),
-                documentName = it.value) {
+                requireContext().applicationContext,
+                fileName = it.key,
+                documentName = it.value,
+                dispatcher= thread) {
                 showDoYouWantToDeleteDialog(it.key)
             })
         }
