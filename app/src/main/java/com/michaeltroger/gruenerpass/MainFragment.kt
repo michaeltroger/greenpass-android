@@ -27,6 +27,7 @@ import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.Group
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
@@ -89,6 +90,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
                     }.let{}
                 }
             }
@@ -137,6 +139,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             ))}
         adapter.setData(documents.map { it.id }.toList())
         adapter.update(items)
+    }
+
+    private fun scrollToLastCertificateAfterItemUpdate() {
+       lifecycleScope.launch {
+           delay(1000)
+           binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
+       }
     }
 
     private fun showDoYouWantToDeleteDialog(id: String) {

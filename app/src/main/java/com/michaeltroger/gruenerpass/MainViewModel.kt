@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
-import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -83,6 +82,7 @@ class MainViewModel(
             val documentName = documentNameRepo.getDocumentName(uri!!)
             certificateRepo.insert(Certificate(id = filename, name = documentName))
             _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
+            _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
         }
