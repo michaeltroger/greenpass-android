@@ -15,6 +15,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.lang.IllegalStateException
 
 private const val QR_CODE_SIZE = 400
 private const val PDF_RESOLUTION_MULTIPLIER = 2
@@ -28,7 +29,7 @@ interface PdfRenderer {
     fun onCleared()
     suspend fun hasQrCode(pageIndex: Int): Boolean
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap?
-    suspend fun renderPage(pageIndex: Int): Bitmap
+    suspend fun renderPage(pageIndex: Int): Bitmap?
 }
 
 class PdfRendererImpl(private val context: Context, val fileName: String, private val renderContext: CoroutineDispatcher): com.michaeltroger.gruenerpass.model.PdfRenderer {
@@ -71,19 +72,23 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
     }
 
     override suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
-        return@withContext !renderPage(pageIndex).extractQrCodeText().isNullOrEmpty()
+        return@withContext !renderPage(pageIndex)?.extractQrCodeText().isNullOrEmpty()
     }
 
     override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
-       val qrText = renderPage(pageIndex).extractQrCodeText() ?: return@withContext null
+       val qrText = renderPage(pageIndex)?.extractQrCodeText() ?: return@withContext null
        return@withContext encodeQrCodeAsBitmap(qrText)
     }
 
-    override suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
+    override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
         if (renderer == null) {
             loadFile()
         }
-        return@withContext renderer!!.openPage(pageIndex).renderAndClose()
+        return@withContext try {
+            renderer?.openPage(pageIndex)?.renderAndClose()
+        } catch (e: IllegalStateException) {
+            null
+        }
     }
 
     private fun PdfRenderer.Page.renderAndClose(): Bitmap = use {

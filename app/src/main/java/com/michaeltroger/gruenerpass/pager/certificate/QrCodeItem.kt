@@ -21,7 +21,7 @@ class QrCodeItem(private val renderer: PdfRenderer) : BindableItem<ItemQrCodeBin
 
     override fun bind(viewBinding: ItemQrCodeBinding, position: Int) {
         scope.launch {
-            viewBinding.qrcode.setImageBitmap(renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE)!!)
+            viewBinding.qrcode.setImageBitmap(renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE))
         }
     }
 
