@@ -77,6 +77,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             vm.onDragFinished(it)
         })
         itemTouchHelper?.attachToRecyclerView(binding.certificates)
+        
+        try { // reduce scroll sensitivity for horizontal scrolling to improve vertical scrolling
+            val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+            touchSlopField.isAccessible = true
+            val touchSlop = touchSlopField.get(binding.certificates) as Int
+            touchSlopField.set(binding.certificates, touchSlop * 8)
+        } catch (ignore: Exception) {}
+
         binding.certificates.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
