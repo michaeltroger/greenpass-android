@@ -21,9 +21,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
+import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.Group
@@ -41,6 +41,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
     private val adapter = CertificateAdapter()
+    private var itemTouchHelper: ItemTouchHelper? = null
 
     private lateinit var binding: FragmentMainBinding
 
@@ -61,7 +62,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 if (itemCount > 1) {
-                    lp.width = (width * 0.95).toInt();
+                    lp.width = (width * 0.95).toInt()
                 } else {
                     lp.width = width
                 }
@@ -72,10 +73,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 return itemCount > 1
             }
         }
-        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
+        itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         })
-        itemTouchHelper.attachToRecyclerView(binding.certificates)
+        itemTouchHelper?.attachToRecyclerView(binding.certificates)
+
+        try { // reduce scroll sensitivity for horizontal scrolling to improve vertical scrolling
+            val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
+            touchSlopField.isAccessible = true
+            val touchSlop = touchSlopField.get(binding.certificates) as Int
+            touchSlopField.set(binding.certificates, touchSlop * 8)
+        } catch (ignore: Exception) {}
+
         binding.certificates.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -141,6 +150,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
                     vm.onDocumentNameChanged(filename = it.id, documentName = updatedDocumentName)
+                },
+                onStartDrag = { viewholder ->
+                    itemTouchHelper?.startDrag(viewholder)
                 }
             ))}
         adapter.setData(documents.map { it.id }.toList())

@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass.pager.certificates
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
@@ -15,6 +16,7 @@ import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import kotlinx.coroutines.*
 
 class CertificateItem(
@@ -24,7 +26,8 @@ class CertificateItem(
     private val documentName: String,
     private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
-    private val onDocumentNameChanged: (String) -> Unit
+    private val onDocumentNameChanged: (String) -> Unit,
+    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit
 ) : BindableItem<ItemCertificateBinding>() {
 
     private val scope = CoroutineScope(
@@ -35,22 +38,33 @@ class CertificateItem(
     override fun getLayout() = R.layout.item_certificate
 
     override fun bind(viewBinding: ItemCertificateBinding, position: Int) {
+        // nothing to do
+    }
+
+    override fun bind(viewHolder: GroupieViewHolder<ItemCertificateBinding>,
+                      position: Int,
+                      payloads: MutableList<Any>) {
+        super.bind(viewHolder, position, payloads)
         scope.launch {
             val adapter = GroupieAdapter()
             adapter.add(CertificateHeaderItem(
                 documentName = documentName,
+                fileName = fileName,
                 onDeleteCalled = onDeleteCalled,
-                onDocumentNameChanged = onDocumentNameChanged
+                onDocumentNameChanged = onDocumentNameChanged,
+                onStartDrag =  {
+                    onStartDrag(viewHolder)
+                }
             ))
             if (renderer.hasQrCode(PAGE_INDEX_QR_CODE)) {
-                adapter.add(QrCodeItem(renderer))
+                adapter.add(QrCodeItem(renderer, fileName = fileName))
             }
             for (pageIndex in 0 until renderer.getPageCount()) {
-                adapter.add(PdfPageItem(renderer, pageIndex = pageIndex))
+                adapter.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
             }
 
-            viewBinding.certificate.layoutManager = LinearLayoutManager(viewBinding.root.context)
-            viewBinding.certificate.adapter = adapter
+            viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
+            viewHolder.binding.certificate.adapter = adapter
         }
     }
 

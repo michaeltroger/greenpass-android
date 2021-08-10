@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.db.CertificateRepo
+import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.model.PdfHandler
 import com.michaeltroger.gruenerpass.model.PdfRendererImpl
@@ -24,7 +24,7 @@ import java.util.*
 class MainViewModel(
     app: Application,
     private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
-    private val certificateRepo: CertificateRepo = Locator.certificateRepo(app),
+    private val db: CertificateDao = Locator.database(app).certificateDao(),
     private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app)
 ): AndroidViewModel(app) {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
@@ -37,7 +37,7 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
         }
     }
 
@@ -80,8 +80,8 @@ class MainViewModel(
         val renderer = PdfRendererImpl(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
         if (renderer.loadFile()) {
             val documentName = documentNameRepo.getDocumentName(uri!!)
-            certificateRepo.insert(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
+            db.insertAll(Certificate(id = filename, name = documentName))
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -91,14 +91,14 @@ class MainViewModel(
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
-            certificateRepo.updateName(id = filename, name = documentName)
+            db.updateName(id = filename, name = documentName)
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
-            certificateRepo.delete(id)
-            _viewState.emit(ViewState.Certificate(documents = certificateRepo.getAll() ))
+            db.delete(id)
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
             pdfHandler.deleteFile(id)
         }
     }
@@ -106,13 +106,15 @@ class MainViewModel(
     fun onDragFinished(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
-            certificateRepo.getAll().forEach {
+            db.getAll().forEach {
                 originalMap[it.id] = it.name
             }
             val sortedMap = sortedIdList.map {
                 Certificate(id = it, name = originalMap[it]!!)
             }
-           certificateRepo.replaceAll(sortedMap)
+            db.deleteAll()
+            db.insertAll(*sortedMap.toTypedArray())
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
         }
     }
 
