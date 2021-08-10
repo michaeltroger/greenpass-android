@@ -9,6 +9,7 @@ import com.xwray.groupie.viewbinding.BindableItem
 
 class CertificateHeaderItem(
     private val documentName: String,
+    private val fileName: String,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit
 ) : BindableItem<ItemCertificateHeaderBinding>() {
@@ -31,6 +32,6 @@ class CertificateHeaderItem(
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return viewType == other.viewType
+        return (other as? CertificateHeaderItem)?.fileName == fileName
     }
 }

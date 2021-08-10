@@ -21,9 +21,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
+import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.Group

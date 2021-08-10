@@ -5,12 +5,16 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemQrCodeBinding
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import kotlinx.coroutines.*
 
-class QrCodeItem(private val renderer: PdfRenderer) : BindableItem<ItemQrCodeBinding>() {
+class QrCodeItem(
+    private val renderer: PdfRenderer,
+    private val fileName: String
+    ) : BindableItem<ItemQrCodeBinding>() {
 
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
@@ -21,6 +25,7 @@ class QrCodeItem(private val renderer: PdfRenderer) : BindableItem<ItemQrCodeBin
 
     override fun bind(viewBinding: ItemQrCodeBinding, position: Int) {
         scope.launch {
+            viewBinding.qrcode.setImageBitmap(null)
             viewBinding.qrcode.setImageBitmap(renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE))
         }
     }
@@ -35,6 +40,6 @@ class QrCodeItem(private val renderer: PdfRenderer) : BindableItem<ItemQrCodeBin
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return viewType == other.viewType
+        return (other as? QrCodeItem)?.fileName == fileName
     }
 }

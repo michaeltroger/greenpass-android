@@ -114,6 +114,7 @@ class MainViewModel(
             }
             db.deleteAll()
             db.insertAll(*sortedMap.toTypedArray())
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
         }
     }
 

@@ -39,14 +39,15 @@ class CertificateItem(
             val adapter = GroupieAdapter()
             adapter.add(CertificateHeaderItem(
                 documentName = documentName,
+                fileName = fileName,
                 onDeleteCalled = onDeleteCalled,
                 onDocumentNameChanged = onDocumentNameChanged
             ))
             if (renderer.hasQrCode(PAGE_INDEX_QR_CODE)) {
-                adapter.add(QrCodeItem(renderer))
+                adapter.add(QrCodeItem(renderer, fileName = fileName))
             }
             for (pageIndex in 0 until renderer.getPageCount()) {
-                adapter.add(PdfPageItem(renderer, pageIndex = pageIndex))
+                adapter.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
             }
 
             viewBinding.certificate.layoutManager = LinearLayoutManager(viewBinding.root.context)
