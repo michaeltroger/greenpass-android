@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass.pager.certificate
 
 import android.view.View
+import androidx.core.view.isVisible
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemQrCodeBinding
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
@@ -27,6 +28,7 @@ class QrCodeItem(
         scope.launch {
             viewBinding.qrcode.setImageBitmap(null)
             viewBinding.qrcode.setImageBitmap(renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE))
+            viewBinding.progressIndicator.isVisible = false
         }
     }
 

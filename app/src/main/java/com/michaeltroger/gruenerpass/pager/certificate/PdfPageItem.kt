@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass.pager.certificate
 
 import android.view.View
+import androidx.core.view.isVisible
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
 import com.michaeltroger.gruenerpass.model.PdfRenderer
@@ -26,6 +27,7 @@ class PdfPageItem(
         scope.launch {
             viewBinding.certificate.setImageBitmap(null)
             viewBinding.certificate.setImageBitmap(renderer.renderPage(pageIndex))
+            viewBinding.progressIndicator.isVisible = false
         }
     }
 

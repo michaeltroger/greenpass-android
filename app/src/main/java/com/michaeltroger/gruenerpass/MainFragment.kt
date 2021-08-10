@@ -61,7 +61,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 if (itemCount > 1) {
-                    lp.width = (width * 0.95).toInt();
+                    lp.width = (width * 0.95).toInt()
                 } else {
                     lp.width = width
                 }
