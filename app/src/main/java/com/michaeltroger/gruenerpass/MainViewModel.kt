@@ -92,6 +92,7 @@ class MainViewModel(
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
         }
     }
 
