@@ -4,44 +4,45 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
-import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.viewpager2.widget.ViewPager2
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputLayout
-import com.michaeltroger.gruenerpass.pager.PagerAdapter
+import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
+import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import com.xwray.groupie.Group
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(requireContext())}
+    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
-    private lateinit var adapter: PagerAdapter
-    private lateinit var layoutMediator: TabLayoutMediator
+    private val thread = newSingleThreadContext("RenderContext")
 
-    private var addButton: Button? = null
-    private var deleteMenuItem: MenuItem? = null
-    private var viewPager: ViewPager2? = null
-    private var tabLayout: TabLayout? = null
-    private var root: ConstraintLayout? = null
-    private var progressIndicator: CircularProgressIndicator? = null
+    private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
-    private var dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
+    private val adapter = CertificateAdapter()
+
+    private lateinit var binding: FragmentMainBinding
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -54,41 +55,30 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         setHasOptionsMenu(true)
 
-        root = view.findViewById(R.id.root)
-        viewPager = view.findViewById(R.id.pager)
-        tabLayout = view.findViewById(R.id.tab_layout)
-        addButton = view.findViewById(R.id.add)
-        progressIndicator = view.findViewById(R.id.progress_indicator)
+        binding = FragmentMainBinding.bind(view)
 
-        adapter = PagerAdapter(this, hasQrCode = { vm.hasQrCode })
-        layoutMediator = TabLayoutMediator(tabLayout!!, viewPager!!) { tab, position ->
-            val textRes: Int
-            when (adapter.itemCount) {
-                1 -> {
-                    tabLayout?.isVisible = false
-                    textRes = R.string.tab_title_pdf
+        PagerSnapHelper().attachToRecyclerView(binding.certificates)
+        binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
+            override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+                if (itemCount > 1) {
+                    lp.width = (width * 0.95).toInt();
+                } else {
+                    lp.width = width
                 }
-                else -> {
-                    tabLayout?.isVisible = true
-                    textRes = when(position) {
-                        0 -> R.string.tab_title_qr
-                        else -> R.string.tab_title_pdf
-                    }
-                }
+                return true;
             }
-            tab.text = getString(textRes)
         }
-
-        addButton?.setOnClickListener {
-            openFilePicker()
-        }
+        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
+            vm.onDragFinished(it)
+        })
+        itemTouchHelper.attachToRecyclerView(binding.certificates)
+        binding.certificates.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
-                        ViewState.Certificate -> showCertificateState()
-                        ViewState.Empty -> showEmptyState()
+                        is ViewState.Certificate -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
                     }.let{}
                 }
@@ -100,10 +90,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 vm.viewEvent.collect {
                     when (it) {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
-                        ViewEvent.ShowDeleteDialog -> showDoYouWantToDeleteDialog()
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
-                        ViewEvent.ShowReplaceDialog -> showDoYouWantToReplaceDialog()
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
                     }.let{}
                 }
             }
@@ -112,18 +101,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
-
-        deleteMenuItem = menu.findItem(R.id.delete)
-        if (vm.viewState.value == ViewState.Certificate) {
-            deleteMenuItem?.isVisible = true
-        }
-
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.delete -> {
-            showDoYouWantToDeleteDialog()
+        R.id.add -> {
+            openFilePicker()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -138,56 +121,44 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showLoadingState() {
-        progressIndicator?.isVisible = true
-        progressIndicator?.show()
+        binding.progressIndicator.isVisible = true
+        binding.progressIndicator.show()
     }
 
-    private fun showEmptyState() {
-        progressIndicator?.isVisible = false
-        addButton?.isVisible = true
-        viewPager?.isVisible = false
-        tabLayout?.isVisible = false
-        deleteMenuItem?.isVisible = false
-        viewPager?.adapter = null
-        layoutMediator.detach()
+    private fun showCertificateState(documents: List<Certificate>) {
+        binding.progressIndicator.isVisible = false
+        val items = mutableListOf<Group>()
+        documents.forEach {
+            items.add(CertificateItem(
+                requireContext().applicationContext,
+                fileName = it.id,
+                documentName = it.name,
+                dispatcher= thread,
+                onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
+                onDocumentNameChanged = { updatedDocumentName: String ->
+                    vm.onDocumentNameChanged(filename = it.id, documentName = updatedDocumentName)
+                }
+            ))}
+        adapter.setData(documents.map { it.id }.toList())
+        adapter.update(items)
     }
 
-    private fun showCertificateState() {
-        progressIndicator?.isVisible = false
-        addButton?.isVisible = false
-        tabLayout?.isVisible = true
-        viewPager?.isVisible = true
-        deleteMenuItem?.isVisible = true
-        if (viewPager?.adapter == null) {
-            viewPager?.adapter = adapter
-        }
-        if (layoutMediator.isAttached) {
-            layoutMediator.detach()
-        }
-        layoutMediator.attach()
+    private fun scrollToLastCertificateAfterItemUpdate() {
+       lifecycleScope.launch {
+           delay(1000)
+           binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
+       }
     }
 
-    private fun showDoYouWantToDeleteDialog() {
+    private fun showDoYouWantToDeleteDialog(id: String) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok)  { _, _ ->
-                vm.onDeleteConfirmed()
+               vm.onDeleteConfirmed(id)
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
         dialogs["delete"] = dialog
-        dialog.show()
-    }
-
-    private fun showDoYouWantToReplaceDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.dialog_replace_confirmation_message))
-            .setPositiveButton(R.string.ok)  { _, _ ->
-                vm.onReplaceConfirmed()
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .create()
-        dialogs["replace"] = dialog
         dialog.show()
     }
 
@@ -210,7 +181,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showFileCanNotBeReadError() {
-        root?.let {
+        binding.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }

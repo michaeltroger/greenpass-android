@@ -14,24 +14,24 @@ import java.io.InputStream
 const val PDF_FILENAME = "certificate.pdf"
 
 interface PdfHandler {
-    suspend fun doesFileExist(): Boolean
-    suspend fun deleteFile()
+    suspend fun doesFileExist(fileName: String): Boolean
+    suspend fun deleteFile(fileName: String)
     suspend fun isPdfPasswordProtected(uri: Uri): Boolean
-    suspend fun copyPdfToCache(uri: Uri): Boolean
-    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean
+    suspend fun copyPdfToCache(uri: Uri, fileName: String): Boolean
+    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String, fileName: String): Boolean
 }
 
 class PdfHandlerImpl(private val context: Context): PdfHandler {
 
-    private val file = File(context.filesDir, PDF_FILENAME)
+    private fun getFile(fileName: String) =  File(context.filesDir, fileName)
 
-    override suspend fun doesFileExist(): Boolean = withContext(Dispatchers.IO) {
-        file.exists()
+    override suspend fun doesFileExist(fileName: String): Boolean = withContext(Dispatchers.IO) {
+        getFile(fileName).exists()
     }
 
-    override suspend fun deleteFile() = withContext(Dispatchers.IO) {
-        if (doesFileExist()) {
-            file.delete()
+    override suspend fun deleteFile(fileName: String) = withContext(Dispatchers.IO) {
+        if (doesFileExist(fileName)) {
+            getFile(fileName).delete()
         }
     }
 
@@ -53,11 +53,10 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
     /**
      * @return true if successful
      */
-    override suspend fun copyPdfToCache(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun copyPdfToCache(uri: Uri, fileName: String): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
-                deleteFile() // clear old file first if it exists
-                FileOutputStream(file).use { outputStream ->
+                FileOutputStream(getFile(fileName)).use { outputStream ->
                     inputStream.copyTo(outputStream)
                 }
             }
@@ -70,12 +69,11 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
     /**
      * @return true if successful
      */
-    override suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String, fileName: String): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
                 with(PDDocument.load(inputStream, password)) {
-                    deleteFile() // clear old file first if it exists
-                    removePasswordCopyAndClose()
+                    removePasswordCopyAndClose(fileName)
                 }
             }
             return@withContext true
@@ -86,9 +84,9 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
 
     private fun getInputStream(uri: Uri): InputStream = context.contentResolver.openInputStream(uri)!!
 
-    private fun PDDocument.removePasswordCopyAndClose() = use {
+    private fun PDDocument.removePasswordCopyAndClose(fileName: String) = use {
         isAllSecurityToBeRemoved = true
-        FileOutputStream(file).use { outputStream ->
+        FileOutputStream(getFile(fileName)).use { outputStream ->
             save(outputStream)
         }
     }

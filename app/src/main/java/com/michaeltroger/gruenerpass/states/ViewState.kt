@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass.states
 
-enum class ViewState {
-    Empty,
-    Certificate,
-    Loading
+sealed class ViewState {
+    data class Certificate(val documents: List<com.michaeltroger.gruenerpass.db.Certificate>) : ViewState()
+    object Loading : ViewState()
 }
