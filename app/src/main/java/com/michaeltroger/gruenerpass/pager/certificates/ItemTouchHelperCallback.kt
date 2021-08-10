@@ -68,8 +68,14 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
         return true
     }
 
+    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+        super.onSelectedChanged(viewHolder, actionState)
+        viewHolder?.itemView?.alpha = 0.8f
+    }
+
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
+        viewHolder.itemView.alpha = 1f
         onDragFinished(adapter.list)
     }
 
