@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass.pager.certificate
 
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.widget.doAfterTextChanged
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateHeaderBinding
 import com.xwray.groupie.Item
@@ -25,8 +24,10 @@ class CertificateHeaderItem(
             onDeleteCalled()
         }
         viewBinding.name.setText(documentName)
-        viewBinding.name.doAfterTextChanged {
-            onDocumentNameChanged(it.toString() )
+        viewBinding.name.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                onDocumentNameChanged(viewBinding.name.text.toString() )
+            }
         }
     }
 
@@ -50,6 +51,6 @@ class CertificateHeaderItem(
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return (other as? CertificateHeaderItem)?.fileName == fileName
+        return (other as? CertificateHeaderItem)?.fileName == fileName && (other as? CertificateHeaderItem)?.documentName == documentName
     }
 }
