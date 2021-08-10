@@ -32,8 +32,20 @@
         android:layout_height="0dp"
         android:src="@drawable/baseline_delete_24"
         android:background="?colorOnPrimary"
-        android:padding="@dimen/space_small"
+        android:padding="@dimen/space_very_small"
         app:layout_constraintStart_toEndOf="@id/name"
+        app:layout_constraintEnd_toStartOf="@id/handle"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/name"/>
+
+    <ImageView
+        android:id="@+id/handle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/baseline_drag_handle_24"
+        android:background="?colorOnPrimary"
+        android:padding="@dimen/space_very_small"
+        app:layout_constraintStart_toEndOf="@id/deleteIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"/>

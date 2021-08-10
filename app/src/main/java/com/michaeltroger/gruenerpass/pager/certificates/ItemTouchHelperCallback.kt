@@ -45,7 +45,7 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
     }
 
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun onMove(

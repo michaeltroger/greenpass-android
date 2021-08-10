@@ -41,6 +41,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
 
     private val adapter = CertificateAdapter()
+    private var itemTouchHelper: ItemTouchHelper? = null
 
     private lateinit var binding: FragmentMainBinding
 
@@ -72,10 +73,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 return itemCount > 1
             }
         }
-        val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
+        itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         })
-        itemTouchHelper.attachToRecyclerView(binding.certificates)
+        itemTouchHelper?.attachToRecyclerView(binding.certificates)
         binding.certificates.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -141,6 +142,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
                     vm.onDocumentNameChanged(filename = it.id, documentName = updatedDocumentName)
+                },
+                onStartDrag = { viewholder ->
+                    itemTouchHelper?.startDrag(viewholder)
                 }
             ))}
         adapter.setData(documents.map { it.id }.toList())
