@@ -67,6 +67,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
                 return true;
             }
+
+            override fun canScrollHorizontally(): Boolean {
+                return itemCount > 1
+            }
         }
         val itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
