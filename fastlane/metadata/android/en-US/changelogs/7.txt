@@ -1,0 +1,7 @@
+Bugfixes:
+- Fix for PDF gets cleared by the system after a while
+- Fix for crash when opening PDF with QR code on Android < 7.0
+- Fix app icon not shown on Android < 8.0
+- Fix tab bar shown when only one tab (pdf)
+- Show error message instead of crashing when file not supported (e.g. password protected pdfs are not supported)
+- Improve memory consumption

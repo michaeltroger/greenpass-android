@@ -1,0 +1,3 @@
+- Follow best practises for new coroutine api
+- Fix delete icon sometimes not shown when resuming
+- Fix tab bar shown if only one document when resuming

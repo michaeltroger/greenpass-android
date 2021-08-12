@@ -1,0 +1,6 @@
+- Add delete confirmation dialog
+- Launch pdfs from 3rd party apps
+- Share pdfs from 3rd party apps
+- Further improved dark mode
+- Fixes also Xiaomi dark mode bug where the pdf was unreadable
+- Don't show delete icon if no document open

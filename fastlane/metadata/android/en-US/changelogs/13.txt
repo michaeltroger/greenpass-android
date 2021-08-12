@@ -1,0 +1,5 @@
+Bugfixes
+- Fix rare crashes during drawing of the document
+- Check if document is too big to draw, retry in lower resolution and fail as a last resort
+- Ignore QR code if device memory can't handle it
+- Fix white screen when returning to app after while

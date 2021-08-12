@@ -1,0 +1,2 @@
+- Add support for password protected PDFs
+- Add very basic dark mode support, just to not break the UI on phones that force Dark mode like Xiaomi

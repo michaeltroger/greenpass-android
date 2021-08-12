@@ -1,0 +1,2 @@
+- Loading animation until QR code and PDF can be displayed
+- Fix previous error message showing again when resuming the app

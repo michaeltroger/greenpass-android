@@ -1,0 +1,4 @@
+- Fix memory issues when parsing document on low end devices
+- Major refactoring in terms of architecture (for improved stability)
+- Update of android libraries
+- Lock app in portrait

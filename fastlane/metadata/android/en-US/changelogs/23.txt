@@ -1,0 +1,1 @@
+- Support for multi-page PDFs. The QR code is still searched on the 1. page.

@@ -1,0 +1,1 @@
+- Fix document name shown wrong after configuration change (e.g. switch to dark mode)

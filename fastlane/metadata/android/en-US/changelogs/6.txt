@@ -1,0 +1,4 @@
+- If the document has a QR Code, it is displayed full screen. One can switch to the PDF via swipe or click on the tab
+- More performance improvements
+- New high resolution app icon
+- App download size reduced drastically

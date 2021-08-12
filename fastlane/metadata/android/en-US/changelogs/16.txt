@@ -1,0 +1,1 @@
+The QR code is now even better readable for reading devices and now also optically the code is identical to the one on the official Green Pass PDF document (it was already identically to reading devices before).

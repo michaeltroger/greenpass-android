@@ -1,0 +1,6 @@
+- Increase delete icon size and its margin
+- Introduce drag handle instead of making the entire item draggable (improves the scrolling experience)
+- Item becomes transparent while dragging
+- Loading animation while QR code / PDF are loaded
+- Fix file still shown after deleting, when files were dragged around before
+- Remove redundant repository for querying database

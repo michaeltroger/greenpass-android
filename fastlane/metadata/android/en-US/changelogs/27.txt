@@ -1,0 +1,1 @@
+- Show error message instead of crash when file can not be read

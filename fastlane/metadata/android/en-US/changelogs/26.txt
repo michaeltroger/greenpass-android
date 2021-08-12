@@ -1,0 +1,1 @@
+- Fix delete icon not shown after configuration change (switch Light/Dark theme, language change)

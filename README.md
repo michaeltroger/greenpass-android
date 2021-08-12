@@ -10,7 +10,7 @@ It includes a convenient fullscreen QR code rendering, if a QR Code is present i
 </a>
 
 
-<img src="/screenshot.jpg" width="200"> <img src="/screenshot1.jpg" width="200"> <img src="/screenshot2.jpg" width="200">
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot1.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot2.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot3.jpg" width="200">
 
 *Kudos to:*
 - *[Sebastian Schmid](https://github.com/da5ebi) - for counseling in terms of UX*

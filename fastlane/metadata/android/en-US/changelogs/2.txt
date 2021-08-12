@@ -1,0 +1,2 @@
+- Performance improvements
+- Fixes delete icon clickable when no document open
