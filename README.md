@@ -1,6 +1,7 @@
-# Green Pass: PDF Reader (unofficial) Android App
-Offers a convenient access to a single PDF document and its QR code like e.g. an EU Digital COVID Certificate.
-Unofficial app that is fully open source. This app is basically a super simple PDF reader with convenient fullscreen QR code rendering (if present in the PDF's 1. page).
+# Green Pass PDF Wallet Android App
+Unofficial app that is fully open source. This app is a simple to use PDF Wallet.
+That means it takes over the task to store and display your most important PDF certificates.
+It includes a convenient fullscreen QR code rendering, if a QR Code is present in the PDF's 1. page.
 
 [![CircleCI](https://circleci.com/gh/michaeltroger/greenpass-android/tree/main.svg?style=svg)](https://circleci.com/gh/michaeltroger/greenpass-android/tree/main)
 
