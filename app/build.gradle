@@ -87,13 +87,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'com.google.zxing:core:3.3.3'
-    implementation 'org.bouncycastle:bcprov-jdk15to18:1.68'
-    implementation fileTree(dir: "libs", include: ["*.aar"])
+    implementation 'com.tom-roush:pdfbox-android:2.0.1.0'
 
     def room_version = "2.3.0"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation("androidx.room:room-ktx:$room_version")
+    implementation "androidx.room:room-ktx:$room_version"
 
     testImplementation 'androidx.test:core-ktx:1.4.0'
     testImplementation 'androidx.test.ext:junit-ktx:1.1.3'
