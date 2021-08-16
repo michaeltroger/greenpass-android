@@ -13,9 +13,9 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.IllegalStateException
 
 private const val QR_CODE_SIZE = 400
 private const val PDF_RESOLUTION_MULTIPLIER = 2
@@ -26,7 +26,7 @@ const val PAGE_INDEX_QR_CODE = 0
 interface PdfRenderer {
     suspend fun loadFile(): Boolean
     fun getPageCount(): Int
-    fun onCleared()
+    fun close()
     suspend fun hasQrCode(pageIndex: Int): Boolean
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap?
     suspend fun renderPage(pageIndex: Int): Bitmap?
@@ -64,7 +64,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
 
     override fun getPageCount(): Int = renderer?.pageCount ?: 0
 
-    override fun onCleared() {
+    override fun close() {
         try {
             renderer?.use {}
             fileDescriptor?.use {}
@@ -72,23 +72,26 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
     }
 
     override suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
-        return@withContext !renderPage(pageIndex).extractQrCodeText().isNullOrEmpty()
+        return@withContext !renderPage(pageIndex)?.extractQrCodeText().isNullOrEmpty()
     }
 
     override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
-       val qrText = renderPage(pageIndex).extractQrCodeText() ?: return@withContext null
+       val qrText = renderPage(pageIndex)?.extractQrCodeText() ?: return@withContext null
        return@withContext encodeQrCodeAsBitmap(qrText)
     }
 
-    override suspend fun renderPage(pageIndex: Int): Bitmap = withContext(renderContext) {
+    override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
         if (renderer == null) {
             loadFile()
+            if (!isActive) return@withContext null
         }
-        return@withContext renderer!!.openPage(pageIndex).renderAndClose()
+        return@withContext renderer!!.openPage(pageIndex).renderAndClose { isActive }
     }
 
-    private fun PdfRenderer.Page.renderAndClose(): Bitmap = use {
+    private fun PdfRenderer.Page.renderAndClose(isActive: () -> Boolean): Bitmap? = use {
+        if (!isActive()) return@use null
         val bitmap = createBitmap()
+        if (!isActive()) return@use null
         render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
         bitmap
     }
