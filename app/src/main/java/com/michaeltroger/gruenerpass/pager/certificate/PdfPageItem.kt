@@ -25,7 +25,6 @@ class PdfPageItem(
 
     override fun bind(viewBinding: ItemPdfPageBinding, position: Int) {
         scope.launch {
-            viewBinding.certificate.setImageBitmap(null)
             viewBinding.certificate.setImageBitmap(renderer.renderPage(pageIndex))
             viewBinding.progressIndicator.isVisible = false
         }

@@ -25,7 +25,6 @@ class QrCodeItem(
 
     override fun bind(viewBinding: ItemQrCodeBinding, position: Int) {
         scope.launch {
-            viewBinding.qrcode.setImageBitmap(null)
             viewBinding.qrcode.setImageBitmap(renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE))
             viewBinding.progressIndicator.isVisible = false
         }
