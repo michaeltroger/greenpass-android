@@ -140,7 +140,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun showCertificateState(documents: List<Certificate>) {
         binding.progressIndicator.isVisible = false
-        val items: List<Group> = documents.map {
+        val items = documents.map {
             CertificateItem(
                 requireContext().applicationContext,
                 fileName = it.id,
