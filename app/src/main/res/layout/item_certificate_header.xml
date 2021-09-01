@@ -22,7 +22,7 @@
         android:padding="@dimen/space_small"
         android:maxLines="1"
         android:imeOptions="actionDone"
-        android:inputType="text"
+        android:inputType="text|textNoSuggestions"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/deleteIcon"
