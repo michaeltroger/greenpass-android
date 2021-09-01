@@ -30,6 +30,7 @@ class CertificateItem(
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit
 ) : BindableItem<ItemCertificateBinding>() {
 
+    private val adapter = GroupieAdapter()
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
     )
@@ -45,8 +46,9 @@ class CertificateItem(
                       position: Int,
                       payloads: MutableList<Any>) {
         super.bind(viewHolder, position, payloads)
+        viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
+        viewHolder.binding.certificate.adapter = adapter
         scope.launch {
-            val adapter = GroupieAdapter()
             adapter.add(CertificateHeaderItem(
                 documentName = documentName,
                 fileName = fileName,
@@ -63,8 +65,6 @@ class CertificateItem(
                 adapter.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
             }
 
-            viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
-            viewHolder.binding.certificate.adapter = adapter
         }
     }
 
