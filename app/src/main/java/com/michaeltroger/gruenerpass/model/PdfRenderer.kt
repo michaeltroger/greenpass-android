@@ -85,7 +85,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
             loadFile()
             if (!isActive) return@withContext null
         }
-        return@withContext renderer!!.openPage(pageIndex).renderAndClose { isActive }
+        return@withContext renderer?.openPage(pageIndex)?.renderAndClose { isActive }
     }
 
     private fun PdfRenderer.Page.renderAndClose(isActive: () -> Boolean): Bitmap? = use {
