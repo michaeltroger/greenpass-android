@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/space_small"
         android:maxLines="1"
+        android:imeOptions="actionDone"
         android:inputType="text"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
