@@ -111,12 +111,11 @@ class MainViewModel(
             db.getAll().forEach {
                 originalMap[it.id] = it.name
             }
-            val sortedMap = sortedIdList.map {
+            val sortedList: List<Certificate> = sortedIdList.map {
                 Certificate(id = it, name = originalMap[it]!!)
             }
-            db.deleteAll()
-            db.insertAll(*sortedMap.toTypedArray())
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            db.replaceAll(*sortedList.toTypedArray())
+            _viewState.emit(ViewState.Certificate(documents = sortedList ))
         }
     }
 
