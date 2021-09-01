@@ -2,11 +2,13 @@ package com.michaeltroger.gruenerpass.pager.certificate
 
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.widget.doOnTextChanged
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateHeaderBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
+import android.view.inputmethod.EditorInfo
 
 class CertificateHeaderItem(
     private val documentName: String,
@@ -24,10 +26,14 @@ class CertificateHeaderItem(
             onDeleteCalled()
         }
         viewBinding.name.setText(documentName)
-        viewBinding.name.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                onDocumentNameChanged(viewBinding.name.text.toString() )
+        viewBinding.name.doOnTextChanged { text, _, _, _ ->
+            onDocumentNameChanged(text.toString() )
+        }
+        viewBinding.name.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                v.clearFocus()
             }
+            false
         }
     }
 

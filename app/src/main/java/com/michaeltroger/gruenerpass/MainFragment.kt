@@ -140,9 +140,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun showCertificateState(documents: List<Certificate>) {
         binding.progressIndicator.isVisible = false
-        val items = mutableListOf<Group>()
-        documents.forEach {
-            items.add(CertificateItem(
+        val items = documents.map {
+            CertificateItem(
                 requireContext().applicationContext,
                 fileName = it.id,
                 documentName = it.name,
@@ -154,7 +153,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 onStartDrag = { viewholder ->
                     itemTouchHelper?.startDrag(viewholder)
                 }
-            ))}
+            )
+        }
         adapter.setData(documents.map { it.id }.toList())
         adapter.update(items)
     }

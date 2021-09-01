@@ -12,6 +12,7 @@ import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
+import com.xwray.groupie.Group
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item
@@ -30,6 +31,7 @@ class CertificateItem(
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit
 ) : BindableItem<ItemCertificateBinding>() {
 
+    private val adapter = GroupieAdapter()
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
     )
@@ -45,9 +47,11 @@ class CertificateItem(
                       position: Int,
                       payloads: MutableList<Any>) {
         super.bind(viewHolder, position, payloads)
+        viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
+        viewHolder.binding.certificate.adapter = adapter
         scope.launch {
-            val adapter = GroupieAdapter()
-            adapter.add(CertificateHeaderItem(
+            val itemList = mutableListOf<Group>()
+            itemList.add(CertificateHeaderItem(
                 documentName = documentName,
                 fileName = fileName,
                 onDeleteCalled = onDeleteCalled,
@@ -57,14 +61,12 @@ class CertificateItem(
                 }
             ))
             if (renderer.hasQrCode(PAGE_INDEX_QR_CODE)) {
-                adapter.add(QrCodeItem(renderer, fileName = fileName))
+                itemList.add(QrCodeItem(renderer, fileName = fileName))
             }
             for (pageIndex in 0 until renderer.getPageCount()) {
-                adapter.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
+                itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
             }
-
-            viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
-            viewHolder.binding.certificate.adapter = adapter
+            adapter.update(itemList)
         }
     }
 

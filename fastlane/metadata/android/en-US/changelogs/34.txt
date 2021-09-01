@@ -1,0 +1,2 @@
+- Fix document name not saved after pressing enter or leaving the app
+- Various performance improvements

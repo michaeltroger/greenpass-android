@@ -79,14 +79,15 @@ class MainViewModel(
     private suspend fun handleFileAfterCopying(filename: String) {
         val renderer = PdfRendererImpl(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
         if (renderer.loadFile()) {
+            renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
             _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
+            renderer.close()
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
         }
-        renderer.onCleared()
     }
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
@@ -110,12 +111,11 @@ class MainViewModel(
             db.getAll().forEach {
                 originalMap[it.id] = it.name
             }
-            val sortedMap = sortedIdList.map {
+            val sortedList: List<Certificate> = sortedIdList.map {
                 Certificate(id = it, name = originalMap[it]!!)
             }
-            db.deleteAll()
-            db.insertAll(*sortedMap.toTypedArray())
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            db.replaceAll(*sortedList.toTypedArray())
+            _viewState.emit(ViewState.Certificate(documents = sortedList ))
         }
     }
 
