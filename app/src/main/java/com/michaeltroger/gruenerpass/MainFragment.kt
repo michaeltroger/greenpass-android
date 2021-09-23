@@ -27,6 +27,7 @@ import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.Group
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
+    @OptIn(ObsoleteCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()

@@ -43,7 +43,7 @@ class CertificateHeaderItem(
         payloads: MutableList<Any>
     ) {
         super.bind(viewHolder, position, payloads)
-        viewHolder.binding.handle.setOnTouchListener { v, event ->
+        viewHolder.binding.handle.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN
             ) {
                 onStartDrag()
