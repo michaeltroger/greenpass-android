@@ -3,7 +3,7 @@ Unofficial app that is fully open source. This app is a simple to use PDF Wallet
 That means it takes over the task to store and display your most important PDF certificates.
 It includes a convenient fullscreen QR code rendering, if a QR Code is present in the PDF's 1. page.
 
-[![CircleCI](https://circleci.com/gh/michaeltroger/greenpass-android/tree/main.svg?style=svg)](https://circleci.com/gh/michaeltroger/greenpass-android/tree/main)
+[![Android CI](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml/badge.svg)](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml)
 
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
@@ -15,7 +15,7 @@ It includes a convenient fullscreen QR code rendering, if a QR Code is present i
     height="80">](https://f-droid.org/packages/com.michaeltroger.gruenerpass)
 
 
-<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot1.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot2.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot3.jpg" width="200">
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot1.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot2.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot3.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot4.jpg" width="200">
 
 *Kudos to:*
 - *[Sebastian Schmid](https://github.com/da5ebi) - for counseling in terms of UX*
