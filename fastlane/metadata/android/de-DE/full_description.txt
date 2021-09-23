@@ -1,1 +1,3 @@
 Inoffizielle App, deren Quellcode vollständig öffentlich ist. Diese App ist ein einfach zu bedienendes PDF-Wallet. Sie übernimmt damit die Aufgabe Ihre wichtigsten PDF Zertifikate aufzubewahren und anzuzeigen. Sie inkludiert eine bequeme, formatfüllende QR-Code Anzeige, falls ein QR-Code auf der 1. Seite des PDF vorhanden ist.
+
+Privatsphäre und Datenschutz: https://michaeltroger.com/greenpass/privacy/de/
