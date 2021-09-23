@@ -6,13 +6,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -37,6 +34,7 @@ class AppMigrator(ctx: Context) {
         context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toLong()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun persistCurrentAppVersionCode() = GlobalScope.launch(Dispatchers.IO) {
         context.dataStore.edit { settings ->
             settings[appVersionCode] = currentVersionCode
