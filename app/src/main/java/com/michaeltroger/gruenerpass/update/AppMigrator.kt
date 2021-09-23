@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass.update
 
 import android.content.Context
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -31,7 +32,8 @@ class AppMigrator(ctx: Context) {
     }
 
     private val currentVersionCode: Long by lazy {
-        context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toLong()
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        PackageInfoCompat.getLongVersionCode(packageInfo)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
