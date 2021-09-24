@@ -16,7 +16,7 @@ jobs:
       with:
         tag_name: 1
         name: 2.2
-        body_path: $fastlane/metadata/android/en-US/changelogs/1.txt
+        body_path: fastlane/metadata/android/en-US/changelogs/1.txt
     
     - name: set up signing info
       run: |
