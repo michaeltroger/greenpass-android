@@ -11,11 +11,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Extract version code and version name
+      run: |
+        echo "VERSION_NAME="$(grep "versionName" app/build.gradle | awk '{print $2}' | sed 's/"//g') >> $GITHUB_ENV
     - name: Release on GitHub
       uses: softprops/action-gh-release@v1
       with:
         tag_name: 100
-        name: 10-version
+        name: ${{ env.VERSION_NAME }}
         body_path: fastlane/metadata/android/en-US/changelogs/1.txt
     
     - name: set up signing info
