@@ -47,3 +47,10 @@ jobs:
       
     - name: Publish to Play Store Internal
       run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
+
+    - name: Release on GitHub
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: 1
+        name: 2.2
+        body_path: $fastlane/metadata/android/en-US/changelogs/1.txt
