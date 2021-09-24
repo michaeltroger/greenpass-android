@@ -30,16 +30,6 @@ jobs:
       
     - name: Build app bundle with Gradle
       run: ./gradlew bundleRelease
-      
-    - name: Build apk with Gradle
-      run: ./gradlew assembleRelease
-      
-    - uses: actions/upload-artifact@v2
-      with:
-        name: AAB-APK
-        path: |
-          app/build/outputs/bundle/release/app-release.aab
-          app/build/outputs/apk/release/app-release.apk
           
     - name: set up play store access
       run: |
