@@ -12,6 +12,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: set up play store access
       run: |
+        bundletool
         echo "${{ secrets.PLAY_STORE_CREDENTIALS }}" > playstore_access.json.txt
         base64 -d playstore_access.json.txt > playstore_access.json
         rm playstore_access.json.txt
