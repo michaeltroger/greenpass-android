@@ -1,0 +1,2 @@
+- Behebt dass der editierte Dokumentname nicht gespeichert wird wenn Enter geklickt wird oder die App verlassen wird
+- Verschiedene Performance Verbesserungen

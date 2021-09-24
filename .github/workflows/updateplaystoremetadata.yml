@@ -1,0 +1,24 @@
+name: Update Play Store Metadata
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up play store access
+      run: |
+        echo "${{ secrets.PLAY_STORE_CREDENTIALS }}" > playstore_access.json
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7.2'
+
+    - name: Setup Fastlane
+      run: bundle install
+    - name: Update Metadata
+      run: bundle exec fastlane supply --skip_upload_changelogs
