@@ -11,3 +11,5 @@ local.properties
 keystore.properties
 keystore.jks
 *.swp
+playstore_access.json
+Gemfile.lock

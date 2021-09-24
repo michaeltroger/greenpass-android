@@ -15,7 +15,7 @@ It includes a convenient fullscreen QR code rendering, if a QR Code is present i
     height="80">](https://f-droid.org/packages/com.michaeltroger.gruenerpass)
 
 
-<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot1.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot2.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot3.jpg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/screenshot4.jpg" width="200">
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg" width="200">
 
 *Kudos to:*
 - *[Sebastian Schmid](https://github.com/da5ebi) - for counseling in terms of UX*
