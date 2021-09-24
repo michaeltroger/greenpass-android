@@ -53,7 +53,7 @@ jobs:
         echo "VERSION_NAME="$(grep "versionName" app/build.gradle | awk '{print $2}' | sed 's/"//g') >> $GITHUB_ENV
         echo "VERSION_CODE="$(grep "versionCode" app/build.gradle | awk '{print $2}') >> $GITHUB_ENV
         
-    - name: create Tag and release on GitHub
+    - name: create tag and release on GitHub
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.VERSION_CODE }}
