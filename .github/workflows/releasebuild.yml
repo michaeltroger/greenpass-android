@@ -11,17 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Extract version code and version name
-      run: |
-        echo "VERSION_NAME="$(grep "versionName" app/build.gradle | awk '{print $2}' | sed 's/"//g') >> $GITHUB_ENV
-        echo "VERSION_CODE="$(grep "versionCode" app/build.gradle | awk '{print $2}') >> $GITHUB_ENV
-    - name: Release on GitHub
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ env.VERSION_CODE }}
-        name: ${{ env.VERSION_NAME }}
-        body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
-    
     - name: set up signing info
       run: |
         echo "${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}" > keystore.properties
@@ -58,5 +47,16 @@ jobs:
       
     - name: Publish to Play Store Internal
       run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
+      
+    - name: Extract version code and version name
+      run: |
+        echo "VERSION_NAME="$(grep "versionName" app/build.gradle | awk '{print $2}' | sed 's/"//g') >> $GITHUB_ENV
+        echo "VERSION_CODE="$(grep "versionCode" app/build.gradle | awk '{print $2}') >> $GITHUB_ENV
+    - name: Release on GitHub
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.VERSION_CODE }}
+        name: ${{ env.VERSION_NAME }}
+        body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
 
 
