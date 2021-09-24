@@ -45,7 +45,7 @@ jobs:
     - name: Setup Fastlane
       run: bundle install
       
-    - name: Publish to Play Store Internal
+    - name: Publish Metadata and AAB to Play Store Internal
       run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
       
     - name: Extract version code and version name
