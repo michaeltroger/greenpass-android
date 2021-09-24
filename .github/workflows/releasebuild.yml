@@ -14,8 +14,8 @@ jobs:
     - name: Release on GitHub
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: 1
-        name: 2.2
+        tag_name: 100
+        name: 10-version
         body_path: fastlane/metadata/android/en-US/changelogs/1.txt
     
     - name: set up signing info
