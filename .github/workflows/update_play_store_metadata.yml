@@ -10,11 +10,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
     - name: set up play store access
       run: |
-        echo "${{ secrets.PLAY_STORE_CREDENTIALS }}" > playstore_access.json.txt
+        echo "$PLAY_STORE_CREDENTIALS" > playstore_access.json.txt
         base64 -d playstore_access.json.txt > playstore_access.json
         rm playstore_access.json.txt
+      env:
+        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+        
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -22,5 +26,6 @@ jobs:
 
     - name: Setup Fastlane
       run: bundle install
+      
     - name: Update Metadata
       run: bundle exec fastlane supply --skip_upload_changelogs
