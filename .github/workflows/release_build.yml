@@ -53,6 +53,9 @@ jobs:
     - name: publish metadata and AAB to Play Store Internal
       run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
       
+    - name: Build APK with Gradle
+      run: ./gradlew assembleRelease
+      
     - name: extract version code and version name
       run: |
         echo "VERSION_NAME="$(grep "versionName" app/build.gradle | awk '{print $2}' | sed 's/"//g') >> $GITHUB_ENV
@@ -64,5 +67,6 @@ jobs:
         tag_name: ${{ env.VERSION_CODE }}
         name: ${{ env.VERSION_NAME }}
         body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
+        files: app/build/outputs/apk/release/app-release.apk
 
 
