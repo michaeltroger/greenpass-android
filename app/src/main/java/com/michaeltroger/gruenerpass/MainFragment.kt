@@ -4,8 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -26,12 +29,12 @@ import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import com.xwray.groupie.Group
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import java.util.concurrent.Executor
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -46,6 +49,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var itemTouchHelper: ItemTouchHelper? = null
 
     private lateinit var binding: FragmentMainBinding
+
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -89,12 +96,46 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         binding.certificates.adapter = adapter
 
+        executor = ContextCompat.getMainExecutor(requireContext())
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int,
+                                                   errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    Toast.makeText(requireContext().applicationContext,
+                        "Authentication error: $errString", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    vm.onAuthenticationSuccess()
+                    Toast.makeText(requireContext().applicationContext,
+                        "Authentication succeeded!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    Toast.makeText(requireContext().applicationContext, "Authentication failed",
+                        Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
+
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Biometric login for my app")
+            .setNegativeButtonText("Abort")
+            .build()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
                         is ViewState.Certificate -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
+                        ViewState.ShowAuthenticationDialog -> showAuthenticationDialog()
                     }.let{}
                 }
             }
@@ -112,6 +153,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
+    }
+
+    private fun showAuthenticationDialog() {
+        binding.progressIndicator.isVisible = false
+        adapter.clear()
+        biometricPrompt.authenticate(promptInfo)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

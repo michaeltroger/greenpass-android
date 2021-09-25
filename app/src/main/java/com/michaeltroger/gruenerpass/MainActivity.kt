@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -14,12 +16,20 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
+    private lateinit var timeoutHandler: Handler
+    private lateinit var interactionTimeoutRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             intent?.getUri()?.let(vm::setUri)
         }
+        timeoutHandler =  Handler(Looper.getMainLooper());
+        interactionTimeoutRunnable =  Runnable {
+            vm.onInteractionTimeout()
+        }
+
+        startHandler()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -44,6 +54,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetHandler()
+    }
+
+    private fun resetHandler() {
+        timeoutHandler.removeCallbacks(interactionTimeoutRunnable);
+        timeoutHandler.postDelayed(interactionTimeoutRunnable, 10*1000L); //for 10 second
+    }
+
+    private fun startHandler() {
+        timeoutHandler.postDelayed(interactionTimeoutRunnable, 10*1000L); //for 10 second
     }
 }
 

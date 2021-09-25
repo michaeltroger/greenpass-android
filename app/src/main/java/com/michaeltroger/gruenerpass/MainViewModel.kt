@@ -32,12 +32,17 @@ class MainViewModel(
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
+    private var shouldAuthenticate = true
 
     private var uri: Uri? = null
 
     init {
         viewModelScope.launch {
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            if (shouldAuthenticate) {
+                _viewState.emit(ViewState.ShowAuthenticationDialog)
+            } else {
+                _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            }
         }
     }
 
@@ -116,6 +121,18 @@ class MainViewModel(
             }
             db.replaceAll(*sortedList.toTypedArray())
             _viewState.emit(ViewState.Certificate(documents = sortedList ))
+        }
+    }
+
+    fun onAuthenticationSuccess() {
+        viewModelScope.launch {
+            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+        }
+    }
+
+    fun onInteractionTimeout() {
+        viewModelScope.launch {
+            _viewState.emit(ViewState.ShowAuthenticationDialog)
         }
     }
 
