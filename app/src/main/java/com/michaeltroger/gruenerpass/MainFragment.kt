@@ -129,13 +129,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             .setNegativeButtonText("Abort")
             .build()
 
+        binding.authenticate.setOnClickListener {
+            biometricPrompt.authenticate(promptInfo)
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     when (it) {
                         is ViewState.Certificate -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
-                        ViewState.ShowAuthenticationDialog -> showAuthenticationDialog()
+                        ViewState.Locked -> showLockedState()
                     }.let{}
                 }
             }
@@ -153,12 +157,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             }
         }
-    }
-
-    private fun showAuthenticationDialog() {
-        binding.progressIndicator.isVisible = false
-        adapter.clear()
-        biometricPrompt.authenticate(promptInfo)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -182,13 +180,22 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         resultLauncher.launch(intent)
     }
 
+    private fun showLockedState() {
+        binding.progressIndicator.isVisible = false
+        binding.authenticate.isVisible = true
+        adapter.clear()
+        biometricPrompt.authenticate(promptInfo)
+    }
+
     private fun showLoadingState() {
         binding.progressIndicator.isVisible = true
+        binding.authenticate.isVisible = false
         binding.progressIndicator.show()
     }
 
     private fun showCertificateState(documents: List<Certificate>) {
         binding.progressIndicator.isVisible = false
+        binding.authenticate.isVisible = false
         val items = documents.map {
             CertificateItem(
                 requireContext().applicationContext,

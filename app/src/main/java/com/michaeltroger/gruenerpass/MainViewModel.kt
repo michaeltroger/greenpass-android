@@ -2,6 +2,7 @@ package com.michaeltroger.gruenerpass
 
 import android.app.Application
 import android.net.Uri
+import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -39,7 +40,7 @@ class MainViewModel(
     init {
         viewModelScope.launch {
             if (shouldAuthenticate) {
-                _viewState.emit(ViewState.ShowAuthenticationDialog)
+                _viewState.emit(ViewState.Locked)
             } else {
                 _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
             }
@@ -131,9 +132,16 @@ class MainViewModel(
     }
 
     fun onInteractionTimeout() {
-        viewModelScope.launch {
-            _viewState.emit(ViewState.ShowAuthenticationDialog)
+        if (canAuthenticate()) {
+            viewModelScope.launch {
+                _viewState.emit(ViewState.Locked)
+            }
         }
+    }
+
+    private fun canAuthenticate(): Boolean {
+        return BiometricManager.from(getApplication())
+            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
     }
 
 }
