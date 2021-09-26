@@ -15,6 +15,7 @@ Sehr simple App, die nichts anderes macht als PDF Zertifikate bequem aufzubewahr
 Die PDF-Datei muss in die App importiert werden. Anschließend wird der QR Code im Vollbild angezeigt (nur falls auf 1. Seite Ihres PDF vorhanden), sowie das PDF selbst. Das war's auch schon.
 
 <b>Mehr Funktionen</b>
+- Biometrische Authentifizierung (nur unterstützte Geräte)
 - PDFs individuell sortierbar
 - PDFs individuell benennbar
 - PDFs aus anderen Apps teilen

@@ -1,0 +1,1 @@
+- Allow biometric login on supported devices

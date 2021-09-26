@@ -6,4 +6,9 @@
         android:icon="@drawable/baseline_add_24"
         android:title="@string/add"
         app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/openSettings"
+        android:title="@string/settings"
+        app:showAsAction="never"/>
 </menu>

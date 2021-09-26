@@ -1,11 +1,14 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.net.Uri
+import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
@@ -25,19 +28,31 @@ class MainViewModel(
     app: Application,
     private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
     private val db: CertificateDao = Locator.database(app).certificateDao(),
-    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app)
-): AndroidViewModel(app) {
+    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app),
+    private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
+): AndroidViewModel(app), SharedPreferences.OnSharedPreferenceChangeListener {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
+    private var shouldAuthenticate = false
+    private var deviceSupportsAuthentication = false
 
     private var uri: Uri? = null
 
     init {
+        preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            deviceSupportsAuthentication = BiometricManager.from(app)
+                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
+
+            shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
+            if (shouldAuthenticate) {
+                _viewState.emit(ViewState.Locked)
+            } else {
+                _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication))
+            }
         }
     }
 
@@ -82,7 +97,7 @@ class MainViewModel(
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             renderer.close()
@@ -93,14 +108,14 @@ class MainViewModel(
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
             db.delete(id)
-            _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
             pdfHandler.deleteFile(id)
         }
     }
@@ -115,8 +130,26 @@ class MainViewModel(
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            _viewState.emit(ViewState.Certificate(documents = sortedList ))
+            _viewState.emit(ViewState.Normal(documents = sortedList, offerAppSettings = deviceSupportsAuthentication ))
         }
+    }
+
+    fun onAuthenticationSuccess() {
+        viewModelScope.launch {
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
+        }
+    }
+
+    fun onInteractionTimeout() {
+        if (shouldAuthenticate) {
+            viewModelScope.launch {
+                _viewState.emit(ViewState.Locked)
+            }
+        }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        shouldAuthenticate = sharedPreferences.getBoolean(getApplication<Application>().getString(R.string.key_preference_biometric), false)
     }
 
 }

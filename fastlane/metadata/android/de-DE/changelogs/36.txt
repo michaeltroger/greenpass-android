@@ -1,0 +1,1 @@
+- Erlaube biometrischen Login auf unterstützten Geräten

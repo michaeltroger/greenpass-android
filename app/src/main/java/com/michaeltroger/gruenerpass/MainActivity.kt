@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -11,15 +13,25 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 
+private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
+
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
+    private var timeoutHandler: Handler? = null
+    private var interactionTimeoutRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             intent?.getUri()?.let(vm::setUri)
         }
+        timeoutHandler =  Handler(Looper.getMainLooper());
+        interactionTimeoutRunnable =  Runnable {
+            vm.onInteractionTimeout()
+        }
+
+        startHandler()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -44,6 +56,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
         return super.dispatchTouchEvent(event)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetHandler()
+    }
+
+    private fun resetHandler() {
+        interactionTimeoutRunnable?.let { runnable ->
+            timeoutHandler?.removeCallbacks(runnable)
+            startHandler()
+        }
+    }
+
+    private fun startHandler() {
+        interactionTimeoutRunnable?.let { runnable ->
+            timeoutHandler?.postDelayed(runnable, INTERACTION_TIMEOUT_MS)
+        }
     }
 }
 

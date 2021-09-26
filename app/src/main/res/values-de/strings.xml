@@ -10,4 +10,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Abbrechen</string>
     <string name="dialog_delete_confirmation_message">Willst du das Dokument wirklich aus der App löschen?</string>
+    <string name="biometric_login_title">Biometrischer Login</string>
+    <string name="settings">Einstellungen</string>
+    <string name="authenticate">Authentifizieren</string>
 </resources>

@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,17 +27,20 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
+import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import com.xwray.groupie.Group
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import java.util.concurrent.Executor
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
+    private var openSettingsMenuButton: MenuItem? = null
+    private var addMenuButton: MenuItem? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
     @OptIn(ObsoleteCoroutinesApi::class)
@@ -46,6 +52,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private var itemTouchHelper: ItemTouchHelper? = null
 
     private lateinit var binding: FragmentMainBinding
+
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -59,6 +69,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         setHasOptionsMenu(true)
 
         binding = FragmentMainBinding.bind(view)
+        executor = ContextCompat.getMainExecutor(requireContext())
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    requireActivity().onUserInteraction() // onUserInteraction() is not called by android in this case so we call it manually
+                    vm.onAuthenticationSuccess()
+                }
+            })
+
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle(requireContext().getString(R.string.biometric_login_title))
+            .setNegativeButtonText(requireContext().getString(R.string.cancel))
+            .setConfirmationRequired(false)
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            .build()
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
         binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
@@ -89,12 +114,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         binding.certificates.adapter = adapter
 
+        binding.authenticate.setOnClickListener {
+            biometricPrompt.authenticate(promptInfo)
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
+                    updateMenuState()
                     when (it) {
-                        is ViewState.Certificate -> showCertificateState(documents = it.documents)
+                        is ViewState.Normal -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
+                        ViewState.Locked -> showLockedState()
                     }.let{}
                 }
             }
@@ -116,6 +147,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
+        addMenuButton = menu.findItem(R.id.add)
+        openSettingsMenuButton = menu.findItem(R.id.openSettings)
+        updateMenuState()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -124,7 +158,22 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             openFilePicker()
             true
         }
+        R.id.openSettings -> {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun updateMenuState() {
+        if (vm.viewState.value::class.java == ViewState.Normal::class.java) {
+            addMenuButton?.isVisible = true
+            openSettingsMenuButton?.isVisible = (vm.viewState.value as ViewState.Normal).offerAppSettings
+        } else {
+            addMenuButton?.isVisible = false
+            openSettingsMenuButton?.isVisible = false
+        }
     }
 
     private fun openFilePicker() {
@@ -135,13 +184,22 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         resultLauncher.launch(intent)
     }
 
+    private fun showLockedState() {
+        binding.progressIndicator.isVisible = false
+        binding.authenticate.isVisible = true
+        adapter.clear()
+        biometricPrompt.authenticate(promptInfo)
+    }
+
     private fun showLoadingState() {
         binding.progressIndicator.isVisible = true
+        binding.authenticate.isVisible = false
         binding.progressIndicator.show()
     }
 
     private fun showCertificateState(documents: List<Certificate>) {
         binding.progressIndicator.isVisible = false
+        binding.authenticate.isVisible = false
         val items = documents.map {
             CertificateItem(
                 requireContext().applicationContext,
