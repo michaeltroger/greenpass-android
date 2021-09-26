@@ -27,6 +27,7 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
+import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -38,6 +39,7 @@ import java.util.concurrent.Executor
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
+    private var openSettingsMenuButton: MenuItem? = null
     private var addMenuButton: MenuItem? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
@@ -137,7 +139,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
-                    updateAddButtonState()
+                    updateMenuState()
                     when (it) {
                         is ViewState.Certificate -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
@@ -164,7 +166,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
         addMenuButton = menu.findItem(R.id.add)
-        updateAddButtonState()
+        openSettingsMenuButton = menu.findItem(R.id.openSettings)
+        updateMenuState()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -173,11 +176,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             openFilePicker()
             true
         }
+        R.id.openSettings -> {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun updateAddButtonState() {
+    private fun updateMenuState() {
         addMenuButton?.isVisible = vm.viewState.value != ViewState.Locked
+        openSettingsMenuButton?.isVisible = vm.viewState.value != ViewState.Locked
     }
 
     private fun openFilePicker() {

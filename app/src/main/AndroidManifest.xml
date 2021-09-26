@@ -3,25 +3,31 @@
     package="com.michaeltroger.gruenerpass">
 
     <application
+        android:name=".GreenPassApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:largeHeap="true"
-        android:name=".GreenPassApplication"
+        android:supportsRtl="true"
         android:theme="@style/Theme.GruenerPass">
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="sensorPortrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="application/pdf" />
             </intent-filter>
         </activity>

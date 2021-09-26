@@ -1,12 +1,14 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
@@ -26,23 +28,28 @@ class MainViewModel(
     app: Application,
     private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
     private val db: CertificateDao = Locator.database(app).certificateDao(),
-    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app)
+    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app),
+    private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
 ): AndroidViewModel(app) {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
-    private var shouldAuthenticate = true
+    private var shouldAuthenticate = false
 
     private var uri: Uri? = null
 
     init {
         viewModelScope.launch {
+            shouldAuthenticate = preferenceManager.getBoolean("shouldAuthenticate", false)
             if (shouldAuthenticate) {
                 _viewState.emit(ViewState.Locked)
             } else {
                 _viewState.emit(ViewState.Certificate(documents = db.getAll() ))
+            }
+            preferenceManager.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+                shouldAuthenticate = sharedPreferences.getBoolean("shouldAuthenticate", false)
             }
         }
     }
