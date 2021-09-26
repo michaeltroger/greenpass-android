@@ -30,7 +30,7 @@ class MainViewModel(
     private val db: CertificateDao = Locator.database(app).certificateDao(),
     private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app),
     private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
-): AndroidViewModel(app) {
+): AndroidViewModel(app), SharedPreferences.OnSharedPreferenceChangeListener {
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -42,6 +42,7 @@ class MainViewModel(
     private var uri: Uri? = null
 
     init {
+        preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
             deviceSupportsAuthentication = BiometricManager.from(getApplication())
                 .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
@@ -51,9 +52,6 @@ class MainViewModel(
                 _viewState.emit(ViewState.Locked)
             } else {
                 _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication))
-            }
-            preferenceManager.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-                shouldAuthenticate = sharedPreferences.getBoolean("shouldAuthenticate", false)
             }
         }
     }
@@ -148,6 +146,10 @@ class MainViewModel(
                 _viewState.emit(ViewState.Locked)
             }
         }
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        shouldAuthenticate = sharedPreferences.getBoolean("shouldAuthenticate", false)
     }
 
 }
