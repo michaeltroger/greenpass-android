@@ -44,10 +44,10 @@ class MainViewModel(
     init {
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
-            deviceSupportsAuthentication = BiometricManager.from(getApplication())
+            deviceSupportsAuthentication = BiometricManager.from(app)
                 .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
 
-            shouldAuthenticate = preferenceManager.getBoolean("shouldAuthenticate", false)
+            shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
             if (shouldAuthenticate) {
                 _viewState.emit(ViewState.Locked)
             } else {
@@ -149,7 +149,7 @@ class MainViewModel(
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        shouldAuthenticate = sharedPreferences.getBoolean("shouldAuthenticate", false)
+        shouldAuthenticate = sharedPreferences.getBoolean(getApplication<Application>().getString(R.string.key_preference_biometric), false)
     }
 
 }
