@@ -120,7 +120,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 vm.viewState.collect {
                     updateMenuState()
                     when (it) {
-                        is ViewState.Certificate -> showCertificateState(documents = it.documents)
+                        is ViewState.Normal -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
                         ViewState.Locked -> showLockedState()
                     }.let{}
@@ -164,8 +164,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun updateMenuState() {
-        addMenuButton?.isVisible = vm.viewState.value != ViewState.Locked
-        openSettingsMenuButton?.isVisible = vm.viewState.value != ViewState.Locked
+        if (vm.viewState.value::class.java == ViewState.Normal::class.java) {
+            addMenuButton?.isVisible = true
+            openSettingsMenuButton?.isVisible = (vm.viewState.value as ViewState.Normal).offerAppSettings
+        } else {
+            addMenuButton?.isVisible = false
+            openSettingsMenuButton?.isVisible = false
+        }
     }
 
     private fun openFilePicker() {
