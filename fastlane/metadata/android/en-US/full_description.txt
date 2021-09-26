@@ -15,6 +15,7 @@ Very simple app, that does nothing more than conveniently storing and displaying
 The PDF file has to be imported into the app. Following the QR code is displayed in fullscreen (only if present in the PDF's 1. page), as well as the PDF itself. That's already it.
 
 <b>More Features</b>
+- Biometric authentication (supported devices only)
 - PDFs can be individually sorted
 - PDFs can be individually named
 - PDFs can be shared from other apps
