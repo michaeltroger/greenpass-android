@@ -12,6 +12,7 @@
         android:theme="@style/Theme.GruenerPass">
         <activity
             android:name=".settings.SettingsActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
