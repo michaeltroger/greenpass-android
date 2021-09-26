@@ -38,6 +38,7 @@ import java.util.concurrent.Executor
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
+    private var addMenuButton: MenuItem? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
     @OptIn(ObsoleteCoroutinesApi::class)
@@ -136,6 +137,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
+                    updateAddButtonState()
                     when (it) {
                         is ViewState.Certificate -> showCertificateState(documents = it.documents)
                         ViewState.Loading -> showLoadingState()
@@ -161,6 +163,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
+        addMenuButton = menu.findItem(R.id.add)
+        updateAddButtonState()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -170,6 +174,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun updateAddButtonState() {
+        addMenuButton?.isVisible = vm.viewState.value != ViewState.Locked
     }
 
     private fun openFilePicker() {
