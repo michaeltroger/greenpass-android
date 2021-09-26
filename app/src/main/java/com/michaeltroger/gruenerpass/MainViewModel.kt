@@ -45,7 +45,7 @@ class MainViewModel(
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
             deviceSupportsAuthentication = BiometricManager.from(getApplication())
-                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
+                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL) == BiometricManager.BIOMETRIC_SUCCESS
 
             shouldAuthenticate = preferenceManager.getBoolean("shouldAuthenticate", false)
             if (shouldAuthenticate) {

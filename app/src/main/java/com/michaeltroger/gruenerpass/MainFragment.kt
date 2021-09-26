@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -109,8 +110,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle(requireContext().getString(R.string.biometric_login_title))
-            .setNegativeButtonText(requireContext().getString(R.string.cancel))
+            //.setNegativeButtonText(requireContext().getString(R.string.cancel))
             .setConfirmationRequired(false)
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
             .build()
 
         binding.authenticate.setOnClickListener {
