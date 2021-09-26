@@ -102,6 +102,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    requireActivity().onUserInteraction() // onUserInteraction() is not called by android in this case so we call it manually
                     vm.onAuthenticationSuccess()
                 }
             })
