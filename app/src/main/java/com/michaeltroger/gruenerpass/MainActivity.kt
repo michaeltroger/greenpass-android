@@ -13,6 +13,8 @@ import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 
+private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
+
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
@@ -63,11 +65,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun resetHandler() {
         timeoutHandler.removeCallbacks(interactionTimeoutRunnable);
-        timeoutHandler.postDelayed(interactionTimeoutRunnable, 10*1000L); //for 10 second
+        timeoutHandler.postDelayed(interactionTimeoutRunnable, INTERACTION_TIMEOUT_MS)
     }
 
     private fun startHandler() {
-        timeoutHandler.postDelayed(interactionTimeoutRunnable, 10*1000L); //for 10 second
+        timeoutHandler.postDelayed(interactionTimeoutRunnable, INTERACTION_TIMEOUT_MS)
     }
 }
 
