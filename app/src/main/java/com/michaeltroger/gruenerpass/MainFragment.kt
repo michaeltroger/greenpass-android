@@ -108,8 +108,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Biometric login for my app")
-            .setNegativeButtonText("Abort")
+            .setTitle(requireContext().getString(R.string.cancel))
+            .setNegativeButtonText(requireContext().getString(R.string.cancel))
+            .setConfirmationRequired(false)
             .build()
 
         binding.authenticate.setOnClickListener {

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreferenceCompat
         android:key="shouldAuthenticate"
-        android:title="Biometrics"
-        android:summary="Authenticate via biometrics" />
+        android:icon="@drawable/baseline_security_24"
+        android:title="@string/biometric_login_title" />
 </PreferenceScreen>
