@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricPrompt
@@ -102,28 +101,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         executor = ContextCompat.getMainExecutor(requireContext())
         biometricPrompt = BiometricPrompt(this, executor,
             object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int,
-                                                   errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(requireContext().applicationContext,
-                        "Authentication error: $errString", Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     vm.onAuthenticationSuccess()
-                    Toast.makeText(requireContext().applicationContext,
-                        "Authentication succeeded!", Toast.LENGTH_SHORT)
-                        .show()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Toast.makeText(requireContext().applicationContext, "Authentication failed",
-                        Toast.LENGTH_SHORT)
-                        .show()
                 }
             })
 
