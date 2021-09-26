@@ -108,7 +108,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(requireContext().getString(R.string.cancel))
+            .setTitle(requireContext().getString(R.string.biometric_login_title))
             .setNegativeButtonText(requireContext().getString(R.string.cancel))
             .setConfirmationRequired(false)
             .build()
