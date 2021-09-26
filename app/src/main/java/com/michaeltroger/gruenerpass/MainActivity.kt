@@ -18,8 +18,8 @@ private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
-    private lateinit var timeoutHandler: Handler
-    private lateinit var interactionTimeoutRunnable: Runnable
+    private var timeoutHandler: Handler? = null
+    private var interactionTimeoutRunnable: Runnable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +64,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun resetHandler() {
-        timeoutHandler.removeCallbacks(interactionTimeoutRunnable);
-        timeoutHandler.postDelayed(interactionTimeoutRunnable, INTERACTION_TIMEOUT_MS)
+        interactionTimeoutRunnable?.let { runnable ->
+            timeoutHandler?.removeCallbacks(runnable)
+            startHandler()
+        }
     }
 
     private fun startHandler() {
-        timeoutHandler.postDelayed(interactionTimeoutRunnable, INTERACTION_TIMEOUT_MS)
+        interactionTimeoutRunnable?.let { runnable ->
+            timeoutHandler?.postDelayed(runnable, INTERACTION_TIMEOUT_MS)
+        }
     }
 }
 
