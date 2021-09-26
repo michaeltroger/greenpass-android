@@ -69,6 +69,21 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         setHasOptionsMenu(true)
 
         binding = FragmentMainBinding.bind(view)
+        executor = ContextCompat.getMainExecutor(requireContext())
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    requireActivity().onUserInteraction() // onUserInteraction() is not called by android in this case so we call it manually
+                    vm.onAuthenticationSuccess()
+                }
+            })
+
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle(requireContext().getString(R.string.biometric_login_title))
+            .setNegativeButtonText(requireContext().getString(R.string.cancel))
+            .setConfirmationRequired(false)
+            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            .build()
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
         binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
@@ -98,22 +113,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         } catch (ignore: Exception) {}
 
         binding.certificates.adapter = adapter
-
-        executor = ContextCompat.getMainExecutor(requireContext())
-        biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    requireActivity().onUserInteraction() // onUserInteraction() is not called by android in this case so we call it manually
-                    vm.onAuthenticationSuccess()
-                }
-            })
-
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(requireContext().getString(R.string.biometric_login_title))
-            .setNegativeButtonText(requireContext().getString(R.string.cancel))
-            .setConfirmationRequired(false)
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
-            .build()
 
         binding.authenticate.setOnClickListener {
             biometricPrompt.authenticate(promptInfo)
