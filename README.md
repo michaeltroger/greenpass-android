@@ -21,5 +21,8 @@ Demo Video:
 
 [![Demo Video](http://img.youtube.com/vi/I9XmFXCobDE/0.jpg)](http://www.youtube.com/watch?v=I9XmFXCobDE "Video Title")
 
+Author:
+[Michael Troger](https://michaeltroger.com)
+
 *Kudos to:*
 - *[Sebastian Schmid](https://github.com/da5ebi) - for counseling in terms of UX*
