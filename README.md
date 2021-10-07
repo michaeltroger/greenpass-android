@@ -17,6 +17,8 @@ It includes a convenient fullscreen QR code rendering, if a QR Code is present i
 
 <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg" width="200">
 
+Demo Video:
+
 [![Demo Video](http://img.youtube.com/vi/I9XmFXCobDE/0.jpg)](http://www.youtube.com/watch?v=I9XmFXCobDE "Video Title")
 
 *Kudos to:*
