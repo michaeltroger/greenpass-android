@@ -5,6 +5,8 @@ Unofficial app that is fully open source. This app is a simple to use PDF Wallet
 That means it takes over the task to store and display your most important PDF certificates.
 It includes a convenient fullscreen QR code rendering, if a QR Code is present in the PDF's 1. page.
 
+Help translating the app: https://crwd.in/green-pass
+
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     alt="Get it on Google Play"
