@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
 import com.google.zxing.*
+import com.google.zxing.aztec.AztecReader
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
@@ -17,18 +18,18 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val QR_CODE_SIZE = 400
+private const val BARCODE_SIZE = 400
 private const val PDF_RESOLUTION_MULTIPLIER = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
-const val PAGE_INDEX_QR_CODE = 0
+const val PAGE_INDEX_BARCODE = 0
 
 interface PdfRenderer {
     suspend fun loadFile(): Boolean
     fun getPageCount(): Int
     fun close()
-    suspend fun hasQrCode(pageIndex: Int): Boolean
-    suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap?
+    suspend fun hasBarcode(pageIndex: Int): Boolean
+    suspend fun getBarcodeIfPresent(pageIndex: Int): Bitmap?
     suspend fun renderPage(pageIndex: Int): Bitmap?
 }
 
@@ -40,7 +41,8 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         get() = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
 
     private val qrCodeReader = QRCodeReader()
-    private val qrCodeWriter = MultiFormatWriter()
+    private val aztecCodeReader = AztecReader()
+    private val barcodeWriter = MultiFormatWriter()
 
     private var renderer: PdfRenderer? = null
     private var fileDescriptor: ParcelFileDescriptor? = null
@@ -71,13 +73,13 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         } catch (ignore: Exception) {}
     }
 
-    override suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
-        return@withContext !renderPage(pageIndex)?.extractQrCodeText().isNullOrEmpty()
+    override suspend fun hasBarcode(pageIndex: Int): Boolean = withContext(renderContext) {
+        return@withContext renderPage(pageIndex)?.extractBarcodeFromPdf() != null
     }
 
-    override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
-       val qrText = renderPage(pageIndex)?.extractQrCodeText() ?: return@withContext null
-       return@withContext encodeQrCodeAsBitmap(qrText)
+    override suspend fun getBarcodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
+       val barcodeData = renderPage(pageIndex)?.extractBarcodeFromPdf() ?: return@withContext null
+       return@withContext encodeBarcodeAsBitmap(barcodeData)
     }
 
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
@@ -119,23 +121,39 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         return bitmap
     }
 
-    private fun Bitmap.extractQrCodeText(): String? {
+    private fun Bitmap.extractBarcodeFromPdf(): BarcodeData? {
         try {
             val intArray = IntArray(width * height)
             getPixels(intArray, 0, width, 0, 0, width, height)
             val source: LuminanceSource = RGBLuminanceSource(width, height, intArray)
             val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
 
-            return qrCodeReader.decode(binaryBitmap).text
-        } catch (ignore: Exception) {}
+            return try {
+                BarcodeData.QrCode(
+                    text = qrCodeReader.decode(binaryBitmap).text
+                )
+            } catch (e: NotFoundException) {
+                BarcodeData.AztecCode(
+                    text = aztecCodeReader.decode(binaryBitmap).text
+                )
+            }
+        }
+        catch (ignore: Exception) {}
         catch (ignore: OutOfMemoryError) {}
         return null
     }
 
-    private fun encodeQrCodeAsBitmap(source: String): Bitmap {
-        val hintMap = HashMap<EncodeHintType, Any>()
-        hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
-        val result: BitMatrix = qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE, hintMap)
+    private fun encodeBarcodeAsBitmap(barcodeData: BarcodeData): Bitmap {
+        val result: BitMatrix = when (barcodeData) {
+            is BarcodeData.QrCode -> {
+                val hintMap = HashMap<EncodeHintType, Any>()
+                hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
+                barcodeWriter.encode(barcodeData.text, BarcodeFormat.QR_CODE, BARCODE_SIZE, BARCODE_SIZE, hintMap)
+            }
+            is BarcodeData.AztecCode -> {
+                barcodeWriter.encode(barcodeData.text, BarcodeFormat.AZTEC, BARCODE_SIZE, BARCODE_SIZE, null)
+            }
+        }
 
         val w = result.width
         val h = result.height
@@ -149,7 +167,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         }
 
         val bitmapQrCode = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
-        bitmapQrCode.setPixels(pixels, 0, QR_CODE_SIZE, 0, 0, w, h)
+        bitmapQrCode.setPixels(pixels, 0, BARCODE_SIZE, 0, 0, w, h)
         return bitmapQrCode
     }
 }

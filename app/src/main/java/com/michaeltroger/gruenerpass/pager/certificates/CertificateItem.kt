@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
-import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
+import com.michaeltroger.gruenerpass.model.PAGE_INDEX_BARCODE
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
-import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
+import com.michaeltroger.gruenerpass.pager.certificate.BarcodeItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
@@ -60,8 +60,8 @@ class CertificateItem(
                     onStartDrag(viewHolder)
                 }
             ))
-            if (renderer.hasQrCode(PAGE_INDEX_QR_CODE)) {
-                itemList.add(QrCodeItem(renderer, fileName = fileName))
+            if (renderer.hasBarcode(PAGE_INDEX_BARCODE)) {
+                itemList.add(BarcodeItem(renderer, fileName = fileName))
             }
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
