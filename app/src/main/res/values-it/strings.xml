@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  uris -->
     <string name="app_name">Green Pass</string>
     <string name="delete">Cancella</string>
     <string name="add">Aggiungi</string>
@@ -14,4 +15,14 @@
     <string name="biometric_login_title">Accesso biometrico</string>
     <string name="settings">Impostazioni</string>
     <string name="authenticate">Autenticati</string>
+    <string name="pref_cat_update_setting">Update Settings</string>
+    <string name="contact_developer_summary">Any problem using the app? Let me try helping you</string>
+    <string name="contact_developer">\"Contact developer</string>
+    <string name="rate_summary">If you like this app, please consider rating it</string>
+    <string name="rate">Rate this app</string>
+    <string name="help_translating">Help localizing</string>
+    <string name="help_translating_summary">Translate the app into your native language</string>
+    <string name="contributing">Contribute</string>
+    <string name="contributing_summary">This app is open-source. Contribute!</string>
+    <string name="pref_cat_contact">Miscellaneous</string>
 </resources>
