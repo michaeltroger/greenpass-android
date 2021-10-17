@@ -1,5 +1,5 @@
 # Green Pass PDF Wallet Android App
-[![Android CI](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml/badge.svg)](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml)
+[![Android CI](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml/badge.svg)](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml) [![Crowdin](https://badges.crowdin.net/green-pass/localized.svg)](https://crowdin.com/project/green-pass)
 
 Unofficial app that is fully open source. This app is a simple to use PDF Wallet.
 That means it takes over the task to store and display your most important PDF certificates.
@@ -7,12 +7,9 @@ It includes a convenient fullscreen QR code rendering, if a QR Code is present i
 
 Help translating the app: https://crwd.in/green-pass
 
-
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     alt="Get it on Google Play"
-    height="80">](https://play.google.com/store/apps/details?id=com.michaeltroger.gruenerpass&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
-    
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    height="80">](https://play.google.com/store/apps/details?id=com.michaeltroger.gruenerpass&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1) [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
     alt="Get it on F-Droid"
     height="80">](https://f-droid.org/packages/com.michaeltroger.gruenerpass)
 
