@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="contact_developer_uri">mailto:greenpass@troger.app</string>
+    <string name="rate_uri">https://play.google.com/store/apps/details?id=com.michaeltroger.gruenerpass</string>
+    <string name="help_translating_uri">https://crwd.in/green-pass</string>
+    <string name="contributing_uri">https://github.com/michaeltroger/greenpass-android</string>
+    <string name="key_preference_biometric">shouldAuthenticate</string>
+</resources>

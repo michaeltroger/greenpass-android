@@ -1,12 +1,4 @@
 <resources>
-    <!--  uris -->
-    <string name="contact_developer_uri" translatable="false">mailto:greenpass@troger.app</string>
-    <string name="rate_uri" translatable="false">https://play.google.com/store/apps/details?id=com.michaeltroger.gruenerpass</string>
-    <string name="help_translating_uri" translatable="false">https://crwd.in/green-pass</string>
-    <string name="contributing_uri" translatable="false">https://github.com/michaeltroger/greenpass-android</string>
-
-    <string name="key_preference_biometric" translatable="false">shouldAuthenticate</string>
-
     <string name="app_name">Green Pass</string>
     <string name="delete">Delete</string>
     <string name="add">Add</string>
@@ -23,7 +15,7 @@
     <string name="authenticate">Authenticate</string>
     <string name="pref_cat_update_setting">Update Settings</string>
     <string name="contact_developer_summary">Any problem using the app? Let me try helping you</string>
-    <string name="contact_developer">"Contact developer</string>
+    <string name="contact_developer">Contact developer</string>
     <string name="rate_summary">If you like this app, please consider rating it</string>
     <string name="rate">Rate this app</string>
     <string name="help_translating">Help localizing</string>
