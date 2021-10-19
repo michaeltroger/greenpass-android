@@ -17,10 +17,7 @@ import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -37,21 +34,20 @@ class MainViewModel(
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
     private var shouldAuthenticate = false
-    private var deviceSupportsAuthentication = false
+    private var offerAppSettings = false
 
     private var uri: Uri? = null
 
     init {
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
-            deviceSupportsAuthentication = BiometricManager.from(app)
+            offerAppSettings = BiometricManager.from(app)
                 .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
-
             shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
             if (shouldAuthenticate) {
                 _viewState.emit(ViewState.Locked)
             } else {
-                _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication))
+                _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings))
             }
         }
     }
@@ -59,8 +55,14 @@ class MainViewModel(
     fun setUri(uri: Uri) {
         this.uri = uri
         viewModelScope.launch {
-            _viewEvent.emit(ViewEvent.CloseAllDialogs)
-            loadFileFromUri()
+            val state = viewState.filter {
+                it !is ViewState.Loading
+            }.first() // wait for initial loading to be finished
+
+            if (state !is ViewState.Locked) {
+                _viewEvent.emit(ViewEvent.CloseAllDialogs)
+                loadFileFromUri()
+            }
         }
     }
 
@@ -97,25 +99,26 @@ class MainViewModel(
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             renderer.close()
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
         }
+        uri = null
     }
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
             db.delete(id)
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
             pdfHandler.deleteFile(id)
         }
     }
@@ -130,13 +133,17 @@ class MainViewModel(
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            _viewState.emit(ViewState.Normal(documents = sortedList, offerAppSettings = deviceSupportsAuthentication ))
+            _viewState.emit(ViewState.Normal(documents = sortedList, offerAppSettings = offerAppSettings ))
         }
     }
 
     fun onAuthenticationSuccess() {
         viewModelScope.launch {
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = deviceSupportsAuthentication ))
+            if (uri == null) {
+                _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
+            } else {
+                loadFileFromUri()
+            }
         }
     }
 
