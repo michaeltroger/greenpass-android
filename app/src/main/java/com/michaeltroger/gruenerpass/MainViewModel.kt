@@ -17,10 +17,7 @@ import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -46,7 +43,6 @@ class MainViewModel(
         viewModelScope.launch {
             offerAppSettings = BiometricManager.from(app)
                 .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
-
             shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
             if (shouldAuthenticate) {
                 _viewState.emit(ViewState.Locked)
@@ -58,8 +54,12 @@ class MainViewModel(
 
     fun setUri(uri: Uri) {
         this.uri = uri
-        if (viewState.value !is ViewState.Locked) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            val state = viewState.filter {
+                it !is ViewState.Loading
+            }.first() // wait for initial loading to be finished
+
+            if (state !is ViewState.Locked) {
                 _viewEvent.emit(ViewEvent.CloseAllDialogs)
                 loadFileFromUri()
             }
