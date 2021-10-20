@@ -27,6 +27,7 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
+import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -156,6 +157,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.add -> {
             openFilePicker()
+            true
+        }
+        R.id.openMore -> {
+            val intent = Intent(requireContext(), MoreActivity::class.java)
+            startActivity(intent)
             true
         }
         R.id.openSettings -> {

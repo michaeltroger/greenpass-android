@@ -11,4 +11,9 @@
         android:id="@+id/openSettings"
         android:title="@string/settings"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/openMore"
+        android:title="@string/more"
+        app:showAsAction="never"/>
 </menu>
