@@ -14,4 +14,14 @@
     <string name="biometric_login_title">Biometrischer Login</string>
     <string name="settings">Einstellungen</string>
     <string name="authenticate">Authentifizieren</string>
+    <string name="contact_developer_summary">Probleme bei Verwendung der App? Lass mich helfen</string>
+    <string name="contact_developer">Entwickler kontaktieren</string>
+    <string name="rate_summary">Wenn dir diese App gefällt, erwäge bitte eine Bewertung</string>
+    <string name="rate">App bewerten</string>
+    <string name="help_translating">Hilf bei der Lokalisierung</string>
+    <string name="help_translating_summary">Übersetze die App in deine Muttersprache</string>
+    <string name="contributing">Hilf beim Programmieren</string>
+    <string name="contributing_summary">Diese App ist Open-Source. Jetzt mitwirken!</string>
+    <string name="more">Mehr</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
 </resources>

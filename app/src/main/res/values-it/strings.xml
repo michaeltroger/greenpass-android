@@ -14,4 +14,14 @@
     <string name="biometric_login_title">Accesso biometrico</string>
     <string name="settings">Impostazioni</string>
     <string name="authenticate">Autenticati</string>
+    <string name="contact_developer_summary">Qualche problema con l\'app? Lascia che ti aiuti</string>
+    <string name="contact_developer">Contatta lo sviluppatore</string>
+    <string name="rate_summary">Se ti piace quest\'app, ti preghiamo di valutarla</string>
+    <string name="rate">Valuta quest\'app</string>
+    <string name="help_translating">Aiuta a tradurre</string>
+    <string name="help_translating_summary">Traduci l\'app nella tua lingua</string>
+    <string name="contributing">Aiuto con la programmazione</string>
+    <string name="contributing_summary">App a codice aperto. Contribuisci!</string>
+    <string name="more">Altro</string>
+    <string name="privacy_policy">Condizioni di riservatezza</string>
 </resources>
