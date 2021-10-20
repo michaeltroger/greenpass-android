@@ -14,7 +14,6 @@
     <string name="biometric_login_title">Biometrischer Login</string>
     <string name="settings">Einstellungen</string>
     <string name="authenticate">Authentifizieren</string>
-    <string name="pref_cat_update_setting">Update Settings</string>
     <string name="contact_developer_summary">Any problem using the app? Let me try helping you</string>
     <string name="contact_developer">Contact developer</string>
     <string name="rate_summary">If you like this app, please consider rating it</string>
@@ -23,5 +22,6 @@
     <string name="help_translating_summary">Translate the app into your native language</string>
     <string name="contributing">Contribute</string>
     <string name="contributing_summary">This app is open-source. Contribute!</string>
-    <string name="pref_cat_contact">Miscellaneous</string>
+    <string name="more">More</string>
+    <string name="privacy_policy">Privacy policy</string>
 </resources>
