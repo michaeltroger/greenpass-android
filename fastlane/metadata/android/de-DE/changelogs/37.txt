@@ -1,0 +1,3 @@
+- Italienische Sprache hinzugefügt. Danke an Daniele Garau!
+- Neue "Mehr" Sektion mit Links zu Datenschutzerklärung etc.  
+- Behebt, dass der biometrische Login beim Hinzufügen von Dokumenten umgangen werden kann
