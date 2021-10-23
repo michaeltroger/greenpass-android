@@ -11,7 +11,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Annulla</string>
     <string name="dialog_delete_confirmation_message">Vuoi davvero rimuovere il documento dall\'app?</string>
-    <string name="biometric_login_title">Accesso biometrico</string>
+    <string name="require_authentication">Require authentication</string>
     <string name="settings">Impostazioni</string>
     <string name="authenticate">Autenticati</string>
     <string name="contact_developer_summary">Qualche problema con l\'app? Lascia che ti aiuti</string>
