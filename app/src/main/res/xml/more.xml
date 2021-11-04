@@ -10,10 +10,10 @@
     </Preference>
     <Preference
         android:key="contactDevKey"
-        android:title="@string/contact_developer"
-        android:summary="@string/contact_developer_summary">
+        android:title="@string/report_issue"
+        android:summary="@string/report_issue_summary">
         <intent android:action="android.intent.action.VIEW"
-            android:data="@string/contact_developer_uri"/>
+            android:data="@string/issues_uri"/>
     </Preference>
     <Preference
         android:key="rateKey"
