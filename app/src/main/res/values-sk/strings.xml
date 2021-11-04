@@ -11,11 +11,11 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="dialog_delete_confirmation_message">Do you really want to delete the document from the app?</string>
-    <string name="require_authentication">Biometric login</string>
+    <string name="require_authentication">Require authentication</string>
     <string name="settings">Settings</string>
     <string name="authenticate">Authenticate</string>
     <string name="report_issue_summary">Any problem using the app? Let me try helping you</string>
-    <string name="report_issue">Contact developer</string>
+    <string name="report_issue">Report issue</string>
     <string name="rate_summary">If you like this app, please consider rating it</string>
     <string name="rate">Rate this app</string>
     <string name="help_translating">Help localizing</string>
