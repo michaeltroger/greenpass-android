@@ -132,10 +132,13 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         return null
     }
 
-    private fun encodeQrCodeAsBitmap(source: String): Bitmap {
-        val hintMap = HashMap<EncodeHintType, Any>()
-        hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
-        val result: BitMatrix = qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE, hintMap)
+    private fun encodeQrCodeAsBitmap(source: String): Bitmap? {
+        val result: BitMatrix
+        try {
+            result = qrCodeWriter.encode(source, BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE)
+        } catch (ignore: Exception) {
+            return null
+        }
 
         val w = result.width
         val h = result.height

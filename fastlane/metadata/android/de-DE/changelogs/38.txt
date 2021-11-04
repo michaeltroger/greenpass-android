@@ -1,0 +1,4 @@
+- Erlaubt Authentifizierung mit Geräte PIN oder Passwort
+- Fixt einen Crash mit kanadischen Zertifikaten
+- Der Vollbild QR Code schaut mit dieser Version möglicherweise anders aus, aber er bleibt identisch für QR Code Lesegeräte
+- Russische Sprache hinzugefügt. Danke an Даниил Николаев!

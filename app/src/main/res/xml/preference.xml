@@ -5,5 +5,5 @@
     <SwitchPreferenceCompat
         android:key="@string/key_preference_biometric"
         android:icon="@drawable/baseline_security_24"
-        android:title="@string/biometric_login_title" />
+        android:title="@string/require_authentication" />
 </PreferenceScreen>

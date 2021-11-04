@@ -1,0 +1,4 @@
+- Allowing authentication with device PIN or password
+- Fixes crash with Canadian certificate
+- The fullscreen QR code might look different with this version, but it stays identical for QR code readers
+- Added Russian language. Thx to Даниил Николаев!
