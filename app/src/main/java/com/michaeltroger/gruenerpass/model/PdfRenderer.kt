@@ -11,7 +11,6 @@ import com.google.zxing.*
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -25,9 +24,8 @@ const val PAGE_INDEX_QR_CODE = 0
 
 interface PdfRenderer {
     suspend fun loadFile(): Boolean
-    fun getPageCount(): Int
+    suspend fun getPageCount(): Int
     fun close()
-    suspend fun hasQrCode(pageIndex: Int): Boolean
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap?
     suspend fun renderPage(pageIndex: Int): Bitmap?
 }
@@ -62,7 +60,13 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         }
     }
 
-    override fun getPageCount(): Int = renderer?.pageCount ?: 0
+    override suspend fun getPageCount(): Int = withContext(renderContext) {
+        if (renderer == null) {
+            loadFile()
+            if (!isActive) return@withContext 0
+        }
+        renderer?.pageCount ?: 0
+    }
 
     override fun close() {
         try {
@@ -71,13 +75,9 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         } catch (ignore: Exception) {}
     }
 
-    override suspend fun hasQrCode(pageIndex: Int): Boolean = withContext(renderContext) {
-        return@withContext !renderPage(pageIndex)?.extractQrCodeText().isNullOrEmpty()
-    }
-
     override suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
        val qrText = renderPage(pageIndex)?.extractQrCodeText() ?: return@withContext null
-       return@withContext encodeQrCodeAsBitmap(qrText)
+       encodeQrCodeAsBitmap(qrText)
     }
 
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
@@ -85,7 +85,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
             loadFile()
             if (!isActive) return@withContext null
         }
-        return@withContext renderer?.openPage(pageIndex)?.renderAndClose { isActive }
+        renderer?.openPage(pageIndex)?.renderAndClose { isActive }
     }
 
     private fun PdfRenderer.Page.renderAndClose(isActive: () -> Boolean): Bitmap? = use {
