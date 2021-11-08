@@ -15,6 +15,10 @@
             android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".more.MoreActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"

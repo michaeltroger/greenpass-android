@@ -11,28 +11,21 @@ Unofficial app that is fully open source. This app is a simple to use PDF Wallet
 - Done
 
 <b>Description</b>
-Very simple app, that does nothing more than conveniently storing and displaying PDF certificates. Naming "Green Pass": In Austria the Green Pass is a PDF document with QR code (EU Digital Certificate) that can be downloaded from gesundheit.gv.at Since this app follows a universal approach, other PDF certificates work as well though.
+Very simple app, that does nothing more than conveniently storing and displaying PDF certificates. Naming "Green Pass": In some European countries, the Green Pass is a PDF document with QR code (EU Digital Certificate) that can be downloaded from the local authorities. Since this app follows a universal approach, other PDF certificates work as well though.
 The PDF file has to be imported into the app. Following the QR code is displayed in fullscreen (only if present in the PDF's 1. page), as well as the PDF itself. That's already it.
 
 <b>More Features</b>
-- Biometric authentication (supported devices only)
-- PDFs can be individually sorted
-- PDFs can be individually named
+- Authentication
+- PDFs can be individually sorted and named
 - PDFs can be shared from other apps
 - Dark Mode support
 - Supports also password protected PDFs
-
-<b>Does one require this app?</b>
-Not really. For the Green Pass PDF any casual PDF-Reader is completely sufficient. The use case for this app is solely the improved usability. One saves the time for searching the PDF and zooming in for the QR code (if present in the document).
-
-<b>Why offering this app when there is an official one?</b>
-This app was created before an official app was available.
 
 <b>Why does the fullscreen QR code look differently than in the PDF?</b>
 The algorithm to display is different. For reading devices the code is identical.
 
 <b>Privacy</b>
-This app doesn't need any permissions. That also means it has no access to internet etc. The document is solely copied to the app's cache and is merely read out for displaying. The document doesn't ever leave the app, stays locally and offline and can be removed from the cache by the user whenever he/she wishes. No ads, no tracking. The app is fully open source.
+This app values your privacy by being fully open source and working offline. No ads, no tracking.
 
-<b>Problems with the app?</b>
-First of all I want to point out that this is a free time project of a single developer. Since there are thousands of different Android devices and even more different configurations, I ask for your understanding that in extremely rare cases the app could misbehave, e.g. when importing the PDF. If there is any problem then I ask you kindly to contact me and I'll try to help. My email address can be found on this site.
+<b>Issues</b>
+This is a free time project of a single developer. Therefore please understand that replies can take a little while.

@@ -42,7 +42,7 @@ class MainViewModel(
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
             offerAppSettings = BiometricManager.from(app)
-                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
+                .canAuthenticate(AUTHENTICATORS) == BiometricManager.BIOMETRIC_SUCCESS
             shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
             if (shouldAuthenticate) {
                 _viewState.emit(ViewState.Locked)
@@ -159,6 +159,9 @@ class MainViewModel(
         shouldAuthenticate = sharedPreferences.getBoolean(getApplication<Application>().getString(R.string.key_preference_biometric), false)
     }
 
+    companion object {
+        const val AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+    }
 }
 
 @Suppress("UNCHECKED_CAST")

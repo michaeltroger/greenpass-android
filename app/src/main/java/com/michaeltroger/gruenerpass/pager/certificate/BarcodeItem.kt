@@ -1,7 +1,9 @@
 package com.michaeltroger.gruenerpass.pager.certificate
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.core.view.updateMargins
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemBarcodeBinding
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_BARCODE
@@ -25,10 +27,15 @@ class BarcodeItem(
 
     override fun bind(viewBinding: ItemBarcodeBinding, position: Int) {
         scope.launch {
-            renderer.getBarcodeIfPresent(PAGE_INDEX_BARCODE)?.let {
-                viewBinding.barcode.setImageBitmap(it)
+            val qrCode = renderer.getBarcodeIfPresent(PAGE_INDEX_BARCODE)
+            if (qrCode == null) {
+                viewBinding.root.isVisible = false
+                (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(bottom = 0)
+            } else {
+                viewBinding.root.isVisible = true
+                (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(bottom = viewBinding.root.context.resources.getDimensionPixelSize(R.dimen.space_very_small))
+                viewBinding.barcode.setImageBitmap(qrCode)
             }
-            viewBinding.progressIndicator.isVisible = false
         }
     }
 

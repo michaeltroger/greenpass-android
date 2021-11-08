@@ -6,15 +6,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -27,6 +24,7 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
+import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -79,10 +77,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(requireContext().getString(R.string.biometric_login_title))
-            .setNegativeButtonText(requireContext().getString(R.string.cancel))
+            .setTitle(requireContext().getString(R.string.authenticate))
             .setConfirmationRequired(false)
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            .setAllowedAuthenticators(MainViewModel.AUTHENTICATORS)
             .build()
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
@@ -118,29 +115,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             biometricPrompt.authenticate(promptInfo)
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.viewState.collect {
-                    updateMenuState()
-                    when (it) {
-                        is ViewState.Normal -> showCertificateState(documents = it.documents)
-                        ViewState.Loading -> showLoadingState()
-                        ViewState.Locked -> showLockedState()
-                    }.let{}
-                }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            vm.viewState.collect {
+                updateMenuState()
+                when (it) {
+                    is ViewState.Normal -> showCertificateState(documents = it.documents)
+                    ViewState.Loading -> showLoadingState()
+                    ViewState.Locked -> showLockedState()
+                }.let{}
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.viewEvent.collect {
-                    when (it) {
-                        ViewEvent.CloseAllDialogs -> closeAllDialogs()
-                        ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
-                        ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
-                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
-                    }.let{}
-                }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            vm.viewEvent.collect {
+                when (it) {
+                    ViewEvent.CloseAllDialogs -> closeAllDialogs()
+                    ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
+                    ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+                    ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
+                }.let{}
             }
         }
     }
@@ -156,6 +149,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.add -> {
             openFilePicker()
+            true
+        }
+        R.id.openMore -> {
+            val intent = Intent(requireContext(), MoreActivity::class.java)
+            startActivity(intent)
             true
         }
         R.id.openSettings -> {

@@ -12,7 +12,6 @@ import com.google.zxing.aztec.AztecReader
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -26,9 +25,8 @@ const val PAGE_INDEX_BARCODE = 0
 
 interface PdfRenderer {
     suspend fun loadFile(): Boolean
-    fun getPageCount(): Int
+    suspend fun getPageCount(): Int
     fun close()
-    suspend fun hasBarcode(pageIndex: Int): Boolean
     suspend fun getBarcodeIfPresent(pageIndex: Int): Bitmap?
     suspend fun renderPage(pageIndex: Int): Bitmap?
 }
@@ -64,7 +62,13 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         }
     }
 
-    override fun getPageCount(): Int = renderer?.pageCount ?: 0
+    override suspend fun getPageCount(): Int = withContext(renderContext) {
+        if (renderer == null) {
+            loadFile()
+            if (!isActive) return@withContext 0
+        }
+        renderer?.pageCount ?: 0
+    }
 
     override fun close() {
         try {
@@ -73,13 +77,9 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         } catch (ignore: Exception) {}
     }
 
-    override suspend fun hasBarcode(pageIndex: Int): Boolean = withContext(renderContext) {
-        return@withContext renderPage(pageIndex)?.extractBarcodeFromPdf() != null
-    }
-
     override suspend fun getBarcodeIfPresent(pageIndex: Int): Bitmap? = withContext(renderContext) {
        val barcodeData = renderPage(pageIndex)?.extractBarcodeFromPdf() ?: return@withContext null
-       return@withContext encodeBarcodeAsBitmap(barcodeData)
+       encodeBarcodeAsBitmap(barcodeData)
     }
 
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
@@ -87,7 +87,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
             loadFile()
             if (!isActive) return@withContext null
         }
-        return@withContext renderer?.openPage(pageIndex)?.renderAndClose { isActive }
+        renderer?.openPage(pageIndex)?.renderAndClose { isActive }
     }
 
     private fun PdfRenderer.Page.renderAndClose(isActive: () -> Boolean): Bitmap? = use {
@@ -143,16 +143,19 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         return null
     }
 
-    private fun encodeBarcodeAsBitmap(barcodeData: BarcodeData): Bitmap {
-        val result: BitMatrix = when (barcodeData) {
-            is BarcodeData.QrCode -> {
-                val hintMap = HashMap<EncodeHintType, Any>()
-                hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.Q
-                barcodeWriter.encode(barcodeData.text, BarcodeFormat.QR_CODE, BARCODE_SIZE, BARCODE_SIZE, hintMap)
+    private fun encodeBarcodeAsBitmap(barcodeData: BarcodeData): Bitmap? {
+        val result: BitMatrix
+        try {
+            result = when (barcodeData) {
+                is BarcodeData.QrCode -> {
+                    barcodeWriter.encode(barcodeData.text, BarcodeFormat.QR_CODE, BARCODE_SIZE, BARCODE_SIZE)
+                }
+                is BarcodeData.AztecCode -> {
+                    barcodeWriter.encode(barcodeData.text, BarcodeFormat.AZTEC, BARCODE_SIZE, BARCODE_SIZE)
+                }
             }
-            is BarcodeData.AztecCode -> {
-                barcodeWriter.encode(barcodeData.text, BarcodeFormat.AZTEC, BARCODE_SIZE, BARCODE_SIZE, null)
-            }
+        } catch (ignore: Exception) {
+            return null
         }
 
         val w = result.width
