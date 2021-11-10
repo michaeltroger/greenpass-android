@@ -14,7 +14,7 @@
     <string name="require_authentication">Require authentication</string>
     <string name="settings">Setări</string>
     <string name="authenticate">Authenticate</string>
-    <string name="report_issue_summary">Ai întâlnit vreo problemă la utilizarea aplicației? Dă-mi voie să încerc să te ajut</string>
+    <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
     <string name="report_issue">Raportează o problemă</string>
     <string name="rate_summary">If you like this app, please consider rating it</string>
     <string name="rate">Evaluează această aplicație</string>
