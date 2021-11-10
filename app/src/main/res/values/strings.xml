@@ -13,7 +13,7 @@
     <string name="require_authentication">Require authentication</string>
     <string name="settings">Settings</string>
     <string name="authenticate">Authenticate</string>
-    <string name="report_issue_summary">Any problem using the app? Let me try helping you</string>
+    <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
     <string name="report_issue">Report issue</string>
     <string name="rate_summary">If you like this app, please consider rating it</string>
     <string name="rate">Rate this app</string>
