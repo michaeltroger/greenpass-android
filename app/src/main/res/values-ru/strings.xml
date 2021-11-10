@@ -14,7 +14,7 @@
     <string name="require_authentication">Требовать авторизацию</string>
     <string name="settings">Настройки</string>
     <string name="authenticate">Аутентификация</string>
-    <string name="report_issue_summary">Any problem using the app? Let me try helping you</string>
+    <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
     <string name="report_issue">Report issue</string>
     <string name="rate_summary">Если вам понравилось это приложение, пожалуйста, оцените его</string>
     <string name="rate">Оцените приложение</string>
