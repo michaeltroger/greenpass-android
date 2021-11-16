@@ -13,15 +13,15 @@
     <string name="dialog_delete_confirmation_message">Czy na pewno chcesz usunąć dokument z aplikacji?</string>
     <string name="require_authentication">Wymagaj uwierzytelnienia</string>
     <string name="settings">Ustawienia</string>
-    <string name="authenticate">Authenticate</string>
-    <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
-    <string name="report_issue">Report issue</string>
-    <string name="rate_summary">If you like this app, please consider rating it</string>
-    <string name="rate">Rate this app</string>
-    <string name="help_translating">Help localizing</string>
-    <string name="help_translating_summary">Translate the app into your native language</string>
-    <string name="contributing">Help coding</string>
-    <string name="contributing_summary">This app is open-source. Contribute code!</string>
-    <string name="more">More</string>
-    <string name="privacy_policy">Privacy policy</string>
+    <string name="authenticate">Uwierzytelnij</string>
+    <string name="report_issue_summary">Jakikolwiek problem z użyciem aplikacji? Pozwól mi spróbować Ci pomóc</string>
+    <string name="report_issue">Zgłoś problem</string>
+    <string name="rate_summary">Jeśli podoba Ci się ta aplikacja, rozważ ocenienie jej</string>
+    <string name="rate">Oceń tę aplikację</string>
+    <string name="help_translating">Pomóż tłumaczyć</string>
+    <string name="help_translating_summary">Przetłumacz tę aplikację na swój ojczysty język</string>
+    <string name="contributing">Pomóż kodować</string>
+    <string name="contributing_summary">Ta aplikacja jest otwartoźródłowa. Dołóż kod!</string>
+    <string name="more">Więcej</string>
+    <string name="privacy_policy">Polityka prywatności</string>
 </resources>
