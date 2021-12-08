@@ -20,8 +20,8 @@
     <string name="rate">Calificar esta aplicación</string>
     <string name="help_translating">Ayuda a traducir</string>
     <string name="help_translating_summary">Traduce la app a tu idioma</string>
-    <string name="contributing">Help coding</string>
-    <string name="contributing_summary">This app is open-source. Contribute code!</string>
-    <string name="more">More</string>
-    <string name="privacy_policy">Privacy policy</string>
+    <string name="contributing">Colabora en el desarrollo</string>
+    <string name="contributing_summary">Esta app es de código abierto. Contribuye!</string>
+    <string name="more">Más</string>
+    <string name="privacy_policy">Política de Privacidad</string>
 </resources>
