@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Green Pass</string>
-    <string name="delete">Delete</string>
-    <string name="add">Add</string>
+    <string name="delete">Elimina</string>
+    <string name="add">Aggiungi</string>
     <string name="tab_title_pdf">PDF</string>
     <string name="tab_title_qr">Codice QR</string>
     <string name="error_reading_pdf">Errore nella lettura del PDF. Prova un altro file o percorso</string>
