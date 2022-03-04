@@ -12,6 +12,7 @@
     <string name="cancel">Cancelar</string>
     <string name="dialog_delete_confirmation_message">Tes a certeza de querer eliminar o documento da aplicación?</string>
     <string name="require_authentication">Require autenticación</string>
+    <string name="preference_search_qr">Search for QR code in PDF</string>
     <string name="settings">Axustes</string>
     <string name="authenticate">Autenticar</string>
     <string name="report_issue_summary">Problemas ao usar a app? Deixa que che axude</string>
