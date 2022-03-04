@@ -12,6 +12,7 @@
     <string name="cancel">Anuluj</string>
     <string name="dialog_delete_confirmation_message">Czy na pewno chcesz usunąć dokument z aplikacji?</string>
     <string name="require_authentication">Wymagaj uwierzytelnienia</string>
+    <string name="preference_search_qr">Search for QR code in PDF</string>
     <string name="settings">Ustawienia</string>
     <string name="authenticate">Uwierzytelnij</string>
     <string name="report_issue_summary">Jakikolwiek problem z użyciem aplikacji? Pozwól mi spróbować Ci pomóc</string>
