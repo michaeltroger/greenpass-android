@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Green Pass</string>
+    <string name="delete">Eliminar</string>
+    <string name="add">Engadir</string>
+    <string name="tab_title_pdf">PDF</string>
+    <string name="tab_title_qr">Código QR</string>
+    <string name="error_reading_pdf">Erro ao ler o PDF. Inténtao con outro ficheiro ou localización</string>
+    <string name="dialog_password_protection_title">Descifrar PDF protexido con contrasinal</string>
+    <string name="dialog_password_protection_hint">Escribir contrasinal</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="dialog_delete_confirmation_message">Tes a certeza de querer eliminar o documento da aplicación?</string>
+    <string name="require_authentication">Require autenticación</string>
+    <string name="preference_search_qr">Search for QR code in PDF</string>
+    <string name="settings">Axustes</string>
+    <string name="authenticate">Autenticar</string>
+    <string name="report_issue_summary">Problemas ao usar a app? Deixa que che axude</string>
+    <string name="report_issue">Informar dun problema</string>
+    <string name="rate_summary">Se che gusta a app, por favor fai unha valoración</string>
+    <string name="rate">Valorar a app</string>
+    <string name="help_translating">Axuda a traducir</string>
+    <string name="help_translating_summary">Traduce a app ao teu idioma</string>
+    <string name="contributing">Axuda no desenvolvemento</string>
+    <string name="contributing_summary">Esta app é de código aberto. Contribúe ao código!</string>
+    <string name="more">Máis</string>
+    <string name="privacy_policy">Política de privacidade</string>
+</resources>
