@@ -3,7 +3,6 @@ package com.michaeltroger.gruenerpass
 import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
-import androidx.biometric.BiometricManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -34,20 +33,17 @@ class MainViewModel(
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
     private var shouldAuthenticate = false
-    private var offerAppSettings = false
 
     private var uri: Uri? = null
 
     init {
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
-            offerAppSettings = BiometricManager.from(app)
-                .canAuthenticate(AUTHENTICATORS) == BiometricManager.BIOMETRIC_SUCCESS
             shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
             if (shouldAuthenticate) {
                 _viewState.emit(ViewState.Locked)
             } else {
-                _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings))
+                _viewState.emit(ViewState.Normal(documents = db.getAll()))
             }
         }
     }
@@ -99,7 +95,7 @@ class MainViewModel(
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll()))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             renderer.close()
@@ -111,14 +107,14 @@ class MainViewModel(
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll() ))
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
             db.delete(id)
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll()))
             pdfHandler.deleteFile(id)
         }
     }
@@ -133,14 +129,14 @@ class MainViewModel(
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            _viewState.emit(ViewState.Normal(documents = sortedList, offerAppSettings = offerAppSettings ))
+            _viewState.emit(ViewState.Normal(documents = sortedList))
         }
     }
 
     fun onAuthenticationSuccess() {
         viewModelScope.launch {
             if (uri == null) {
-                _viewState.emit(ViewState.Normal(documents = db.getAll(), offerAppSettings = offerAppSettings ))
+                _viewState.emit(ViewState.Normal(documents = db.getAll()))
             } else {
                 loadFileFromUri()
             }
@@ -157,10 +153,11 @@ class MainViewModel(
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         shouldAuthenticate = sharedPreferences.getBoolean(getApplication<Application>().getString(R.string.key_preference_biometric), false)
-    }
-
-    companion object {
-        const val AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        if (!shouldAuthenticate) {
+            viewModelScope.launch {
+                _viewState.emit(ViewState.Normal(documents = db.getAll()))
+            }
+        }
     }
 }
 
