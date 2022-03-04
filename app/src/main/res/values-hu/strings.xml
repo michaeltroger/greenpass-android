@@ -12,6 +12,7 @@
     <string name="cancel">Mégse</string>
     <string name="dialog_delete_confirmation_message">Valóban törölni akarja ezt a dokumentumot az alkalmazásból?</string>
     <string name="require_authentication">Azonosítás szükséges</string>
+    <string name="preference_search_qr">Search for QR code in PDF</string>
     <string name="settings">Beállítások</string>
     <string name="authenticate">Bejelentkezés</string>
     <string name="report_issue_summary">Probléma az alkalmazás használatában? Segíthetek?</string>
