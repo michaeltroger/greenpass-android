@@ -12,6 +12,7 @@
     <string name="cancel">Zrušit</string>
     <string name="dialog_delete_confirmation_message">Opravdu si přejete odstranit tento dokument z aplikace?</string>
     <string name="require_authentication">Vyžadovat ověření</string>
+    <string name="preference_search_qr">Search for QR code in PDF</string>
     <string name="settings">Nastavení</string>
     <string name="authenticate">Přihlásit se</string>
     <string name="report_issue_summary">Jakýkoliv problém s používáním aplikace? Nechte mě vyzkoušet vám pomoct</string>
