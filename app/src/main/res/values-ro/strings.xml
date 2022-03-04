@@ -12,6 +12,7 @@
     <string name="cancel">Anulează</string>
     <string name="dialog_delete_confirmation_message">Sigur dorești să ștergi documentul din aplicație?</string>
     <string name="require_authentication">Require authentication</string>
+    <string name="preference_search_qr">Search for QR code in PDF</string>
     <string name="settings">Setări</string>
     <string name="authenticate">Authenticate</string>
     <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
