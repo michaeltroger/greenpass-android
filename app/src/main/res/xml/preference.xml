@@ -10,6 +10,7 @@
 
     <SwitchPreference
         android:key="@string/key_preference_search_for_qr_code"
+        android:icon="@drawable/baseline_qr_code_24"
         android:title="@string/preference_search_qr"
         android:defaultValue="true"/>
 </PreferenceScreen>
