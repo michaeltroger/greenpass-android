@@ -86,7 +86,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 } else {
                     lp.width = width
                 }
-                return true;
+                return true
             }
 
             override fun canScrollHorizontally(): Boolean {
@@ -115,7 +115,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             vm.viewState.collect {
                 updateMenuState()
                 when (it) {
-                    is ViewState.Normal -> showCertificateState(documents = it.documents)
+                    is ViewState.Normal -> showCertificateState(documents = it.documents, it.searchQrCode)
                     ViewState.Loading -> showLoadingState()
                     ViewState.Locked -> showLockedState()
                 }.let{}
@@ -184,7 +184,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.progressIndicator.show()
     }
 
-    private fun showCertificateState(documents: List<Certificate>) {
+    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
         binding.progressIndicator.isVisible = false
         binding.authenticate.isVisible = false
         val items = documents.map {
@@ -192,6 +192,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 requireContext().applicationContext,
                 fileName = it.id,
                 documentName = it.name,
+                searchQrCode = searchQrCode,
                 dispatcher= thread,
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->

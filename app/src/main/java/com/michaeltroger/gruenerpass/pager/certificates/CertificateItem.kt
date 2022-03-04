@@ -24,6 +24,7 @@ class CertificateItem(
     private val fileName: String,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
+    private val searchQrCode: Boolean,
     private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
@@ -59,7 +60,9 @@ class CertificateItem(
                     onStartDrag(viewHolder)
                 }
             ))
-            itemList.add(QrCodeItem(renderer, fileName = fileName))
+            if (searchQrCode) {
+                itemList.add(QrCodeItem(renderer, fileName = fileName))
+            }
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
             }

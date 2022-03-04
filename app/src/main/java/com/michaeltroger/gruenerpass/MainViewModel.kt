@@ -33,6 +33,7 @@ class MainViewModel(
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
     private var shouldAuthenticate = false
+    private var searchForQrCode: Boolean = true
 
     private var uri: Uri? = null
 
@@ -40,11 +41,16 @@ class MainViewModel(
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
             shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
-            if (shouldAuthenticate) {
-                _viewState.emit(ViewState.Locked)
-            } else {
-                _viewState.emit(ViewState.Normal(documents = db.getAll()))
-            }
+            searchForQrCode = preferenceManager.getBoolean(app.getString(R.string.key_preference_search_for_qr_code), true)
+            updateState()
+        }
+    }
+
+    private suspend fun updateState() {
+        if (shouldAuthenticate) {
+            _viewState.emit(ViewState.Locked)
+        } else {
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode))
         }
     }
 
@@ -95,7 +101,7 @@ class MainViewModel(
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Normal(documents = db.getAll()))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             renderer.close()
@@ -107,14 +113,14 @@ class MainViewModel(
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            _viewState.emit(ViewState.Normal(documents = db.getAll() ))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode ))
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
             db.delete(id)
-            _viewState.emit(ViewState.Normal(documents = db.getAll()))
+            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode))
             pdfHandler.deleteFile(id)
         }
     }
@@ -129,14 +135,14 @@ class MainViewModel(
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            _viewState.emit(ViewState.Normal(documents = sortedList))
+            _viewState.emit(ViewState.Normal(documents = sortedList, searchQrCode = searchForQrCode))
         }
     }
 
     fun onAuthenticationSuccess() {
         viewModelScope.launch {
             if (uri == null) {
-                _viewState.emit(ViewState.Normal(documents = db.getAll()))
+                _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode))
             } else {
                 loadFileFromUri()
             }
@@ -152,11 +158,16 @@ class MainViewModel(
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        shouldAuthenticate = sharedPreferences.getBoolean(getApplication<Application>().getString(R.string.key_preference_biometric), false)
-        if (!shouldAuthenticate) {
-            viewModelScope.launch {
-                _viewState.emit(ViewState.Normal(documents = db.getAll()))
+        when (key) {
+            getApplication<Application>().getString(R.string.key_preference_biometric) -> {
+                shouldAuthenticate = sharedPreferences.getBoolean(key, false)
             }
+            getApplication<Application>().getString(R.string.key_preference_search_for_qr_code) -> {
+                searchForQrCode = sharedPreferences.getBoolean(key, true)
+            }
+         }
+        viewModelScope.launch {
+            updateState()
         }
     }
 }
