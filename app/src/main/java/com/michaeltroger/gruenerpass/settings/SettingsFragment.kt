@@ -37,6 +37,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
-        const val AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK// or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        const val AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
     }
 }
