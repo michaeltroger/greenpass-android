@@ -1,24 +1,20 @@
 package com.michaeltroger.gruenerpass.pager.certificate
 
-import android.view.MotionEvent
 import android.view.View
-import androidx.core.widget.doOnTextChanged
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateHeaderBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
-import android.view.inputmethod.EditorInfo
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -28,7 +24,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.michaeltroger.gruenerpass.theme.GreenPassTheme
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -39,23 +37,35 @@ fun CertificateHeader(
     onDocumentNameChanged: (String) -> Unit,
     onStartDrag: () -> Unit
 ) {
-    Surface {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            TextField(value = documentName, onValueChange = { onDocumentNameChanged(it) },
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize() ) {
+            TextField(
+                value = documentName,
+                onValueChange = { onDocumentNameChanged(it) },
+                singleLine = true,
+                maxLines = 1,
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent
-                ))
-            IconButton(onClick = { onDeleteCalled() }) {
+                ),
+                modifier = Modifier.width(200.dp)
+            )
+            IconButton(
+                onClick = { onDeleteCalled() }
+            ) {
                 Icon(Icons.Filled.Delete, contentDescription = "")
             }
-            IconButton(onClick = { /*TODO*/ }, modifier = Modifier.combinedClickable(
-                onClick = {},
-                onLongClick = { onStartDrag() }
-            )) {
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.combinedClickable(
+                        onClick = {},
+                        onLongClick = { onStartDrag() }
+                    )
+            ) {
                 Icon(Icons.Filled.Menu, contentDescription = "")
             }
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.space_small)))
         }
     }
 
