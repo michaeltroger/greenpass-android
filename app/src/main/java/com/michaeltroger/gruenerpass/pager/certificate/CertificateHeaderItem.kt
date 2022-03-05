@@ -9,6 +9,50 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import android.view.inputmethod.EditorInfo
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
+
+@Composable
+fun CertificateHeader(
+    documentName: String,
+    fileName: String,
+    onDeleteCalled: () -> Unit,
+    onDocumentNameChanged: (String) -> Unit,
+    onStartDrag: () -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TextField(value = documentName, onValueChange = { onDocumentNameChanged(it) })
+        IconButton(onClick = { onDeleteCalled() }) {
+            Icon(Icons.Filled.Delete, contentDescription = "")
+        }
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(Icons.Filled.Menu, contentDescription = "")
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CertificateHeaderPreview() {
+    CertificateHeader(
+        documentName = "My PDF",
+        fileName = "my.pdf",
+        onDeleteCalled = {  },
+        onDocumentNameChanged = { },
+        onStartDrag = { }
+    )
+}
 
 class CertificateHeaderItem(
     private val documentName: String,
