@@ -12,8 +12,8 @@
     <string name="cancel">Отказ</string>
     <string name="dialog_delete_confirmation_message">Наистина ли искате да изтриете документа от приложението?</string>
     <string name="require_authentication">Изискване за удостоверяване</string>
-    <string name="preference_search_qr">Extract QR code</string>
-    <string name="preference_search_qr_description">Scan the first PDF page for a QR code.</string>
+    <string name="preference_search_qr">Извличане на QR кода</string>
+    <string name="preference_search_qr_description">Сканиране на първата страница от PDF за QR код.</string>
     <string name="settings">Настройки</string>
     <string name="authenticate">Удостоверяване</string>
     <string name="report_issue_summary">Имате проблем с приложението? Нека се опитам да ви помогна</string>
