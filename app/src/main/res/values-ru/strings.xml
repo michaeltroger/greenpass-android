@@ -12,7 +12,8 @@
     <string name="cancel">Отмена</string>
     <string name="dialog_delete_confirmation_message">Вы действительно хотите удалить этот документ из приложения?</string>
     <string name="require_authentication">Требовать авторизацию</string>
-    <string name="preference_search_qr">Search for QR code in PDF</string>
+    <string name="preference_search_qr">Extract QR code</string>
+    <string name="preference_search_qr_description">Scan the first PDF page for a QR code.</string>
     <string name="settings">Настройки</string>
     <string name="authenticate">Аутентификация</string>
     <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
