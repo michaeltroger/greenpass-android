@@ -80,6 +80,6 @@ class CertificateItem(
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return (other as? CertificateItem)?.fileName == fileName
+        return (other as? CertificateItem)?.fileName == fileName && (other as? CertificateItem)?.searchQrCode == searchQrCode
     }
 }

@@ -27,13 +27,17 @@ class MainViewModel(
     private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app),
     private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
 ): AndroidViewModel(app), SharedPreferences.OnSharedPreferenceChangeListener {
+
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
-    private var shouldAuthenticate = false
+
     private var searchForQrCode: Boolean = true
+    private var shouldAuthenticate = false
+
+    private var isLocked: Boolean = false
 
     private var uri: Uri? = null
 
@@ -41,13 +45,14 @@ class MainViewModel(
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
             shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
+            isLocked = shouldAuthenticate
             searchForQrCode = preferenceManager.getBoolean(app.getString(R.string.key_preference_search_for_qr_code), true)
             updateState()
         }
     }
 
     private suspend fun updateState() {
-        if (shouldAuthenticate) {
+        if (shouldAuthenticate && isLocked) {
             _viewState.emit(ViewState.Locked)
         } else {
             _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode))
@@ -141,6 +146,7 @@ class MainViewModel(
 
     fun onAuthenticationSuccess() {
         viewModelScope.launch {
+            isLocked = false
             if (uri == null) {
                 _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode))
             } else {
@@ -151,8 +157,9 @@ class MainViewModel(
 
     fun onInteractionTimeout() {
         if (shouldAuthenticate) {
+            isLocked = true
             viewModelScope.launch {
-                _viewState.emit(ViewState.Locked)
+                updateState()
             }
         }
     }
@@ -165,7 +172,8 @@ class MainViewModel(
             getApplication<Application>().getString(R.string.key_preference_search_for_qr_code) -> {
                 searchForQrCode = sharedPreferences.getBoolean(key, true)
             }
-         }
+        }
+
         viewModelScope.launch {
             updateState()
         }
