@@ -99,18 +99,13 @@ class CertificateHeaderItem(
     override fun getLayout() = R.layout.item_certificate_header
 
     override fun bind(viewBinding: ItemCertificateHeaderBinding, position: Int) {
-        viewBinding.deleteIcon.setOnClickListener {
-            onDeleteCalled()
-        }
-        viewBinding.name.setText(documentName)
-        viewBinding.name.doOnTextChanged { text, _, _, _ ->
-            onDocumentNameChanged(text.toString() )
-        }
-        viewBinding.name.setOnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                v.clearFocus()
-            }
-            false
+        viewBinding.composeView.setContent {
+            CertificateHeader(
+                documentName = documentName,
+                onDeleteCalled = { onDeleteCalled() },
+                onDocumentNameChanged = { onDocumentNameChanged(it) },
+                onStartDrag = { onStartDrag() }
+            )
         }
     }
 
@@ -120,13 +115,7 @@ class CertificateHeaderItem(
         payloads: MutableList<Any>
     ) {
         super.bind(viewHolder, position, payloads)
-        viewHolder.binding.handle.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_DOWN
-            ) {
-                onStartDrag()
-            }
-            false
-        }
+
     }
 
     override fun isSameAs(other: Item<*>): Boolean {
