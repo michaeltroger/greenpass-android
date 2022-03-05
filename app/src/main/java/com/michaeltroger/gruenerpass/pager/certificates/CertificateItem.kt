@@ -8,9 +8,9 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.michaeltroger.gruenerpass.model.PdfRendererImpl
+import com.michaeltroger.gruenerpass.pager.certificate.BarcodeItem
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
-import com.michaeltroger.gruenerpass.pager.certificate.BarcodeItem
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
@@ -24,6 +24,7 @@ class CertificateItem(
     private val fileName: String,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
+    private val searchBarcode: Boolean,
     private val renderer: PdfRenderer = PdfRendererImpl(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
@@ -59,7 +60,9 @@ class CertificateItem(
                     onStartDrag(viewHolder)
                 }
             ))
-            itemList.add(BarcodeItem(renderer, fileName = fileName))
+            if (searchBarcode) {
+                itemList.add(BarcodeItem(renderer, fileName = fileName))
+            }
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
             }

@@ -21,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
@@ -37,7 +38,6 @@ import java.util.concurrent.Executor
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private var openSettingsMenuButton: MenuItem? = null
     private var addMenuButton: MenuItem? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
@@ -76,11 +76,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
             })
 
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(requireContext().getString(R.string.authenticate))
-            .setConfirmationRequired(false)
-            .setAllowedAuthenticators(MainViewModel.AUTHENTICATORS)
-            .build()
+        promptInfo = Locator.biometricPromptInfo(requireContext())
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
         binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
@@ -90,7 +86,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 } else {
                     lp.width = width
                 }
-                return true;
+                return true
             }
 
             override fun canScrollHorizontally(): Boolean {
@@ -119,7 +115,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             vm.viewState.collect {
                 updateMenuState()
                 when (it) {
-                    is ViewState.Normal -> showCertificateState(documents = it.documents)
+                    is ViewState.Normal -> showCertificateState(documents = it.documents, it.searchBarcode)
                     ViewState.Loading -> showLoadingState()
                     ViewState.Locked -> showLockedState()
                 }.let{}
@@ -141,7 +137,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu, menu)
         addMenuButton = menu.findItem(R.id.add)
-        openSettingsMenuButton = menu.findItem(R.id.openSettings)
         updateMenuState()
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -165,13 +160,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun updateMenuState() {
-        if (vm.viewState.value::class.java == ViewState.Normal::class.java) {
-            addMenuButton?.isVisible = true
-            openSettingsMenuButton?.isVisible = (vm.viewState.value as ViewState.Normal).offerAppSettings
-        } else {
-            addMenuButton?.isVisible = false
-            openSettingsMenuButton?.isVisible = false
-        }
+        addMenuButton?.isVisible = vm.viewState.value::class.java == ViewState.Normal::class.java
     }
 
     private fun openFilePicker() {
@@ -195,7 +184,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.progressIndicator.show()
     }
 
-    private fun showCertificateState(documents: List<Certificate>) {
+    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
         binding.progressIndicator.isVisible = false
         binding.authenticate.isVisible = false
         val items = documents.map {
@@ -203,6 +192,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 requireContext().applicationContext,
                 fileName = it.id,
                 documentName = it.name,
+                searchQrCode = searchQrCode,
                 dispatcher= thread,
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->

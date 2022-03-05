@@ -1,0 +1,2 @@
+- Added new setting to make QR code search optional
+- Added new app translations. Thx to PandaCoderPL, Martin Martinov, Sitavi, verydutch, XoseM, TriLinder, NeverMine17

@@ -1,0 +1,2 @@
+- Suche nach QR-Code jetzt optional
+- Neue App-Übersetzungen. Danke an PandaCoderPL, Martin Martinov, Sitavi, verydutch, XoseM, TriLinder, NeverMine17
