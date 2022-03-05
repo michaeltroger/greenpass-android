@@ -1,0 +1,2 @@
+- Improved description of QR code preference
+- Fixes an issue with asking for authentication after changing app settings

@@ -1,2 +1,3 @@
 - Suche nach QR-Code jetzt optional
+- Erfordere Authentifizierung bei Änderung der Authentifizierungs-Einstellung
 - Neue App-Übersetzungen. Danke an PandaCoderPL, Martin Martinov, Sitavi, verydutch, XoseM, TriLinder, NeverMine17
