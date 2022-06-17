@@ -11,9 +11,9 @@
     <string name="ok">Ok</string>
     <string name="cancel">Afbreken</string>
     <string name="dialog_delete_confirmation_message">Wil je het document uit de app verwijderen?</string>
-    <string name="require_authentication">Verificatie eisen</string>
-    <string name="preference_search_qr">Extract QR code</string>
-    <string name="preference_search_qr_description">Scan the first PDF page for a QR code.</string>
+    <string name="require_authentication">Verificatie vereist</string>
+    <string name="preference_search_qr">QR-code inlezen</string>
+    <string name="preference_search_qr_description">Scan de eerste PDF-pagina voor een QR-code.</string>
     <string name="settings">Instellingen</string>
     <string name="authenticate">Verifiëren</string>
     <string name="report_issue_summary">Problemen met het gebruik van de app? Laat me proberen je te helpen</string>
@@ -23,7 +23,7 @@
     <string name="help_translating">Hulp bij lokaliseren</string>
     <string name="help_translating_summary">Vertaal de app in je eigen taal</string>
     <string name="contributing">Help programmeren</string>
-    <string name="contributing_summary">Deze app is open source. Draag bij aan code!</string>
+    <string name="contributing_summary">Deze app is open source. Draag bij aan de code!</string>
     <string name="more">Meer</string>
     <string name="privacy_policy">Privacybeleid</string>
 </resources>
