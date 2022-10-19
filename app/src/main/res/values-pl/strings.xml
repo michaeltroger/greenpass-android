@@ -22,8 +22,8 @@
     <string name="rate">Oceń tę aplikację</string>
     <string name="help_translating">Pomóż tłumaczyć</string>
     <string name="help_translating_summary">Przetłumacz tę aplikację na swój ojczysty język</string>
-    <string name="contributing">Pomóż kodować</string>
-    <string name="contributing_summary">Ta aplikacja jest otwartoźródłowa. Dołóż kod!</string>
+    <string name="contributing">Pomóż przy kodowaniu</string>
+    <string name="contributing_summary">Ta aplikacja jest Open Source. Dołóż kod od siebie!</string>
     <string name="more">Więcej</string>
     <string name="privacy_policy">Polityka prywatności</string>
 </resources>
