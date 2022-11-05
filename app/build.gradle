@@ -1,13 +1,12 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'de.mannodermaus.android-junit5'
     id 'kotlin-kapt'
 }
 
 def keystoreProperties = new Properties()
 try {
-    def keystorePropertiesFile = rootProject.file("keystore.properties");
+    def keystorePropertiesFile = rootProject.file("keystore.properties")
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 } catch(IOException ignored) {
     // We don't have release keys, ignoring
@@ -24,13 +23,13 @@ android {
             }
         }
     }
-    compileSdk 31
-    buildToolsVersion "31.0.0"
+    compileSdk 33
+    buildToolsVersion "33.0.0"
 
     defaultConfig {
         applicationId "com.michaeltroger.gruenerpass"
         minSdk 21
-        targetSdk 31
+        targetSdk 33
         versionCode 40
         versionName "2.3.1"
 
@@ -76,48 +75,33 @@ android {
             }
         }
     }
+    namespace 'com.michaeltroger.gruenerpass'
+}
 
+ext {
+    room_version = "2.4.3"
+    lifecycle_version = "2.5.1"
+    groupie_version = "2.9.0"
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.datastore:datastore-preferences:1.0.0'
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    implementation 'androidx.fragment:fragment-ktx:1.5.4'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation 'androidx.preference:preference-ktx:1.2.0'
-
-    implementation 'com.github.lisawray.groupie:groupie:2.9.0'
-    implementation 'com.github.lisawray.groupie:groupie-viewbinding:2.9.0'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
-    implementation 'com.google.zxing:core:3.3.3' // last version to support API < 24
-    implementation 'com.tom-roush:pdfbox-android:2.0.1.0'
-
-    def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
-    testImplementation 'androidx.test:core-ktx:1.4.0'
-    testImplementation 'androidx.test.ext:junit-ktx:1.1.3'
-    testImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-    // junit5
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-
-    // junit4
-    testImplementation 'junit:junit:4.13.2'
-    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.8.2'
-
-    testImplementation 'org.robolectric:robolectric:4.7.3'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
-    testImplementation 'org.assertj:assertj-core:3.21.0'
-    testImplementation 'app.cash.turbine:turbine:0.7.0'
-    testImplementation 'io.mockk:mockk:1.12.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+    implementation "com.github.lisawray.groupie:groupie:$groupie_version"
+    implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie_version"
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'com.google.zxing:core:3.3.3' // last version to support API < 24
+    implementation 'com.tom-roush:pdfbox-android:2.0.25.0'
 }
