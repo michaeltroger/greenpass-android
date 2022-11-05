@@ -103,5 +103,5 @@ dependencies {
     implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie_version"
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'com.google.zxing:core:3.3.3' // last version to support API < 24
-    implementation 'com.tom-roush:pdfbox-android:2.0.1.0'
+    implementation 'com.tom-roush:pdfbox-android:2.0.25.0'
 }
