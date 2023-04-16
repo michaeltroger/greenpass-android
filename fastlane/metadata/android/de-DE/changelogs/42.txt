@@ -1,0 +1,2 @@
+- Android 13 Themed Icons ("Symboldesigns") Unterstützung
+- Update von Dependencies
