@@ -58,8 +58,8 @@ jobs:
       
     - name: extract version code and version name
       run: |
-        echo "VERSION_NAME="$(grep "versionName" app/build.gradle | awk '{print $2}' | sed 's/"//g') >> $GITHUB_ENV
-        echo "VERSION_CODE="$(grep "versionCode" app/build.gradle | awk '{print $2}') >> $GITHUB_ENV
+        echo "VERSION_NAME="$(grep "versionName" app/build.gradle.kts | awk '{print $3}' | sed 's/"//g') >> $GITHUB_ENV
+        echo "VERSION_CODE="$(grep "versionCode" app/build.gradle.kts | awk '{print $3}') >> $GITHUB_ENV
         
     - name: create tag and release on GitHub
       uses: softprops/action-gh-release@v1
