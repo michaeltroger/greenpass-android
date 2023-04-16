@@ -14,7 +14,7 @@ com-github-lisawray-groupie = "2.10.1"
 com-google-android-material = "1.8.0"
 com-google-devtools-ksp = "1.8.20-1.0.10"
 com-google-zxing-core = "3.3.3" # last version to support API < 24
-com-tom-roush-pdfbox-android = "2.0.27.0"
+com-tom-roush-pdfbox-android = "2.0.25.0" # versions >= 2.0.26.0 increase app size by 4MB (obfuscation issue)
 org-jetbrains-kotlin-android = "1.8.20"
 
 [libraries]
