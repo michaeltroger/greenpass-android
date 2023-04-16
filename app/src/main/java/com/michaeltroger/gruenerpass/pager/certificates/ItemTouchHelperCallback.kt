@@ -11,7 +11,7 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        val index = viewHolder.adapterPosition
+        val index = viewHolder.bindingAdapterPosition
         val indexLastMovableElement = recyclerView.adapter?.itemCount
         fun isFirstElement() = index == 0
         fun isLastElement() = index == indexLastMovableElement?.minus(1)
@@ -53,8 +53,8 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        val fromPosition = viewHolder.adapterPosition
-        val toPosition = target.adapterPosition
+        val fromPosition = viewHolder.bindingAdapterPosition
+        val toPosition = target.bindingAdapterPosition
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(adapter.list, i, i + 1)
