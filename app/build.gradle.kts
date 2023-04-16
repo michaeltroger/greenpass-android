@@ -29,27 +29,28 @@ android {
         viewBinding = true
     }
 
-    signingConfigs {
-        create("release") {
-            val keystoreProperties = Properties()
-            try {
-                val keystorePropertiesFile = rootProject.file("keystore.properties")
-                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
-                keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
-                keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-                storeFile = rootProject.file(keystoreProperties.getProperty("STORE_FILE"))
-                storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
-            } catch(ignored: IOException) {
-                // We don't have release keys, ignoring
-            }
-        }
-    }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            signingConfigs {
+                create("release") {
+                    try {
+                        val keystorePropertiesFile = rootProject.file("keystore.properties")
+                        val keystoreProperties = Properties()
+                        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+
+                        keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
+                        keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
+                        storeFile = rootProject.file(keystoreProperties.getProperty("STORE_FILE"))
+                        storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
+                    } catch(ignored: IOException) {
+                        println(ignored) // We don't have release keys, ignoring
+                    }
+                }
+            }
             signingConfig = signingConfigs.getByName("release")
         }
     }
