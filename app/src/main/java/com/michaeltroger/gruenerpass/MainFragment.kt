@@ -8,10 +8,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -29,19 +33,18 @@ import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import java.util.concurrent.Executor
+import kotlinx.coroutines.DelicateCoroutinesApi
 
-class MainFragment : Fragment(R.layout.fragment_main) {
+class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private var addMenuButton: MenuItem? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
-    @OptIn(ObsoleteCoroutinesApi::class)
+    @OptIn(DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
     private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
@@ -64,7 +67,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setHasOptionsMenu(true)
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentMainBinding.bind(view)
         executor = ContextCompat.getMainExecutor(requireContext())
@@ -111,37 +115,40 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             biometricPrompt.authenticate(promptInfo)
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            vm.viewState.collect {
-                updateMenuState()
-                when (it) {
-                    is ViewState.Normal -> showCertificateState(documents = it.documents, it.searchQrCode)
-                    ViewState.Loading -> showLoadingState()
-                    ViewState.Locked -> showLockedState()
-                }.let{}
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.viewState.collect {
+                    updateMenuState()
+                    when (it) {
+                        is ViewState.Normal -> showCertificateState(documents = it.documents, it.searchQrCode)
+                        ViewState.Loading -> showLoadingState()
+                        ViewState.Locked -> showLockedState()
+                    }
+                }
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            vm.viewEvent.collect {
-                when (it) {
-                    ViewEvent.CloseAllDialogs -> closeAllDialogs()
-                    ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
-                    ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
-                    ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
-                }.let{}
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.viewEvent.collect {
+                    when (it) {
+                        ViewEvent.CloseAllDialogs -> closeAllDialogs()
+                        ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
+                        ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
+                    }
+                }
             }
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu, menu)
         addMenuButton = menu.findItem(R.id.add)
         updateMenuState()
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
         R.id.add -> {
             openFilePicker()
             true
@@ -156,7 +163,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             startActivity(intent)
             true
         }
-        else -> super.onOptionsItemSelected(item)
+        else -> false
     }
 
     private fun updateMenuState() {
@@ -255,5 +262,4 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             if (it.isShowing) it.dismiss()
         }
     }
-
 }

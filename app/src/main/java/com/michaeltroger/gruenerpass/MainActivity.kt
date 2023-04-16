@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -84,7 +85,12 @@ private fun Intent.getUri(): Uri? {
         }
         action == Intent.ACTION_SEND -> {
             if (extras?.containsKey(Intent.EXTRA_STREAM) == true) {
-                getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
+                }
             } else {
                 null
             }
