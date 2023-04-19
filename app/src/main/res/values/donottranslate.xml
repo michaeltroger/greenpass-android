@@ -7,4 +7,5 @@
     <string name="privacy_policy_uri">https://michaeltroger.com/greenpass/privacy</string>
     <string name="key_preference_biometric">shouldAuthenticate</string>
     <string name="key_preference_search_for_qr_code">searchForQrCode</string>
+    <string name="key_preference_full_brightness">fullBrightness</string>
 </resources>

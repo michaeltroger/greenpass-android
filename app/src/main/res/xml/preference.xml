@@ -14,4 +14,11 @@
         android:title="@string/preference_search_qr"
         android:summary="@string/preference_search_qr_description"
         android:defaultValue="true"/>
+
+    <SwitchPreference
+        android:key="@string/key_preference_full_brightness"
+        android:icon="@drawable/baseline_brightness_high_24"
+        android:title="@string/preference_max_brightness"
+        android:summary="@string/preference_max_brightness_description"
+        android:defaultValue="false"/>
 </PreferenceScreen>

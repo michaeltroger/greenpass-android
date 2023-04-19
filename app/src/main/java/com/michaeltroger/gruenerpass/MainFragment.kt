@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricPrompt
@@ -119,10 +120,14 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
                     updateMenuState()
+                    updateScreenBrightness(fullBrightness = it.fullBrightness)
                     when (it) {
-                        is ViewState.Normal -> showCertificateState(documents = it.documents, it.searchQrCode)
-                        ViewState.Loading -> showLoadingState()
-                        ViewState.Locked -> showLockedState()
+                        is ViewState.Loading -> showLoadingState()
+                        is ViewState.Normal -> showCertificateState(
+                            documents = it.documents,
+                            searchQrCode = it.searchQrCode,
+                        )
+                        is ViewState.Locked -> showLockedState()
                     }
                 }
             }
@@ -260,6 +265,15 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun closeAllDialogs() {
         dialogs.values.filterNotNull().forEach {
             if (it.isShowing) it.dismiss()
+        }
+    }
+
+    private fun updateScreenBrightness(fullBrightness: Boolean) {
+        requireActivity().window.apply {
+            attributes.apply {
+                screenBrightness = if (fullBrightness) LayoutParams.BRIGHTNESS_OVERRIDE_FULL else LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+            }
+            addFlags(LayoutParams.SCREEN_BRIGHTNESS_CHANGED)
         }
     }
 }

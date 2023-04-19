@@ -15,7 +15,7 @@
     <string name="preference_search_qr_description">Scan the first PDF page for a QR code.</string>
     <string name="settings">Settings</string>
     <string name="authenticate">Authenticate</string>
-    <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
+    <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
     <string name="report_issue">Report issue</string>
     <string name="rate_summary">If you like this app, please consider rating it</string>
     <string name="rate">Rate this app</string>
@@ -25,4 +25,6 @@
     <string name="contributing_summary">This app is open-source. Contribute code!</string>
     <string name="more">More</string>
     <string name="privacy_policy">Privacy policy</string>
+    <string name="preference_max_brightness">100% brightness</string>
+    <string name="preference_max_brightness_description">Always display the documents with full screen brightness.</string>
 </resources>
