@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: set up signing info
       run: |
@@ -20,7 +20,7 @@ jobs:
       env:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-        
+
     - name: set up JDK
       uses: actions/setup-java@v2
       with:
@@ -41,11 +41,11 @@ jobs:
         rm playstore_access.json.txt
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
-        
+
     - name: setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7.2'
+        ruby-version: '3.2.2'
 
     - name: setup Fastlane
       run: bundle install
