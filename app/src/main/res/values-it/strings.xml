@@ -16,7 +16,7 @@
     <string name="preference_search_qr_description">Scansiona la prima pagina del PDF per un codice QR.</string>
     <string name="settings">Impostazioni</string>
     <string name="authenticate">Autenticati</string>
-    <string name="report_issue_summary">Qualche problema con l\'app? Lascia che ti aiuti</string>
+    <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
     <string name="report_issue">Segnala un problema</string>
     <string name="rate_summary">Se ti piace quest\'app, ti preghiamo di valutarla</string>
     <string name="rate">Valuta quest\'app</string>
@@ -26,4 +26,9 @@
     <string name="contributing_summary">App a codice aperto. Contribuisci!</string>
     <string name="more">Altro</string>
     <string name="privacy_policy">Informativa sulla privacy</string>
+    <string name="preference_max_brightness">100% brightness</string>
+    <string name="preference_max_brightness_description">Always display the documents with full screen brightness.</string>
+    <string name="licenses">Licenses</string>
+    <string name="licenses_summary">Display the open-source licenses used in this project</string>
+    <string name="version">Version %1$s</string>
 </resources>
