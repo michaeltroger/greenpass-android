@@ -38,4 +38,8 @@
             android:data="@string/licenses_uri"/>
     </Preference>
 
+    <Preference
+        android:key="@string/key_preference_version">
+    </Preference>
+
 </PreferenceScreen>

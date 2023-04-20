@@ -1,14 +1,13 @@
 package com.michaeltroger.gruenerpass.update
 
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.michaeltroger.gruenerpass.extensions.getPackageInfo
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -34,13 +33,7 @@ class AppMigrator(ctx: Context) {
     }
 
     private val currentVersionCode: Long by lazy {
-        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
-        } else {
-            @Suppress("DEPRECATION")
-            context.packageManager.getPackageInfo(context.packageName, 0)
-        }
-        PackageInfoCompat.getLongVersionCode(packageInfo)
+        PackageInfoCompat.getLongVersionCode(context.getPackageInfo())
     }
 
     @OptIn(DelicateCoroutinesApi::class)
