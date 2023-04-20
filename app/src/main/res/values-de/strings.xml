@@ -26,4 +26,9 @@
     <string name="contributing_summary">Diese App ist Open-Source. Jetzt mitwirken!</string>
     <string name="more">Mehr</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
+    <string name="preference_max_brightness">100% brightness</string>
+    <string name="preference_max_brightness_description">Always display the documents with full screen brightness.</string>
+    <string name="licenses">Licenses</string>
+    <string name="licenses_summary">Display the open-source licenses used in this project</string>
+    <string name="version">Version %1$s</string>
 </resources>
