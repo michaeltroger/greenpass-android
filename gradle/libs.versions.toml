@@ -5,11 +5,12 @@ androidx-constraintlayout = "2.1.4"
 androidx-core-ktx = "1.10.0"
 androidx-datastore-preferences = "1.0.0"
 androidx-fragment-ktx = "1.5.6"
+androidx-lifecycle = "2.6.1"
 androidx-preference-ktx = "1.2.0"
 androidx-room = "2.5.1"
-androidx-lifecycle = "2.6.1"
 com-android-application = "8.0.0"
 com-github-chrisbanes-photoview = "2.3.0"
+com-github-jk1-dependency-license-report = "2.0"
 com-github-lisawray-groupie = "2.10.1"
 com-google-android-material = "1.8.0"
 com-google-devtools-ksp = "1.8.20-1.0.10"
@@ -24,11 +25,11 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidx-datastore-preferences" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment-ktx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidx-preference-ktx" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 com-github-chrisbanes-photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "com-github-chrisbanes-photoview" }
 com-github-lisawray-groupie = { group = "com.github.lisawray.groupie", name = "groupie", version.ref = "com-github-lisawray-groupie" }
 com-github-lisawray-groupie-viewbinding = { group = "com.github.lisawray.groupie", name = "groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
@@ -38,5 +39,6 @@ com-tom-roush-pdfbox-android = { group = "com.tom-roush", name = "pdfbox-android
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
+com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref ="com-github-jk1-dependency-license-report" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }

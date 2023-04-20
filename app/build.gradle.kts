@@ -1,3 +1,4 @@
+import com.github.jk1.license.filter.*
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.Properties
@@ -6,6 +7,12 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.com.github.jk1.dependency.license.report)
+}
+
+licenseReport {
+    outputDir = "$rootDir/licenses"
+    filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
 }
 
 android {
@@ -77,10 +84,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.preference.ktx)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.com.github.chrisbanes.photoview)
     implementation(libs.com.github.lisawray.groupie)
     implementation(libs.com.github.lisawray.groupie.viewbinding)
