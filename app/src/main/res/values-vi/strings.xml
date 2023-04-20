@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Green Pass</string>
+    <string name="delete">Xóa</string>
+    <string name="add">Thêm</string>
+    <string name="tab_title_pdf">PDF</string>
+    <string name="tab_title_qr">Mã QR</string>
+    <string name="error_reading_pdf">Lỗi khi đọc PDF. Hãy thử mở tệp lại hoặc mở vị trí khác</string>
+    <string name="dialog_password_protection_title">Giải mã mật khẩu PDF</string>
+    <string name="dialog_password_protection_hint">Vui lòng nhập mật khẩu</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Hủy</string>
+    <string name="dialog_delete_confirmation_message">Bạn có thực sự muốn xóa tài liệu này?</string>
+    <string name="require_authentication">Yêu cầu xác thực</string>
+    <string name="preference_search_qr">Trích xuất mã QR</string>
+    <string name="preference_search_qr_description">Quét mã QR trong trang đầu.</string>
+    <string name="settings">Cài đặt</string>
+    <string name="authenticate">Xác thực</string>
+    <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
+    <string name="report_issue">Báo cáo vấn đề</string>
+    <string name="rate_summary">Nếu bạn thích ứng dụng, vui lòng đánh giá</string>
+    <string name="rate">Đánh giá ứng dụng</string>
+    <string name="help_translating">Giúp dịch ứng dụng</string>
+    <string name="help_translating_summary">Dịch ứng dụng này ra ngôn ngữ bạn</string>
+    <string name="contributing">Giúp lập trình</string>
+    <string name="contributing_summary">Úng dụng này là mẵ nguồn mở. Xin hãy giúp lập trình!</string>
+    <string name="more">Thêm</string>
+    <string name="privacy_policy">Chính sách bảo mật</string>
+    <string name="preference_max_brightness">100% brightness</string>
+    <string name="preference_max_brightness_description">Always display the documents with full screen brightness.</string>
+    <string name="licenses">Licenses</string>
+    <string name="licenses_summary">Display the open-source licenses used in this project</string>
+    <string name="version">Version %1$s</string>
+</resources>
