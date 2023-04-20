@@ -1,0 +1,5 @@
+- Optional setting for 100% screen brightness
+- Improved layout on "More" screen
+- Added open-source license information to "More" screen
+- Added version number to "More" screen
+- Added Vietnamese translation (thx to Phuc Binh)
