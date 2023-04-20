@@ -1,5 +1,5 @@
 - Optionale Einstellungsmöglichkeit für 100% Bildschirmhelligkeit
 - Verbessertes Layout auf der "Mehr" Seite
 - Open-Source Lizenz Informationen zur "Mehr" Seite hinzugefügt
-- Verionsnummer zu "Mehr" Seite hinzugefügt
+- Versionsnummer zu "Mehr" Seite hinzugefügt
 - Vietnamesische Übersetzung hinzugefügt (danke an Phuc Binh)
