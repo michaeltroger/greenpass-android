@@ -11,7 +11,7 @@ plugins {
 }
 
 licenseReport {
-    outputDir = "$rootDir/licenses"
+    outputDir = "$rootDir/docs/licenses"
     filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
 }
 
