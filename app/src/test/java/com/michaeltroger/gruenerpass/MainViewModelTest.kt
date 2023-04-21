@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass
 import android.app.Application
 import android.content.SharedPreferences
 import com.michaeltroger.gruenerpass.db.CertificateDao
+import com.michaeltroger.gruenerpass.model.DocumentNameRepo
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

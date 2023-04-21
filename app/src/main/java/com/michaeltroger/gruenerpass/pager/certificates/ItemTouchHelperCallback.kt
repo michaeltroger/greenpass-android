@@ -5,6 +5,9 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 import kotlin.math.sign
 
+private const val SCROLL_FACTOR = 5
+private const val SELECTED_ITEM_ALPHA = 0.8f
+
 class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private val onDragFinished: (idList: List<String>) -> Unit) : ItemTouchHelper.Callback()  {
 
     override fun getMovementFlags(
@@ -41,7 +44,7 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
         msSinceStartScroll: Long
     ): Int {
         val direction = sign(viewSizeOutOfBounds.toDouble()).toInt()
-        return 5 * direction
+        return SCROLL_FACTOR * direction
     }
 
     override fun isLongPressDragEnabled(): Boolean {
@@ -70,7 +73,7 @@ class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private v
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         super.onSelectedChanged(viewHolder, actionState)
-        viewHolder?.itemView?.alpha = 0.8f
+        viewHolder?.itemView?.alpha = SELECTED_ITEM_ALPHA
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {

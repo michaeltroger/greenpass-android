@@ -11,6 +11,7 @@ import androidx.preference.PreferenceManager
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.model.DocumentNameRepo
 import com.michaeltroger.gruenerpass.model.PdfHandler
 import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
 
+@Suppress("TooManyFunctions")
 class MainViewModel(
     app: Application,
     private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
@@ -132,6 +134,7 @@ class MainViewModel(
         }
     }
 
+    @Suppress("SpreadOperator")
     fun onDragFinished(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()

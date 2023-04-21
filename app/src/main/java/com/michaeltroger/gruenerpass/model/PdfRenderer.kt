@@ -46,6 +46,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
     /**
      * @return true if successful
      */
+    @Suppress("SwallowedException", "TooGenericExceptionCaught")
     override suspend fun loadFile(): Boolean = withContext(renderContext) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
@@ -96,6 +97,7 @@ class PdfRendererImpl(private val context: Context, val fileName: String, privat
         bitmap
     }
 
+    @Suppress("SwallowedException")
     private fun PdfRenderer.Page.createBitmap(): Bitmap {
         var renderWidth: Int = width
         var renderHeight: Int = height

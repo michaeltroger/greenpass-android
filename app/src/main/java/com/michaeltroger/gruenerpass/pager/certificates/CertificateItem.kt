@@ -19,6 +19,7 @@ import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 import kotlinx.coroutines.*
 
+@Suppress("LongParameterList")
 class CertificateItem(
     context: Context,
     private val fileName: String,

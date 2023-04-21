@@ -43,6 +43,7 @@ class AppMigrator(ctx: Context) {
         }
     }
 
+    @Suppress("MagicNumber")
     fun performMigration(previousVersion: Long = previousVersionCode, currentVersion: Long = currentVersionCode) {
         if (previousVersion == currentVersion) {
             return

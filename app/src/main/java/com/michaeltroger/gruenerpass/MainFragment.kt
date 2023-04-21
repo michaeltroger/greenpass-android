@@ -40,6 +40,11 @@ import kotlinx.coroutines.newSingleThreadContext
 import java.util.concurrent.Executor
 import kotlinx.coroutines.DelicateCoroutinesApi
 
+private const val WIDTH_FACTOR_MULTIPLE_DOCS = 0.95
+private const val TOUCH_SLOP_FACTOR = 8
+private const val SCROLL_TO_LAST_DELAY_MS = 1000L
+
+@Suppress("TooManyFunctions")
 class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private var addMenuButton: MenuItem? = null
@@ -87,7 +92,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
             override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
                 if (itemCount > 1) {
-                    lp.width = (width * 0.95).toInt()
+                    lp.width = (width * WIDTH_FACTOR_MULTIPLE_DOCS).toInt()
                 } else {
                     lp.width = width
                 }
@@ -100,14 +105,15 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         }
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
-        })
-        itemTouchHelper?.attachToRecyclerView(binding.certificates)
+        }).apply {
+            attachToRecyclerView(binding.certificates)
+        }
 
         try { // reduce scroll sensitivity for horizontal scrolling to improve vertical scrolling
             val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
             touchSlopField.isAccessible = true
             val touchSlop = touchSlopField.get(binding.certificates) as Int
-            touchSlopField.set(binding.certificates, touchSlop * 8)
+            touchSlopField.set(binding.certificates, touchSlop * TOUCH_SLOP_FACTOR)
         } catch (ignore: Exception) {}
 
         binding.certificates.adapter = adapter
@@ -221,7 +227,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private fun scrollToLastCertificateAfterItemUpdate() {
        lifecycleScope.launch {
-           delay(1000)
+           delay(SCROLL_TO_LAST_DELAY_MS)
            binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
        }
     }
