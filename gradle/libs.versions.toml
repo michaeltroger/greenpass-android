@@ -16,29 +16,38 @@ com-google-android-material = "1.8.0"
 com-google-devtools-ksp = "1.8.20-1.0.10"
 com-google-zxing-core = "3.3.3" # last version to support API < 24
 com-tom-roush-pdfbox-android = "2.0.25.0" # versions >= 2.0.26.0 increase app size by 4MB (issue is in its dependency >= org.bouncycastle:bcprov-jdk15to18:1.72)
+io-gitlab-arturbosch-detekt = "1.22.0"
+io-mockk = "1.13.5"
 org-jetbrains-kotlin-android = "1.8.20"
+org-jetbrains-kotlinx-coroutines-test = "1.6.4"
+org-junit-jupiter = "5.9.2"
 
 [libraries]
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
-androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidx-biometric" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidx-datastore-preferences" }
-androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx-fragment-ktx" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
-androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "androidx-preference-ktx" }
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
-com-github-chrisbanes-photoview = { group = "com.github.chrisbanes", name = "PhotoView", version.ref = "com-github-chrisbanes-photoview" }
-com-github-lisawray-groupie = { group = "com.github.lisawray.groupie", name = "groupie", version.ref = "com-github-lisawray-groupie" }
-com-github-lisawray-groupie-viewbinding = { group = "com.github.lisawray.groupie", name = "groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
-com-google-android-material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material" }
-com-google-zxing-core = { group = "com.google.zxing", name = "core", version.ref = "com-google-zxing-core" }
-com-tom-roush-pdfbox-android = { group = "com.tom-roush", name = "pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "androidx-biometric" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core-ktx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore-preferences" }
+androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment-ktx" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference-ktx" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+com-github-chrisbanes-photoview = { module = "com.github.chrisbanes:PhotoView", version.ref = "com-github-chrisbanes-photoview" }
+com-github-lisawray-groupie = { module = "com.github.lisawray.groupie:groupie", version.ref = "com-github-lisawray-groupie" }
+com-github-lisawray-groupie-viewbinding = { module = "com.github.lisawray.groupie:groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
+com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
+com-google-zxing-core = { module = "com.google.zxing:core", version.ref = "com-google-zxing-core" }
+com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
+io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
+org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "org-jetbrains-kotlinx-coroutines-test" }
+org-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "org-junit-jupiter" }
+org-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "org-junit-jupiter" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
 com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref ="com-github-jk1-dependency-license-report" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
+io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
