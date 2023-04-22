@@ -30,6 +30,13 @@ jobs:
 
     - name: grant execute permission for gradlew
       run: chmod +x gradlew
+
+    - name: Run Detekt
+      run: ./gradlew detekt
+    - name: Run Lint
+      run: ./gradlew lintRelease
+    - name: Run unit tests
+      run: ./gradlew testReleaseUnitTest
       
     - name: Build app bundle with Gradle
       run: ./gradlew bundleRelease
