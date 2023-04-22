@@ -24,7 +24,7 @@
     <string name="contributing_summary">Ta aplikacja jest Open Source. Dołóż kod od siebie!</string>
     <string name="more">Więcej</string>
     <string name="privacy_policy">Polityka prywatności</string>
-    <string name="preference_max_brightness">:100\u0025 brightness</string>
+    <string name="preference_max_brightness">100\u0025 brightness</string>
     <string name="preference_max_brightness_description">Always display the documents with full screen brightness.</string>
     <string name="licenses">Licenses</string>
     <string name="licenses_summary">Display the open-source licenses used in this project</string>
