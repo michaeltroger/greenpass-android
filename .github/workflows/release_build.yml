@@ -76,3 +76,13 @@ jobs:
         name: ${{ env.VERSION_NAME }}
         body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
         files: app/build/outputs/apk/release/app-release.apk
+
+    - name: Upload test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test_reports
+        path: |
+          app/build/reports/detekt/detekt.html
+          app/build/reports/lint-results-release.html
+          app/build/reports/tests/testReleaseUnitTest/
