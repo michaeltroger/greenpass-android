@@ -11,18 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: set up JDK
+    - name: Checkout repo
+      uses: actions/checkout@v3
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'adopt'
         cache: gradle
-    - name: Grant execute permission for gradlew
+    - name: Grant execute permission for Gradle
       run: chmod +x gradlew
-    - name: Create licenses
+    - name: Create license report
       run: ./gradlew generateLicenseReport
-    - name: Remove date from HTML # workaround for removing timestamp so that no unneeded PRs are created
+    - name: Remove date from HTML report # workaround for removing timestamp so that no unneeded PRs are created
       run: sed -i '/<p id="timestamp">/,+5d' docs/licenses/index.html
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
