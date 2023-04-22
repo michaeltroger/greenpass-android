@@ -82,6 +82,7 @@ class MainViewModelTest {
 
     @Test
     fun `verify enter password dialog shown`() = runTest {
+        mockPreference(R.string.key_preference_biometric, false)
         mockIsPasswordProtectedFile(true)
 
         val vm = createVM()
