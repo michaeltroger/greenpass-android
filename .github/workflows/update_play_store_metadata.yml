@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
     
-    - name: set up play store access
+    - name: Set up play store access
       run: |
         echo "$PLAY_STORE_CREDENTIALS" > playstore_access.json.txt
         base64 -d playstore_access.json.txt > playstore_access.json
@@ -27,5 +28,5 @@ jobs:
     - name: Setup Fastlane
       run: bundle install
       
-    - name: Update Metadata
+    - name: Update Metadata on Google Play
       run: bundle exec fastlane supply --skip_upload_changelogs

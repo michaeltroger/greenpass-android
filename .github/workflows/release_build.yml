@@ -9,9 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
     
-    - name: set up signing info
+    - name: Set up signing info
       run: |
         echo "$RELEASE_KEYSTORE_PROPERTIES" > keystore.properties
         echo "$RELEASE_KEYSTORE" > keystore.jks.txt
@@ -21,14 +22,14 @@ jobs:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
 
-    - name: set up JDK
+    - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'adopt'
         cache: gradle
 
-    - name: grant execute permission for gradlew
+    - name: Grant execute permission for Gradle
       run: chmod +x gradlew
 
     - name: Run Detekt
@@ -41,7 +42,7 @@ jobs:
     - name: Build app bundle with Gradle
       run: ./gradlew bundleRelease
           
-    - name: set up play store access
+    - name: Set up play store access
       run: |
         echo "$PLAY_STORE_CREDENTIALS" > playstore_access.json.txt
         base64 -d playstore_access.json.txt > playstore_access.json
@@ -49,26 +50,26 @@ jobs:
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
 
-    - name: setup Ruby
+    - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.2.2'
 
-    - name: setup Fastlane
+    - name: Setup Fastlane
       run: bundle install
       
-    - name: publish metadata and AAB to Play Store Internal
+    - name: Publish metadata and AAB to Play Store Internal
       run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
       
-    - name: Build APK with Gradle
+    - name: Build APK
       run: ./gradlew assembleRelease
       
-    - name: extract version code and version name
+    - name: Extract version code and version name
       run: |
         echo "VERSION_NAME="$(grep "versionName" app/build.gradle.kts | awk '{print $3}' | sed 's/"//g') >> $GITHUB_ENV
         echo "VERSION_CODE="$(grep "versionCode" app/build.gradle.kts | awk '{print $3}') >> $GITHUB_ENV
         
-    - name: create tag and release on GitHub
+    - name: Create tag and release on GitHub
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ env.VERSION_CODE }}
@@ -76,4 +77,12 @@ jobs:
         body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
         files: app/build/outputs/apk/release/app-release.apk
 
-
+    - name: Upload test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test_reports
+        path: |
+          app/build/reports/detekt/detekt.html
+          app/build/reports/lint-results-release.html
+          app/build/reports/tests/testReleaseUnitTest/
