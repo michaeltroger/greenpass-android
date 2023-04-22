@@ -11,15 +11,22 @@ import androidx.preference.PreferenceManager
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.model.DocumentNameRepo
 import com.michaeltroger.gruenerpass.model.PdfHandler
 import com.michaeltroger.gruenerpass.model.PdfRendererImpl
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.*
 
+@Suppress("TooManyFunctions")
 class MainViewModel(
     app: Application,
     private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
@@ -32,7 +39,9 @@ class MainViewModel(
     private var searchForQrCode: Boolean = true
     private var shouldAuthenticate = false
 
-    private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading(fullBrightness = fullScreenBrightness))
+    private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
+        ViewState.Loading(fullBrightness = fullScreenBrightness)
+    )
     val viewState: StateFlow<ViewState> = _viewState
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
@@ -45,10 +54,19 @@ class MainViewModel(
     init {
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
-            shouldAuthenticate = preferenceManager.getBoolean(app.getString(R.string.key_preference_biometric), false)
+            shouldAuthenticate = preferenceManager.getBoolean(
+                app.getString(R.string.key_preference_biometric),
+                false
+            )
             isLocked = shouldAuthenticate
-            searchForQrCode = preferenceManager.getBoolean(app.getString(R.string.key_preference_search_for_qr_code), true)
-            fullScreenBrightness = preferenceManager.getBoolean(app.getString(R.string.key_preference_full_brightness), false)
+            searchForQrCode = preferenceManager.getBoolean(
+                app.getString(R.string.key_preference_search_for_qr_code),
+                true
+            )
+            fullScreenBrightness = preferenceManager.getBoolean(
+                app.getString(R.string.key_preference_full_brightness),
+                false
+            )
             updateState()
         }
     }
@@ -57,7 +75,11 @@ class MainViewModel(
         if (shouldAuthenticate && isLocked) {
             _viewState.emit(ViewState.Locked(fullBrightness = fullScreenBrightness))
         } else {
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode, fullBrightness = fullScreenBrightness))
+            _viewState.emit(ViewState.Normal(
+                documents = db.getAll(),
+                searchQrCode = searchForQrCode,
+                fullBrightness = fullScreenBrightness
+            ))
         }
     }
 
@@ -108,7 +130,11 @@ class MainViewModel(
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode, fullBrightness = fullScreenBrightness))
+            _viewState.emit(ViewState.Normal(
+                documents = db.getAll(),
+                searchQrCode = searchForQrCode,
+                fullBrightness = fullScreenBrightness
+            ))
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             renderer.close()
@@ -120,18 +146,27 @@ class MainViewModel(
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode, fullBrightness = fullScreenBrightness ))
+            _viewState.emit(ViewState.Normal(
+                documents = db.getAll(),
+                searchQrCode = searchForQrCode,
+                fullBrightness = fullScreenBrightness
+            ))
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
             db.delete(id)
-            _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode, fullBrightness = fullScreenBrightness))
+            _viewState.emit(ViewState.Normal(
+                documents = db.getAll(),
+                searchQrCode = searchForQrCode,
+                fullBrightness = fullScreenBrightness
+            ))
             pdfHandler.deleteFile(id)
         }
     }
 
+    @Suppress("SpreadOperator")
     fun onDragFinished(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
@@ -142,7 +177,11 @@ class MainViewModel(
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            _viewState.emit(ViewState.Normal(documents = sortedList, searchQrCode = searchForQrCode, fullBrightness = fullScreenBrightness))
+            _viewState.emit(ViewState.Normal(
+                documents = sortedList,
+                searchQrCode = searchForQrCode,
+                fullBrightness = fullScreenBrightness
+            ))
         }
     }
 
@@ -150,7 +189,11 @@ class MainViewModel(
         viewModelScope.launch {
             isLocked = false
             if (uri == null) {
-                _viewState.emit(ViewState.Normal(documents = db.getAll(), searchQrCode = searchForQrCode, fullBrightness = fullScreenBrightness))
+                _viewState.emit(ViewState.Normal(
+                    documents = db.getAll(),
+                    searchQrCode = searchForQrCode,
+                    fullBrightness = fullScreenBrightness
+                ))
             } else {
                 loadFileFromUri()
             }

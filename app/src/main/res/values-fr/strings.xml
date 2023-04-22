@@ -3,8 +3,6 @@
     <string name="app_name">Certificat</string>
     <string name="delete">Supprimer</string>
     <string name="add">Ajouter</string>
-    <string name="tab_title_pdf">PDF</string>
-    <string name="tab_title_qr">QR Code</string>
     <string name="error_reading_pdf">Erreur lors de la lecture du PDF. Essayez un autre fichier ou dossier</string>
     <string name="dialog_password_protection_title">Déchiffrer le PDF protégé par mot de passe</string>
     <string name="dialog_password_protection_hint">Saisir le mot de passe</string>
@@ -26,7 +24,7 @@
     <string name="contributing_summary">Cette application est open-source. Contribuez au code !</string>
     <string name="more">Plus</string>
     <string name="privacy_policy">Politique de confidentialité</string>
-    <string name="preference_max_brightness">100% brightness</string>
+    <string name="preference_max_brightness">100\u0025 brightness</string>
     <string name="preference_max_brightness_description">Always display the documents with full screen brightness.</string>
     <string name="licenses">Licenses</string>
     <string name="licenses_summary">Display the open-source licenses used in this project</string>

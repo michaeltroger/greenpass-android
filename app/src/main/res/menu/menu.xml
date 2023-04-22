@@ -5,7 +5,7 @@
         android:id="@+id/add"
         android:icon="@drawable/baseline_add_24"
         android:title="@string/add"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/openSettings"

@@ -13,7 +13,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
 
-        val preference = findPreference<ValidateSwitchPreferenceCompat>(getString(R.string.key_preference_biometric)) ?: error("Preference is required")
+        val preference = findPreference<ValidateSwitchPreferenceCompat>(
+            getString(R.string.key_preference_biometric)
+        ) ?: error("Preference is required")
 
         if (BiometricManager.from(requireContext())
                 .canAuthenticate(AUTHENTICATORS) == BiometricManager.BIOMETRIC_SUCCESS) {
@@ -37,6 +39,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
-        const val AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+        const val AUTHENTICATORS = BiometricManager.Authenticators.BIOMETRIC_WEAK or
+            BiometricManager.Authenticators.DEVICE_CREDENTIAL
     }
 }

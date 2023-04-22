@@ -8,11 +8,14 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.michaeltroger.gruenerpass.extensions.getPackageInfo
-import kotlinx.coroutines.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -43,6 +46,7 @@ class AppMigrator(ctx: Context) {
         }
     }
 
+    @Suppress("MagicNumber")
     fun performMigration(previousVersion: Long = previousVersionCode, currentVersion: Long = currentVersionCode) {
         if (previousVersion == currentVersion) {
             return

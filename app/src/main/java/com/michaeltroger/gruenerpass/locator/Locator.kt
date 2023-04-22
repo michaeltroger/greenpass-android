@@ -3,8 +3,8 @@ package com.michaeltroger.gruenerpass.locator
 import android.content.Context
 import androidx.biometric.BiometricPrompt
 import androidx.room.Room
-import com.michaeltroger.gruenerpass.DocumentNameRepo
-import com.michaeltroger.gruenerpass.DocumentNameRepoImpl
+import com.michaeltroger.gruenerpass.model.DocumentNameRepo
+import com.michaeltroger.gruenerpass.model.DocumentNameRepoImpl
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.AppDatabase
 import com.michaeltroger.gruenerpass.model.PdfHandler

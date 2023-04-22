@@ -11,7 +11,11 @@ import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class QrCodeItem(
     private val renderer: PdfRenderer,
@@ -30,10 +34,14 @@ class QrCodeItem(
             val qrCode = renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE)
             if (qrCode == null) {
                 viewBinding.root.isVisible = false
-                (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(bottom = 0)
+                (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(
+                    bottom = 0
+                )
             } else {
                 viewBinding.root.isVisible = true
-                (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(bottom = viewBinding.root.context.resources.getDimensionPixelSize(R.dimen.space_very_small))
+                (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(
+                    bottom = viewBinding.root.context.resources.getDimensionPixelSize(R.dimen.space_very_small)
+                )
                 viewBinding.qrcode.setImageBitmap(qrCode)
             }
         }

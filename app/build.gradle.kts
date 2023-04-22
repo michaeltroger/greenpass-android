@@ -1,18 +1,15 @@
 import com.github.jk1.license.filter.*
+import io.gitlab.arturbosch.detekt.Detekt
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.com.android.application)
-    alias(libs.plugins.com.google.devtools.ksp)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.com.github.jk1.dependency.license.report)
-}
-
-licenseReport {
-    outputDir = "$rootDir/docs/licenses"
-    filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
+    alias(libs.plugins.com.google.devtools.ksp)
+    alias(libs.plugins.io.gitlab.arturbosch.detekt)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
 }
 
 android {
@@ -32,6 +29,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildFeatures {
         viewBinding = true
     }
@@ -66,6 +64,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
         allWarningsAsErrors = true
@@ -76,8 +75,21 @@ kotlin {
     jvmToolchain(17)
 }
 
-dependencies {
+licenseReport {
+    outputDir = "$rootDir/docs/licenses"
+    configurations = arrayOf("releaseRuntimeClasspath")
+    filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
+}
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.withType<Detekt> {
+    jvmTarget = "17"
+}
+
+dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.constraintlayout)
@@ -96,4 +108,10 @@ dependencies {
     implementation(libs.com.tom.roush.pdfbox.android)
 
     ksp(libs.androidx.room.compiler)
+
+    testImplementation(libs.io.mockk)
+    testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
+    testImplementation(libs.org.junit.jupiter.api)
+
+    testRuntimeOnly(libs.org.junit.jupiter.engine)
 }
