@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Certificat</string>
     <string name="delete">Supprimer</string>
+    <string name="move">Move</string>
+    <string name="document_name">Document name</string>
+    <string name="qr_code">QR code</string>
     <string name="add">Ajouter</string>
     <string name="error_reading_pdf">Erreur lors de la lecture du PDF. Essayez un autre fichier ou dossier</string>
     <string name="dialog_password_protection_title">Déchiffrer le PDF protégé par mot de passe</string>
