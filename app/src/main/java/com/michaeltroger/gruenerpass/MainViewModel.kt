@@ -13,7 +13,7 @@ import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.model.DocumentNameRepo
 import com.michaeltroger.gruenerpass.model.PdfHandler
-import com.michaeltroger.gruenerpass.model.PdfRendererImpl
+import com.michaeltroger.gruenerpass.model.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import java.util.UUID
@@ -125,7 +125,7 @@ class MainViewModel(
     }
 
     private suspend fun handleFileAfterCopying(filename: String) {
-        val renderer = PdfRendererImpl(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
+        val renderer = PdfRendererBuilder.create(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
         if (renderer.loadFile()) {
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)

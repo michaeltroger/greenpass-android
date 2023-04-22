@@ -60,6 +60,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -79,10 +85,6 @@ licenseReport {
     outputDir = "$rootDir/docs/licenses"
     configurations = arrayOf("releaseRuntimeClasspath")
     filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 tasks.withType<Detekt> {
@@ -109,9 +111,10 @@ dependencies {
 
     ksp(libs.androidx.room.compiler)
 
+    testImplementation(libs.androidx.test.ext.junit.ktx)
+    testImplementation(libs.app.cash.turbine)
+    testImplementation(libs.io.kotest.assertions.core)
     testImplementation(libs.io.mockk)
     testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
-    testImplementation(libs.org.junit.jupiter.api)
-
-    testRuntimeOnly(libs.org.junit.jupiter.engine)
+    testImplementation(libs.org.robolectric)
 }

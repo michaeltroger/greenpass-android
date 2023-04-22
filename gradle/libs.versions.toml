@@ -8,6 +8,8 @@ androidx-fragment-ktx = "1.5.6"
 androidx-lifecycle = "2.6.1"
 androidx-preference-ktx = "1.2.0"
 androidx-room = "2.5.1"
+androidx-test-ext-junit-ktx = "1.1.5"
+app-cash-turbine = "0.12.3"
 com-android-application = "8.0.0"
 com-github-chrisbanes-photoview = "2.3.0"
 com-github-jk1-dependency-license-report = "2.0"
@@ -17,10 +19,11 @@ com-google-devtools-ksp = "1.8.20-1.0.10"
 com-google-zxing-core = "3.3.3" # last version to support API < 24
 com-tom-roush-pdfbox-android = "2.0.25.0" # versions >= 2.0.26.0 increase app size by 4MB (issue is in its dependency >= org.bouncycastle:bcprov-jdk15to18:1.72)
 io-gitlab-arturbosch-detekt = "1.22.0"
+io-kotest-assertions-core = "5.6.1"
 io-mockk = "1.13.5"
 org-jetbrains-kotlin-android = "1.8.20"
 org-jetbrains-kotlinx-coroutines-test = "1.6.4"
-org-junit-jupiter = "5.9.2"
+org-robolectric = "4.10"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -34,16 +37,18 @@ androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-view
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference-ktx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-ext-junit-ktx" }
+app-cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "app-cash-turbine" }
 com-github-chrisbanes-photoview = { module = "com.github.chrisbanes:PhotoView", version.ref = "com-github-chrisbanes-photoview" }
 com-github-lisawray-groupie = { module = "com.github.lisawray.groupie:groupie", version.ref = "com-github-lisawray-groupie" }
 com-github-lisawray-groupie-viewbinding = { module = "com.github.lisawray.groupie:groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
 com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
 com-google-zxing-core = { module = "com.google.zxing:core", version.ref = "com-google-zxing-core" }
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
+io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "org-jetbrains-kotlinx-coroutines-test" }
-org-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "org-junit-jupiter" }
-org-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "org-junit-jupiter" }
+org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
