@@ -26,6 +26,18 @@ private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 const val PAGE_INDEX_QR_CODE = 0
 
+object PdfRendererBuilder {
+    fun create(
+        context: Context,
+        fileName: String,
+        renderContext: CoroutineDispatcher
+    ): com.michaeltroger.gruenerpass.model.PdfRenderer = PdfRendererImpl(
+        context = context,
+        fileName = fileName,
+        renderContext = renderContext
+    )
+}
+
 interface PdfRenderer {
     suspend fun loadFile(): Boolean
     suspend fun getPageCount(): Int
@@ -34,7 +46,7 @@ interface PdfRenderer {
     suspend fun renderPage(pageIndex: Int): Bitmap?
 }
 
-class PdfRendererImpl(
+private class PdfRendererImpl(
     private val context: Context,
     val fileName: String,
     private val renderContext: CoroutineDispatcher
