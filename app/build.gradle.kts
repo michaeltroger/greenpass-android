@@ -52,7 +52,7 @@ android {
                         storeFile = rootProject.file(keystoreProperties.getProperty("STORE_FILE"))
                         storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
                     } catch(ignored: IOException) {
-                        println(ignored) // We don't have release keys, ignoring
+                        println("Ignored: $ignored") // We don't have release keys, ignoring
                     }
                 }
             }

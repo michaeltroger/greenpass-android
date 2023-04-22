@@ -34,6 +34,7 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
+        name: apk
         path: app/build/outputs/apk/debug/app-debug.apk
     - name: Upload test reports
       uses: actions/upload-artifact@v3
@@ -42,5 +43,5 @@ jobs:
         name: test_reports
         path: |
           app/build/reports/detekt/detekt.html
-          app/build/reports/lint-results-release.html
+          app/build/reports/lint-results-debug.html
           app/build/reports/tests/testDebugUnitTest/
