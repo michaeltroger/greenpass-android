@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Зелен паспорт</string>
     <string name="delete">Изтриване</string>
+    <string name="move">Move</string>
+    <string name="document_name">Document name</string>
+    <string name="qr_code">QR code</string>
     <string name="add">Добавяне</string>
     <string name="error_reading_pdf">Грешка при четене на PDF файла. Опитайте с друг файл или местоположение на файла</string>
     <string name="dialog_password_protection_title">Декриптиране на защитен с парола PDF файл</string>
