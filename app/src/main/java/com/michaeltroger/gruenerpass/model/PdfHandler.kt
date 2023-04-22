@@ -73,7 +73,11 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
      * @return true if successful
      */
     @Suppress("SwallowedException", "TooGenericExceptionCaught")
-    override suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String, fileName: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun decryptAndCopyPdfToCache(
+        uri: Uri,
+        password: String,
+        fileName: String
+    ): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
                 with(PDDocument.load(inputStream, password)) {

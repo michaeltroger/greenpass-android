@@ -12,4 +12,3 @@ fun Context.getPackageInfo(): PackageInfo =
         @Suppress("DEPRECATION")
         packageManager.getPackageInfo(packageName, 0)
     }
-

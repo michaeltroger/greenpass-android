@@ -17,7 +17,14 @@ class AppMigrateFrom27 {
             val src = File(context.filesDir, "certificate.pdf")
             if (src.exists()) {
                 GlobalScope.launch(Dispatchers.IO) {
-                    Locator.database(context).certificateDao().insertAll(Certificate(id = "certificate.pdf", name = "Certificate"))
+                    Locator.database(context)
+                        .certificateDao()
+                        .insertAll(
+                            Certificate(
+                                id = "certificate.pdf",
+                                name = "Certificate"
+                            )
+                        )
                 }
             }
         } catch (ignore: Exception) {}

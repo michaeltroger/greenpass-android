@@ -17,7 +17,12 @@ import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 @Suppress("LongParameterList")
 class CertificateItem(
@@ -81,6 +86,7 @@ class CertificateItem(
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return (other as? CertificateItem)?.fileName == fileName && (other as? CertificateItem)?.searchQrCode == searchQrCode
+        return (other as? CertificateItem)?.fileName == fileName
+            && (other as? CertificateItem)?.searchQrCode == searchQrCode
     }
 }

@@ -7,7 +7,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
-import com.google.zxing.*
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.LuminanceSource
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
@@ -30,7 +34,11 @@ interface PdfRenderer {
     suspend fun renderPage(pageIndex: Int): Bitmap?
 }
 
-class PdfRendererImpl(private val context: Context, val fileName: String, private val renderContext: CoroutineDispatcher): com.michaeltroger.gruenerpass.model.PdfRenderer {
+class PdfRendererImpl(
+    private val context: Context,
+    val fileName: String,
+    private val renderContext: CoroutineDispatcher
+): com.michaeltroger.gruenerpass.model.PdfRenderer {
 
     private val file = File(context.filesDir, fileName)
 

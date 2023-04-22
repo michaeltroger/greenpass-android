@@ -1,9 +1,14 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -78,31 +83,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
         binding = FragmentMainBinding.bind(view)
         executor = ContextCompat.getMainExecutor(requireContext())
-        biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    requireActivity().onUserInteraction() // onUserInteraction() is not called by android in this case so we call it manually
-                    vm.onAuthenticationSuccess()
-                }
-            })
+        biometricPrompt = BiometricPrompt(this, executor, MyAuthenticationCallback())
 
         promptInfo = Locator.biometricPromptInfo(requireContext())
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
-        binding.certificates.layoutManager = object : LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false) {
-            override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
-                if (itemCount > 1) {
-                    lp.width = (width * WIDTH_FACTOR_MULTIPLE_DOCS).toInt()
-                } else {
-                    lp.width = width
-                }
-                return true
-            }
-
-            override fun canScrollHorizontally(): Boolean {
-                return itemCount > 1
-            }
-        }
+        binding.certificates.layoutManager = MyInnerLayoutManager(requireContext())
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         }).apply {
@@ -277,9 +263,36 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun updateScreenBrightness(fullBrightness: Boolean) {
         requireActivity().window.apply {
             attributes.apply {
-                screenBrightness = if (fullBrightness) LayoutParams.BRIGHTNESS_OVERRIDE_FULL else LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+                screenBrightness = if (fullBrightness) {
+                    LayoutParams.BRIGHTNESS_OVERRIDE_FULL
+                } else {
+                    LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+                }
             }
             addFlags(LayoutParams.SCREEN_BRIGHTNESS_CHANGED)
         }
+    }
+
+    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            // onUserInteraction() is not called by android in this case so we call it manually
+            requireActivity().onUserInteraction()
+            vm.onAuthenticationSuccess()
+        }
+    }
+}
+
+private class MyInnerLayoutManager(context: Context) : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
+    override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+        if (itemCount > 1) {
+            lp.width = (width * WIDTH_FACTOR_MULTIPLE_DOCS).toInt()
+        } else {
+            lp.width = width
+        }
+        return true
+    }
+
+    override fun canScrollHorizontally(): Boolean {
+        return itemCount > 1
     }
 }

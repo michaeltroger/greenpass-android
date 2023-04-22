@@ -8,7 +8,10 @@ import kotlin.math.sign
 private const val SCROLL_FACTOR = 5
 private const val SELECTED_ITEM_ALPHA = 0.8f
 
-class ItemTouchHelperCallback(private val adapter: CertificateAdapter, private val onDragFinished: (idList: List<String>) -> Unit) : ItemTouchHelper.Callback()  {
+class ItemTouchHelperCallback(
+    private val adapter: CertificateAdapter,
+    private val onDragFinished: (idList: List<String>) -> Unit
+) : ItemTouchHelper.Callback()  {
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,

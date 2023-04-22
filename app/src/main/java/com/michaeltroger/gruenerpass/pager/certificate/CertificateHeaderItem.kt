@@ -18,7 +18,7 @@ class CertificateHeaderItem(
     private val onStartDrag: () -> Unit
 ) : BindableItem<ItemCertificateHeaderBinding>() {
 
-    override fun initializeViewBinding(view: View): ItemCertificateHeaderBinding = ItemCertificateHeaderBinding.bind(view)
+    override fun initializeViewBinding(view: View) = ItemCertificateHeaderBinding.bind(view)
     override fun getLayout() = R.layout.item_certificate_header
 
     override fun bind(viewBinding: ItemCertificateHeaderBinding, position: Int) {
@@ -57,6 +57,7 @@ class CertificateHeaderItem(
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return (other as? CertificateHeaderItem)?.fileName == fileName && (other as? CertificateHeaderItem)?.documentName == documentName
+        return (other as? CertificateHeaderItem)?.fileName == fileName
+            && (other as? CertificateHeaderItem)?.documentName == documentName
     }
 }
