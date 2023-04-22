@@ -1,5 +1,6 @@
 package com.michaeltroger.gruenerpass.pager.certificate
 
+import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.widget.doOnTextChanged
@@ -37,6 +38,7 @@ class CertificateHeaderItem(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun bind(
         viewHolder: GroupieViewHolder<ItemCertificateHeaderBinding>,
         position: Int,

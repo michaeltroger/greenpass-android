@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="space_very_large">64dp</dimen>
     <dimen name="space_large">32dp</dimen>
     <dimen name="space_medium">16dp</dimen>
     <dimen name="space_small">8dp</dimen>

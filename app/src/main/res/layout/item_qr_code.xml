@@ -13,6 +13,7 @@
         android:id="@+id/qrcode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/qr_code"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
