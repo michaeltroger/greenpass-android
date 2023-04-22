@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Green Pass</string>
     <string name="delete">Elimina</string>
+    <string name="move">Move</string>
+    <string name="document_name">Document name</string>
+    <string name="qr_code">QR code</string>
     <string name="add">Aggiungi</string>
     <string name="error_reading_pdf">Errore nella lettura del PDF. Prova un altro file o percorso</string>
     <string name="dialog_password_protection_title">Decifra PDF protetto da password</string>

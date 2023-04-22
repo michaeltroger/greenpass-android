@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Green Pass</string>
     <string name="delete">Smazat</string>
+    <string name="move">Move</string>
+    <string name="document_name">Document name</string>
+    <string name="qr_code">QR code</string>
     <string name="add">Přidat</string>
     <string name="error_reading_pdf">Při čtení souboru PDF došlo k chybě. Zkuste jiný soubor nebo jiné umístění souboru</string>
     <string name="dialog_password_protection_title">Dešifrování souboru PDF chráněného heslem</string>

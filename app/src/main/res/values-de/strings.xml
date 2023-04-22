@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
+    <string name="move">Verschieben</string>
+    <string name="document_name">Dokumentenname</string>
+    <string name="qr_code">QR-Code</string>
     <string name="add">Hinzufügen</string>
     <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
     <string name="dialog_password_protection_title">Passwortgeschütztes PDF entschlüsseln</string>
