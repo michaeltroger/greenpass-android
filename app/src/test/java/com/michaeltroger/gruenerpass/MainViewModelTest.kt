@@ -21,9 +21,11 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
+import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,6 +48,11 @@ class MainViewModelTest {
     @Before
     fun startUp() {
         mockPdfRenderer()
+    }
+
+    @After
+    fun tearDown() {
+        unmockkAll()
     }
 
     @Test
