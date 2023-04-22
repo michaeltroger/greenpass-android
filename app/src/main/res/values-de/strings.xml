@@ -2,9 +2,9 @@
 <resources>
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
-    <string name="move">Move</string>
-    <string name="document_name">Document name</string>
-    <string name="qr_code">QR code</string>
+    <string name="move">Verschieben</string>
+    <string name="document_name">Dokumentenname</string>
+    <string name="qr_code">QR-Code</string>
     <string name="add">Hinzufügen</string>
     <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
     <string name="dialog_password_protection_title">Passwortgeschütztes PDF entschlüsseln</string>
@@ -27,7 +27,7 @@
     <string name="contributing_summary">Diese App ist Open-Source. Jetzt mitwirken!</string>
     <string name="more">Mehr</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
-    <string name="preference_max_brightness">100\u0025 brightness</string>
+    <string name="preference_max_brightness">100\u0025 Helligkeit</string>
     <string name="preference_max_brightness_description">Die Dokumente immer mit voller Display-Helligkeit anzeigen.</string>
     <string name="licenses">Lizenzen</string>
     <string name="licenses_summary">Zeige die Open-Source Lizenzen die in diesem Projekt verwendet werden</string>
