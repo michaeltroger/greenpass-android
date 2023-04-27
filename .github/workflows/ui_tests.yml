@@ -15,3 +15,5 @@ jobs:
         with:
           api-level: 33
           script: adb push testdata/dummy.pdf /sdcard/Documents && ./gradlew connectedCheck && adb pull /sdcard/Pictures/screenshots
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
