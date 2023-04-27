@@ -1,3 +1,5 @@
+import com.android.build.api.variant.AndroidTest
+import com.android.build.gradle.internal.tasks.AndroidTestTask
 import com.github.jk1.license.filter.*
 import io.gitlab.arturbosch.detekt.Detekt
 import java.io.FileInputStream
@@ -117,4 +119,7 @@ dependencies {
     testImplementation(libs.io.mockk)
     testImplementation(libs.org.jetbrains.kotlinx.coroutines.test)
     testImplementation(libs.org.robolectric)
+
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.uiautomator)
 }
