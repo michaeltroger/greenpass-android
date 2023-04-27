@@ -1,6 +1,8 @@
 name: UI tests
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -17,3 +19,6 @@ jobs:
           script: adb push testdata/dummy.pdf /sdcard/Documents && ./gradlew connectedCheck && adb pull /sdcard/Pictures/screenshots
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
+        with:
+          branch: feature/update_screenshots
+          title: Update of screenshots
