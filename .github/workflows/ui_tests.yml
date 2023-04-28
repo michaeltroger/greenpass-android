@@ -11,12 +11,26 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: gradle
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
-          script: adb push testdata/dummy.pdf /sdcard/Documents && ./gradlew connectedCheck && adb pull /sdcard/Pictures/screenshots
+          api-level: 31
+          arch: x86_64
+          target: default
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            adb root
+            adb push testdata/dummy.pdf /sdcard/Documents
+            ./gradlew connectedCheck
+            adb pull /sdcard/Pictures/screenshots
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
