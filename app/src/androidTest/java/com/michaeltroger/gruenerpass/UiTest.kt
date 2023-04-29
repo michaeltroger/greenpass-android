@@ -35,7 +35,7 @@ class UiTest {
         }
 
         (1..RETRIALS).forEach { _ ->
-            goToDocumentFolder()
+            goToSdCardFolder()
         }
 
         uiDevice.wait(Until.hasObject(pdfFile), TIMEOUT)
@@ -47,7 +47,7 @@ class UiTest {
         ScreenshotUtil.recordScreenshot("normal_state")
     }
 
-    private fun goToDocumentFolder() {
+    private fun goToSdCardFolder() {
         try {
             if (uiDevice.hasObject(pdfFile)) {
                 return
@@ -59,10 +59,6 @@ class UiTest {
             val rootDir = By.textStartsWith("Android SDK")
             uiDevice.wait(Until.hasObject(rootDir), TIMEOUT)
             uiDevice.findObject(rootDir).click()
-
-            val docsDir = By.text("Documents")
-            uiDevice.wait(Until.hasObject(docsDir), TIMEOUT)
-            uiDevice.findObject(docsDir).click()
         } catch (e: NullPointerException) {
             //ignoring
         }
