@@ -38,17 +38,19 @@ jobs:
             adb shell settings put global sysui_demo_allowed 1
             adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
             ./gradlew connectedCheck | true
-            adb pull /sdcard/Pictures/screenshots
-            adb pull /sdcard/Pictures/error_screenshots app/build
+            adb pull /sdcard/Pictures/screenshots | true
+            adb pull /sdcard/Pictures/error_screenshots app/build | true
       - name: Upload screenshots
         uses: actions/upload-artifact@v3
         if: always()
         with:
           name: screenshots
           path: screenshots/
-      - name: Upload error screenshots
+      - name: Upload test report
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: error_screenshots
-          path: app/build/error_screenshots/
+          name: test_report
+          path: |
+            app/build/reports/androidTests/connected/
+            app/build/error_screenshots/
