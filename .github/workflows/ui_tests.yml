@@ -3,8 +3,6 @@ name: UI tests
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -34,12 +32,11 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./run_ui_tests.sh
-      - name: Upload screenshots
-        uses: actions/upload-artifact@v3
-        if: always()
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
-          name: screenshots
-          path: screenshots/
+          branch: feature/update_screenshots
+          title: Update of screenshots
       - name: Upload test report
         uses: actions/upload-artifact@v3
         if: always()
@@ -48,3 +45,4 @@ jobs:
           path: |
             app/build/reports/androidTests/connected/
             app/build/error_screenshots/
+            - name: Create Pull Request
