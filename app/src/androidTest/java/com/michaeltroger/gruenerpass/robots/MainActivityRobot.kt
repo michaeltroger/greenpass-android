@@ -20,7 +20,8 @@ class MainActivityRobot {
     private val deleteIconSelector = By.desc("Delete")
 
     fun verifyEmptyState() = apply {
-        throw Exception()
+        uiDevice.waitForIdle()
+        onView(withId(R.id.add)).check(matches(isDisplayed()))
     }
 
     fun verifyPdfDocumentLoaded() = apply {
