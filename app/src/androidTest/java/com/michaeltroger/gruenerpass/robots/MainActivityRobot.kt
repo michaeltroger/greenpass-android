@@ -16,18 +16,22 @@ class MainActivityRobot {
 
     private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
+    private val addIconSelector = By.desc("Add")
+    private val deleteIconSelector = By.desc("Delete")
+
     fun verifyEmptyState() = apply {
         uiDevice.waitForIdle()
         onView(withId(R.id.add)).check(matches(isDisplayed()))
     }
 
     fun verifyPdfDocumentLoaded() = apply {
-        val delete = By.desc("Delete")
-        uiDevice.wait(Until.hasObject(delete), TIMEOUT)
+        uiDevice.wait(Until.hasObject(deleteIconSelector), TIMEOUT)
+        onView(withId(R.id.deleteIcon)).check(matches(isDisplayed()))
     }
 
     fun clickOnAddDocument(): AndroidFileAppRobot {
-        uiDevice.findObject(By.desc("Add")).click()
+        uiDevice.wait(Until.hasObject(addIconSelector), TIMEOUT)
+        uiDevice.findObject(addIconSelector).click()
         return AndroidFileAppRobot()
     }
 }
