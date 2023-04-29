@@ -2,6 +2,7 @@ package com.michaeltroger.gruenerpass.model
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +66,7 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
             }
             return@withContext true
         } catch (exception: Exception) {
+            Log.d("mitmit", exception.toString())
             return@withContext false
         }
     }
