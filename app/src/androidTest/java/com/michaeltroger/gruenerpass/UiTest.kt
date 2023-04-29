@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import java.lang.NullPointerException
 import org.junit.Rule
 import org.junit.Test
 
@@ -45,19 +46,23 @@ class UiTest {
     }
 
     private fun goToDocumentFolder() {
-        if (uiDevice.hasObject(pdfFile)) {
-            return
+        try {
+            if (uiDevice.hasObject(pdfFile)) {
+                return
+            }
+            val hamburgerSelector = By.desc("Show roots")
+            uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
+            uiDevice.findObject(hamburgerSelector).click()
+
+            val rootDir = By.textStartsWith("Android SDK")
+            uiDevice.wait(Until.hasObject(rootDir), TIMEOUT)
+            uiDevice.findObject(rootDir).click()
+
+            val docsDir = By.text("Documents")
+            uiDevice.wait(Until.hasObject(docsDir), TIMEOUT)
+            uiDevice.findObject(docsDir).click()
+        } catch (e: NullPointerException) {
+            //ignoring
         }
-        val hamburgerSelector = By.desc("Show roots")
-        uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
-        uiDevice.findObject(hamburgerSelector).click()
-
-        val rootDir = By.textStartsWith("Android SDK")
-        uiDevice.wait(Until.hasObject(rootDir), TIMEOUT)
-        uiDevice.findObject(rootDir).click()
-
-        val docsDir = By.text("Documents")
-        uiDevice.wait(Until.hasObject(docsDir), TIMEOUT)
-        uiDevice.findObject(docsDir).click()
     }
 }
