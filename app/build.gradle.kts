@@ -30,6 +30,7 @@ android {
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
 
     buildFeatures {
@@ -66,6 +67,7 @@ android {
         unitTests {
             isIncludeAndroidResources = true
         }
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     compileOptions {
@@ -122,4 +124,6 @@ dependencies {
 
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.test.uiautomator)
+
+    androidTestUtil(libs.androidx.test.orchestrator)
 }

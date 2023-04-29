@@ -17,22 +17,36 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: gradle
+      - name: Remove existing screenshots
+        run: rm -rd screenshots | true
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 31
+          api-level: 29
           arch: x86_64
           target: default
+          emulator-boot-timeout: 1000
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            adb root
+            adb shell rm -f -rR /sdcard/Pictures/screenshots
+            adb shell rm -f -rR /sdcard/Pictures/error_screenshots
             adb push testdata/dummy.pdf /sdcard/Documents
-            ./gradlew connectedCheck
+            adb shell settings put global sysui_demo_allowed 1
+            adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
+            ./gradlew connectedCheck | true
             adb pull /sdcard/Pictures/screenshots
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+            adb pull /sdcard/Pictures/error_screenshots app/build
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
         with:
-          branch: feature/update_screenshots
-          title: Update of screenshots
+          name: screenshots
+          path: screenshots/
+      - name: Upload error screenshots
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: error_screenshots
+          path: app/build/error_screenshots/
