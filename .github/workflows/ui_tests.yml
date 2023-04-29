@@ -17,8 +17,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: gradle
-      - name: Remove existing screenshots
-        run: rm -rd screenshots | true
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
