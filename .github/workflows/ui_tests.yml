@@ -27,6 +27,7 @@ jobs:
           api-level: 30
           arch: x86_64
           target: default
+          profile: Pixel 7 Pro
           emulator-boot-timeout: 1000
           sdcard-path-or-size: 1000M
           force-avd-creation: true

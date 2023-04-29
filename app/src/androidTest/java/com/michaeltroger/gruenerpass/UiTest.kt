@@ -11,6 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 
 private const val TIMEOUT = 10000L
+private const val RETRIALS = 3
 
 class UiTest {
 
@@ -33,8 +34,9 @@ class UiTest {
             it.findViewById<View>(R.id.add).performClick()
         }
 
-        goToDocumentFolder()
-        goToDocumentFolder()
+        (1..RETRIALS).forEach { _ ->
+            goToDocumentFolder()
+        }
 
         uiDevice.wait(Until.hasObject(pdfFile), TIMEOUT)
         uiDevice.findObject(pdfFile).click()
