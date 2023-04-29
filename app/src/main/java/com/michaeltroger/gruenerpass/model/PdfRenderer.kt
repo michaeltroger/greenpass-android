@@ -7,7 +7,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
-import android.util.Log
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.LuminanceSource
@@ -75,7 +74,6 @@ private class PdfRendererImpl(
             renderer!!.openPage(0).use {  }
             return@withContext true
         } catch (exception: Exception) {
-            Log.d("mitmit", exception.toString())
             if (file.exists()) {
                 file.delete()
             }

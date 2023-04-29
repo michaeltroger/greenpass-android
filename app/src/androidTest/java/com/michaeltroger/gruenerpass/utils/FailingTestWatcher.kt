@@ -1,8 +1,7 @@
-package com.michaeltroger.gruenerpass;
+package com.michaeltroger.gruenerpass.utils
 
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
 
 class FailingTestWatcher : TestWatcher() {
 
