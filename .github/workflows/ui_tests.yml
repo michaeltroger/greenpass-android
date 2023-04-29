@@ -33,6 +33,8 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
+            adb root
+            adb wait-for-device
             adb shell rm -f -rR /sdcard/Pictures/screenshots
             adb shell rm -f -rR /sdcard/Pictures/error_screenshots
             adb push testdata/dummy.pdf /sdcard/Documents
