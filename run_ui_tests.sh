@@ -10,7 +10,7 @@ adb push testdata/dummy.pdf /sdcard/dummy.pdf
 
 adb shell settings put global sysui_demo_allowed 1
 adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
-adb shell am broadcast -a com.android.systemui.demo -e command notifications
+adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false
 
 ./gradlew connectedCheck
 exit_code=$?
