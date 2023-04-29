@@ -1,21 +1,33 @@
 package com.michaeltroger.gruenerpass
 
 import androidx.test.core.app.ActivityScenario
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.uiautomator.UiDevice
-import java.io.File
+import com.michaeltroger.gruenerpass.robots.MainActivityRobot
+import com.michaeltroger.gruenerpass.utils.FailingTestWatcher
+import com.michaeltroger.gruenerpass.utils.ScreenshotUtil
+import org.junit.Rule
 import org.junit.Test
-
-private const val BASE_DIR = "/sdcard/Pictures/screenshots"
 
 class UiTest {
 
-    val scenario = ActivityScenario.launch(MainActivity::class.java)
-    val uiDevice = UiDevice.getInstance(getInstrumentation())
+    private val scenario = ActivityScenario.launch(MainActivity::class.java)
+
+    @get:Rule
+    val failingTestWatcher = FailingTestWatcher()
 
     @Test
-    fun testEmptyState() {
-        File(BASE_DIR).mkdir()
-        uiDevice.takeScreenshot(File("$BASE_DIR/test.png"))
+    fun emptyState() {
+        MainActivityRobot().verifyEmptyState()
+        ScreenshotUtil.recordScreenshot("empty_state")
+    }
+
+    @Test
+    fun normalState() {
+        MainActivityRobot()
+            .clickOnAddDocument()
+            .goToPdfFolder()
+            .selectPdfDocument()
+            .verifyPdfDocumentLoaded()
+
+        ScreenshotUtil.recordScreenshot("normal_state")
     }
 }

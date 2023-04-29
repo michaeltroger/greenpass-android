@@ -10,6 +10,7 @@ androidx-preference-ktx = "1.2.0"
 androidx-room = "2.5.1"
 androidx-test-espresso-core = "3.5.1"
 androidx-test-ext-junit-ktx = "1.1.5"
+androidx-test-orchestrator = "1.4.2"
 androidx-test-uiautomator = "2.3.0-alpha03"
 app-cash-turbine = "0.12.3"
 com-android-application = "8.0.0"
@@ -41,6 +42,7 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-test-espresso-core" }
 androidx-test-ext-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidx-test-ext-junit-ktx" }
+androidx-test-orchestrator = { module = "androidx.test:orchestrator", version.ref = "androidx-test-orchestrator" }
 androidx-test-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "androidx-test-uiautomator" }
 app-cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "app-cash-turbine" }
 com-github-chrisbanes-photoview = { module = "com.github.chrisbanes:PhotoView", version.ref = "com-github-chrisbanes-photoview" }
