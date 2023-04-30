@@ -37,7 +37,7 @@ class UiTest {
             .selectAddDocument()
             .goToPdfFolder()
             .selectRegularPdf("qr.pdf")
-            .verifyPdfDocumentLoaded("qr")
+            .verifyDocumentWithQrCodeLoaded("qr")
 
         ScreenshotUtil.recordScreenshot("qr_code")
     }

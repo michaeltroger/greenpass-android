@@ -10,7 +10,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.utils.waitUntilIdle
 import com.michaeltroger.gruenerpass.utils.waitUntilNoException
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.`is`
 
 class MainActivityRobot {
@@ -23,6 +22,17 @@ class MainActivityRobot {
     }
 
     fun verifyPdfDocumentLoaded(docName: String) = apply {
+        waitUntilNoException {
+            onView(
+                withTagValue(`is`("pdf_loaded"))
+            ).check(matches(isDisplayed()))
+
+            onView(withId(R.id.deleteIcon)).check(matches(isDisplayed()))
+            onView(withText(docName)).check(matches(isDisplayed()))
+        }
+    }
+
+    fun verifyDocumentWithQrCodeLoaded(docName: String) = apply {
         waitUntilNoException {
             onView(
                 withTagValue(`is`("qr_loaded"))
