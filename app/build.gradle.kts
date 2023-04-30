@@ -1,5 +1,4 @@
-import com.android.build.api.variant.AndroidTest
-import com.android.build.gradle.internal.tasks.AndroidTestTask
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.github.jk1.license.filter.*
 import io.gitlab.arturbosch.detekt.Detekt
 import java.io.FileInputStream
@@ -8,6 +7,7 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.com.android.application)
+    alias(libs.plugins.com.github.ben.manes.versions)
     alias(libs.plugins.com.github.jk1.dependency.license.report)
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
@@ -85,14 +85,27 @@ kotlin {
     jvmToolchain(17)
 }
 
+tasks.withType<Detekt> {
+    jvmTarget = "17"
+}
+
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
     configurations = arrayOf("releaseRuntimeClasspath")
     filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
 }
 
-tasks.withType<Detekt> {
-    jvmTarget = "17"
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(this.candidate.version) && !isNonStable(this.currentVersion)
+    }
 }
 
 dependencies {
