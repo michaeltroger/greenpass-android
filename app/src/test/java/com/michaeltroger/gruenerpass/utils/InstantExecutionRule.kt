@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

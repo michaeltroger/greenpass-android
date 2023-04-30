@@ -23,11 +23,35 @@ class UiTest {
     @Test
     fun normalState() {
         MainActivityRobot()
-            .clickOnAddDocument()
+            .selectAddDocument()
             .goToPdfFolder()
-            .selectPdfDocument()
-            .verifyPdfDocumentLoaded()
+            .selectRegularPdf("demo.pdf")
+            .verifyPdfDocumentLoaded("demo")
 
         ScreenshotUtil.recordScreenshot("normal_state")
+    }
+
+    @Test
+    fun qrCode() {
+        MainActivityRobot()
+            .selectAddDocument()
+            .goToPdfFolder()
+            .selectRegularPdf("qr.pdf")
+            .verifyPdfDocumentLoaded("qr")
+
+        ScreenshotUtil.recordScreenshot("qr_code")
+    }
+
+    @Test
+    fun passwordProtected() {
+        MainActivityRobot()
+            .selectAddDocument()
+            .goToPdfFolder()
+            .selectPasswordProtectedPdf("password.pdf")
+            .verifyPasswordDialogShown()
+            .enterPasswordAndConfirm("test")
+            .verifyPdfDocumentLoaded("password")
+
+        ScreenshotUtil.recordScreenshot("password_protected")
     }
 }
