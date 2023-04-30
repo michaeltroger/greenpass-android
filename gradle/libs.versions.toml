@@ -19,13 +19,13 @@ com-github-chrisbanes-photoview = "2.3.0"
 com-github-jk1-dependency-license-report = "2.0"
 com-github-lisawray-groupie = "2.10.1"
 com-google-android-material = "1.8.0"
-com-google-devtools-ksp = "1.8.20-1.0.10"
+com-google-devtools-ksp = "1.8.21-1.0.11"
 com-google-zxing-core = "3.3.3" # last version to support API < 24
 com-tom-roush-pdfbox-android = "2.0.25.0" # versions >= 2.0.26.0 increase app size by 4MB (issue is in its dependency >= org.bouncycastle:bcprov-jdk15to18:1.72)
 io-gitlab-arturbosch-detekt = "1.22.0"
 io-kotest-assertions-core = "5.6.1"
 io-mockk = "1.13.5"
-org-jetbrains-kotlin-android = "1.8.20"
+org-jetbrains-kotlin-android = "1.8.21"
 org-jetbrains-kotlinx-coroutines-test = "1.6.4"
 org-robolectric = "4.10"
 
