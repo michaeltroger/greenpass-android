@@ -17,6 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+private const val TAG_LOADED = "qr_loaded"
+
 class QrCodeItem(
     private val renderer: PdfRenderer,
     private val fileName: String
@@ -43,6 +45,7 @@ class QrCodeItem(
                     bottom = viewBinding.root.context.resources.getDimensionPixelSize(R.dimen.space_very_small)
                 )
                 viewBinding.qrcode.setImageBitmap(qrCode)
+                viewBinding.qrcode.tag = TAG_LOADED
             }
         }
     }

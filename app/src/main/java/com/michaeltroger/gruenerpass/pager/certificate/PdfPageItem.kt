@@ -14,7 +14,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-private const val TAG_LOADED = "loaded"
+private const val TAG_LOADED = "pdf_loaded"
 
 class PdfPageItem(
     private val renderer: PdfRenderer,

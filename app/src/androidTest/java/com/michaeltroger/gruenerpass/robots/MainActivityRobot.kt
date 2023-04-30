@@ -25,10 +25,7 @@ class MainActivityRobot {
     fun verifyPdfDocumentLoaded(docName: String) = apply {
         waitUntilNoException {
             onView(
-                allOf(
-                    withId(R.id.certificate),
-                    withTagValue(`is`("loaded"))
-                )
+                withTagValue(`is`("qr_loaded"))
             ).check(matches(isDisplayed()))
 
             onView(withId(R.id.deleteIcon)).check(matches(isDisplayed()))
