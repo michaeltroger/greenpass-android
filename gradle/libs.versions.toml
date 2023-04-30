@@ -16,12 +16,12 @@ app-cash-turbine = "0.12.3"
 com-android-application = "8.0.0"
 com-github-ben-manes-versions = "0.46.0"
 com-github-chrisbanes-photoview = "2.3.0"
-com-github-jk1-dependency-license-report = "2.0"
+com-github-jk1-dependency-license-report = "2.1"
 com-github-lisawray-groupie = "2.10.1"
 com-google-android-material = "1.8.0"
 com-google-devtools-ksp = "1.8.21-1.0.11"
-com-google-zxing-core = "3.3.3" # last version to support API < 24
-com-tom-roush-pdfbox-android = "2.0.25.0" # versions >= 2.0.26.0 increase app size by 4MB (issue is in its dependency >= org.bouncycastle:bcprov-jdk15to18:1.72)
+com-google-zxing-core = "3.3.3"
+com-tom-roush-pdfbox-android = "2.0.25.0"
 io-gitlab-arturbosch-detekt = "1.22.0"
 io-kotest-assertions-core = "5.6.1"
 io-mockk = "1.13.5"
@@ -62,7 +62,7 @@ org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-r
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
 com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "com-github-ben-manes-versions" }
-com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref ="com-github-jk1-dependency-license-report" }
+com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "com-github-jk1-dependency-license-report" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
 io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
 nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }
