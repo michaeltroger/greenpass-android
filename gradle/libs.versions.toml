@@ -14,6 +14,7 @@ androidx-test-orchestrator = "1.4.2"
 androidx-test-uiautomator = "2.3.0-alpha03"
 app-cash-turbine = "0.12.3"
 com-android-application = "8.0.0"
+com-github-ben-manes-versions = "0.46.0"
 com-github-chrisbanes-photoview = "2.3.0"
 com-github-jk1-dependency-license-report = "2.0"
 com-github-lisawray-groupie = "2.10.1"
@@ -59,6 +60,7 @@ org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-r
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
+com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "com-github-ben-manes-versions" }
 com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref ="com-github-jk1-dependency-license-report" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
 io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
