@@ -25,6 +25,7 @@ com-tom-roush-pdfbox-android = "2.0.25.0" # versions >= 2.0.26.0 increase app si
 io-gitlab-arturbosch-detekt = "1.22.0"
 io-kotest-assertions-core = "5.6.1"
 io-mockk = "1.13.5"
+nl-littlerobots-version-catalog-update = "0.8.0"
 org-jetbrains-kotlin-android = "1.8.21"
 org-jetbrains-kotlinx-coroutines-test = "1.6.4"
 org-robolectric = "4.10"
@@ -64,4 +65,5 @@ com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.
 com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref ="com-github-jk1-dependency-license-report" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
 io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
+nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
