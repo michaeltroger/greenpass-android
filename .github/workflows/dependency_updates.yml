@@ -21,6 +21,10 @@ jobs:
         cache: gradle
     - name: Update dependencies
       run: ./gradlew versionCatalogUpdate
+    - name: Create license report
+      run: ./gradlew generateLicenseReport
+    - name: Remove date from HTML report # workaround for removing timestamp so that no unneeded PRs are created
+      run: sed -i '/<p id="timestamp">/,+5d' docs/licenses/index.html
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
