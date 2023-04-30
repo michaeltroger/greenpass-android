@@ -27,6 +27,7 @@ jobs:
           emulator-boot-timeout: 1000
           sdcard-path-or-size: 1000M
           force-avd-creation: true
+          disable-spellchecker: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./run_ui_tests.sh
