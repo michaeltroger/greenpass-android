@@ -85,14 +85,14 @@ kotlin {
     jvmToolchain(17)
 }
 
+tasks.withType<Detekt> {
+    jvmTarget = "17"
+}
+
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
     configurations = arrayOf("releaseRuntimeClasspath")
     filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
-}
-
-tasks.withType<Detekt> {
-    jvmTarget = "17"
 }
 
 fun isNonStable(version: String): Boolean {
