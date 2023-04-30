@@ -8,10 +8,9 @@ adb wait-for-device
 adb shell rm -f -rR /sdcard/Pictures/screenshots
 adb shell rm -f -rR /sdcard/Pictures/error_screenshots
 
-set -e
 adb shell mkdir /sdcard/testdata
+while [ $? -ne 0 ]; do !!; sleep 1; done
 adb push testdata /sdcard/
-set +e
 
 adb shell settings put global sysui_demo_allowed 1
 adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
