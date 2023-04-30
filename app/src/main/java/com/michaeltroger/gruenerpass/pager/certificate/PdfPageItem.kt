@@ -14,6 +14,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
+private const val TAG_LOADED = "loaded"
+
 class PdfPageItem(
     private val renderer: PdfRenderer,
     private val fileName: String,
@@ -31,6 +33,7 @@ class PdfPageItem(
         scope.launch {
             renderer.renderPage(pageIndex)?.let {
                 viewBinding.certificate.setImageBitmap(it)
+                viewBinding.certificate.tag = TAG_LOADED
             }
             viewBinding.progressIndicator.isVisible = false
         }
