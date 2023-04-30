@@ -9,7 +9,8 @@ adb shell rm -f -rR /sdcard/Pictures/screenshots
 adb shell rm -f -rR /sdcard/Pictures/error_screenshots
 
 set -e
-adb push testdata/dummy.pdf /sdcard/dummy.pdf
+adb shell mkdir /sdcard/testdata
+adb push testdata /sdcard/
 set +e
 
 adb shell settings put global sysui_demo_allowed 1
