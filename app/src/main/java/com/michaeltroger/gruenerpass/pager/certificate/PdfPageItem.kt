@@ -32,8 +32,8 @@ class PdfPageItem(
     override fun bind(viewBinding: ItemPdfPageBinding, position: Int) {
         scope.launch {
             renderer.renderPage(pageIndex)?.let {
-                viewBinding.certificate.setImageBitmap(it)
-                viewBinding.certificate.tag = TAG_LOADED
+                viewBinding.pdfPage.setImageBitmap(it)
+                viewBinding.pdfPage.tag = TAG_LOADED
             }
             viewBinding.progressIndicator.isVisible = false
         }

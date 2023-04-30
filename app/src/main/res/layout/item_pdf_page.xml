@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/certificate"
+        android:id="@+id/pdf_page"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"

@@ -25,8 +25,8 @@ class UiTest {
         MainActivityRobot()
             .selectAddDocument()
             .goToPdfFolder()
-            .selectRegularPdf("demo.pdf")
-            .verifyPdfDocumentLoaded("demo")
+            .selectPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
 
         ScreenshotUtil.recordScreenshot("normal_state")
     }
@@ -36,8 +36,8 @@ class UiTest {
         MainActivityRobot()
             .selectAddDocument()
             .goToPdfFolder()
-            .selectRegularPdf("qr.pdf")
-            .verifyDocumentWithQrCodeLoaded("qr")
+            .selectPdf(fileName = "qr.pdf")
+            .verifyDocumentLoaded(docName = "qr", expectQr = true)
 
         ScreenshotUtil.recordScreenshot("qr_code")
     }
@@ -47,10 +47,10 @@ class UiTest {
         MainActivityRobot()
             .selectAddDocument()
             .goToPdfFolder()
-            .selectPasswordProtectedPdf("password.pdf")
+            .selectPasswordProtectedPdf(fileName = "password.pdf")
             .verifyPasswordDialogShown()
-            .enterPasswordAndConfirm("test")
-            .verifyPdfDocumentLoaded("password")
+            .enterPasswordAndConfirm(password = "test")
+            .verifyDocumentLoaded(docName = "password")
 
         ScreenshotUtil.recordScreenshot("password_protected")
     }

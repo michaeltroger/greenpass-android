@@ -36,17 +36,17 @@ class AndroidFileAppRobot {
         }
     }
 
-    fun selectRegularPdf(fileName: String): MainActivityRobot {
-        selectPdf(fileName)
+    fun selectPdf(fileName: String): MainActivityRobot {
+        selectFile(fileName)
         return MainActivityRobot()
     }
 
     fun selectPasswordProtectedPdf(fileName: String): PasswordDialogRobot {
-        selectPdf(fileName)
+        selectFile(fileName)
         return PasswordDialogRobot()
     }
 
-    private fun selectPdf(fileName: String) {
+    private fun selectFile(fileName: String) {
         val selector = By.text(fileName)
         uiDevice.wait(Until.hasObject(selector), TIMEOUT)
         uiDevice.findObject(selector).click()
