@@ -75,11 +75,17 @@ class MainViewModel(
         if (shouldAuthenticate && isLocked) {
             _viewState.emit(ViewState.Locked(fullBrightness = fullScreenBrightness))
         } else {
-            _viewState.emit(ViewState.Normal(
-                documents = db.getAll(),
-                searchQrCode = searchForQrCode,
-                fullBrightness = fullScreenBrightness
-            ))
+            val docs = db.getAll()
+            if (docs.isEmpty()) {
+                _viewState.emit(ViewState.Empty(fullBrightness = fullScreenBrightness))
+            } else {
+                _viewState.emit(ViewState.Normal(
+                    documents = docs,
+                    searchQrCode = searchForQrCode,
+                    fullBrightness = fullScreenBrightness
+                ))
+            }
+
         }
     }
 
@@ -130,11 +136,7 @@ class MainViewModel(
             renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
-            _viewState.emit(ViewState.Normal(
-                documents = db.getAll(),
-                searchQrCode = searchForQrCode,
-                fullBrightness = fullScreenBrightness
-            ))
+            updateState()
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } else {
             renderer.close()
@@ -146,22 +148,14 @@ class MainViewModel(
     fun onDocumentNameChanged(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            _viewState.emit(ViewState.Normal(
-                documents = db.getAll(),
-                searchQrCode = searchForQrCode,
-                fullBrightness = fullScreenBrightness
-            ))
+            updateState()
         }
     }
 
     fun onDeleteConfirmed(id: String) {
         viewModelScope.launch {
             db.delete(id)
-            _viewState.emit(ViewState.Normal(
-                documents = db.getAll(),
-                searchQrCode = searchForQrCode,
-                fullBrightness = fullScreenBrightness
-            ))
+            updateState()
             pdfHandler.deleteFile(id)
         }
     }
@@ -177,11 +171,7 @@ class MainViewModel(
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            _viewState.emit(ViewState.Normal(
-                documents = sortedList,
-                searchQrCode = searchForQrCode,
-                fullBrightness = fullScreenBrightness
-            ))
+            updateState()
         }
     }
 
@@ -189,11 +179,7 @@ class MainViewModel(
         viewModelScope.launch {
             isLocked = false
             if (uri == null) {
-                _viewState.emit(ViewState.Normal(
-                    documents = db.getAll(),
-                    searchQrCode = searchForQrCode,
-                    fullBrightness = fullScreenBrightness
-                ))
+                updateState()
             } else {
                 loadFileFromUri()
             }

@@ -7,6 +7,7 @@ import androidx.annotation.StringRes
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
+import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.model.DocumentNameRepo
 import com.michaeltroger.gruenerpass.model.PdfHandler
@@ -64,7 +65,17 @@ class MainViewModelTest {
     }
 
     @Test
+    fun `verify empty state`() = runTest {
+        val vm = createVM()
+        advanceUntilIdle()
+
+        vm.viewState.value should beInstanceOf<ViewState.Empty>()
+    }
+
+    @Test
     fun `verify normal state`() = runTest {
+        mockDbEntries(listOf(mockk()))
+
         val vm = createVM()
         advanceUntilIdle()
 
@@ -82,7 +93,34 @@ class MainViewModelTest {
     }
 
     @Test
+    fun `verify app gets unlocked`() = runTest {
+        mockPreference(R.string.key_preference_biometric, true)
+
+        val vm = createVM()
+        advanceUntilIdle()
+        vm.onAuthenticationSuccess()
+        advanceUntilIdle()
+
+        vm.viewState.value should beInstanceOf<ViewState.Empty>()
+    }
+
+    @Test
+    fun `verify app gets locked again`() = runTest {
+        mockPreference(R.string.key_preference_biometric, true)
+
+        val vm = createVM()
+        advanceUntilIdle()
+        vm.onAuthenticationSuccess()
+        advanceUntilIdle()
+        vm.onInteractionTimeout()
+        advanceUntilIdle()
+
+        vm.viewState.value should beInstanceOf<ViewState.Locked>()
+    }
+
+    @Test
     fun `verify enter password dialog shown`() = runTest {
+        mockDbEntries(listOf(mockk()))
         mockPreference(R.string.key_preference_biometric, false)
         mockIsPasswordProtectedFile(true)
 
@@ -131,11 +169,12 @@ class MainViewModelTest {
             awaitItem() shouldBe ViewEvent.ErrorParsingFile
         }
 
-        vm.viewState.value should beInstanceOf<ViewState.Normal>()
+        vm.viewState.value should beInstanceOf<ViewState.Empty>()
     }
 
     @Test
     fun `verify added new certificate`() = runTest {
+        mockDbEntries(listOf(mockk()))
         mockIsPasswordProtectedFile(false)
         mockPreference(R.string.key_preference_biometric, false)
         mockCopyPdfToCacheSuccess( true)
@@ -192,5 +231,9 @@ class MainViewModelTest {
         coEvery {
             pdfRenderer.loadFile()
         } returns value
+    }
+
+    private fun mockDbEntries(certificates: List<Certificate>) {
+        coEvery { db.getAll() } returns certificates
     }
 }
