@@ -29,6 +29,7 @@ set +e # don't fail on errors
 exit_code=$?
 
 adb pull /sdcard/Pictures/error_screenshots app/build
+set -e # fail on errors
 adb pull /sdcard/Pictures/screenshots
 
 exit $exit_code
