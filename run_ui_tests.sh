@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm -rd screenshots | true
+rm -rd screenshots
 
 adb root
 adb wait-for-device
