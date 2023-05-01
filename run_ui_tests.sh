@@ -19,11 +19,12 @@ adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile
 adb shell am broadcast -a com.android.systemui.demo -e command network -e wifi show -e level 4
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e level 100
+adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e datatype none -e level 4
 
 ./gradlew connectedDebugAndroidTest
 exit_code=$?
 
-adb pull /sdcard/Pictures/error_screenshots app/build | true
-adb pull /sdcard/Pictures/screenshots | true
+adb pull /sdcard/Pictures/error_screenshots app/build
+adb pull /sdcard/Pictures/screenshots
 
 exit $exit_code
