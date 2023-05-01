@@ -15,7 +15,7 @@ import org.hamcrest.CoreMatchers.`is`
 
 class MainActivityRobot {
 
-    private val addButtonMatcher = withId(R.id.add)
+    private val addButtonMatcher = withId(R.id.add_button)
 
     fun verifyEmptyState() = apply {
         waitUntilIdle()
