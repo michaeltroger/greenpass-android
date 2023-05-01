@@ -77,7 +77,7 @@ class MainViewModel(
         } else {
             val docs = db.getAll()
             if (docs.isEmpty()) {
-               _viewState.emit(ViewState.Empty(fullBrightness = fullScreenBrightness))
+                _viewState.emit(ViewState.Empty(fullBrightness = fullScreenBrightness))
             } else {
                 _viewState.emit(ViewState.Normal(
                     documents = docs,
