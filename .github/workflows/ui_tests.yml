@@ -31,8 +31,14 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./run_ui_tests.sh
-      - name: Create Pull Request
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Create screenshot pull request if on main branch
         uses: peter-evans/create-pull-request@v5
+        if: github.ref == 'refs/heads/main'
         with:
           branch: feature/update_screenshots
           title: Update of screenshots
