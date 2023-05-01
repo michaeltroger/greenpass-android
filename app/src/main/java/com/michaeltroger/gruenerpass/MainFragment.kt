@@ -108,6 +108,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             biometricPrompt.authenticate(promptInfo)
         }
 
+        binding.addButton.setOnClickListener {
+            openFilePicker()
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
@@ -115,6 +119,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                     updateScreenBrightness(fullBrightness = it.fullBrightness)
                     when (it) {
                         is ViewState.Loading -> showLoadingState()
+                        is ViewState.Empty -> showEmptyState()
                         is ViewState.Normal -> showCertificateState(
                             documents = it.documents,
                             searchQrCode = it.searchQrCode,
@@ -177,6 +182,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private fun showLockedState() {
         binding.progressIndicator.isVisible = false
+        binding.addButton.isVisible = false
         binding.authenticate.isVisible = true
         adapter.clear()
         biometricPrompt.authenticate(promptInfo)
@@ -184,13 +190,22 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private fun showLoadingState() {
         binding.progressIndicator.isVisible = true
+        binding.addButton.isVisible = false
         binding.authenticate.isVisible = false
         binding.progressIndicator.show()
+    }
+
+    private fun showEmptyState() {
+        binding.progressIndicator.isVisible = false
+        binding.addButton.isVisible = true
+        binding.authenticate.isVisible = false
+        adapter.clear()
     }
 
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
         binding.progressIndicator.isVisible = false
         binding.authenticate.isVisible = false
+        binding.addButton.isVisible = false
         val items = documents.map {
             CertificateItem(
                 requireContext().applicationContext,
