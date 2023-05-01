@@ -31,9 +31,8 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./run_ui_tests.sh
-      - name: Upload screenshots if not on main branch
+      - name: Upload screenshots
         uses: actions/upload-artifact@v3
-        if: github.ref != 'refs/heads/main'
         with:
           name: screenshots
           path: screenshots/
