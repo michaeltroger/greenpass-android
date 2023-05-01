@@ -1,8 +1,6 @@
 package com.michaeltroger.gruenerpass.robots
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
@@ -35,7 +33,7 @@ class PasswordDialogRobot {
         onView(allOf(
             isDescendantOfA(withId(R.id.password_text_field)),
             withClassName(endsWith("EditText"))
-        )).perform(click(), replaceText(password), closeSoftKeyboard())
+        )).perform(replaceText(password))
 
         onView(withText("OK")).click()
         return MainActivityRobot()
