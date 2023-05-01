@@ -1,8 +1,8 @@
 #!/bin/sh
 
-rm -rd screenshots
-
 set -e # fail on errors
+
+rm -rd screenshots
 
 adb root
 adb wait-for-device
