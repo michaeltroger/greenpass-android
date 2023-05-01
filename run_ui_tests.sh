@@ -19,6 +19,7 @@ adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile
 adb shell am broadcast -a com.android.systemui.demo -e command network -e wifi show -e level 4
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e level 100
+# run a second time since this one seems to be flaky on the emulator:
 adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e datatype none -e level 4
 
 ./gradlew connectedDebugAndroidTest
