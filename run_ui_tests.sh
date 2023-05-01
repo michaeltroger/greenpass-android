@@ -2,6 +2,8 @@
 
 rm -rd screenshots
 
+set -e # fail on errors
+
 adb root
 adb wait-for-device
 
@@ -20,6 +22,8 @@ adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugge
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e level 100
 # run a second time since this one seems to be flaky on the emulator:
 adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e datatype none -e level 4
+
+set +e # don't fail on errors
 
 ./gradlew connectedDebugAndroidTest
 exit_code=$?
