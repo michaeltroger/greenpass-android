@@ -9,8 +9,6 @@ adb shell rm -f -rR /sdcard/Pictures/screenshots
 adb shell rm -f -rR /sdcard/Pictures/error_screenshots
 
 adb shell mkdir /sdcard/testdata
-# accessing sdcard on emulator is sometimes flaky, try again until it works:
-while [ $? -ne 0 ]; do !!; sleep 1; done
 adb push testdata /sdcard/
 
 adb shell settings put global sysui_demo_allowed 1
