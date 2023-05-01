@@ -93,6 +93,32 @@ class MainViewModelTest {
     }
 
     @Test
+    fun `verify app gets unlocked`() = runTest {
+        mockPreference(R.string.key_preference_biometric, true)
+
+        val vm = createVM()
+        advanceUntilIdle()
+        vm.onAuthenticationSuccess()
+        advanceUntilIdle()
+
+        vm.viewState.value should beInstanceOf<ViewState.Empty>()
+    }
+
+    @Test
+    fun `verify app gets locked again`() = runTest {
+        mockPreference(R.string.key_preference_biometric, true)
+
+        val vm = createVM()
+        advanceUntilIdle()
+        vm.onAuthenticationSuccess()
+        advanceUntilIdle()
+        vm.onInteractionTimeout()
+        advanceUntilIdle()
+
+        vm.viewState.value should beInstanceOf<ViewState.Locked>()
+    }
+
+    @Test
     fun `verify enter password dialog shown`() = runTest {
         mockDbEntries(listOf(mockk()))
         mockPreference(R.string.key_preference_biometric, false)
