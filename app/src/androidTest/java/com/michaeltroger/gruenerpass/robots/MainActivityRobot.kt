@@ -15,10 +15,12 @@ import org.hamcrest.CoreMatchers.`is`
 
 class MainActivityRobot {
 
+    private val addButtonMatcher = withId(R.id.add)
+
     fun verifyEmptyState() = apply {
         waitUntilIdle()
         waitUntilNoException {
-            onView(withId(R.id.add)).verifyIsDisplayed()
+            onView(addButtonMatcher).verifyIsDisplayed()
         }
     }
 
@@ -39,7 +41,7 @@ class MainActivityRobot {
 
     fun selectAddDocument(): AndroidFileAppRobot {
         waitUntilNoException {
-            onView(withId(R.id.add)).click()
+            onView(addButtonMatcher).click()
         }
         return AndroidFileAppRobot()
     }
