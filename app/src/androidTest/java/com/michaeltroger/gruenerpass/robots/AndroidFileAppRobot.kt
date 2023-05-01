@@ -16,6 +16,7 @@ class AndroidFileAppRobot {
     private val hamburgerSelector = By.desc("Show roots")
     private val rootDirSelector = By.textStartsWith("Android SDK")
     private val testDataDirSelector = By.text("testdata")
+    private val pdfSelector = By.textEndsWith(".pdf")
 
     fun goToPdfFolder() = apply {
         (1..RETRIALS).forEach { _ ->
@@ -28,6 +29,11 @@ class AndroidFileAppRobot {
 
                 uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
                 uiDevice.findObject(testDataDirSelector).click()
+
+                uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+                if (!uiDevice.hasObject(pdfSelector)) {
+                    return@forEach
+                }
 
                 return@apply
             } catch (e: NullPointerException) {
