@@ -13,6 +13,12 @@
         android:theme="@style/Theme.GruenerPass"
         tools:targetApi="s"
         tools:ignore="DataExtractionRules">
+        <provider
+            android:name=".fileprovider.PdfFileProvider"
+            android:authorities="@string/pdf_file_provider_authority"
+            android:exported="false"
+            android:grantUriPermissions="true">
+        </provider>
         <activity
             android:name=".settings.SettingsActivity"
             android:parentActivityName=".MainActivity"

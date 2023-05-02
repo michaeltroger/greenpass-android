@@ -40,7 +40,18 @@
         android:paddingStart="@dimen/space_small"
         android:paddingEnd="@dimen/space_small"
         android:contentDescription="@string/delete"
-        app:layout_constraintStart_toEndOf="@id/name"
+        app:layout_constraintEnd_toStartOf="@id/shareIcon"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/name"/>
+
+    <ImageView
+        android:id="@+id/shareIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/share_24px"
+        android:paddingStart="@dimen/space_small"
+        android:paddingEnd="@dimen/space_small"
+        android:contentDescription="@string/share"
         app:layout_constraintEnd_toStartOf="@id/handle"
         app:layout_constraintTop_toTopOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"/>
@@ -53,7 +64,6 @@
         android:paddingEnd="@dimen/space_small"
         android:paddingStart="@dimen/space_small"
         android:contentDescription="@string/move"
-        app:layout_constraintStart_toEndOf="@id/deleteIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"/>

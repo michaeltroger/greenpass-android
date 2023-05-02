@@ -34,7 +34,8 @@ class CertificateItem(
     private val renderer: PdfRenderer = PdfRendererBuilder.create(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
-    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit
+    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
+    private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateBinding>() {
 
     private val adapter = GroupieAdapter()
@@ -64,7 +65,8 @@ class CertificateItem(
                 onDocumentNameChanged = onDocumentNameChanged,
                 onStartDrag =  {
                     onStartDrag(viewHolder)
-                }
+                },
+                onShareCalled = onShareCalled,
             ))
             if (searchQrCode) {
                 itemList.add(QrCodeItem(renderer, fileName = fileName))

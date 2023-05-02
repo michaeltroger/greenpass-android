@@ -16,26 +16,33 @@ class CertificateHeaderItem(
     private val fileName: String,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
-    private val onStartDrag: () -> Unit
+    private val onStartDrag: () -> Unit,
+    private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateHeaderBinding>() {
 
     override fun initializeViewBinding(view: View) = ItemCertificateHeaderBinding.bind(view)
     override fun getLayout() = R.layout.item_certificate_header
 
     override fun bind(viewBinding: ItemCertificateHeaderBinding, position: Int) {
-        viewBinding.deleteIcon.setOnClickListener {
-            onDeleteCalled()
-        }
-        viewBinding.name.setText(documentName)
-        viewBinding.name.doOnTextChanged { text, _, _, _ ->
-            onDocumentNameChanged(text.toString() )
-        }
-        viewBinding.name.setOnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                v.clearFocus()
+        viewBinding.apply {
+            deleteIcon.setOnClickListener {
+                onDeleteCalled()
             }
-            false
+            shareIcon.setOnClickListener {
+                onShareCalled()
+            }
+            name.setText(documentName)
+            name.doOnTextChanged { text, _, _, _ ->
+                onDocumentNameChanged(text.toString() )
+            }
+            name.setOnEditorActionListener { v, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    v.clearFocus()
+                }
+                false
+            }
         }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")

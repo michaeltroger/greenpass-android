@@ -17,8 +17,8 @@ interface PdfHandler {
     suspend fun doesFileExist(fileName: String): Boolean
     suspend fun deleteFile(fileName: String)
     suspend fun isPdfPasswordProtected(uri: Uri): Boolean
-    suspend fun copyPdfToCache(uri: Uri, fileName: String): Boolean
-    suspend fun decryptAndCopyPdfToCache(uri: Uri, password: String, fileName: String): Boolean
+    suspend fun copyPdfToApp(uri: Uri, fileName: String): Boolean
+    suspend fun decryptAndCopyPdfToApp(uri: Uri, password: String, fileName: String): Boolean
 }
 
 class PdfHandlerImpl(private val context: Context): PdfHandler {
@@ -56,7 +56,7 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
      * @return true if successful
      */
     @Suppress("SwallowedException", "TooGenericExceptionCaught")
-    override suspend fun copyPdfToCache(uri: Uri, fileName: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun copyPdfToApp(uri: Uri, fileName: String): Boolean = withContext(Dispatchers.IO) {
         try {
             getInputStream(uri).use { inputStream ->
                 FileOutputStream(getFile(fileName)).use { outputStream ->
@@ -73,7 +73,7 @@ class PdfHandlerImpl(private val context: Context): PdfHandler {
      * @return true if successful
      */
     @Suppress("SwallowedException", "TooGenericExceptionCaught")
-    override suspend fun decryptAndCopyPdfToCache(
+    override suspend fun decryptAndCopyPdfToApp(
         uri: Uri,
         password: String,
         fileName: String
