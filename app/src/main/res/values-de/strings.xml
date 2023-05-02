@@ -30,6 +30,7 @@
     <string name="preference_max_brightness">100\u0025 Helligkeit</string>
     <string name="preference_max_brightness_description">Die Dokumente immer mit voller Display-Helligkeit anzeigen.</string>
     <string name="licenses">Lizenzen</string>
-    <string name="licenses_summary">Zeige die Open-Source Lizenzen die in diesem Projekt verwendet werden</string>
+    <string name="licenses_summary">Zeige die Open-Source-Lizenzen, die in diesem Projekt verwendet werden</string>
     <string name="version">Version %1$s</string>
+    <string name="share">Teilen</string>
 </resources>
