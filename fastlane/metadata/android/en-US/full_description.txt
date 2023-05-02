@@ -18,6 +18,7 @@ The PDF file has to be imported into the app. Following the QR code is displayed
 - Authentication
 - PDFs can be individually sorted and named
 - PDFs can be shared from other apps
+- PDFs can be shared with other apps (indirectly allows printing)
 - Dark Mode support
 - Supports also password protected PDFs
 
