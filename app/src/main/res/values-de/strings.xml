@@ -32,5 +32,5 @@
     <string name="licenses">Lizenzen</string>
     <string name="licenses_summary">Zeige die Open-Source-Lizenzen, die in diesem Projekt verwendet werden</string>
     <string name="version">Version %1$s</string>
-    <string name="share">Share</string>
+    <string name="share">Teilen</string>
 </resources>
