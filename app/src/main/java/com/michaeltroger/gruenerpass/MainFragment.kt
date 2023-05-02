@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -32,22 +33,24 @@ import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
-import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import java.io.File
+import java.util.concurrent.Executor
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
-import java.util.concurrent.Executor
-import kotlinx.coroutines.DelicateCoroutinesApi
 
 private const val WIDTH_FACTOR_MULTIPLE_DOCS = 0.95
 private const val TOUCH_SLOP_FACTOR = 8
 private const val SCROLL_TO_LAST_DELAY_MS = 1000L
+private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
 class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
@@ -175,9 +178,25 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun openFilePicker() {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/pdf"
+            type = PDF_MIME_TYPE
         }
         resultLauncher.launch(intent)
+    }
+
+    private fun openShareFilePicker(certificate: Certificate) {
+        val pdfUri = FileProvider.getUriForFile(
+            requireContext(),
+            getString(R.string.pdf_file_provider_authority),
+            File(requireContext().filesDir, certificate.id),
+            "${certificate.name}.pdf"
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_STREAM, pdfUri)
+            type = PDF_MIME_TYPE
+        }
+
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 
     private fun showLockedState() {
@@ -215,11 +234,13 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                 dispatcher= thread,
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
-                    vm.onDocumentNameChanged(filename = it.id, documentName = updatedDocumentName)
+                    vm.onDocumentNameChanged(
+                        filename = it.id,
+                        documentName = updatedDocumentName
+                    )
                 },
-                onStartDrag = { viewholder ->
-                    itemTouchHelper?.startDrag(viewholder)
-                }
+                onStartDrag = { viewHolder -> itemTouchHelper?.startDrag(viewHolder) },
+                onShareCalled = { openShareFilePicker(it) },
             )
         }
         adapter.setData(documents.map { it.id }.toList())

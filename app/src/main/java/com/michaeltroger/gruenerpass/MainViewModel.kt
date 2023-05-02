@@ -110,7 +110,7 @@ class MainViewModel(
             if (pdfHandler.isPdfPasswordProtected(uri)) {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
             } else {
-                if (pdfHandler.copyPdfToCache(uri, fileName = filename)) {
+                if (pdfHandler.copyPdfToApp(uri, fileName = filename)) {
                     handleFileAfterCopying(filename)
                 } else {
                     _viewEvent.emit(ViewEvent.ErrorParsingFile)
@@ -122,7 +122,7 @@ class MainViewModel(
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
             val filename = UUID.randomUUID().toString() + ".pdf"
-            if (pdfHandler.decryptAndCopyPdfToCache(uri = uri!!, password = password, filename)) {
+            if (pdfHandler.decryptAndCopyPdfToApp(uri = uri!!, password = password, filename)) {
                 handleFileAfterCopying(filename)
             } else {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)

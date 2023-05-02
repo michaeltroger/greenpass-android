@@ -157,7 +157,7 @@ class MainViewModelTest {
     fun `verify error while parsing file`() = runTest {
         mockIsPasswordProtectedFile(false)
         mockPreference(R.string.key_preference_biometric, false)
-        mockCopyPdfToCacheSuccess( false)
+        mockCopyPdfToAppSuccess( false)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -177,7 +177,7 @@ class MainViewModelTest {
         mockDbEntries(listOf(mockk()))
         mockIsPasswordProtectedFile(false)
         mockPreference(R.string.key_preference_biometric, false)
-        mockCopyPdfToCacheSuccess( true)
+        mockCopyPdfToAppSuccess( true)
         mockLoadFileSuccess(true)
 
         val vm = createVM()
@@ -214,9 +214,9 @@ class MainViewModelTest {
         } returns value
     }
 
-    private fun mockCopyPdfToCacheSuccess(value: Boolean) {
+    private fun mockCopyPdfToAppSuccess(value: Boolean) {
         coEvery {
-            pdfHandler.copyPdfToCache(any(), any())
+            pdfHandler.copyPdfToApp(any(), any())
         } returns value
     }
 

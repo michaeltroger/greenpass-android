@@ -3,4 +3,5 @@
     <issue id="TrustAllX509TrustManager">
         <ignore path="*"/>
     </issue>
+    <issue id="MissingTranslation" severity="ignore" />
 </lint>
