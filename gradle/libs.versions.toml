@@ -18,7 +18,7 @@ com-github-ben-manes-versions = "0.46.0"
 com-github-chrisbanes-photoview = "2.3.0"
 com-github-jk1-dependency-license-report = "2.1"
 com-github-lisawray-groupie = "2.10.1"
-com-google-android-material = "1.8.0"
+com-google-android-material = "1.9.0"
 com-google-devtools-ksp = "1.8.21-1.0.11"
 com-google-zxing-core = "3.3.3"
 com-tom-roush-pdfbox-android = "2.0.25.0"
@@ -28,7 +28,7 @@ io-mockk = "1.13.5"
 nl-littlerobots-version-catalog-update = "0.8.0"
 org-jetbrains-kotlin-android = "1.8.21"
 org-jetbrains-kotlinx-coroutines-test = "1.6.4"
-org-robolectric = "4.10"
+org-robolectric = "4.10.2"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
