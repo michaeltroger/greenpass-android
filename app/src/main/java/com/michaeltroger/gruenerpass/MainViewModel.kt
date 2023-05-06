@@ -11,6 +11,8 @@ import androidx.preference.PreferenceManager
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.logging.Logger
+import com.michaeltroger.gruenerpass.logging.LoggerImpl
 import com.michaeltroger.gruenerpass.model.DocumentNameRepo
 import com.michaeltroger.gruenerpass.model.PdfHandler
 import com.michaeltroger.gruenerpass.model.PdfRendererBuilder
@@ -32,7 +34,8 @@ class MainViewModel(
     private val pdfHandler: PdfHandler = Locator.pdfHandler(app),
     private val db: CertificateDao = Locator.database(app).certificateDao(),
     private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(app),
-    private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
+    private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app),
+    private val logger: Logger = LoggerImpl()
 ): AndroidViewModel(app), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var fullScreenBrightness: Boolean = false
@@ -103,46 +106,61 @@ class MainViewModel(
         }
     }
 
+
+    @Suppress("TooGenericExceptionCaught")
     private fun loadFileFromUri() {
         val uri = uri!!
         viewModelScope.launch {
-            val filename = UUID.randomUUID().toString() + ".pdf"
-            if (pdfHandler.isPdfPasswordProtected(uri)) {
-                _viewEvent.emit(ViewEvent.ShowPasswordDialog)
-            } else {
-                if (pdfHandler.copyPdfToApp(uri, fileName = filename)) {
-                    handleFileAfterCopying(filename)
+            try {
+                if (pdfHandler.isPdfPasswordProtected(uri)) {
+                    _viewEvent.emit(ViewEvent.ShowPasswordDialog)
                 } else {
-                    _viewEvent.emit(ViewEvent.ErrorParsingFile)
+                    val filename = generateFileName()
+                    pdfHandler.copyPdfToApp(uri, fileName = filename)
+                    handleFileAfterCopying(filename)
                 }
+            } catch (e: Throwable) {
+                logger.logError(e.toString())
+                _viewEvent.emit(ViewEvent.ErrorParsingFile)
             }
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            val filename = UUID.randomUUID().toString() + ".pdf"
-            if (pdfHandler.decryptAndCopyPdfToApp(uri = uri!!, password = password, filename)) {
-                handleFileAfterCopying(filename)
-            } else {
+            val filename = generateFileName()
+            try {
+                pdfHandler.decryptAndCopyPdfToApp(uri = uri!!, password = password, filename)
+            } catch (e: Exception) {
+                logger.logError(e.toString())
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
+                return@launch
             }
+
+            handleFileAfterCopying(filename)
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun handleFileAfterCopying(filename: String) {
+        val uri = uri!!
         val renderer = PdfRendererBuilder.create(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
-        if (renderer.loadFile()) {
-            renderer.close()
-            val documentName = documentNameRepo.getDocumentName(uri!!)
-            db.insertAll(Certificate(id = filename, name = documentName))
-            updateState()
-            _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
-        } else {
-            renderer.close()
+        try {
+            renderer.loadFile()
+        } catch (e: Exception) {
+            logger.logError(e.toString())
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
+            return
+        } finally {
+            renderer.close()
+            this.uri = null
         }
-        uri = null
+
+        val documentName = documentNameRepo.getDocumentName(uri)
+        db.insertAll(Certificate(id = filename, name = documentName))
+        updateState()
+        _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
     }
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
@@ -212,6 +230,8 @@ class MainViewModel(
             updateState()
         }
     }
+
+    private fun generateFileName() = "${UUID.randomUUID()}.pdf"
 }
 
 @Suppress("UNCHECKED_CAST")

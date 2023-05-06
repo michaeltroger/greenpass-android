@@ -39,7 +39,8 @@ object PdfRendererBuilder {
 }
 
 interface PdfRenderer {
-    suspend fun loadFile(): Boolean
+    @Throws(Exception::class)
+    suspend fun loadFile()
     suspend fun getPageCount(): Int
     fun close()
     suspend fun getQrCodeIfPresent(pageIndex: Int): Bitmap?
@@ -63,27 +64,28 @@ private class PdfRendererImpl(
     private var renderer: PdfRenderer? = null
     private var fileDescriptor: ParcelFileDescriptor? = null
 
-    /**
-     * @return true if successful
-     */
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
-    override suspend fun loadFile(): Boolean = withContext(renderContext) {
+    @Suppress("TooGenericExceptionCaught")
+    @Throws(Exception::class)
+    override suspend fun loadFile(): Unit = withContext(renderContext) {
         try {
             fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
             renderer = PdfRenderer(fileDescriptor!!)
             renderer!!.openPage(0).use {  }
-            return@withContext true
         } catch (exception: Exception) {
             if (file.exists()) {
                 file.delete()
             }
-            return@withContext false
+            throw exception
         }
     }
 
+
+    @Suppress("SwallowedException", "TooGenericExceptionCaught")
     override suspend fun getPageCount(): Int = withContext(renderContext) {
         if (renderer == null) {
-            loadFile()
+            try {
+                loadFile()
+            } catch (ignore: Exception) {}
             if (!isActive) return@withContext 0
         }
         renderer?.pageCount ?: 0
@@ -101,9 +103,12 @@ private class PdfRendererImpl(
        encodeQrCodeAsBitmap(qrText)
     }
 
+    @Suppress("SwallowedException", "TooGenericExceptionCaught")
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
         if (renderer == null) {
-            loadFile()
+            try {
+                loadFile()
+            } catch (ignore: Exception) {}
             if (!isActive) return@withContext null
         }
         renderer?.openPage(pageIndex)?.renderAndClose { isActive }

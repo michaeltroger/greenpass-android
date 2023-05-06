@@ -9,84 +9,67 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-
-
-const val PDF_FILENAME = "certificate.pdf"
+import kotlinx.coroutines.CoroutineDispatcher
 
 interface PdfHandler {
     suspend fun doesFileExist(fileName: String): Boolean
     suspend fun deleteFile(fileName: String)
+    @Throws(Exception::class, OutOfMemoryError::class)
     suspend fun isPdfPasswordProtected(uri: Uri): Boolean
-    suspend fun copyPdfToApp(uri: Uri, fileName: String): Boolean
-    suspend fun decryptAndCopyPdfToApp(uri: Uri, password: String, fileName: String): Boolean
+    @Throws(Exception::class)
+    suspend fun copyPdfToApp(uri: Uri, fileName: String)
+    @Throws(Exception::class)
+    suspend fun decryptAndCopyPdfToApp(uri: Uri, password: String, fileName: String)
 }
 
-class PdfHandlerImpl(private val context: Context): PdfHandler {
+class PdfHandlerImpl(
+    private val context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+): PdfHandler {
 
     private fun getFile(fileName: String) =  File(context.filesDir, fileName)
 
-    override suspend fun doesFileExist(fileName: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun doesFileExist(fileName: String): Boolean = withContext(dispatcher) {
         getFile(fileName).exists()
     }
 
-    override suspend fun deleteFile(fileName: String) = withContext(Dispatchers.IO) {
+    override suspend fun deleteFile(fileName: String) = withContext(dispatcher) {
         if (doesFileExist(fileName)) {
             getFile(fileName).delete()
         }
     }
 
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
-    override suspend fun isPdfPasswordProtected(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    @Suppress("SwallowedException")
+    @Throws(Exception::class, OutOfMemoryError::class)
+    override suspend fun isPdfPasswordProtected(uri: Uri): Boolean = withContext(dispatcher) {
         try {
             getInputStream(uri).use { inputStream ->
-                try {
-                    return@withContext PDDocument.load(inputStream).checkIfPasswordProtectedAndClose()
-                } catch (exception: InvalidPasswordException) {
-                    return@withContext true
-                } catch(exception: OutOfMemoryError) {
-                    return@withContext false
-                }
+                return@withContext PDDocument.load(inputStream).checkIfPasswordProtectedAndClose()
             }
-        } catch (exception: Exception) {
-            return@withContext false
-        }
-    }
-
-    /**
-     * @return true if successful
-     */
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
-    override suspend fun copyPdfToApp(uri: Uri, fileName: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            getInputStream(uri).use { inputStream ->
-                FileOutputStream(getFile(fileName)).use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
+        } catch (e: InvalidPasswordException) {
             return@withContext true
-        } catch (exception: Exception) {
-            return@withContext false
         }
     }
 
-    /**
-     * @return true if successful
-     */
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
+    @Throws(Exception::class)
+    override suspend fun copyPdfToApp(uri: Uri, fileName: String): Unit = withContext(dispatcher) {
+        getInputStream(uri).use { inputStream ->
+            FileOutputStream(getFile(fileName)).use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+    }
+
+    @Throws(Exception::class)
     override suspend fun decryptAndCopyPdfToApp(
         uri: Uri,
         password: String,
         fileName: String
-    ): Boolean = withContext(Dispatchers.IO) {
-        try {
-            getInputStream(uri).use { inputStream ->
-                with(PDDocument.load(inputStream, password)) {
-                    removePasswordCopyAndClose(fileName)
-                }
+    ): Unit = withContext(Dispatchers.IO) {
+        getInputStream(uri).use { inputStream ->
+            with(PDDocument.load(inputStream, password)) {
+                removePasswordCopyAndClose(fileName)
             }
-            return@withContext true
-        } catch (exception: Exception) {
-            return@withContext false
         }
     }
 
