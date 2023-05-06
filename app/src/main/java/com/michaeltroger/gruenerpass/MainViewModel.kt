@@ -111,7 +111,7 @@ class MainViewModel(
     private fun loadFileFromUri() {
         val uri = uri!!
         viewModelScope.launch {
-            val filename = "${UUID.randomUUID()}.pdf"
+            val filename = generateFileName()
             try {
                 if (pdfHandler.isPdfPasswordProtected(uri)) {
                     _viewEvent.emit(ViewEvent.ShowPasswordDialog)
@@ -129,7 +129,7 @@ class MainViewModel(
     @Suppress("TooGenericExceptionCaught")
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            val filename = "${UUID.randomUUID()}.pdf"
+            val filename = generateFileName()
             try {
                 pdfHandler.decryptAndCopyPdfToApp(uri = uri!!, password = password, filename)
             } catch (e: Exception) {
@@ -233,6 +233,8 @@ class MainViewModel(
             updateState()
         }
     }
+
+    private fun generateFileName() = "${UUID.randomUUID()}.pdf"
 }
 
 @Suppress("UNCHECKED_CAST")
