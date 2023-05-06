@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateMargins
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemQrCodeBinding
+import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.xwray.groupie.GroupDataObserver
@@ -24,6 +25,8 @@ class QrCodeItem(
     private val fileName: String
     ) : BindableItem<ItemQrCodeBinding>() {
 
+    private val qrRenderer = Locator.qrRenderer()
+
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
     )
@@ -33,7 +36,8 @@ class QrCodeItem(
 
     override fun bind(viewBinding: ItemQrCodeBinding, position: Int) {
         scope.launch {
-            val qrCode = renderer.getQrCodeIfPresent(PAGE_INDEX_QR_CODE)
+            val firstPage = renderer.renderPage(PAGE_INDEX_QR_CODE)
+            val qrCode = qrRenderer.getQrCodeIfPresent(firstPage)
             if (qrCode == null) {
                 viewBinding.root.isVisible = false
                 (viewBinding.root.layoutParams as? ViewGroup.MarginLayoutParams)?.updateMargins(

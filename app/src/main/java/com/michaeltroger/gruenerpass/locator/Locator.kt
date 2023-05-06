@@ -13,6 +13,8 @@ import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.logging.LoggerImpl
 import com.michaeltroger.gruenerpass.model.PdfDecryptor
 import com.michaeltroger.gruenerpass.model.PdfDecryptorImpl
+import com.michaeltroger.gruenerpass.model.QrRenderer
+import com.michaeltroger.gruenerpass.model.QrRendererImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
 
 object Locator {
@@ -38,4 +40,6 @@ object Locator {
         context.applicationContext,
         documentNameRepo(context.applicationContext)
     )
+
+    fun qrRenderer(): QrRenderer = QrRendererImpl()
 }
