@@ -144,26 +144,23 @@ class MainViewModel(
 
     @Suppress("TooGenericExceptionCaught")
     private suspend fun handleFileAfterCopying(filename: String) {
+        val uri = uri!!
         val renderer = PdfRendererBuilder.create(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
-        val loaded = try {
+        try {
             renderer.loadFile()
-            true
         } catch (e: Exception) {
             logger.logError(e.toString())
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
-            false
+            return
         } finally {
             renderer.close()
+            this.uri = null
         }
 
-        if (loaded){
-            val documentName = documentNameRepo.getDocumentName(uri!!)
-            db.insertAll(Certificate(id = filename, name = documentName))
-            updateState()
-            _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
-        }
-
-        uri = null
+        val documentName = documentNameRepo.getDocumentName(uri)
+        db.insertAll(Certificate(id = filename, name = documentName))
+        updateState()
+        _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
     }
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
