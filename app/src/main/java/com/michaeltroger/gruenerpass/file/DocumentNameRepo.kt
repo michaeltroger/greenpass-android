@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.model
+package com.michaeltroger.gruenerpass.file
 
 import android.content.ContentResolver
 import android.content.Context

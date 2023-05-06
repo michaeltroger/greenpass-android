@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
 }
 
 android {

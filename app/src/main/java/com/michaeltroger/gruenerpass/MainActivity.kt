@@ -2,8 +2,6 @@ package com.michaeltroger.gruenerpass
 
 import android.content.Intent
 import android.graphics.Rect
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.deeplinking.DeeplinkActivity
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 
@@ -25,19 +25,24 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            intent?.getUri()?.let(vm::setUri)
+            vm.setPendingFile(intent)
         }
         timeoutHandler =  Handler(Looper.getMainLooper());
-        interactionTimeoutRunnable =  Runnable {
+        interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
         }
 
         startHandler()
     }
 
+    override fun onDestroy() {
+        vm.deletePendingFileIfExists()
+        super.onDestroy()
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.getUri()?.let(vm::setUri)
+        vm.setPendingFile(intent)
     }
 
     /**
@@ -78,25 +83,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 }
 
-private fun Intent.getUri(): Uri? {
-    return when {
-        data != null -> {
-            data
-        }
-        action == Intent.ACTION_SEND -> {
-            if (extras?.containsKey(Intent.EXTRA_STREAM) == true) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-                } else {
-                    @Suppress("DEPRECATION")
-                    getParcelableExtra(Intent.EXTRA_STREAM) as? Uri
-                }
-            } else {
-                null
-            }
-        }
-        else -> {
-            null
-        }
+private fun MainViewModel.setPendingFile(intent: Intent?) {
+    if (intent == null) return
+    @Suppress("DEPRECATION")
+    (intent.getParcelableExtra(DeeplinkActivity.KEY_EXTRA_PENDING_FILE) as Certificate?)?.let {
+        setPendingFile(it)
     }
 }

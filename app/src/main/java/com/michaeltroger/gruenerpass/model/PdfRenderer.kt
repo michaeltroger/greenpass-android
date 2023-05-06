@@ -79,7 +79,6 @@ private class PdfRendererImpl(
         }
     }
 
-
     @Suppress("SwallowedException", "TooGenericExceptionCaught")
     override suspend fun getPageCount(): Int = withContext(renderContext) {
         if (renderer == null) {

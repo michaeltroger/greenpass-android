@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.io.gitlab.arturbosch.detekt) apply false
     alias(libs.plugins.nl.littlerobots.version.catalog.update) apply true
     alias(libs.plugins.org.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize) apply false
 }
 
 versionCatalogUpdate {

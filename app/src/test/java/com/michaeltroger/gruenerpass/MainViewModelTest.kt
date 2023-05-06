@@ -9,8 +9,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
-import com.michaeltroger.gruenerpass.model.DocumentNameRepo
-import com.michaeltroger.gruenerpass.model.PdfHandler
+import com.michaeltroger.gruenerpass.file.FileRepo
+import com.michaeltroger.gruenerpass.logging.Logger
+import com.michaeltroger.gruenerpass.model.PdfDecryptor
 import com.michaeltroger.gruenerpass.model.PdfRenderer
 import com.michaeltroger.gruenerpass.model.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -44,10 +45,11 @@ class MainViewModelTest {
 
     private val context = getApplicationContext<Application>()
     private val db = mockk<CertificateDao>(relaxed = true)
-    private val documentNameRepo = mockk<DocumentNameRepo>(relaxed = true)
     private val preferenceManager = mockk<SharedPreferences>(relaxed = true)
-    private val pdfHandler = mockk<PdfHandler>(relaxed = true)
+    private val pdfDecryptor = mockk<PdfDecryptor>(relaxed = true)
     private val pdfRenderer = mockk<PdfRenderer>(relaxed = true)
+    private val fileRepo = mockk<FileRepo>(relaxed = true)
+    private val logger = mockk<Logger>(relaxed = true)
 
     @Before
     fun startUp() {
@@ -130,7 +132,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setUri(Uri.EMPTY)
+            vm.copyAndSetPendingFile(Uri.EMPTY)
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ShowPasswordDialog
@@ -147,7 +149,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setUri(Uri.EMPTY)
+            vm.copyAndSetPendingFile(Uri.EMPTY)
 
             expectNoEvents()
         }
@@ -159,13 +161,13 @@ class MainViewModelTest {
     fun `verify error while parsing file`() = runTest {
         mockIsPasswordProtectedFile(false)
         mockPreference(R.string.key_preference_biometric, false)
-        mockCopyPdfToAppSuccess( false)
+        mockCopyPdfToAppSuccess()
 
         val vm = createVM()
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setUri(Uri.EMPTY)
+            vm.copyAndSetPendingFile(Uri.EMPTY)
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ErrorParsingFile
@@ -179,14 +181,14 @@ class MainViewModelTest {
         mockDbEntries(listOf(mockk()))
         mockIsPasswordProtectedFile(false)
         mockPreference(R.string.key_preference_biometric, false)
-        mockCopyPdfToAppSuccess( true)
+        mockCopyPdfToAppSuccess()
         mockLoadFileSuccess(true)
 
         val vm = createVM()
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setUri(Uri.EMPTY)
+            vm.copyAndSetPendingFile(Uri.EMPTY)
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ScrollToLastCertificate
@@ -199,9 +201,10 @@ class MainViewModelTest {
         MainViewModel(
             app = context,
             db = db,
-            documentNameRepo = documentNameRepo,
+            fileRepo = fileRepo,
+            logger = logger,
             preferenceManager = preferenceManager,
-            pdfHandler = pdfHandler
+            pdfDecryptor = pdfDecryptor,
         )
 
     private fun mockPreference(@StringRes prefKey: Int, prefValue: Boolean) {
@@ -212,24 +215,14 @@ class MainViewModelTest {
 
     private fun mockIsPasswordProtectedFile(value: Boolean) {
         coEvery {
-            pdfHandler.isPdfPasswordProtected(any())
+            pdfDecryptor.isPdfPasswordProtected(any())
         } returns value
     }
 
-    private fun mockCopyPdfToAppSuccess(value: Boolean) {
-        when (value) {
-            true -> {
-                coEvery {
-                    pdfHandler.copyPdfToApp(any(), any())
-                } just Runs
-            }
-            false -> {
-                coEvery {
-                    pdfHandler.copyPdfToApp(any(), any())
-                }.throws(Exception())
-            }
-        }
-
+    private fun mockCopyPdfToAppSuccess() {
+        coEvery {
+            fileRepo.copyToApp(any())
+        } returns Certificate("any.pdf", "Doc name")
     }
 
     private fun mockPdfRenderer() {
