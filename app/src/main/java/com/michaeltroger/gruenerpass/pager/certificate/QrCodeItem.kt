@@ -7,8 +7,8 @@ import androidx.core.view.updateMargins
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemQrCodeBinding
 import com.michaeltroger.gruenerpass.locator.Locator
-import com.michaeltroger.gruenerpass.model.PAGE_INDEX_QR_CODE
-import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.pdf.PAGE_INDEX_QR_CODE
+import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem

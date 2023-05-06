@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.model
+package com.michaeltroger.gruenerpass.qr
 
 import android.graphics.Bitmap
 import android.graphics.Color

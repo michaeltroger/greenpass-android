@@ -11,10 +11,10 @@ import com.michaeltroger.gruenerpass.file.FileRepo
 import com.michaeltroger.gruenerpass.file.FileRepoImpl
 import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.logging.LoggerImpl
-import com.michaeltroger.gruenerpass.model.PdfDecryptor
-import com.michaeltroger.gruenerpass.model.PdfDecryptorImpl
-import com.michaeltroger.gruenerpass.model.QrRenderer
-import com.michaeltroger.gruenerpass.model.QrRendererImpl
+import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
+import com.michaeltroger.gruenerpass.pdf.PdfDecryptorImpl
+import com.michaeltroger.gruenerpass.qr.QrRenderer
+import com.michaeltroger.gruenerpass.qr.QrRendererImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
 
 object Locator {

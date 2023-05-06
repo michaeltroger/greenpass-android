@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
-import com.michaeltroger.gruenerpass.model.PdfRenderer
-import com.michaeltroger.gruenerpass.model.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.pdf.PdfRenderer
+import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem

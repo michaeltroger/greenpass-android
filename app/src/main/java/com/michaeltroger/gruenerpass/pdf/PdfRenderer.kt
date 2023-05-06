@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.model
+package com.michaeltroger.gruenerpass.pdf
 
 import android.app.ActivityManager
 import android.content.Context
@@ -22,7 +22,7 @@ object PdfRendererBuilder {
         context: Context,
         fileName: String,
         renderContext: CoroutineDispatcher
-    ): com.michaeltroger.gruenerpass.model.PdfRenderer = PdfRendererImpl(
+    ): com.michaeltroger.gruenerpass.pdf.PdfRenderer = PdfRendererImpl(
         context = context,
         fileName = fileName,
         renderContext = renderContext
@@ -41,7 +41,7 @@ private class PdfRendererImpl(
     private val context: Context,
     val fileName: String,
     private val renderContext: CoroutineDispatcher
-): com.michaeltroger.gruenerpass.model.PdfRenderer {
+): com.michaeltroger.gruenerpass.pdf.PdfRenderer {
 
     private val file = File(context.filesDir, fileName)
 

@@ -11,9 +11,9 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
 import com.michaeltroger.gruenerpass.logging.Logger
-import com.michaeltroger.gruenerpass.model.PdfDecryptor
-import com.michaeltroger.gruenerpass.model.PdfRenderer
-import com.michaeltroger.gruenerpass.model.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
+import com.michaeltroger.gruenerpass.pdf.PdfRenderer
+import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.michaeltroger.gruenerpass.utils.InstantExecutionRule

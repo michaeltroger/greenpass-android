@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.model
+package com.michaeltroger.gruenerpass.pdf
 
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException

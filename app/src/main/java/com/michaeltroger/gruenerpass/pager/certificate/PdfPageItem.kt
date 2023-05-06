@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
-import com.michaeltroger.gruenerpass.model.PdfRenderer
+import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
