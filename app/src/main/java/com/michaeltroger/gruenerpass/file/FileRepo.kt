@@ -8,7 +8,10 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 interface FileRepo {
@@ -34,9 +37,12 @@ class FileRepoImpl(
         return@withContext Certificate(id = fileName, name = docName)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun deleteFile(fileName: String) {
-        if (getFile(fileName).exists()) {
-            getFile(fileName).delete()
+        GlobalScope.launch(dispatcher) {
+            if (getFile(fileName).exists()) {
+                getFile(fileName).delete()
+            }
         }
     }
 

@@ -64,27 +64,16 @@ private class PdfRendererImpl(
     private var renderer: PdfRenderer? = null
     private var fileDescriptor: ParcelFileDescriptor? = null
 
-    @Suppress("TooGenericExceptionCaught")
     @Throws(Exception::class)
     override suspend fun loadFile(): Unit = withContext(renderContext) {
-        try {
-            fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-            renderer = PdfRenderer(fileDescriptor!!)
-            renderer!!.openPage(0).use {  }
-        } catch (exception: Exception) {
-            if (file.exists()) {
-                file.delete()
-            }
-            throw exception
-        }
+        fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+        renderer = PdfRenderer(fileDescriptor!!)
+        renderer!!.openPage(0).use {  }
     }
 
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
     override suspend fun getPageCount(): Int = withContext(renderContext) {
         if (renderer == null) {
-            try {
-                loadFile()
-            } catch (ignore: Exception) {}
+            loadFile()
             if (!isActive) return@withContext 0
         }
         renderer?.pageCount ?: 0
@@ -102,12 +91,9 @@ private class PdfRendererImpl(
        encodeQrCodeAsBitmap(qrText)
     }
 
-    @Suppress("SwallowedException", "TooGenericExceptionCaught")
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
         if (renderer == null) {
-            try {
-                loadFile()
-            } catch (ignore: Exception) {}
+            loadFile()
             if (!isActive) return@withContext null
         }
         renderer?.openPage(pageIndex)?.renderAndClose { isActive }

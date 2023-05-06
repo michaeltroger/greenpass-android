@@ -160,6 +160,7 @@ class MainViewModel(
         } catch (e: Exception) {
             logger.logError(e.toString())
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
+            fileRepo.deleteFile(pendingFile.id)
             this.pendingFile = null
             return
         } finally {
