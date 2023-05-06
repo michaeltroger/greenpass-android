@@ -111,11 +111,11 @@ class MainViewModel(
     private fun loadFileFromUri() {
         val uri = uri!!
         viewModelScope.launch {
-            val filename = generateFileName()
             try {
                 if (pdfHandler.isPdfPasswordProtected(uri)) {
                     _viewEvent.emit(ViewEvent.ShowPasswordDialog)
                 } else {
+                    val filename = generateFileName()
                     pdfHandler.copyPdfToApp(uri, fileName = filename)
                     handleFileAfterCopying(filename)
                 }
