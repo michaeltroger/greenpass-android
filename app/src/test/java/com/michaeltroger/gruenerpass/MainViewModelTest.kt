@@ -19,8 +19,10 @@ import com.michaeltroger.gruenerpass.utils.InstantExecutionRule
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -215,9 +217,19 @@ class MainViewModelTest {
     }
 
     private fun mockCopyPdfToAppSuccess(value: Boolean) {
-        coEvery {
-            pdfHandler.copyPdfToApp(any(), any())
-        } returns value
+        when (value) {
+            true -> {
+                coEvery {
+                    pdfHandler.copyPdfToApp(any(), any())
+                } just Runs
+            }
+            false -> {
+                coEvery {
+                    pdfHandler.copyPdfToApp(any(), any())
+                }.throws(Exception())
+            }
+        }
+
     }
 
     private fun mockPdfRenderer() {
@@ -228,9 +240,19 @@ class MainViewModelTest {
     }
 
     private fun mockLoadFileSuccess(value: Boolean) {
-        coEvery {
-            pdfRenderer.loadFile()
-        } returns value
+        when (value) {
+            true -> {
+                coEvery {
+                    pdfRenderer.loadFile()
+                } just Runs
+            }
+            false -> {
+                coEvery {
+                    pdfRenderer.loadFile()
+                }.throws(Exception())
+            }
+        }
+
     }
 
     private fun mockDbEntries(certificates: List<Certificate>) {
