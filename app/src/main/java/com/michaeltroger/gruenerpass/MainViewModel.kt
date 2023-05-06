@@ -145,15 +145,15 @@ class MainViewModel(
         val renderer = PdfRendererBuilder.create(getApplication(), fileName = filename, renderContext = Dispatchers.IO)
         try {
             renderer.loadFile()
-            renderer.close()
             val documentName = documentNameRepo.getDocumentName(uri!!)
             db.insertAll(Certificate(id = filename, name = documentName))
             updateState()
             _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
         } catch (e: Exception) {
             logger.logError(e.toString())
-            renderer.close()
             _viewEvent.emit(ViewEvent.ErrorParsingFile)
+        } finally {
+            renderer.close()
         }
 
         uri = null

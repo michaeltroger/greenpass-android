@@ -85,9 +85,7 @@ private class PdfRendererImpl(
         if (renderer == null) {
             try {
                 loadFile()
-            } catch (e: Exception) {
-                // ignore
-            }
+            } catch (ignore: Exception) {}
             if (!isActive) return@withContext 0
         }
         renderer?.pageCount ?: 0
@@ -110,9 +108,7 @@ private class PdfRendererImpl(
         if (renderer == null) {
             try {
                 loadFile()
-            } catch (e: Exception) {
-                // ignore
-            }
+            } catch (ignore: Exception) {}
             if (!isActive) return@withContext null
         }
         renderer?.openPage(pageIndex)?.renderAndClose { isActive }
