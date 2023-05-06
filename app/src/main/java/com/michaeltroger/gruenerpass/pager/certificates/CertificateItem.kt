@@ -31,12 +31,13 @@ class CertificateItem(
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchQrCode: Boolean,
-    private val renderer: PdfRenderer = PdfRendererBuilder.create(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
     private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateBinding>() {
+
+    private val renderer: PdfRenderer = PdfRendererBuilder.create(context, fileName = fileName, dispatcher)
 
     private val adapter = GroupieAdapter()
     private val scope = CoroutineScope(
