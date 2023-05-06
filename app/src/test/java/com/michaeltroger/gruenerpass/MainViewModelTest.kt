@@ -1,9 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
-import android.content.SharedPreferences
 import android.net.Uri
-import androidx.annotation.StringRes
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -14,6 +12,7 @@ import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.settings.PreferenceManager
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.michaeltroger.gruenerpass.utils.InstantExecutionRule
@@ -45,7 +44,7 @@ class MainViewModelTest {
 
     private val context = getApplicationContext<Application>()
     private val db = mockk<CertificateDao>(relaxed = true)
-    private val preferenceManager = mockk<SharedPreferences>(relaxed = true)
+    private val preferenceManager = mockk<PreferenceManager>(relaxed = true)
     private val pdfDecryptor = mockk<PdfDecryptor>(relaxed = true)
     private val pdfRenderer = mockk<PdfRenderer>(relaxed = true)
     private val fileRepo = mockk<FileRepo>(relaxed = true)
@@ -88,7 +87,7 @@ class MainViewModelTest {
 
     @Test
     fun `verify locked state`() = runTest {
-        mockPreference(R.string.key_preference_biometric, true)
+        mockShouldAuthenticatePreference(true)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -98,7 +97,7 @@ class MainViewModelTest {
 
     @Test
     fun `verify app gets unlocked`() = runTest {
-        mockPreference(R.string.key_preference_biometric, true)
+        mockShouldAuthenticatePreference(true)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -110,7 +109,7 @@ class MainViewModelTest {
 
     @Test
     fun `verify app gets locked again`() = runTest {
-        mockPreference(R.string.key_preference_biometric, true)
+        mockShouldAuthenticatePreference(true)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -125,7 +124,7 @@ class MainViewModelTest {
     @Test
     fun `verify enter password dialog shown`() = runTest {
         mockDbEntries(listOf(mockk()))
-        mockPreference(R.string.key_preference_biometric, false)
+        mockShouldAuthenticatePreference(false)
         mockIsPasswordProtectedFile(true)
 
         val vm = createVM()
@@ -143,7 +142,7 @@ class MainViewModelTest {
 
     @Test
     fun `verify don't open file when locked`() = runTest {
-        mockPreference(R.string.key_preference_biometric, true)
+        mockShouldAuthenticatePreference(true)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -160,7 +159,7 @@ class MainViewModelTest {
     @Test
     fun `verify error while parsing file`() = runTest {
         mockIsPasswordProtectedFile(false)
-        mockPreference(R.string.key_preference_biometric, false)
+        mockShouldAuthenticatePreference(false)
         mockCopyPdfToAppSuccess()
 
         val vm = createVM()
@@ -180,7 +179,7 @@ class MainViewModelTest {
     fun `verify added new certificate`() = runTest {
         mockDbEntries(listOf(mockk()))
         mockIsPasswordProtectedFile(false)
-        mockPreference(R.string.key_preference_biometric, false)
+        mockShouldAuthenticatePreference(false)
         mockCopyPdfToAppSuccess()
         mockLoadFileSuccess(true)
 
@@ -207,9 +206,9 @@ class MainViewModelTest {
             pdfDecryptor = pdfDecryptor,
         )
 
-    private fun mockPreference(@StringRes prefKey: Int, prefValue: Boolean) {
+    private fun mockShouldAuthenticatePreference(prefValue: Boolean) {
         every {
-            preferenceManager.getBoolean(context.getString(prefKey), any())
+            preferenceManager.shouldAuthenticate()
         } returns prefValue
     }
 
