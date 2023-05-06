@@ -39,7 +39,7 @@ interface PdfRenderer {
 
 private class PdfRendererImpl(
     private val context: Context,
-    val fileName: String,
+    fileName: String,
     private val renderContext: CoroutineDispatcher
 ): com.michaeltroger.gruenerpass.pdf.PdfRenderer {
 
