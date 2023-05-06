@@ -130,12 +130,17 @@ class MainViewModel(
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
             val filename = "${UUID.randomUUID()}.pdf"
-            try {
+            val decrypted: Boolean = try {
                 pdfHandler.decryptAndCopyPdfToApp(uri = uri!!, password = password, filename)
-                handleFileAfterCopying(filename)
+                true
             } catch (e: Exception) {
                 logger.logError(e.toString())
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
+                false
+            }
+
+            if (decrypted) {
+                handleFileAfterCopying(filename)
             }
         }
     }
