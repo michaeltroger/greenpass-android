@@ -1,13 +1,11 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
-import android.content.SharedPreferences
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
@@ -15,6 +13,8 @@ import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.settings.PreferenceListener
+import com.michaeltroger.gruenerpass.settings.PreferenceManager
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.Dispatchers
@@ -31,17 +31,13 @@ class MainViewModel(
     app: Application,
     private val pdfDecryptor: PdfDecryptor = Locator.pdfDecryptor(),
     private val db: CertificateDao = Locator.database(app).certificateDao(),
-    private val preferenceManager: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(app),
     private val logger: Logger = Locator.logger(),
     private val fileRepo: FileRepo = Locator.fileRepo(app),
-): AndroidViewModel(app), SharedPreferences.OnSharedPreferenceChangeListener {
-
-    private var fullScreenBrightness: Boolean = false
-    private var searchForQrCode: Boolean = true
-    private var shouldAuthenticate = false
+    private val preferenceManager: PreferenceManager = Locator.preferenceManager(app)
+): AndroidViewModel(app), PreferenceListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
-        ViewState.Loading(fullBrightness = fullScreenBrightness)
+        ViewState.Loading(fullBrightness = preferenceManager.fullScreenBrightness())
     )
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -53,40 +49,27 @@ class MainViewModel(
     private var pendingFile: Certificate? = null
 
     init {
-        preferenceManager.registerOnSharedPreferenceChangeListener(this)
         viewModelScope.launch {
-            shouldAuthenticate = preferenceManager.getBoolean(
-                app.getString(R.string.key_preference_biometric),
-                false
-            )
-            isLocked = shouldAuthenticate
-            searchForQrCode = preferenceManager.getBoolean(
-                app.getString(R.string.key_preference_search_for_qr_code),
-                true
-            )
-            fullScreenBrightness = preferenceManager.getBoolean(
-                app.getString(R.string.key_preference_full_brightness),
-                false
-            )
+            preferenceManager.init(this@MainViewModel)
+            isLocked = preferenceManager.shouldAuthenticate()
             updateState()
         }
     }
 
     private suspend fun updateState() {
-        if (shouldAuthenticate && isLocked) {
-            _viewState.emit(ViewState.Locked(fullBrightness = fullScreenBrightness))
+        if (preferenceManager.shouldAuthenticate() && isLocked) {
+            _viewState.emit(ViewState.Locked(fullBrightness = preferenceManager.fullScreenBrightness()))
         } else {
             val docs = db.getAll()
             if (docs.isEmpty()) {
-                _viewState.emit(ViewState.Empty(fullBrightness = fullScreenBrightness))
+                _viewState.emit(ViewState.Empty(fullBrightness = preferenceManager.fullScreenBrightness()))
             } else {
                 _viewState.emit(ViewState.Normal(
                     documents = docs,
-                    searchQrCode = searchForQrCode,
-                    fullBrightness = fullScreenBrightness
+                    searchQrCode = preferenceManager.searchForQrCode(),
+                    fullBrightness = preferenceManager.fullScreenBrightness()
                 ))
             }
-
         }
     }
 
@@ -215,7 +198,7 @@ class MainViewModel(
     }
 
     fun onInteractionTimeout() {
-        if (shouldAuthenticate) {
+        if (preferenceManager.shouldAuthenticate()) {
             isLocked = true
             viewModelScope.launch {
                 updateState()
@@ -223,19 +206,7 @@ class MainViewModel(
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        when (key) {
-            getApplication<Application>().getString(R.string.key_preference_biometric) -> {
-                shouldAuthenticate = sharedPreferences.getBoolean(key, false)
-            }
-            getApplication<Application>().getString(R.string.key_preference_search_for_qr_code) -> {
-                searchForQrCode = sharedPreferences.getBoolean(key, true)
-            }
-            getApplication<Application>().getString(R.string.key_preference_full_brightness) -> {
-                fullScreenBrightness = sharedPreferences.getBoolean(key, false)
-            }
-        }
-
+    override fun onPreferenceChanged() {
         viewModelScope.launch {
             updateState()
         }

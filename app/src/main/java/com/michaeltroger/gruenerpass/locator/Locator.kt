@@ -15,6 +15,8 @@ import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptorImpl
 import com.michaeltroger.gruenerpass.qr.QrRenderer
 import com.michaeltroger.gruenerpass.qr.QrRendererImpl
+import com.michaeltroger.gruenerpass.settings.PreferenceManager
+import com.michaeltroger.gruenerpass.settings.PreferenceManagerImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
 
 object Locator {
@@ -42,4 +44,6 @@ object Locator {
     )
 
     fun qrRenderer(): QrRenderer = QrRendererImpl()
+
+    fun preferenceManager(context: Context): PreferenceManager = PreferenceManagerImpl(context)
 }
