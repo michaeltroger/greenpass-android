@@ -11,4 +11,5 @@
     <string name="key_preference_version">version</string>
     <string name="licenses_uri">https://michaeltroger.github.io/greenpass-android/licenses</string>
     <string name="pdf_file_provider_authority">com.michaeltroger.gruenerpass.pdffileprovider</string>
+    <string name="changelog_uri">https://github.com/michaeltroger/greenpass-android/releases</string>
 </resources>
