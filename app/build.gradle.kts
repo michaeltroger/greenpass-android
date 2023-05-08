@@ -25,7 +25,7 @@ android {
         versionName = "2.5.0"
 
         ksp {
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -37,6 +37,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix = "-debug"
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true

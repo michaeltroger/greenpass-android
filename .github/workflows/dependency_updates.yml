@@ -30,3 +30,4 @@ jobs:
       with:
         branch: feature/update_dependencies
         title: Update of dependencies
+        commit-message: Update of dependencies

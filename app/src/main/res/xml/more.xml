@@ -43,7 +43,13 @@
         <intent android:action="android.intent.action.VIEW"
             android:data="@string/licenses_uri"/>
     </Preference>
-
+    <Preference
+        app:iconSpaceReserved="false"
+        android:title="@string/changelog"
+        android:summary="@string/changelog_summary">
+        <intent android:action="android.intent.action.VIEW"
+            android:data="@string/changelog_uri"/>
+    </Preference>
     <Preference
         app:iconSpaceReserved="false"
         android:key="@string/key_preference_version">
