@@ -30,3 +30,7 @@ jobs:
         bundle exec fastlane google_metadata
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+
+    - name: Remove any credentials
+      if: always()
+      run: rm -rd $CREDENTIALS_DIR || true
