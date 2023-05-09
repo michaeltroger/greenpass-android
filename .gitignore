@@ -11,3 +11,4 @@ local.properties
 /credentials
 *.swp
 Gemfile.lock
+bundletool.jar

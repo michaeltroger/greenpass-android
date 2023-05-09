@@ -31,16 +31,6 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Set up signing info
-      run: |
-        mkdir ${{ env.CREDENTIALS_DIR }} || true
-        echo "$RELEASE_KEYSTORE_PROPERTIES" > ${{ env.CREDENTIALS_DIR }}/keystore.properties
-        echo "$RELEASE_KEYSTORE" > ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt
-        base64 -d ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt > ${{ env.CREDENTIALS_DIR }}/keystore.jks
-      env:
-        RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
-        RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
@@ -56,7 +46,16 @@ jobs:
       run: ./gradlew testReleaseUnitTest
       
     - name: Build App Bundle
-      run: ./gradlew bundleRelease
+      run: |
+        mkdir ${{ env.CREDENTIALS_DIR }} || true
+        echo "$RELEASE_KEYSTORE_PROPERTIES" > ${{ env.CREDENTIALS_DIR }}/keystore.properties
+        echo "$RELEASE_KEYSTORE" > ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt
+        base64 -d ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt > ${{ env.CREDENTIALS_DIR }}/keystore.jks
+        ./gradlew bundleRelease
+      env:
+        RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
+        RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+
     - name: Extract Universal APK
       run: |
         wget https://github.com/google/bundletool/releases/download/${{ env.BUNDLETOOL_VERSION }}/bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar -O bundletool.jar
