@@ -59,8 +59,8 @@ jobs:
       run: ./gradlew bundleRelease
     - name: Extract Universal APK
       run: |
-        curl -O https://github.com/google/bundletool/releases/download/${{ env.BUNDLETOOL_VERSION }}/bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar
-        java -jar bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar build-apks --bundle=${{ env.BUILD_DIR }}/app-release.aab --output=${{ env.BUILD_DIR }}/app-release.apk --mode=universal
+        wget https://github.com/google/bundletool/releases/download/${{ env.BUNDLETOOL_VERSION }}/bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar -O bundletool.jar
+        java -jar bundletool.jar build-apks --bundle=${{ env.BUILD_DIR }}/app-release.aab --output=${{ env.BUILD_DIR }}/app-release.apk --mode=universal
 
     - name: Extract version code and version name
       run: |
