@@ -1,12 +1,21 @@
 build_dir = ENV["BUILD_DIR"]
+credentials_dir = ENV["CREDENTIALS_DIR"]
 version_code = ENV["VERSION_CODE"]
 
 lane :google do
     upload_to_play_store(
       aab: "#{build_dir}/app-release.aab",
-      json_key_data: ENV["PLAY_STORE_CREDENTIALS"],
+      json_key: "#{credentials_dir}/playstore_access.json",
       track: "internal",
       package_name: "com.michaeltroger.gruenerpass",
+    )
+end
+
+lane :google_metadata do
+    upload_to_play_store(
+      json_key: "#{credentials_dir}/playstore_access.json",
+      package_name: "com.michaeltroger.gruenerpass",
+      skip_upload_changelogs: true,
     )
 end
 

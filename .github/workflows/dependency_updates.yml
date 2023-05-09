@@ -9,6 +9,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      JAVA_VERSION: '17'
 
     steps:
     - name: Checkout repo
@@ -16,7 +18,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: $JAVA_VERSION
         distribution: 'adopt'
         cache: gradle
     - name: Update dependencies

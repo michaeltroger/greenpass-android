@@ -74,7 +74,10 @@ jobs:
 
     - name: Upload app to Google Play
       if: ${{ github.event.inputs.upload_to_google }}
-      run: bundle exec fastlane google
+      run: |
+        echo "$PLAY_STORE_CREDENTIALS" > $CREDENTIALS_DIR/playstore_access.json.txt
+        base64 -d $CREDENTIALS_DIR/playstore_access.json.txt > $CREDENTIALS_DIR/playstore_access.json
+        bundle exec fastlane google
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
 
