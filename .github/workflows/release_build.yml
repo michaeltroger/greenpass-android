@@ -7,6 +7,19 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    inputs:
+      upload_to_google:
+        description: "Upload to Google Play"
+        required: true
+        default: true
+      upload_to_huawei:
+        description: "Upload to Huawei AppGallery"
+        required: true
+        default: true
+      upload_to_amazon:
+        description: "Upload to Amazon Appstore"
+        required: true
+        default: true
     env:
       BUNDLETOOL_VERSION: '1.14.1'
       JAVA_VERSION: '17'
@@ -110,17 +123,3 @@ jobs:
           app/build/reports/detekt/detekt.html
           app/build/reports/lint-results-release.html
           app/build/reports/tests/testReleaseUnitTest/
-          
-    inputs:
-      upload_to_google:
-        description: "Upload to Google Play"
-        required: true
-        default: true
-      upload_to_huawei:
-        description: "Upload to Huawei AppGallery"
-        required: true
-        default: true
-      upload_to_amazon:
-        description: "Upload to Amazon Appstore"
-        required: true
-        default: true
