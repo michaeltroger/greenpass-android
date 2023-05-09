@@ -2,11 +2,6 @@ name: Create Release Build
 
 on:
   workflow_dispatch:
-
-jobs:
-  build:
-
-    runs-on: ubuntu-latest
     inputs:
       upload_to_google:
         description: "Upload to Google Play"
@@ -20,6 +15,11 @@ jobs:
         description: "Upload to Amazon Appstore"
         required: true
         default: true
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
     env:
       BUNDLETOOL_VERSION: '1.14.1'
       JAVA_VERSION: '17'
