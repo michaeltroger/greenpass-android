@@ -18,19 +18,19 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: $RUBY_VERSION
+        ruby-version: ${{ env.RUBY_VERSION }}
 
     - name: Setup Fastlane
       run: bundle install
       
     - name: Update metadata on Google Play
       run: |
-        echo "$PLAY_STORE_CREDENTIALS" > $CREDENTIALS_DIR/playstore_access.json.txt
-        base64 -d $CREDENTIALS_DIR/playstore_access.json.txt > $CREDENTIALS_DIR/playstore_access.json
+        echo "$PLAY_STORE_CREDENTIALS" > ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt
+        base64 -d ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt > ${{ env.CREDENTIALS_DIR }}/playstore_access.json
         bundle exec fastlane google_metadata
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
 
     - name: Remove any credentials
       if: always()
-      run: rm -rd $CREDENTIALS_DIR || true
+      run: rm -rd ${{ env.CREDENTIALS_DIR}} || true

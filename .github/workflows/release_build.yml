@@ -20,9 +20,9 @@ jobs:
 
     - name: Set up signing info
       run: |
-        echo "$RELEASE_KEYSTORE_PROPERTIES" > $CREDENTIALS_DIR/keystore.properties
-        echo "$RELEASE_KEYSTORE" > $CREDENTIALS_DIR/keystore.jks.txt
-        base64 -d $CREDENTIALS_DIR/keystore.jks.txt > $CREDENTIALS_DIR/keystore.jks
+        echo "$RELEASE_KEYSTORE_PROPERTIES" > ${{ env.CREDENTIALS_DIR }}/keystore.properties
+        echo "$RELEASE_KEYSTORE" > ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt
+        base64 -d ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt > ${{ env.CREDENTIALS_DIR }}/keystore.jks
       env:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
@@ -30,7 +30,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: $JAVA_VERSION
+        java-version: ${{ env.JAVA_VERSION }}
         distribution: 'adopt'
         cache: gradle
 
@@ -45,8 +45,8 @@ jobs:
       run: ./gradlew bundleRelease
     - name: Extract Universal APK
       run: |
-        curl -O https://github.com/google/bundletool/releases/download/$BUNDLETOOL_VERSION/bundletool-all-$BUNDLETOOL_VERSION.jar
-        java -jar bundletool-all-$BUNDLETOOL_VERSION.jar build-apks --bundle=$BUILD_DIR/app-release.aab --output=$BUILD_DIR/app-release.apk --mode=universal
+        curl -O https://github.com/google/bundletool/releases/download/${{ env.BUNDLETOOL_VERSION }}/bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar
+        java -jar bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar build-apks --bundle=${{ env.BUILD_DIR }}/app-release.aab --output=${{ env.BUILD_DIR }}/app-release.apk --mode=universal
 
     - name: Extract version code and version name
       run: |
@@ -59,7 +59,7 @@ jobs:
         tag: ${{ env.VERSION_CODE }}
         name: ${{ env.VERSION_NAME }}
         bodyFile: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
-        artifacts: $BUILD_DIR/app-release.apk
+        artifacts: ${{ env.BUILD_DIR }}/app-release.apk
         makeLatest: true
         skipIfReleaseExists: true
         artifactErrorsFailBuild: true
@@ -67,7 +67,7 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: $RUBY_VERSION
+        ruby-version: ${{ env.RUBY_VERSION }}
 
     - name: Setup Fastlane
       run: bundle install
@@ -75,8 +75,8 @@ jobs:
     - name: Upload app to Google Play
       if: ${{ github.event.inputs.upload_to_google }}
       run: |
-        echo "$PLAY_STORE_CREDENTIALS" > $CREDENTIALS_DIR/playstore_access.json.txt
-        base64 -d $CREDENTIALS_DIR/playstore_access.json.txt > $CREDENTIALS_DIR/playstore_access.json
+        echo "${{ env.PLAY_STORE_CREDENTIALS }}" > ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt
+        base64 -d ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt > ${{ env.CREDENTIALS_DIR }}/playstore_access.json
         bundle exec fastlane google
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
@@ -97,7 +97,7 @@ jobs:
 
     - name: Remove any credentials
       if: always()
-      run: rm -rd $CREDENTIALS_DIR || true
+      run: rm -rd ${{ env.CREDENTIALS_DIR }} || true
 
     - name: Upload test reports
       uses: actions/upload-artifact@v3

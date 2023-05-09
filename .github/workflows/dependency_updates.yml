@@ -18,7 +18,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: $JAVA_VERSION
+        java-version: ${{ env.JAVA_VERSION }}
         distribution: 'adopt'
         cache: gradle
     - name: Update dependencies
