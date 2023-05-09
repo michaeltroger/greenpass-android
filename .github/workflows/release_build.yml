@@ -7,17 +7,22 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      BUNDLETOOL_VERSION: '1.14.1'
+      JAVA_VERSION: '17'
+      RUBY_VERSION: '3.2.2'
+      CREDENTIALS_DIR: 'credentials'
+      BUILD_DIR: 'app/build/outputs/bundle/release'
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-    
+
     - name: Set up signing info
       run: |
-        echo "$RELEASE_KEYSTORE_PROPERTIES" > keystore.properties
-        echo "$RELEASE_KEYSTORE" > keystore.jks.txt
-        base64 -d keystore.jks.txt > keystore.jks
-        rm keystore.jks.txt
+        echo "$RELEASE_KEYSTORE_PROPERTIES" > $CREDENTIALS_DIR/keystore.properties
+        echo "$RELEASE_KEYSTORE" > $CREDENTIALS_DIR/keystore.jks.txt
+        base64 -d $CREDENTIALS_DIR/keystore.jks.txt > $CREDENTIALS_DIR/keystore.jks
       env:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
@@ -25,7 +30,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: $JAVA_VERSION
         distribution: 'adopt'
         cache: gradle
 
@@ -36,43 +41,60 @@ jobs:
     - name: Run unit tests
       run: ./gradlew testReleaseUnitTest
       
-    - name: Build app bundle with Gradle
+    - name: Build App Bundle
       run: ./gradlew bundleRelease
-          
-    - name: Set up play store access
+    - name: Extract Universal APK
       run: |
-        echo "$PLAY_STORE_CREDENTIALS" > playstore_access.json.txt
-        base64 -d playstore_access.json.txt > playstore_access.json
-        rm playstore_access.json.txt
-      env:
-        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+        curl -O https://github.com/google/bundletool/releases/download/$BUNDLETOOL_VERSION/bundletool-all-$BUNDLETOOL_VERSION.jar
+        java -jar bundletool-all-$BUNDLETOOL_VERSION.jar build-apks --bundle=$BUILD_DIR/app-release.aab --output=$BUILD_DIR/app-release.apk --mode=universal
 
-    - name: Setup Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.2.2'
-
-    - name: Setup Fastlane
-      run: bundle install
-      
-    - name: Publish metadata and AAB to Play Store Internal
-      run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
-      
-    - name: Build APK
-      run: ./gradlew assembleRelease
-      
     - name: Extract version code and version name
       run: |
         echo "VERSION_NAME="$(grep "versionName" app/build.gradle.kts | awk '{print $3}' | sed 's/"//g') >> $GITHUB_ENV
         echo "VERSION_CODE="$(grep "versionCode" app/build.gradle.kts | awk '{print $3}') >> $GITHUB_ENV
-        
-    - name: Create tag and release on GitHub
-      uses: softprops/action-gh-release@v1
+
+    - name: Create tag and release on GitHub if not already done
+      uses: ncipollo/release-action@v1
       with:
-        tag_name: ${{ env.VERSION_CODE }}
+        tag: ${{ env.VERSION_CODE }}
         name: ${{ env.VERSION_NAME }}
-        body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
-        files: app/build/outputs/apk/release/app-release.apk
+        bodyFile: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
+        artifacts: $BUILD_DIR/app-release.apk
+        makeLatest: true
+        skipIfReleaseExists: true
+        artifactErrorsFailBuild: true
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: $RUBY_VERSION
+
+    - name: Setup Fastlane
+      run: bundle install
+
+    - name: Upload app to Google Play
+      if: ${{ github.event.inputs.upload_to_google }}
+      run: bundle exec fastlane google
+      env:
+        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+
+    - name: Upload app to Huawei AppGallery
+      if: ${{ github.event.inputs.upload_to_huawei }}
+      run: bundle exec fastlane huawei
+      env:
+        HUAWEI_CLIENT_ID: ${{ secrets.HUAWEI_CLIENT_ID }}
+        HUAWEI_CLIENT_SECRET: ${{ secrets.HUAWEI_CLIENT_SECRET }}
+
+    - name: Upload app to Amazon Appstore
+      if: ${{ github.event.inputs.upload_to_amazon }}
+      run: bundle exec fastlane amazon
+      env:
+        AMAZON_CLIENT_ID: ${{ secrets.AMAZON_CLIENT_ID }}
+        AMAZON_CLIENT_SECRET: ${{ secrets.AMAZON_CLIENT_SECRET }}
+
+    - name: Remove any credentials
+      if: always()
+      run: rm -rd $CREDENTIALS_DIR || true
 
     - name: Upload test reports
       uses: actions/upload-artifact@v3
@@ -83,3 +105,17 @@ jobs:
           app/build/reports/detekt/detekt.html
           app/build/reports/lint-results-release.html
           app/build/reports/tests/testReleaseUnitTest/
+          
+    inputs:
+      upload_to_google:
+        description: "Upload to Google Play"
+        required: true
+        default: true
+      upload_to_huawei:
+        description: "Upload to Huawei AppGallery"
+        required: true
+        default: true
+      upload_to_amazon:
+        description: "Upload to Amazon Appstore"
+        required: true
+        default: true

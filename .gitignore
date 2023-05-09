@@ -8,8 +8,6 @@
 .externalNativeBuild
 .cxx
 local.properties
-keystore.properties
-keystore.jks
+/credentials
 *.swp
-playstore_access.json
 Gemfile.lock
