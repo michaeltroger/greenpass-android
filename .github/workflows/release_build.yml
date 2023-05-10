@@ -84,7 +84,7 @@ jobs:
       run: bundle install
 
     - name: Upload app to Google Play
-      if: ${{ github.event.inputs.upload_to_google }}
+      if: ${{ inputs.upload_to_google }}
       run: |
         mkdir ${{ env.CREDENTIALS_DIR }} || true
         echo "$PLAY_STORE_CREDENTIALS" > ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt
@@ -94,14 +94,14 @@ jobs:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
 
     - name: Upload app to Huawei AppGallery
-      if: ${{ github.event.inputs.upload_to_huawei }}
+      if: ${{ inputs.upload_to_huawei }}
       run: bundle exec fastlane huawei
       env:
         HUAWEI_CLIENT_ID: ${{ secrets.HUAWEI_CLIENT_ID }}
         HUAWEI_CLIENT_SECRET: ${{ secrets.HUAWEI_CLIENT_SECRET }}
 
     - name: Upload app to Amazon Appstore
-      if: ${{ github.event.inputs.upload_to_amazon }}
+      if: ${{ inputs.upload_to_amazon }}
       run: bundle exec fastlane amazon
       env:
         AMAZON_CLIENT_ID: ${{ secrets.AMAZON_CLIENT_ID }}
