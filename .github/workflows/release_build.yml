@@ -21,7 +21,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BUNDLETOOL_VERSION: '1.14.1'
       JAVA_VERSION: '17'
       RUBY_VERSION: '3.2.2'
       CREDENTIALS_DIR: 'credentials'
@@ -45,21 +44,16 @@ jobs:
     - name: Run unit tests
       run: ./gradlew testReleaseUnitTest
       
-    - name: Build App Bundle
+    - name: Build App Bundle and APK
       run: |
         mkdir ${{ env.CREDENTIALS_DIR }} || true
         echo "$RELEASE_KEYSTORE_PROPERTIES" > ${{ env.CREDENTIALS_DIR }}/keystore.properties
         echo "$RELEASE_KEYSTORE" > ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt
         base64 -d ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt > ${{ env.CREDENTIALS_DIR }}/keystore.jks
-        ./gradlew bundleRelease
+        ./gradlew bundleRelease assembleRelease
       env:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-
-    - name: Extract Universal APK
-      run: |
-        wget https://github.com/google/bundletool/releases/download/${{ env.BUNDLETOOL_VERSION }}/bundletool-all-${{ env.BUNDLETOOL_VERSION }}.jar -O bundletool.jar
-        java -jar bundletool.jar build-apks --bundle=${{ env.BUILD_DIR }}/app-release.aab --output=${{ env.BUILD_DIR }}/app-release.apk --mode=universal
 
     - name: Extract version code and version name
       run: |
