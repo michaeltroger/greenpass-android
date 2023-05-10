@@ -6,14 +6,17 @@ on:
       upload_to_google:
         description: "Upload to Google Play"
         required: true
+        type: boolean
         default: true
       upload_to_huawei:
         description: "Upload to Huawei AppGallery"
         required: true
+        type: boolean
         default: true
       upload_to_amazon:
         description: "Upload to Amazon Appstore"
         required: true
+        type: boolean
         default: true
 jobs:
   build:
