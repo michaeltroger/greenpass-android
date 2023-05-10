@@ -1,10 +1,11 @@
-build_dir = ENV["BUILD_DIR"]
+aab_dir = ENV["AAB_DIR"]
+apk_dir = ENV["APK_DIR"]
 credentials_dir = ENV["CREDENTIALS_DIR"]
 version_code = ENV["VERSION_CODE"]
 
 lane :google do
     upload_to_play_store(
-      aab: "#{build_dir}/app-release.aab",
+      aab: "#{aab_dir}/app-release.aab",
       json_key: "#{credentials_dir}/playstore_access.json",
       track: "internal",
       package_name: "com.michaeltroger.gruenerpass",
@@ -24,7 +25,7 @@ lane :huawei do
         client_id: ENV["HUAWEI_CLIENT_ID"],
         client_secret: ENV["HUAWEI_CLIENT_SECRET"],
         app_id: "108212859",
-        apk_path: "#{build_dir}/app-release.aab",
+        apk_path: "#{aab_dir}/app-release.aab",
         is_aab: true,
         submit_for_review: false,
         phase_wise_release: false,
@@ -34,7 +35,7 @@ end
 
 lane :amazon do
     upload_to_amazon_appstore(
-      apk: "#{build_dir}/app-release.apk",
+      apk: "#{apk_dir}/app-release.apk",
       client_id: ENV["AMAZON_CLIENT_ID"],
       client_secret: ENV["AMAZON_CLIENT_SECRET"],
     )
