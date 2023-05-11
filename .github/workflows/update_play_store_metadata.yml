@@ -25,12 +25,7 @@ jobs:
       
     - name: Update metadata on Google Play
       run: |
-        mkdir "$CREDENTIALS_DIR" || true
         export PLAYSTORE_ACCESS=$(echo "$PLAY_STORE_CREDENTIALS" | base64 -d)
         bundle exec fastlane google_metadata
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
-
-    - name: Remove any credentials
-      if: always()
-      run: rm -rd ${{ env.CREDENTIALS_DIR}} || true
