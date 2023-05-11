@@ -16,7 +16,7 @@ end
 
 lane :google_metadata do
     upload_to_play_store(
-      json_key_data: ENV["HUAWEI_CLIENT_ID"],
+      json_key_data: ENV["PLAYSTORE_ACCESS"],
       package_name: "com.michaeltroger.gruenerpass",
       skip_upload_changelogs: true,
     )
