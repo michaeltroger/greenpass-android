@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RUBY_VERSION: '3.2.2'
-      CREDENTIALS_DIR: 'credentials'
 
     steps:
     - name: Checkout repo
