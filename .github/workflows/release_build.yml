@@ -50,10 +50,9 @@ jobs:
       
     - name: Build App Bundle and APK
       run: |
-        mkdir ${{ env.CREDENTIALS_DIR }} || true
-        echo "$RELEASE_KEYSTORE_PROPERTIES" > ${{ env.CREDENTIALS_DIR }}/keystore.properties
-        echo "$RELEASE_KEYSTORE" > ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt
-        base64 -d ${{ env.CREDENTIALS_DIR }}/keystore.jks.txt > ${{ env.CREDENTIALS_DIR }}/keystore.jks
+        mkdir "$CREDENTIALS_DIR" || true
+        echo "$RELEASE_KEYSTORE_PROPERTIES" > "$CREDENTIALS_DIR/keystore.properties"
+        echo "$RELEASE_KEYSTORE" | base64 -d > "$CREDENTIALS_DIR/keystore.jks"
         ./gradlew bundleRelease assembleRelease
       env:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
