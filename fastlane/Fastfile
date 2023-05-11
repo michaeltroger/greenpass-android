@@ -1,3 +1,5 @@
+opt_out_usage
+
 aab_dir = ENV["AAB_DIR"]
 apk_dir = ENV["APK_DIR"]
 credentials_dir = ENV["CREDENTIALS_DIR"]
