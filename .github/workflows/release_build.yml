@@ -50,7 +50,7 @@ jobs:
       
     - name: Build App Bundle and APK
       run: |
-        mkdir "$CREDENTIALS_DIR" || true
+        mkdir "$CREDENTIALS_DIR"
         echo "$RELEASE_KEYSTORE_PROPERTIES" > "$CREDENTIALS_DIR/keystore.properties"
         echo "$RELEASE_KEYSTORE" | base64 -d > "$CREDENTIALS_DIR/keystore.jks"
         ./gradlew bundleRelease assembleRelease
@@ -60,7 +60,7 @@ jobs:
         
     - name: Remove any credentials
       if: always()
-      run: rm -rd "$CREDENTIALS_DIR" || true
+      run: rm -rd "$CREDENTIALS_DIR"
 
     - name: Extract version code and version name
       run: |
