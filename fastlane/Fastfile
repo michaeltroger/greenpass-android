@@ -1,5 +1,7 @@
 opt_out_usage
 
+ENV["FASTLANE_SKIP_ACTION_SUMMARY"] = true
+
 aab_dir = ENV["AAB_DIR"]
 apk_dir = ENV["APK_DIR"]
 version_code = ENV["VERSION_CODE"]
