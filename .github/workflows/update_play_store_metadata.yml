@@ -26,7 +26,7 @@ jobs:
     - name: Update metadata on Google Play
       run: |
         mkdir "$CREDENTIALS_DIR" || true
-        export PLAYSTORE_ACCESS=$(echo "$PLAY_STORE_CREDENTIALS" | base64 -d > "$CREDENTIALS_DIR/playstore_access.json")
+        export PLAYSTORE_ACCESS=$(echo "$PLAY_STORE_CREDENTIALS" | base64 -d)
         bundle exec fastlane google_metadata
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
