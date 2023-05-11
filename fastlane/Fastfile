@@ -1,7 +1,5 @@
 opt_out_usage
 
-ENV["FASTLANE_SKIP_ACTION_SUMMARY"] = 'true'
-
 aab_dir = ENV["AAB_DIR"]
 apk_dir = ENV["APK_DIR"]
 version_code = ENV["VERSION_CODE"]
@@ -17,6 +15,7 @@ end
 
 lane :google_metadata do
     upload_to_play_store(
+      json_key_data: ENV["PLAYSTORE_KEY"],
       package_name: "com.michaeltroger.gruenerpass",
       skip_upload_changelogs: true,
     )
