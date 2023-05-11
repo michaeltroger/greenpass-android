@@ -85,9 +85,7 @@ jobs:
     - name: Upload app to Google Play
       if: ${{ inputs.upload_to_google }}
       run: |
-        mkdir ${{ env.CREDENTIALS_DIR }} || true
-        echo "$PLAY_STORE_CREDENTIALS" > ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt
-        base64 -d ${{ env.CREDENTIALS_DIR }}/playstore_access.json.txt > ${{ env.CREDENTIALS_DIR }}/playstore_access.json
+        export PLAYSTORE_KEY=$(echo "$PLAY_STORE_CREDENTIALS" | base64 -d)
         bundle exec fastlane google
       env:
         PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
@@ -108,7 +106,7 @@ jobs:
 
     - name: Remove any credentials
       if: always()
-      run: rm -rd ${{ env.CREDENTIALS_DIR }} || true
+      run: rm -rd "$CREDENTIALS_DIR" || true
 
     - name: Upload test reports
       uses: actions/upload-artifact@v3
