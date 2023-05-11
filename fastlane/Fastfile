@@ -2,13 +2,12 @@ opt_out_usage
 
 aab_dir = ENV["AAB_DIR"]
 apk_dir = ENV["APK_DIR"]
-credentials_dir = ENV["CREDENTIALS_DIR"]
 version_code = ENV["VERSION_CODE"]
 
 lane :google do
     upload_to_play_store(
       aab: "#{aab_dir}/app-release.aab",
-      json_key: "#{credentials_dir}/playstore_access.json",
+      json_key_data: ENV["PLAYSTORE_KEY"],
       track: "internal",
       package_name: "com.michaeltroger.gruenerpass",
     )
@@ -16,7 +15,6 @@ end
 
 lane :google_metadata do
     upload_to_play_store(
-      json_key_data: ENV["PLAYSTORE_KEY"],
       package_name: "com.michaeltroger.gruenerpass",
       skip_upload_changelogs: true,
     )
