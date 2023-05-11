@@ -57,6 +57,10 @@ jobs:
       env:
         RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
         RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+        
+    - name: Remove any credentials
+      if: always()
+      run: rm -rd "$CREDENTIALS_DIR" || true
 
     - name: Extract version code and version name
       run: |
@@ -103,10 +107,6 @@ jobs:
       env:
         AMAZON_CLIENT_ID: ${{ secrets.AMAZON_CLIENT_ID }}
         AMAZON_CLIENT_SECRET: ${{ secrets.AMAZON_CLIENT_SECRET }}
-
-    - name: Remove any credentials
-      if: always()
-      run: rm -rd "$CREDENTIALS_DIR" || true
 
     - name: Upload test reports
       uses: actions/upload-artifact@v3
