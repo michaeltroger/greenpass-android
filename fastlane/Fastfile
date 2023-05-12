@@ -9,14 +9,12 @@ lane :google do
       aab: "#{aab_dir}/app-release.aab",
       json_key_data: ENV["PLAYSTORE_KEY"],
       track: "internal",
-      package_name: "com.michaeltroger.gruenerpass",
     )
 end
 
 lane :google_metadata do
     upload_to_play_store(
       json_key_data: ENV["PLAYSTORE_KEY"],
-      package_name: "com.michaeltroger.gruenerpass",
       skip_upload_changelogs: true,
     )
 end
@@ -39,5 +37,6 @@ lane :amazon do
       apk: "#{apk_dir}/app-release.apk",
       client_id: ENV["AMAZON_CLIENT_ID"],
       client_secret: ENV["AMAZON_CLIENT_SECRET"],
+      changes_not_sent_for_review: true,
     )
 end
