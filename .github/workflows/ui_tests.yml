@@ -46,6 +46,8 @@ jobs:
           branch: feature/update_screenshots
           title: Update of screenshots
           commit-message: Update of screenshots
+          add-paths: |
+            screenshots/*
       - name: Upload test report
         uses: actions/upload-artifact@v3
         if: always()
