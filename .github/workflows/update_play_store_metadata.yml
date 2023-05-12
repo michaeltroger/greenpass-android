@@ -7,26 +7,24 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      RUBY_VERSION: '3.2.2'
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-    
-    - name: Set up play store access
-      run: |
-        echo "$PLAY_STORE_CREDENTIALS" > playstore_access.json.txt
-        base64 -d playstore_access.json.txt > playstore_access.json
-        rm playstore_access.json.txt
-      env:
-        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
         
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2.2'
+        ruby-version: ${{ env.RUBY_VERSION }}
 
     - name: Setup Fastlane
       run: bundle install
       
-    - name: Update Metadata on Google Play
-      run: bundle exec fastlane supply --skip_upload_changelogs
+    - name: Update metadata on Google Play
+      run: |
+        export PLAYSTORE_KEY=$(echo "$PLAY_STORE_CREDENTIALS" | base64 -d)
+        bundle exec fastlane google_metadata
+      env:
+        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
