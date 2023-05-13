@@ -165,6 +165,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.menu, menu)
         this.menu = menu
+        updateMenuState(vm.viewState.value)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
