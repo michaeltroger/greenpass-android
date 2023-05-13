@@ -60,7 +60,10 @@ private class PdfRendererImpl(
 
     override suspend fun getPageCount(): Int = withContext(renderContext) {
         if (renderer == null) {
-            loadFile()
+            try {
+                loadFile()
+            }
+            catch (ignore: Exception) {}
             if (!isActive) return@withContext 0
         }
         renderer?.pageCount ?: 0
@@ -75,7 +78,10 @@ private class PdfRendererImpl(
 
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
         if (renderer == null) {
-            loadFile()
+            try {
+                loadFile()
+            }
+            catch (ignore: Exception) {}
             if (!isActive) return@withContext null
         }
         renderer?.openPage(pageIndex)?.renderAndClose { isActive }
