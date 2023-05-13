@@ -180,6 +180,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             vm.lockApp()
             true
         }
+        R.id.export_all -> {
+            openShareAllFilePicker()
+            true
+        }
         else -> false
     }
 
@@ -190,6 +194,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
             findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
             findItem(R.id.lock)?.isVisible = state.showLockMenuItem
+            findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
         }
     }
 
@@ -199,6 +204,25 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             type = PDF_MIME_TYPE
         }
         resultLauncher.launch(intent)
+    }
+
+    private fun openShareAllFilePicker() {
+        val state = vm.viewState.value as? ViewState.Normal ?: return
+        val pdfUris = state.documents.map { certificate ->
+            FileProvider.getUriForFile(
+                requireContext(),
+                getString(R.string.pdf_file_provider_authority),
+                File(requireContext().filesDir, certificate.id),
+                "${certificate.name}.pdf"
+            )
+        }
+
+        val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(pdfUris))
+            type = PDF_MIME_TYPE
+        }
+
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 
     private fun openShareFilePicker(certificate: Certificate) {
