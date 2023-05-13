@@ -138,6 +138,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
                         ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
+                        ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificateAfterItemUpdate()
                     }
                 }
             }
@@ -282,6 +283,13 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
            delay(SCROLL_TO_LAST_DELAY_MS)
            binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
        }
+    }
+
+    private fun scrollToFirstCertificateAfterItemUpdate() {
+        lifecycleScope.launch {
+            delay(SCROLL_TO_LAST_DELAY_MS)
+            binding.certificates.smoothScrollToPosition(0)
+        }
     }
 
     private fun showDoYouWantToDeleteAllDialog() {

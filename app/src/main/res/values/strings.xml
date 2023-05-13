@@ -38,4 +38,6 @@
     <string name="dialog_delete_all_confirmation_message">Do you really want to delete all documents from the app?</string>
     <string name="lock">Lock</string>
     <string name="export_all">Export all</string>
+    <string name="preference_add_documents_front">Add documents in front</string>
+    <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back</string>
 </resources>

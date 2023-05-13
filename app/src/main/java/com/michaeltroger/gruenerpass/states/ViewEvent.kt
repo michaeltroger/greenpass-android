@@ -5,4 +5,5 @@ enum class ViewEvent {
     CloseAllDialogs,
     ErrorParsingFile,
     ScrollToLastCertificate,
+    ScrollToFirstCertificate,
 }
