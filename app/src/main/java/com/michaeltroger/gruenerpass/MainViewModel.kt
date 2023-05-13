@@ -171,6 +171,17 @@ class MainViewModel(
         }
     }
 
+    fun onDeleteAllConfirmed() {
+        viewModelScope.launch {
+            val certificates = db.getAll()
+            db.deleteAll()
+            updateState()
+            certificates.forEach {
+                fileRepo.deleteFile(it.id)
+            }
+        }
+    }
+
     @Suppress("SpreadOperator")
     fun onDragFinished(sortedIdList: List<String>) {
         viewModelScope.launch {
