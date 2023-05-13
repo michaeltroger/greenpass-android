@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
-import android.net.Uri
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -131,7 +130,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.copyAndSetPendingFile(Uri.EMPTY)
+            vm.setPendingFile(Certificate("", ""))
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ShowPasswordDialog
@@ -148,7 +147,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.copyAndSetPendingFile(Uri.EMPTY)
+            vm.setPendingFile(Certificate("", ""))
 
             expectNoEvents()
         }
@@ -168,7 +167,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.copyAndSetPendingFile(Uri.EMPTY)
+            vm.setPendingFile(Certificate("", ""))
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ScrollToLastCertificate
