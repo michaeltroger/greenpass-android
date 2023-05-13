@@ -33,7 +33,7 @@ class PdfDecryptorImpl(
     override suspend fun decrypt(
         password: String,
         file: File,
-    ): Unit = withContext(Dispatchers.IO) {
+    ): Unit = withContext(dispatcher) {
             with(PDDocument.load(file, password)) {
                 removePasswordCopyAndClose(file)
             }
