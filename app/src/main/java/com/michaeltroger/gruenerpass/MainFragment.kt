@@ -176,6 +176,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             showDoYouWantToDeleteAllDialog()
             true
         }
+        R.id.lock -> {
+            vm.lockApp()
+            true
+        }
         else -> false
     }
 
@@ -187,6 +191,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                 vm.viewState.value is ViewState.Empty
             findItem(R.id.openSettings)?.isVisible = isUnlocked
             findItem(R.id.deleteAll)?.isVisible = isUnlocked
+
+            findItem(R.id.lock)?.isVisible = vm.viewState.value.showLockAppButton
         }
     }
 

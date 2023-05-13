@@ -57,17 +57,26 @@ class MainViewModel(
     }
 
     private suspend fun updateState() {
-        if (preferenceManager.shouldAuthenticate() && isLocked) {
-            _viewState.emit(ViewState.Locked(fullBrightness = preferenceManager.fullScreenBrightness()))
+        val fullScreenBrightness = preferenceManager.fullScreenBrightness()
+        val shouldAuthenticate = preferenceManager.shouldAuthenticate()
+
+        if (shouldAuthenticate && isLocked) {
+            _viewState.emit(ViewState.Locked(
+                fullBrightness = fullScreenBrightness,
+            ))
         } else {
             val docs = db.getAll()
             if (docs.isEmpty()) {
-                _viewState.emit(ViewState.Empty(fullBrightness = preferenceManager.fullScreenBrightness()))
+                _viewState.emit(ViewState.Empty(
+                    fullBrightness = fullScreenBrightness,
+                    showLockAppButton = shouldAuthenticate,
+                ))
             } else {
                 _viewState.emit(ViewState.Normal(
                     documents = docs,
                     searchQrCode = preferenceManager.searchForQrCode(),
-                    fullBrightness = preferenceManager.fullScreenBrightness()
+                    fullBrightness = fullScreenBrightness,
+                    showLockAppButton = shouldAuthenticate,
                 ))
             }
         }
@@ -210,10 +219,14 @@ class MainViewModel(
 
     fun onInteractionTimeout() {
         if (preferenceManager.shouldAuthenticate()) {
-            isLocked = true
-            viewModelScope.launch {
-                updateState()
-            }
+            lockApp()
+        }
+    }
+
+    fun lockApp() {
+        isLocked = true
+        viewModelScope.launch {
+            updateState()
         }
     }
 
