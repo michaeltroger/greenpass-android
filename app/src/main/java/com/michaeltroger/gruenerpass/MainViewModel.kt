@@ -131,7 +131,7 @@ class MainViewModel(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught, SpreadOperator")
+    @Suppress("TooGenericExceptionCaught", "SpreadOperator")
     private suspend fun insertIntoDatabaseIfValidPdf() {
         val pendingFile = pendingFile!!
         val renderer = PdfRendererBuilder.create(
