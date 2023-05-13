@@ -77,14 +77,15 @@ private class PdfRendererImpl(
     }
 
     override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
-        if (renderer == null) {
-            try {
+        try {
+            if (renderer == null) {
                 loadFile()
+                if (!isActive) return@withContext null
             }
-            catch (ignore: Exception) {}
-            if (!isActive) return@withContext null
+            return@withContext renderer?.openPage(pageIndex)?.renderAndClose { isActive }
+        } catch (ignore: Exception) {
+            return@withContext null
         }
-        renderer?.openPage(pageIndex)?.renderAndClose { isActive }
     }
 
     private fun PdfRenderer.Page.renderAndClose(isActive: () -> Boolean): Bitmap? = use {

@@ -151,10 +151,21 @@ class MainViewModel(
             renderer.close()
         }
 
-        db.insertAll(pendingFile)
+        val addDocumentsInFront = preferenceManager.addDocumentsInFront()
+        if (addDocumentsInFront) {
+            val all = listOf(pendingFile) + db.getAll()
+            db.replaceAll(*all.toTypedArray())
+        } else {
+            db.insertAll(pendingFile)
+        }
         this.pendingFile = null
         updateState()
-        _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
+
+        if (addDocumentsInFront) {
+            _viewEvent.emit(ViewEvent.ScrollToFirstCertificate)
+        } else {
+            _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
+        }
     }
 
     fun onDocumentNameChanged(filename: String, documentName: String) {
