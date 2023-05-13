@@ -9,6 +9,8 @@ sealed class ViewState {
     abstract val showAddMenuItem: Boolean
     abstract val showSettingsMenuItem: Boolean
     abstract val showExportAllMenuItem: Boolean
+    abstract val showAuthenticateButton: Boolean
+    abstract val showAddButton: Boolean
 
     data class Initial(
         override val fullBrightness: Boolean
@@ -18,6 +20,8 @@ sealed class ViewState {
         override val showAddMenuItem = false
         override val showSettingsMenuItem = false
         override val showExportAllMenuItem = false
+        override val showAuthenticateButton = false
+        override val showAddButton = false
     }
 
     data class Empty(
@@ -28,6 +32,8 @@ sealed class ViewState {
         override val showAddMenuItem = false
         override val showSettingsMenuItem = true
         override val showExportAllMenuItem = false
+        override val showAuthenticateButton = false
+        override val showAddButton = true
     }
 
     data class Normal(
@@ -40,6 +46,8 @@ sealed class ViewState {
         override val showAddMenuItem = true
         override val showSettingsMenuItem = true
         override val showExportAllMenuItem = true
+        override val showAuthenticateButton = false
+        override val showAddButton = false
     }
 
     data class Locked(
@@ -50,5 +58,7 @@ sealed class ViewState {
         override val showAddMenuItem = false
         override val showSettingsMenuItem = false
         override val showExportAllMenuItem = false
+        override val showAuthenticateButton = true
+        override val showAddButton = false
     }
 }
