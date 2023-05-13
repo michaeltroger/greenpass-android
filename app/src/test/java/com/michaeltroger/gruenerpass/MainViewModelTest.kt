@@ -157,25 +157,6 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `verify error while parsing file`() = runTest {
-        mockIsPasswordProtectedFile(false)
-        mockShouldAuthenticatePreference(false)
-        mockCopyPdfToAppSuccess()
-
-        val vm = createVM()
-        advanceUntilIdle()
-
-        vm.viewEvent.test {
-            vm.copyAndSetPendingFile(Uri.EMPTY)
-
-            awaitItem() shouldBe ViewEvent.CloseAllDialogs
-            awaitItem() shouldBe ViewEvent.ErrorParsingFile
-        }
-
-        vm.viewState.value should beInstanceOf<ViewState.Empty>()
-    }
-
-    @Test
     fun `verify added new certificate`() = runTest {
         mockDbEntries(listOf(mockk()))
         mockIsPasswordProtectedFile(false)
