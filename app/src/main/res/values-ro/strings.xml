@@ -33,4 +33,6 @@
     <string name="licenses_summary">Display the open-source licenses used in this project</string>
     <string name="version">Version %1$s</string>
     <string name="share">Share</string>
+    <string name="changelog">Changelog</string>
+    <string name="changelog_summary">Changes in this app version</string>
 </resources>

@@ -8,13 +8,16 @@ on:
 jobs:
   test:
     runs-on: macos-latest
+    env:
+      JAVA_VERSION: '17'
+
     steps:
       - name: checkout
         uses: actions/checkout@v3
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: ${{ env.JAVA_VERSION }}
           distribution: 'adopt'
           cache: gradle
       - name: run tests
@@ -43,6 +46,8 @@ jobs:
           branch: feature/update_screenshots
           title: Update of screenshots
           commit-message: Update of screenshots
+          add-paths: |
+            screenshots/*
       - name: Upload test report
         uses: actions/upload-artifact@v3
         if: always()

@@ -2,30 +2,42 @@ name: Create Release Build
 
 on:
   workflow_dispatch:
-
+    inputs:
+      upload_to_google:
+        description: "Upload to Google Play"
+        required: true
+        type: boolean
+        default: true
+      upload_to_huawei:
+        description: "Upload to Huawei AppGallery"
+        required: true
+        type: boolean
+        default: true
+      upload_to_amazon:
+        description: "Upload to Amazon Appstore"
+        required: true
+        type: boolean
+        default: true
 jobs:
   build:
 
     runs-on: ubuntu-latest
 
+    env:
+      JAVA_VERSION: '17'
+      RUBY_VERSION: '3.2.2'
+      CREDENTIALS_DIR: 'credentials'
+      AAB_DIR: 'app/build/outputs/bundle/release'
+      APK_DIR: 'app/build/outputs/apk/release'
+
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-    
-    - name: Set up signing info
-      run: |
-        echo "$RELEASE_KEYSTORE_PROPERTIES" > keystore.properties
-        echo "$RELEASE_KEYSTORE" > keystore.jks.txt
-        base64 -d keystore.jks.txt > keystore.jks
-        rm keystore.jks.txt
-      env:
-        RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
-        RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
 
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: ${{ env.JAVA_VERSION }}
         distribution: 'adopt'
         cache: gradle
 
@@ -36,43 +48,65 @@ jobs:
     - name: Run unit tests
       run: ./gradlew testReleaseUnitTest
       
-    - name: Build app bundle with Gradle
-      run: ./gradlew bundleRelease
-          
-    - name: Set up play store access
+    - name: Build App Bundle and APK
       run: |
-        echo "$PLAY_STORE_CREDENTIALS" > playstore_access.json.txt
-        base64 -d playstore_access.json.txt > playstore_access.json
-        rm playstore_access.json.txt
+        mkdir "$CREDENTIALS_DIR"
+        echo "$RELEASE_KEYSTORE_PROPERTIES" > "$CREDENTIALS_DIR/keystore.properties"
+        echo "$RELEASE_KEYSTORE" | base64 -d > "$CREDENTIALS_DIR/keystore.jks"
+        ./gradlew bundleRelease assembleRelease
       env:
-        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+        RELEASE_KEYSTORE_PROPERTIES: ${{ secrets.RELEASE_KEYSTORE_PROPERTIES }}
+        RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
+        
+    - name: Remove any credentials
+      if: always()
+      run: rm -rd "$CREDENTIALS_DIR"
+
+    - name: Extract version code and version name
+      run: |
+        echo "VERSION_NAME="$(grep -m 1 "versionName" app/build.gradle.kts | awk '{print $3}' | sed 's/"//g') >> $GITHUB_ENV
+        echo "VERSION_CODE="$(grep "versionCode" app/build.gradle.kts | awk '{print $3}') >> $GITHUB_ENV
+
+    - name: Create tag and release on GitHub if not already done
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ env.VERSION_CODE }}
+        name: ${{ env.VERSION_NAME }}
+        bodyFile: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
+        artifacts: ${{ env.APK_DIR }}/app-release.apk
+        makeLatest: true
+        skipIfReleaseExists: true
+        artifactErrorsFailBuild: true
 
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.2.2'
+        ruby-version: ${{ env.RUBY_VERSION }}
 
     - name: Setup Fastlane
       run: bundle install
-      
-    - name: Publish metadata and AAB to Play Store Internal
-      run: bundle exec fastlane supply --aab app/build/outputs/bundle/release/app-release.aab --track internal
-      
-    - name: Build APK
-      run: ./gradlew assembleRelease
-      
-    - name: Extract version code and version name
+
+    - name: Upload app to Google Play
+      if: ${{ inputs.upload_to_google }}
       run: |
-        echo "VERSION_NAME="$(grep "versionName" app/build.gradle.kts | awk '{print $3}' | sed 's/"//g') >> $GITHUB_ENV
-        echo "VERSION_CODE="$(grep "versionCode" app/build.gradle.kts | awk '{print $3}') >> $GITHUB_ENV
-        
-    - name: Create tag and release on GitHub
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ env.VERSION_CODE }}
-        name: ${{ env.VERSION_NAME }}
-        body_path: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
-        files: app/build/outputs/apk/release/app-release.apk
+        export PLAYSTORE_KEY=$(echo "$PLAY_STORE_CREDENTIALS" | base64 -d)
+        bundle exec fastlane google
+      env:
+        PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+
+    - name: Upload app to Huawei AppGallery
+      if: ${{ inputs.upload_to_huawei }}
+      run: bundle exec fastlane huawei
+      env:
+        HUAWEI_CLIENT_ID: ${{ secrets.HUAWEI_CLIENT_ID }}
+        HUAWEI_CLIENT_SECRET: ${{ secrets.HUAWEI_CLIENT_SECRET }}
+
+    - name: Upload app to Amazon Appstore
+      if: ${{ inputs.upload_to_amazon }}
+      run: bundle exec fastlane amazon
+      env:
+        AMAZON_CLIENT_ID: ${{ secrets.AMAZON_CLIENT_ID }}
+        AMAZON_CLIENT_SECRET: ${{ secrets.AMAZON_CLIENT_SECRET }}
 
     - name: Upload test reports
       uses: actions/upload-artifact@v3

@@ -1,2 +1,1 @@
-json_key_file("playstore_access.json")
-package_name("com.michaeltroger.gruenerpass")
+package_name "com.michaeltroger.gruenerpass"

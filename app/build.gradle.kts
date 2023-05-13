@@ -48,13 +48,13 @@ android {
             signingConfigs {
                 create("release") {
                     try {
-                        val keystorePropertiesFile = rootProject.file("keystore.properties")
+                        val keystorePropertiesFile = rootProject.file("credentials/keystore.properties")
                         val keystoreProperties = Properties()
                         keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
                         keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
                         keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-                        storeFile = rootProject.file(keystoreProperties.getProperty("STORE_FILE"))
+                        storeFile = rootProject.file("credentials/${keystoreProperties.getProperty("STORE_FILE")}")
                         storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
                     } catch(ignored: IOException) {
                         println("Ignored: $ignored") // We don't have release keys, ignoring
