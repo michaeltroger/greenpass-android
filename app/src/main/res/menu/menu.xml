@@ -26,6 +26,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/export_all"
+        android:title="@string/export_all"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/lock"
         android:title="@string/lock"
         android:visible="false"

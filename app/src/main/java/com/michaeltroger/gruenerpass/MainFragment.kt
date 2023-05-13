@@ -122,17 +122,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewState.collect {
-                    updateMenuState()
-                    updateScreenBrightness(fullBrightness = it.fullBrightness)
-                    when (it) {
-                        is ViewState.Initial -> showInitialState()
-                        is ViewState.Empty -> showEmptyState()
-                        is ViewState.Normal -> showCertificateState(
-                            documents = it.documents,
-                            searchQrCode = it.searchQrCode,
-                        )
-                        is ViewState.Locked -> showLockedState()
-                    }
+                    updateState(it)
                 }
             }
         }
@@ -151,10 +141,30 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         }
     }
 
+    private fun updateState(state: ViewState) {
+        updateMenuState(state)
+        updateScreenBrightness(fullBrightness = state.fullBrightness)
+        binding.addButton.isVisible = state.showAddButton
+        binding.authenticate.isVisible = state.showAuthenticateButton
+        when (state) {
+            is ViewState.Initial -> {} // nothing to do
+            is ViewState.Empty -> {
+                adapter.clear()
+            }
+            is ViewState.Locked -> {
+                adapter.clear()
+                biometricPrompt.authenticate(promptInfo)
+            }
+            is ViewState.Normal -> showCertificateState(
+                documents = state.documents,
+                searchQrCode = state.searchQrCode,
+            )
+        }
+    }
+
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.menu, menu)
         this.menu = menu
-        updateMenuState()
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -180,16 +190,20 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             vm.lockApp()
             true
         }
+        R.id.export_all -> {
+            openShareAllFilePicker()
+            true
+        }
         else -> false
     }
 
-    private fun updateMenuState() {
+    private fun updateMenuState(state: ViewState) {
         menu?.apply {
-            val state = vm.viewState.value
             findItem(R.id.add)?.isVisible = state.showAddMenuItem
             findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
             findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
             findItem(R.id.lock)?.isVisible = state.showLockMenuItem
+            findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
         }
     }
 
@@ -199,6 +213,25 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             type = PDF_MIME_TYPE
         }
         resultLauncher.launch(intent)
+    }
+
+    private fun openShareAllFilePicker() {
+        val state = vm.viewState.value as? ViewState.Normal ?: return
+        val pdfUris = state.documents.map { certificate ->
+            FileProvider.getUriForFile(
+                requireContext(),
+                getString(R.string.pdf_file_provider_authority),
+                File(requireContext().filesDir, certificate.id),
+                "${certificate.name}.pdf"
+            )
+        }
+
+        val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(pdfUris))
+            type = PDF_MIME_TYPE
+        }
+
+        startActivity(Intent.createChooser(shareIntent, null))
     }
 
     private fun openShareFilePicker(certificate: Certificate) {
@@ -217,27 +250,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         startActivity(Intent.createChooser(shareIntent, null))
     }
 
-    private fun showLockedState() {
-        binding.addButton.isVisible = false
-        binding.authenticate.isVisible = true
-        adapter.clear()
-        biometricPrompt.authenticate(promptInfo)
-    }
-
-    private fun showInitialState() {
-        binding.addButton.isVisible = false
-        binding.authenticate.isVisible = false
-    }
-
-    private fun showEmptyState() {
-        binding.addButton.isVisible = true
-        binding.authenticate.isVisible = false
-        adapter.clear()
-    }
-
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
-        binding.authenticate.isVisible = false
-        binding.addButton.isVisible = false
         val items = documents.map {
             CertificateItem(
                 requireContext().applicationContext,
