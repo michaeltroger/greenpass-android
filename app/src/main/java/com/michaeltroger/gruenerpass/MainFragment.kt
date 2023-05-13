@@ -172,6 +172,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             startActivity(intent)
             true
         }
+        R.id.deleteAll -> {
+            showDoYouWantToDeleteAllDialog()
+            true
+        }
         else -> false
     }
 
@@ -256,6 +260,18 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
            delay(SCROLL_TO_LAST_DELAY_MS)
            binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
        }
+    }
+
+    private fun showDoYouWantToDeleteAllDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(getString(R.string.dialog_delete_all_confirmation_message))
+            .setPositiveButton(R.string.ok)  { _, _ ->
+                vm.onDeleteAllConfirmed()
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .create()
+        dialogs["delete_all"] = dialog
+        dialog.show()
     }
 
     private fun showDoYouWantToDeleteDialog(id: String) {
