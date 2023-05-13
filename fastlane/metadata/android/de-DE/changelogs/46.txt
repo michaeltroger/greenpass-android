@@ -1,0 +1,6 @@
+- PDFs öffnen
+- Verbiete das Öffnen der Einstellungen wenn die App gesperrt ist
+- App-Sperren-Button
+- Alle-Exportieren-Button
+- Alle-Löschen-Button
+- Option neue Dokumente vorne einzufügen

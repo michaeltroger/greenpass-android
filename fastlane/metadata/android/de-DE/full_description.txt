@@ -17,6 +17,7 @@ Die PDF-Datei muss in die App importiert werden. Anschließend wird der QR Code 
 <b>Mehr Funktionen</b>
 - Authentifizierung
 - PDFs individuell sortierbar und benennbar
+- PDFs können geöffnet werden
 - PDFs aus anderen Apps teilen
 - PDFs mit anderen Apps teilen (ermöglicht indirekt Drucken)
 - Dark Mode

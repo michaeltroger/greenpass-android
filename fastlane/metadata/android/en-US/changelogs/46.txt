@@ -1,0 +1,6 @@
+- Open PDFs
+- Don't allow entering settings if app is locked
+- Lock app button
+- Export all button
+- Delete all button
+- Option to add new documents in the front
