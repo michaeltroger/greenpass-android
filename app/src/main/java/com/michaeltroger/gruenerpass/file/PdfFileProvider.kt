@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.fileprovider
+package com.michaeltroger.gruenerpass.file
 
 import androidx.core.content.FileProvider
 import com.michaeltroger.gruenerpass.R

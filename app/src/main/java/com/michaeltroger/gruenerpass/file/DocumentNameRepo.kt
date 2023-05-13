@@ -1,12 +1,12 @@
-package com.michaeltroger.gruenerpass.model
+package com.michaeltroger.gruenerpass.file
 
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 
 interface DocumentNameRepo {
     suspend fun getDocumentName(uri: Uri): String

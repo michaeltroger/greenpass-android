@@ -4,7 +4,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import java.lang.NullPointerException
 
 private const val RETRIALS = 3
 private const val TIMEOUT = 5000L

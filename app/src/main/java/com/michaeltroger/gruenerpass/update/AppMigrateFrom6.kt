@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass.update
 
 import android.content.Context
 import java.io.File
-import java.lang.Exception
 
 private const val PDF_FILENAME = "certificate.pdf"
 

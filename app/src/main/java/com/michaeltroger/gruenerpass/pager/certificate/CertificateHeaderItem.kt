@@ -3,13 +3,13 @@ package com.michaeltroger.gruenerpass.pager.certificate
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doOnTextChanged
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateHeaderBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
-import android.view.inputmethod.EditorInfo
 
 class CertificateHeaderItem(
     private val documentName: String,

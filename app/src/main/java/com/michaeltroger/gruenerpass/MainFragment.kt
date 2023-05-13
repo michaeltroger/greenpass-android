@@ -32,6 +32,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
@@ -74,7 +75,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.also(vm::setUri)
+            result.data?.let { intent ->
+                val uri = intent.getUri() ?: return@let
+                vm.copyAndSetPendingFile(uri)
+            }
         }
     }
 
@@ -278,7 +282,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             .setPositiveButton(R.string.ok)  { _, _ ->
                 vm.onPasswordEntered(passwordTextField.editText!!.text.toString())
             }
-            .setNegativeButton(getString(R.string.cancel), null)
+            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
+                vm.deletePendingFileIfExists()
+            }
+            .setOnCancelListener {
+                vm.deletePendingFileIfExists()
+            }
             .create()
         dialogs["password"] = dialog
         dialog.show()
@@ -314,6 +323,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             // onUserInteraction() is not called by android in this case so we call it manually
             requireActivity().onUserInteraction()
             vm.onAuthenticationSuccess()
+        }
+
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            vm.deletePendingFileIfExists()
         }
     }
 }

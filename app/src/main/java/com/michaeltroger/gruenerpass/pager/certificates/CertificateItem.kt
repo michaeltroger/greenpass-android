@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
-import com.michaeltroger.gruenerpass.model.PdfRenderer
-import com.michaeltroger.gruenerpass.model.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
+import com.michaeltroger.gruenerpass.pdf.PdfRenderer
+import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
@@ -31,12 +31,13 @@ class CertificateItem(
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchQrCode: Boolean,
-    private val renderer: PdfRenderer = PdfRendererBuilder.create(context, fileName = fileName, dispatcher),
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
     private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateBinding>() {
+
+    private val renderer: PdfRenderer = PdfRendererBuilder.create(context, fileName = fileName, dispatcher)
 
     private val adapter = GroupieAdapter()
     private val scope = CoroutineScope(
@@ -81,6 +82,7 @@ class CertificateItem(
     override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
         super.unregisterGroupDataObserver(groupDataObserver)
         scope.cancel()
+        renderer.close()
     }
 
     override fun isSameAs(other: Item<*>): Boolean {

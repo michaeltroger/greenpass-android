@@ -25,8 +25,8 @@ com-tom-roush-pdfbox-android = "2.0.25.0"
 io-gitlab-arturbosch-detekt = "1.22.0"
 io-kotest-assertions-core = "5.6.2"
 io-mockk = "1.13.5"
+kotlin = "1.8.21"
 nl-littlerobots-version-catalog-update = "0.8.0"
-org-jetbrains-kotlin-android = "1.8.21"
 org-jetbrains-kotlinx-coroutines-test = "1.7.1"
 org-robolectric = "4.10.2"
 
@@ -66,4 +66,5 @@ com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-lic
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
 io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
 nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+org-jetbrains-kotlin-plugin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }

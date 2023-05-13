@@ -3,12 +3,20 @@ package com.michaeltroger.gruenerpass.locator
 import android.content.Context
 import androidx.biometric.BiometricPrompt
 import androidx.room.Room
-import com.michaeltroger.gruenerpass.model.DocumentNameRepo
-import com.michaeltroger.gruenerpass.model.DocumentNameRepoImpl
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.AppDatabase
-import com.michaeltroger.gruenerpass.model.PdfHandler
-import com.michaeltroger.gruenerpass.model.PdfHandlerImpl
+import com.michaeltroger.gruenerpass.file.DocumentNameRepo
+import com.michaeltroger.gruenerpass.file.DocumentNameRepoImpl
+import com.michaeltroger.gruenerpass.file.FileRepo
+import com.michaeltroger.gruenerpass.file.FileRepoImpl
+import com.michaeltroger.gruenerpass.logging.Logger
+import com.michaeltroger.gruenerpass.logging.LoggerImpl
+import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
+import com.michaeltroger.gruenerpass.pdf.PdfDecryptorImpl
+import com.michaeltroger.gruenerpass.qr.QrRenderer
+import com.michaeltroger.gruenerpass.qr.QrRendererImpl
+import com.michaeltroger.gruenerpass.settings.PreferenceManager
+import com.michaeltroger.gruenerpass.settings.PreferenceManagerImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
 
 object Locator {
@@ -18,7 +26,7 @@ object Locator {
         AppDatabase::class.java, "greenpass"
     ).build()
 
-    fun pdfHandler(context: Context): PdfHandler = PdfHandlerImpl(context.applicationContext)
+    fun pdfDecryptor(): PdfDecryptor = PdfDecryptorImpl()
 
     fun documentNameRepo(context: Context): DocumentNameRepo = DocumentNameRepoImpl(context.applicationContext)
 
@@ -27,4 +35,15 @@ object Locator {
         .setConfirmationRequired(false)
         .setAllowedAuthenticators(SettingsFragment.AUTHENTICATORS)
         .build()
+
+    fun logger(): Logger = LoggerImpl()
+
+    fun fileRepo(context: Context): FileRepo = FileRepoImpl(
+        context.applicationContext,
+        documentNameRepo(context.applicationContext)
+    )
+
+    fun qrRenderer(): QrRenderer = QrRendererImpl()
+
+    fun preferenceManager(context: Context): PreferenceManager = PreferenceManagerImpl(context)
 }
