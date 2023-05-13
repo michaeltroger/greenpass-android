@@ -17,7 +17,8 @@ interface PreferenceManager {
 
 class PreferenceManagerImpl(
     private val context: Context,
-    private val preferenceManager: SharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
+    private val preferenceManager: SharedPreferences
+        = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
 ): PreferenceManager, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceListener: PreferenceListener? = null
