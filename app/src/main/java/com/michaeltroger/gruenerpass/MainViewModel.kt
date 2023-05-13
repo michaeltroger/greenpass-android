@@ -90,13 +90,13 @@ class MainViewModel(
 
             if (state !is ViewState.Locked) {
                 _viewEvent.emit(ViewEvent.CloseAllDialogs)
-                loadFile()
+                processPendingFile()
             }
         }
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun loadFile() {
+    private fun processPendingFile() {
         val pendingFile = pendingFile!!
         viewModelScope.launch {
             try {
@@ -192,7 +192,7 @@ class MainViewModel(
             if (pendingFile == null) {
                 updateState()
             } else {
-                loadFile()
+                processPendingFile()
             }
         }
     }
