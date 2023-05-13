@@ -12,13 +12,6 @@ lane :google do
     )
 end
 
-lane :google_metadata do
-    upload_to_play_store(
-      json_key_data: ENV["PLAYSTORE_KEY"],
-      skip_upload_changelogs: true,
-    )
-end
-
 lane :huawei do
     huawei_appgallery_connect(
         client_id: ENV["HUAWEI_CLIENT_ID"],
