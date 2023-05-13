@@ -38,4 +38,5 @@
     <string name="delete_all">Delete all</string>
     <string name="dialog_delete_all_confirmation_message">Do you really want to delete all documents from the app?</string>
     <string name="lock">Lock</string>
+    <string name="export_all">Export all</string>
 </resources>
