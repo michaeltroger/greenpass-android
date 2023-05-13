@@ -37,7 +37,7 @@ class MainViewModel(
 ): AndroidViewModel(app), PreferenceListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
-        ViewState.Loading(fullBrightness = preferenceManager.fullScreenBrightness())
+        ViewState.Initial(fullBrightness = preferenceManager.fullScreenBrightness())
     )
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -85,7 +85,7 @@ class MainViewModel(
         this.pendingFile = file
         viewModelScope.launch {
             val state = viewState.filter {
-                it !is ViewState.Loading
+                it !is ViewState.Initial
             }.first() // wait for initial loading to be finished
 
             if (state !is ViewState.Locked) {

@@ -5,11 +5,13 @@
         android:id="@+id/add"
         android:icon="@drawable/baseline_add_24"
         android:title="@string/add"
+        android:visible="false"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/openSettings"
         android:title="@string/settings"
+        android:visible="false"
         app:showAsAction="never"/>
 
     <item
@@ -20,5 +22,6 @@
     <item
         android:id="@+id/deleteAll"
         android:title="@string/delete_all"
+        android:visible="false"
         app:showAsAction="never"/>
 </menu>

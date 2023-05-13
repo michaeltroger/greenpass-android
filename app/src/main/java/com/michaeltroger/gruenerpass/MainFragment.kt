@@ -56,7 +56,7 @@ private const val PDF_MIME_TYPE = "application/pdf"
 @Suppress("TooManyFunctions")
 class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
-    private var addMenuButton: MenuItem? = null
+    private var menu: Menu? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -125,7 +125,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                     updateMenuState()
                     updateScreenBrightness(fullBrightness = it.fullBrightness)
                     when (it) {
-                        is ViewState.Loading -> showLoadingState()
+                        is ViewState.Initial -> showInitialState()
                         is ViewState.Empty -> showEmptyState()
                         is ViewState.Normal -> showCertificateState(
                             documents = it.documents,
@@ -153,7 +153,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.menu, menu)
-        addMenuButton = menu.findItem(R.id.add)
+        this.menu = menu
         updateMenuState()
     }
 
@@ -180,7 +180,14 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     }
 
     private fun updateMenuState() {
-        addMenuButton?.isVisible = vm.viewState.value::class.java == ViewState.Normal::class.java
+        menu?.apply {
+            findItem(R.id.add)?.isVisible = vm.viewState.value is ViewState.Normal
+
+            val isUnlocked = vm.viewState.value is ViewState.Normal ||
+                vm.viewState.value is ViewState.Empty
+            findItem(R.id.openSettings)?.isVisible = isUnlocked
+            findItem(R.id.deleteAll)?.isVisible = isUnlocked
+        }
     }
 
     private fun openFilePicker() {
@@ -208,29 +215,24 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     }
 
     private fun showLockedState() {
-        binding.progressIndicator.isVisible = false
         binding.addButton.isVisible = false
         binding.authenticate.isVisible = true
         adapter.clear()
         biometricPrompt.authenticate(promptInfo)
     }
 
-    private fun showLoadingState() {
-        binding.progressIndicator.isVisible = true
+    private fun showInitialState() {
         binding.addButton.isVisible = false
         binding.authenticate.isVisible = false
-        binding.progressIndicator.show()
     }
 
     private fun showEmptyState() {
-        binding.progressIndicator.isVisible = false
         binding.addButton.isVisible = true
         binding.authenticate.isVisible = false
         adapter.clear()
     }
 
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
-        binding.progressIndicator.isVisible = false
         binding.authenticate.isVisible = false
         binding.addButton.isVisible = false
         val items = documents.map {

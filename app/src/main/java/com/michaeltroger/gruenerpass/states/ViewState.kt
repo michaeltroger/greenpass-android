@@ -5,7 +5,7 @@ import com.michaeltroger.gruenerpass.db.Certificate
 sealed class ViewState {
     abstract val fullBrightness: Boolean
 
-    data class Loading(override val fullBrightness: Boolean) : ViewState()
+    data class Initial(override val fullBrightness: Boolean) : ViewState()
     data class Empty(override val fullBrightness: Boolean) : ViewState()
     data class Normal(
         val documents: List<Certificate>,

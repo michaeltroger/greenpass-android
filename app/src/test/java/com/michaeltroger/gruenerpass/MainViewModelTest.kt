@@ -64,7 +64,7 @@ class MainViewModelTest {
     fun `verify initial state`() = runTest {
         val vm = createVM()
 
-        vm.viewState.value should beInstanceOf<ViewState.Loading>()
+        vm.viewState.value should beInstanceOf<ViewState.Initial>()
     }
 
     @Test
