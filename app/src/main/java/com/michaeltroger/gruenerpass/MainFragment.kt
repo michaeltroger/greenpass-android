@@ -76,8 +76,11 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.let { intent ->
-                val uri = intent.getUri() ?: return@let
-                vm.copyAndSetPendingFile(uri)
+                lifecycleScope.launch {
+                    val uri = intent.getUri() ?: return@launch
+                    val file = Locator.fileRepo(requireContext()).copyToApp(uri)
+                    vm.setPendingFile(file)
+                }
             }
         }
     }

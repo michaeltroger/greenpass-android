@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -79,13 +78,6 @@ class MainViewModel(
                     showLockMenuItem = shouldAuthenticate,
                 ))
             }
-        }
-    }
-
-    fun copyAndSetPendingFile(uri: Uri) {
-        viewModelScope.launch {
-            val pendingFile = fileRepo.copyToApp(uri)
-            setPendingFile(pendingFile)
         }
     }
 
