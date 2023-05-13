@@ -2,7 +2,7 @@ package com.michaeltroger.gruenerpass.pager.certificates
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
+import java.util.Collections
 import kotlin.math.sign
 
 private const val SCROLL_FACTOR = 5

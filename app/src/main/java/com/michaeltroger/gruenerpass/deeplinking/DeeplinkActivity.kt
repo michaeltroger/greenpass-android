@@ -1,8 +1,8 @@
 package com.michaeltroger.gruenerpass.deeplinking
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.michaeltroger.gruenerpass.MainActivity
 import com.michaeltroger.gruenerpass.extensions.getUri

@@ -3,7 +3,6 @@ package com.michaeltroger.gruenerpass.utils
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
-import java.lang.Exception
 
 fun waitUntilIdle() {
     UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
