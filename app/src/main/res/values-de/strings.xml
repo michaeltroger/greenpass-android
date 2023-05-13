@@ -35,4 +35,6 @@
     <string name="share">Teilen</string>
     <string name="changelog">Änderungsprotokoll</string>
     <string name="changelog_summary">Änderungen in dieser App-Version</string>
+    <string name="delete_all">Delete all</string>
+    <string name="dialog_delete_all_confirmation_message">Do you really want to delete all documents from the app?</string>
 </resources>
