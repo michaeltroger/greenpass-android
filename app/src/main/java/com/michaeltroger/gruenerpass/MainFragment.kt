@@ -176,17 +176,20 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             showDoYouWantToDeleteAllDialog()
             true
         }
+        R.id.lock -> {
+            vm.lockApp()
+            true
+        }
         else -> false
     }
 
     private fun updateMenuState() {
         menu?.apply {
-            findItem(R.id.add)?.isVisible = vm.viewState.value is ViewState.Normal
-
-            val isUnlocked = vm.viewState.value is ViewState.Normal ||
-                vm.viewState.value is ViewState.Empty
-            findItem(R.id.openSettings)?.isVisible = isUnlocked
-            findItem(R.id.deleteAll)?.isVisible = isUnlocked
+            val state = vm.viewState.value
+            findItem(R.id.add)?.isVisible = state.showAddMenuItem
+            findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
+            findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
+            findItem(R.id.lock)?.isVisible = state.showLockMenuItem
         }
     }
 
