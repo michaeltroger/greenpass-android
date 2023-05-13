@@ -186,10 +186,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun updateMenuState() {
         menu?.apply {
             val state = vm.viewState.value
-            findItem(R.id.add)?.isVisible = state.showAddButton
-            findItem(R.id.openSettings)?.isVisible = state.showOpenSettingsButton
-            findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllButton
-            findItem(R.id.lock)?.isVisible = state.showLockAppButton
+            findItem(R.id.add)?.isVisible = state.showAddMenuItem
+            findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
+            findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
+            findItem(R.id.lock)?.isVisible = state.showLockMenuItem
         }
     }
 

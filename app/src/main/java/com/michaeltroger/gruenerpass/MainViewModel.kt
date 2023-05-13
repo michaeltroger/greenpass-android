@@ -69,14 +69,14 @@ class MainViewModel(
             if (docs.isEmpty()) {
                 _viewState.emit(ViewState.Empty(
                     fullBrightness = fullScreenBrightness,
-                    showLockAppButton = shouldAuthenticate,
+                    showLockMenuItem = shouldAuthenticate,
                 ))
             } else {
                 _viewState.emit(ViewState.Normal(
                     documents = docs,
                     searchQrCode = preferenceManager.searchForQrCode(),
                     fullBrightness = fullScreenBrightness,
-                    showLockAppButton = shouldAuthenticate,
+                    showLockMenuItem = shouldAuthenticate,
                 ))
             }
         }
