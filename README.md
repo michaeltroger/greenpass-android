@@ -15,9 +15,9 @@ Help translating the app: https://crwd.in/green-pass
     height="80">](https://f-droid.org/packages/com.michaeltroger.gruenerpass)
 
 [<img src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png"
-    alt="Available at Amazon Appstore" height="55" style="margin:12px">](http://www.amazon.com/gp/mas/dl/android?p=com.michaeltroger.gruenerpass)
+    alt="Available at Amazon Appstore" height="55">](http://www.amazon.com/gp/mas/dl/android?p=com.michaeltroger.gruenerpass)
 [<img src="https://developer.huawei.com/consumer/cn/service/josp/csp/activity/img/Badge-Black.9d53c6f4.png"
-    alt="Explore it on Huawei AppGallery" height="55" style="margin:12px">](https://appgallery.huawei.com/app/C108212859)
+    alt="Explore it on Huawei AppGallery" height="55">](https://appgallery.huawei.com/app/C108212859)
 
 <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg" width="200">
 
