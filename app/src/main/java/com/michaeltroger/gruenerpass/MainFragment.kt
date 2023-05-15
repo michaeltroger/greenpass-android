@@ -50,7 +50,7 @@ import kotlinx.coroutines.newSingleThreadContext
 
 private const val WIDTH_FACTOR_MULTIPLE_DOCS = 0.95
 private const val TOUCH_SLOP_FACTOR = 8
-private const val SCROLL_TO_LAST_DELAY_MS = 1000L
+private const val SCROLL_TO_DELAY_MS = 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
@@ -137,8 +137,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                         ViewEvent.CloseAllDialogs -> closeAllDialogs()
                         ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
-                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificateAfterItemUpdate()
-                        ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificateAfterItemUpdate()
+                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate()
+                        ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate()
                     }
                 }
             }
@@ -199,6 +199,14 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             openShareAllFilePicker()
             true
         }
+        R.id.scrollToFirst -> {
+            scrollToFirstCertificate(delayMs = 0)
+            true
+        }
+        R.id.scrollToLast -> {
+            scrollToLastCertificate(delayMs = 0)
+            true
+        }
         else -> false
     }
 
@@ -209,6 +217,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
             findItem(R.id.lock)?.isVisible = state.showLockMenuItem
             findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
+            findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
+            findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
         }
     }
 
@@ -278,16 +288,16 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         adapter.update(items)
     }
 
-    private fun scrollToLastCertificateAfterItemUpdate() {
+    private fun scrollToLastCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
        lifecycleScope.launch {
-           delay(SCROLL_TO_LAST_DELAY_MS)
+           delay(delayMs)
            binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
        }
     }
 
-    private fun scrollToFirstCertificateAfterItemUpdate() {
+    private fun scrollToFirstCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
         lifecycleScope.launch {
-            delay(SCROLL_TO_LAST_DELAY_MS)
+            delay(delayMs)
             binding.certificates.smoothScrollToPosition(0)
         }
     }

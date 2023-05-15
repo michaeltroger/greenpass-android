@@ -76,6 +76,8 @@ class MainViewModel(
                     searchQrCode = preferenceManager.searchForQrCode(),
                     fullBrightness = fullScreenBrightness,
                     showLockMenuItem = shouldAuthenticate,
+                    showScrollToFirstMenuItem = docs.size > 1,
+                    showScrollToLastMenuItem = docs.size > 1,
                 ))
             }
         }

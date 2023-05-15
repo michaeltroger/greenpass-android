@@ -32,6 +32,18 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/scrollToFirst"
+        android:title="@string/scroll_to_first"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/scrollToLast"
+        android:title="@string/scroll_to_last"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/lock"
         android:title="@string/lock"
         android:visible="false"
