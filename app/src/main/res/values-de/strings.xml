@@ -41,4 +41,6 @@
     <string name="export_all">Alle exportieren</string>
     <string name="preference_add_documents_front">Dokumente vorne einfügen</string>
     <string name="preference_add_documents_front_description">Neue PDFs werden vorne statt hinten eingefügt</string>
+    <string name="scroll_to_first">Zum ersten PDF scrollen</string>
+    <string name="scroll_to_last">Zum letzten PDF scrollen</string>
 </resources>
