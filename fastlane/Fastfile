@@ -1,12 +1,8 @@
 opt_out_usage
 
-aab_dir = ENV["AAB_DIR"]
-apk_dir = ENV["APK_DIR"]
-version_code = ENV["VERSION_CODE"]
-
 lane :google do
     upload_to_play_store(
-      aab: "#{aab_dir}/app-release.aab",
+      aab: ENV["AAB_FILE"],
       json_key_data: ENV["PLAYSTORE_KEY"],
       track: "internal",
     )
@@ -17,17 +13,16 @@ lane :huawei do
         client_id: ENV["HUAWEI_CLIENT_ID"],
         client_secret: ENV["HUAWEI_CLIENT_SECRET"],
         app_id: "108212859",
-        apk_path: "#{aab_dir}/app-release.aab",
+        apk_path: ENV["AAB_FILE"],
         is_aab: true,
         submit_for_review: false,
         phase_wise_release: false,
-        changelog_path: "fastlane/metadata/android/en-US/changelogs/#{version_code}.txt",
     )
 end
 
 lane :amazon do
     upload_to_amazon_appstore(
-      apk: "#{apk_dir}/app-release.apk",
+      apk: ENV["APK_FILE"],
       client_id: ENV["AMAZON_CLIENT_ID"],
       client_secret: ENV["AMAZON_CLIENT_SECRET"],
       changes_not_sent_for_review: true,
