@@ -27,8 +27,8 @@ jobs:
       JAVA_VERSION: '17'
       RUBY_VERSION: '3.2.2'
       CREDENTIALS_DIR: 'credentials'
-      AAB_DIR: 'app/build/outputs/bundle/release'
-      APK_DIR: 'app/build/outputs/apk/release'
+      AAB_FILE: 'app/build/outputs/bundle/release/app-release.aab'
+      APK_FILE: 'app/build/outputs/apk/release/app-release.apk'
 
     steps:
     - name: Checkout repo
@@ -73,7 +73,7 @@ jobs:
         tag: ${{ env.VERSION_CODE }}
         name: ${{ env.VERSION_NAME }}
         bodyFile: fastlane/metadata/android/en-US/changelogs/${{ env.VERSION_CODE }}.txt
-        artifacts: ${{ env.APK_DIR }}/app-release.apk
+        artifacts: ${{ env.APK_FILE }}
         makeLatest: true
         skipIfReleaseExists: true
         artifactErrorsFailBuild: true
