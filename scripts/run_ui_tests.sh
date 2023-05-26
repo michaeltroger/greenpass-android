@@ -2,8 +2,6 @@
 
 set -e # fail on errors
 
-cd ../
-
 rm -rd screenshots
 
 adb root
