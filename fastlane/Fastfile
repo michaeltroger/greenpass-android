@@ -2,8 +2,8 @@ opt_out_usage
 
 lane :google do
     upload_to_play_store(
-      aab: ENV["AAB_FILE"],
       json_key_data: ENV["PLAYSTORE_KEY"],
+      aab: ENV["AAB_FILE"],
       track: "internal",
     )
 end
@@ -16,15 +16,14 @@ lane :huawei do
         apk_path: ENV["AAB_FILE"],
         is_aab: true,
         submit_for_review: false,
-        phase_wise_release: false,
     )
 end
 
 lane :amazon do
     upload_to_amazon_appstore(
-      apk: ENV["APK_FILE"],
       client_id: ENV["AMAZON_CLIENT_ID"],
       client_secret: ENV["AMAZON_CLIENT_SECRET"],
+      apk: ENV["APK_FILE"],
       changes_not_sent_for_review: true,
     )
 end
