@@ -22,7 +22,7 @@ jobs:
       with:
         java-version: ${{ env.JAVA_VERSION }}
         distribution: 'temurin'
-        cache: gradle
+        cache: 'gradle'
     - name: Run Detekt
       run: ./gradlew detekt
     - name: Run Lint
