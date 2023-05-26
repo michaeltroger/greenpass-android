@@ -25,7 +25,6 @@ jobs:
 
     env:
       JAVA_VERSION: '17'
-      RUBY_VERSION: '3.2.2'
       CREDENTIALS_DIR: 'credentials'
       AAB_FILE: 'app/build/outputs/bundle/release/app-release.aab'
       APK_FILE: 'app/build/outputs/apk/release/app-release.apk'
@@ -81,7 +80,7 @@ jobs:
     - name: Setup Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
 
     - name: Setup Fastlane
       run: bundle install
