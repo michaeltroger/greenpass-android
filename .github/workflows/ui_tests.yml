@@ -33,7 +33,7 @@ jobs:
           disable-spellchecker: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./run_ui_tests.sh
+          script: scripts/run_ui_tests.sh
       - name: Upload screenshots
         uses: actions/upload-artifact@v3
         with:
