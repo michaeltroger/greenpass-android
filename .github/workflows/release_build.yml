@@ -82,9 +82,6 @@ jobs:
       with:
         bundler-cache: true
 
-    - name: Setup Fastlane
-      run: bundle install
-
     - name: Upload app to Google Play
       if: ${{ inputs.upload_to_google }}
       run: |
