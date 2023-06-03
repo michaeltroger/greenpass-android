@@ -63,8 +63,8 @@ jobs:
 
     - name: Extract version code and version name
       run: |
-        echo "VERSION_NAME="$(sh scripts/get_version_name.sh)"" >> $GITHUB_ENV
-        echo "VERSION_CODE="$(sh scripts/get_version_code.sh)"" >> $GITHUB_ENV
+        echo "VERSION_NAME="$(scripts/get_version_name)"" >> $GITHUB_ENV
+        echo "VERSION_CODE="$(scripts/get_version_code)"" >> $GITHUB_ENV
 
     - name: Create tag and release on GitHub if not already done
       uses: ncipollo/release-action@v1
