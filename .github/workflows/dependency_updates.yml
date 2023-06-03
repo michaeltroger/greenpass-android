@@ -26,7 +26,7 @@ jobs:
     - name: Create license report
       run: |
         ./gradlew generateLicenseReport
-        sed -i '/<p id="timestamp">/,+5d' docs/licenses/index.html
+        sed -i '/<p id="timestamp">/,/<\/p>/d' docs/licenses/index.html
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
