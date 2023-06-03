@@ -56,4 +56,3 @@ jobs:
           path: |
             app/build/reports/androidTests/connected/
             app/build/error_screenshots/
-            - name: Create Pull Request
