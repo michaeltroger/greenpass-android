@@ -78,6 +78,7 @@ jobs:
         artifactErrorsFailBuild: true
 
     - name: Setup Ruby
+      if: ${{ inputs.upload_to_amazon || inputs.upload_to_google || inputs.upload_to_huawei }}
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
