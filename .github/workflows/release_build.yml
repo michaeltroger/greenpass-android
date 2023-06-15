@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      JAVA_VERSION: '17'
+      JAVA_VERSION: '19'
       CREDENTIALS_DIR: 'credentials'
       AAB_FILE: 'app/build/outputs/bundle/release/app-release.aab'
       APK_FILE: 'app/build/outputs/apk/release/app-release.apk'

@@ -73,22 +73,22 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "19"
         allWarningsAsErrors = true
     }
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(19)
 }
 
 tasks.withType<Detekt> {
-    jvmTarget = "17"
+    jvmTarget = "19"
 }
 
 licenseReport {
