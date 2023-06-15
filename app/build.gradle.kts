@@ -1,5 +1,4 @@
 import com.github.jk1.license.filter.*
-import io.gitlab.arturbosch.detekt.Detekt
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.Properties
@@ -78,18 +77,11 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "19"
         allWarningsAsErrors = true
     }
 }
 
-kotlin {
-    jvmToolchain(19)
-}
-
-tasks.withType<Detekt> {
-    jvmTarget = "19"
-}
+kotlin.jvmToolchain(19)
 
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
