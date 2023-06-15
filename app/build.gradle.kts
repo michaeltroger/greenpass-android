@@ -70,14 +70,15 @@ android {
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
+    
+    
+    kotlinOptions {
+        allWarningsAsErrors = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_19
         targetCompatibility = JavaVersion.VERSION_19
-    }
-
-    kotlinOptions {
-        allWarningsAsErrors = true
     }
 }
 
