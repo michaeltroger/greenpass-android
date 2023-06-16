@@ -35,7 +35,7 @@ jobs:
           sdcard-path-or-size: 1000M
           force-avd-creation: true
           disable-spellchecker: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -cores 2
           disable-animations: true
           script: scripts/run_ui_tests
       - name: Upload screenshots
