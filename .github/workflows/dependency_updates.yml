@@ -25,6 +25,8 @@ jobs:
         java-version: ${{ env.JAVA_VERSION }}
         distribution: 'temurin'
         cache: 'gradle'
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
     - name: Update dependencies
       run: ./gradlew versionCatalogUpdate
     - name: Create license report
