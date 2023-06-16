@@ -13,7 +13,7 @@ jobs:
   test:
     runs-on: macos-latest
     env:
-      JAVA_VERSION: '19'
+      JAVA_VERSION: '17'
 
     steps:
       - name: checkout
@@ -24,8 +24,6 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'gradle'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
