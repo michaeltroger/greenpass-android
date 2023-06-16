@@ -12,6 +12,8 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
 }
 
+kotlin.jvmToolchain(libs.versions.java.get().toInt())
+
 android {
     namespace = "com.michaeltroger.gruenerpass"
     compileSdk = 33
@@ -70,19 +72,11 @@ android {
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
-    
-    
+
     kotlinOptions {
         allWarningsAsErrors = true
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
-        targetCompatibility = JavaVersion.VERSION_19
-    }
 }
-
-kotlin.jvmToolchain(19)
 
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
