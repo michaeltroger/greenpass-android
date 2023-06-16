@@ -27,9 +27,9 @@ jobs:
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 31
+          api-level: 34
           arch: x86_64
-          target: default
+          target: google_apis
           profile: pixel_6_pro
           emulator-boot-timeout: 1000
           sdcard-path-or-size: 1000M
