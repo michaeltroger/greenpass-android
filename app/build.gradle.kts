@@ -12,7 +12,7 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
 }
 
-kotlin.jvmToolchain(19)
+kotlin.jvmToolchain(17)
 
 android {
     namespace = "com.michaeltroger.gruenerpass"
