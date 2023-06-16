@@ -12,8 +12,6 @@ plugins {
     alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
 }
 
-kotlin.jvmToolchain(17)
-
 android {
     namespace = "com.michaeltroger.gruenerpass"
     compileSdk = 33
@@ -76,7 +74,14 @@ android {
     kotlinOptions {
         allWarningsAsErrors = true
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
+
+kotlin.jvmToolchain(17)
 
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
