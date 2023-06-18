@@ -4,6 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
+import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
@@ -14,13 +15,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-private const val TAG_LOADED = "pdf_loaded"
+private const val TAG_PDF_LOADED = "pdf_loaded"
+private const val TAG_QR_LOADED = "qr_loaded"
 
 class PdfPageItem(
     private val renderer: PdfRenderer,
     private val fileName: String,
-    private val pageIndex: Int
+    private val pageIndex: Int,
+    private val searchQrCode: Boolean,
     ) : BindableItem<ItemPdfPageBinding>() {
+
+    private val qrRenderer = Locator.qrRenderer()
 
     private val scope = CoroutineScope(
         Job() + Dispatchers.Main
@@ -31,9 +36,16 @@ class PdfPageItem(
 
     override fun bind(viewBinding: ItemPdfPageBinding, position: Int) {
         scope.launch {
-            renderer.renderPage(pageIndex)?.let {
+            val page = renderer.renderPage(pageIndex)
+            if (searchQrCode) {
+                qrRenderer.getQrCodeIfPresent(page)?.let {
+                    viewBinding.qrcode.setImageBitmap(it)
+                    viewBinding.qrcode.tag = TAG_QR_LOADED
+                }
+            }
+            page?.let {
                 viewBinding.pdfPage.setImageBitmap(it)
-                viewBinding.pdfPage.tag = TAG_LOADED
+                viewBinding.pdfPage.tag = TAG_PDF_LOADED
             }
             viewBinding.progressIndicator.isVisible = false
         }

@@ -21,6 +21,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <ImageView
+        android:id="@+id/qrcode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/qr_code"
+        android:adjustViewBounds="true"
+        android:layout_marginBottom="@dimen/space_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/pdf_page"
         android:layout_width="0dp"
@@ -28,5 +39,5 @@
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/qrcode"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

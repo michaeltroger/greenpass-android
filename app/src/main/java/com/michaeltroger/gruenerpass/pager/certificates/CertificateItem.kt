@@ -8,7 +8,6 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
-import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.xwray.groupie.Group
@@ -69,11 +68,8 @@ class CertificateItem(
                 },
                 onShareCalled = onShareCalled,
             ))
-            if (searchQrCode) {
-                itemList.add(QrCodeItem(renderer, fileName = fileName))
-            }
             for (pageIndex in 0 until renderer.getPageCount()) {
-                itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
+                itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName, searchQrCode = searchQrCode))
             }
             adapter.update(itemList)
         }
