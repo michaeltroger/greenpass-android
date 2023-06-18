@@ -15,8 +15,6 @@ import kotlinx.coroutines.withContext
 private const val PDF_RESOLUTION_MULTIPLIER = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
-const val PAGE_INDEX_QR_CODE = 0
-
 object PdfRendererBuilder {
     fun create(
         context: Context,
