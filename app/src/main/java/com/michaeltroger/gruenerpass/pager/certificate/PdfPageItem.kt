@@ -6,13 +6,13 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
-import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
+import com.xwray.groupie.viewbinding.GroupieViewHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 private const val TAG_PDF_LOADED = "pdf_loaded"
@@ -28,32 +28,33 @@ class PdfPageItem(
     private val qrRenderer = Locator.qrRenderer()
 
     private val scope = CoroutineScope(
-        Job() + Dispatchers.Main
+        SupervisorJob() + Dispatchers.Main
     )
+
+    private var job: Job? = null
 
     override fun initializeViewBinding(view: View): ItemPdfPageBinding = ItemPdfPageBinding.bind(view)
     override fun getLayout() = R.layout.item_pdf_page
 
     override fun bind(viewBinding: ItemPdfPageBinding, position: Int) {
-        scope.launch {
-            val page = renderer.renderPage(pageIndex)
+        job = scope.launch {
+            val page = renderer.renderPage(pageIndex) ?: return@launch
             if (searchQrCode) {
-                qrRenderer.getQrCodeIfPresent(page)?.let {
-                    viewBinding.qrcode.setImageBitmap(it)
+                qrRenderer.getQrCodeIfPresent(page)?.let { qrCode ->
+                    viewBinding.qrcode.setImageBitmap(qrCode)
                     viewBinding.qrcode.tag = TAG_QR_LOADED
                 }
             }
-            page?.let {
-                viewBinding.pdfPage.setImageBitmap(it)
-                viewBinding.pdfPage.tag = TAG_PDF_LOADED
-            }
-            viewBinding.progressIndicator.isVisible = false
+            viewBinding.pdfPage.setImageBitmap(page)
+            viewBinding.pdfPage.tag = TAG_PDF_LOADED
+
+            viewBinding.progressIndicatorWrapper.isVisible = false
         }
     }
 
-    override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
-        super.unregisterGroupDataObserver(groupDataObserver)
-        scope.cancel()
+    override fun unbind(viewHolder: GroupieViewHolder<ItemPdfPageBinding>) {
+        super.unbind(viewHolder)
+        job?.cancel()
     }
 
     override fun isSameAs(other: Item<*>): Boolean {
