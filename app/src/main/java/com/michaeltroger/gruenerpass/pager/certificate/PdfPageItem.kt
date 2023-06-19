@@ -42,6 +42,7 @@ class PdfPageItem(
             if (searchQrCode) {
                 qrRenderer.getQrCodeIfPresent(page)?.let { qrCode ->
                     viewBinding.qrcode.setImageBitmap(qrCode)
+                    viewBinding.qrcodeWrapper.isVisible = true
                     viewBinding.qrcode.tag = TAG_QR_LOADED
                 }
             }

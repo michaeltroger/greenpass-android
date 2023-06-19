@@ -12,7 +12,6 @@
         android:id="@+id/progress_indicator_wrapper"
         android:layout_width="0dp"
         android:layout_height="400dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,16 +26,28 @@
 
     </FrameLayout>
 
-    <ImageView
-        android:id="@+id/qrcode"
+    <LinearLayout
+        android:id="@+id/qrcode_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/qr_code"
-        android:adjustViewBounds="true"
-        android:layout_marginBottom="@dimen/space_small"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/qrcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/qr_code"
+            android:adjustViewBounds="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/dotted"/>
+    </LinearLayout>
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/pdf_page"
@@ -45,5 +56,5 @@
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/qrcode"/>
+        app:layout_constraintTop_toBottomOf="@id/qrcode_wrapper"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
