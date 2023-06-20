@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
+import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
@@ -72,7 +73,8 @@ class CertificateItem(
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(
                     PdfPageItem(
-                        renderer = renderer,
+                        pdfRenderer = renderer,
+                        qrRenderer = Locator.qrRenderer(),
                         pageIndex = pageIndex,
                         fileName = fileName,
                         searchQrCode = searchQrCode
