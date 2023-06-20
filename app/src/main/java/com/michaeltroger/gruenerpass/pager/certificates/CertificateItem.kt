@@ -70,7 +70,14 @@ class CertificateItem(
                 onShareCalled = onShareCalled,
             ))
             for (pageIndex in 0 until renderer.getPageCount()) {
-                itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName, searchQrCode = searchQrCode))
+                itemList.add(
+                    PdfPageItem(
+                        renderer = renderer,
+                        pageIndex = pageIndex,
+                        fileName = fileName,
+                        searchQrCode = searchQrCode
+                    )
+                )
             }
             adapter.update(itemList)
         }
