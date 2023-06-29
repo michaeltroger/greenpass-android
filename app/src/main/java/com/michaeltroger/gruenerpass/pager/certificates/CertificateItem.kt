@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
+import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
-import com.michaeltroger.gruenerpass.pager.certificate.QrCodeItem
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.xwray.groupie.Group
-import com.xwray.groupie.GroupDataObserver
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
@@ -21,7 +20,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 @Suppress("LongParameterList")
@@ -41,8 +40,10 @@ class CertificateItem(
 
     private val adapter = GroupieAdapter()
     private val scope = CoroutineScope(
-        Job() + Dispatchers.Main
+        SupervisorJob() + Dispatchers.Main
     )
+
+    private var job: Job? = null
 
     override fun initializeViewBinding(view: View): ItemCertificateBinding = ItemCertificateBinding.bind(view)
     override fun getLayout() = R.layout.item_certificate
@@ -57,7 +58,7 @@ class CertificateItem(
         super.bind(viewHolder, position, payloads)
         viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
         viewHolder.binding.certificate.adapter = adapter
-        scope.launch {
+        job = scope.launch {
             val itemList = mutableListOf<Group>()
             itemList.add(CertificateHeaderItem(
                 documentName = documentName,
@@ -69,19 +70,24 @@ class CertificateItem(
                 },
                 onShareCalled = onShareCalled,
             ))
-            if (searchQrCode) {
-                itemList.add(QrCodeItem(renderer, fileName = fileName))
-            }
             for (pageIndex in 0 until renderer.getPageCount()) {
-                itemList.add(PdfPageItem(renderer, pageIndex = pageIndex, fileName = fileName))
+                itemList.add(
+                    PdfPageItem(
+                        pdfRenderer = renderer,
+                        qrRenderer = Locator.qrRenderer(),
+                        pageIndex = pageIndex,
+                        fileName = fileName,
+                        searchQrCode = searchQrCode
+                    )
+                )
             }
             adapter.update(itemList)
         }
     }
 
-    override fun unregisterGroupDataObserver(groupDataObserver: GroupDataObserver) {
-        super.unregisterGroupDataObserver(groupDataObserver)
-        scope.cancel()
+    override fun unbind(viewHolder: GroupieViewHolder<ItemCertificateBinding>) {
+        super.unbind(viewHolder)
+        job?.cancel()
     }
 
     override fun isSameAs(other: Item<*>): Boolean {
