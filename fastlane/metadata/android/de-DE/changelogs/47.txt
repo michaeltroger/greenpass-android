@@ -1,0 +1,6 @@
+- Erlaubt das Suchen nach einem QR-Code nun auf jeder PDF-Seite (vorher nur auf der 1.)
+- Neue Option um zum ersten/letzten PDF zu scrollen
+- Performance-Verbesserungen
+- Kleine Verbesserungen an der Benutzeroberfläche
+- Behebt einen Fehler bei dem das Dokument nicht geladen hat (endloser Ladebalken)
+- Aktualisierung aller Abhängigkeiten (Dependencies)
