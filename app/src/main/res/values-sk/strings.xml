@@ -14,7 +14,7 @@
     <string name="dialog_delete_confirmation_message">Do you really want to delete the document from the app?</string>
     <string name="require_authentication">Require authentication</string>
     <string name="preference_search_qr">Extract QR code</string>
-    <string name="preference_search_qr_description">Scan the first PDF page for a QR code.</string>
+    <string name="preference_search_qr_description">Scan each PDF page for a QR code.</string>
     <string name="settings">Settings</string>
     <string name="authenticate">Authenticate</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
