@@ -6,13 +6,13 @@ Inoffizielle App, deren Quellcode vollständig öffentlich ist. Diese App ist ei
 - Fertig
 
 <b>Kurzanleitung Alternativ</b>
-- Dateibrowser, Email-App, Browser, Adobe Reader oder ähnliche App öffnen
-- PDF mit "Grüner Pass" teilen
+- Dateibrowser, Email-App, Web-Browser, Adobe Reader oder ähnliche App öffnen
+- PDF mit "Grüner Pass" öffnen/teilen
 - Fertig
 
 <b>Beschreibung</b>
 Sehr simple App, die nichts anderes macht als PDF Zertifikate bequem aufzubewahren und anzuzeigen. Namensgebung "Grüner Pass": In einigen europäischen Ländern ist der Grüne Pass ein PDF Dokument mit QR Code (EU Digital Certificate), das von den lokalen Behörden heruntergeladen werden kann. Da es sich hier um einen universalen Ansatz handelt, funktionieren aber PDF Zertifikate aller Art.
-Die PDF-Datei muss in die App importiert werden. Anschließend wird der QR Code im Vollbild angezeigt (nur falls auf 1. Seite Ihres PDF vorhanden), sowie das PDF selbst. Das war's auch schon.
+Die PDF-Datei muss in die App importiert werden. Anschließend wird der QR Code im Vollbild angezeigt (nur falls auf Ihrer PDF-Seite vorhanden), sowie das PDF-Dokument selbst. Das war's auch schon.
 
 <b>Mehr Funktionen</b>
 - Authentifizierung
