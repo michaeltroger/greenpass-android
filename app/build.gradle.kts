@@ -56,7 +56,7 @@ android {
                         storeFile = rootProject.file("credentials/${keystoreProperties.getProperty("STORE_FILE")}")
                         storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
                     } catch(ignored: IOException) {
-                        println("Ignored: $ignored") // We don't have release keys, ignoring
+                        println("No signing configuration found, ignoring: $ignored")
                     }
                 }
             }
