@@ -1,0 +1,2 @@
+- Android 14 Support
+- Aktualisierung der genutzten Bibliotheken
