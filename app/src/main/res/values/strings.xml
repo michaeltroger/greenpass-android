@@ -42,4 +42,5 @@
     <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back</string>
     <string name="scroll_to_first">Scroll to first PDF</string>
     <string name="scroll_to_last">Scroll to last PDF</string>
+    <string name="pdfs">PDFs</string>
 </resources>
