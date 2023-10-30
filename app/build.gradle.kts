@@ -14,12 +14,12 @@ plugins {
 
 android {
     namespace = "com.michaeltroger.gruenerpass"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.michaeltroger.gruenerpass"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 47
         versionName = "3.1.0"
 
