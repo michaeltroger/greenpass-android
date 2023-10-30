@@ -1,4 +1,4 @@
-Unofficial app that is fully open source. This app is a simple to use PDF Wallet. That means it takes over the task to store and display your most important PDF certificates. It includes a convenient fullscreen QR code rendering, if a QR Code is present in the PDF's 1. page.
+Unofficial app that is fully open source. This app is a simple to use PDF Wallet. That means it takes over the task to store and display your most important PDF certificates. It includes a convenient fullscreen QR code rendering, if a QR Code is present in the PDF.
 
 <b>Brief Instruction</b>
 - Open "Green Pass"
@@ -12,7 +12,7 @@ Unofficial app that is fully open source. This app is a simple to use PDF Wallet
 
 <b>Description</b>
 Very simple app, that does nothing more than conveniently storing and displaying PDF certificates. Naming "Green Pass": In some European countries, the Green Pass is a PDF document with QR code (EU Digital Certificate) that can be downloaded from the local authorities. Since this app follows a universal approach, other PDF certificates work as well though.
-The PDF file has to be imported into the app. Following the QR code is displayed in fullscreen (only if present in the PDF's page), as well as the PDF document itself. That's already it.
+The PDF file has to be imported into the app. Following the QR code is displayed in fullscreen, as well as the PDF document itself. That's already it.
 
 <b>More Features</b>
 - Authentication
