@@ -55,10 +55,13 @@
             </intent-filter>
         </activity>
         <provider
-            android:name=".file.PdfFileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="@string/pdf_file_provider_authority"
             android:exported="false"
             android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
         </provider>
     </application>
 
