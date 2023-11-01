@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GruenerPass"
         tools:ignore="DataExtractionRules"
-        tools:targetApi="s" >
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="tiramisu" >
 
         <activity
             android:name=".deeplinking.DeeplinkActivity"
