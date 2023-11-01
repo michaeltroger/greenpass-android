@@ -64,6 +64,10 @@ android {
         }
     }
 
+    lint {
+        warningsAsErrors = true
+    }
+
     testOptions {
         unitTests {
             isIncludeAndroidResources = true

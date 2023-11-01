@@ -5,4 +5,5 @@
         <ignore path="*"/>
     </issue>
     <issue id="MissingTranslation" severity="ignore" />
+    <issue id="GradleDependency" severity="ignore" />
 </lint>
