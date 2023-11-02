@@ -40,6 +40,8 @@
     <string name="export_all">Export all</string>
     <string name="preference_add_documents_front">Add documents in front</string>
     <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back</string>
+    <string name="preference_add_show_on_locked_screen">Show over lock screen</string>
+    <string name="preference_add_show_on_locked_screen_description">Show PDFs even when screen is locked</string>
     <string name="scroll_to_first">Scroll to first PDF</string>
     <string name="scroll_to_last">Scroll to last PDF</string>
     <string name="pdfs">PDFs</string>

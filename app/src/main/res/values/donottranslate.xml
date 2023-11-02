@@ -8,6 +8,7 @@
     <string name="key_preference_biometric">shouldAuthenticate</string>
     <string name="key_preference_search_for_qr_code">searchForQrCode</string>
     <string name="key_preference_full_brightness">fullBrightness</string>
+    <string name="key_preference_show_on_locked_screen">showOnLockedScreen</string>
     <string name="key_preference_version">version</string>
     <string name="licenses_uri">https://michaeltroger.github.io/greenpass-android/licenses</string>
     <string name="pdf_file_provider_authority">com.michaeltroger.gruenerpass.pdffileprovider</string>
