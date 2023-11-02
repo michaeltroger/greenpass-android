@@ -10,6 +10,7 @@ interface PreferenceListener {
 
 interface PreferenceManager {
     fun fullScreenBrightness(): Boolean
+    fun showOnLockedScreen(): Boolean
     fun searchForQrCode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
@@ -24,6 +25,7 @@ class PreferenceManagerImpl(
 
     private var preferenceListener: PreferenceListener? = null
     private var fullScreenBrightness: Boolean = false
+    private var showOnLockedScreen: Boolean = false
     private var searchForQrCode: Boolean = true
     private var shouldAuthenticate = false
     private var addDocumentsFront: Boolean = false
@@ -43,6 +45,10 @@ class PreferenceManagerImpl(
             context.getString(R.string.key_preference_full_brightness),
             false
         )
+        showOnLockedScreen = preferenceManager.getBoolean(
+            context.getString(R.string.key_preference_show_on_locked_screen),
+            false
+        )
         addDocumentsFront = preferenceManager.getBoolean(
             context.getString(R.string.key_preference_add_documents_front),
             false
@@ -51,6 +57,10 @@ class PreferenceManagerImpl(
 
     override fun fullScreenBrightness(): Boolean {
         return fullScreenBrightness
+    }
+
+    override fun showOnLockedScreen(): Boolean {
+        return showOnLockedScreen
     }
 
     override fun searchForQrCode(): Boolean {
@@ -75,6 +85,9 @@ class PreferenceManagerImpl(
             }
             context.getString(R.string.key_preference_full_brightness) -> {
                 fullScreenBrightness = sharedPreferences.getBoolean(key, false)
+            }
+            context.getString(R.string.key_preference_show_on_locked_screen) -> {
+                showOnLockedScreen = sharedPreferences.getBoolean(key, false)
             }
             context.getString(R.string.key_preference_add_documents_front) -> {
                 addDocumentsFront = sharedPreferences.getBoolean(key, false)

@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -148,6 +149,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun updateState(state: ViewState) {
         updateMenuState(state)
         updateScreenBrightness(fullBrightness = state.fullBrightness)
+        updateShowOnLockedScreen(showOnLockedScreen = state.showOnLockedScreen)
         binding.addButton.isVisible = state.showAddButton
         binding.authenticate.isVisible = state.showAuthenticateButton
         when (state) {
@@ -371,6 +373,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                 }
             }
             addFlags(LayoutParams.SCREEN_BRIGHTNESS_CHANGED)
+        }
+    }
+
+    private fun updateShowOnLockedScreen(showOnLockedScreen: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            requireActivity().setShowWhenLocked(showOnLockedScreen)
         }
     }
 

@@ -36,7 +36,10 @@ class MainViewModel(
 ): AndroidViewModel(app), PreferenceListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
-        ViewState.Initial(fullBrightness = preferenceManager.fullScreenBrightness())
+        ViewState.Initial(
+            fullBrightness = preferenceManager.fullScreenBrightness(),
+            showOnLockedScreen = preferenceManager.showOnLockedScreen()
+        )
     )
     val viewState: StateFlow<ViewState> = _viewState
 
@@ -57,11 +60,13 @@ class MainViewModel(
 
     private suspend fun updateState() {
         val fullScreenBrightness = preferenceManager.fullScreenBrightness()
+        val showOnLockedScreen = preferenceManager.showOnLockedScreen()
         val shouldAuthenticate = preferenceManager.shouldAuthenticate()
 
         if (shouldAuthenticate && isLocked) {
             _viewState.emit(ViewState.Locked(
                 fullBrightness = fullScreenBrightness,
+                showOnLockedScreen = showOnLockedScreen
             ))
         } else {
             val docs = db.getAll()
@@ -69,6 +74,7 @@ class MainViewModel(
                 _viewState.emit(ViewState.Empty(
                     fullBrightness = fullScreenBrightness,
                     showLockMenuItem = shouldAuthenticate,
+                    showOnLockedScreen = showOnLockedScreen
                 ))
             } else {
                 _viewState.emit(ViewState.Normal(
@@ -78,6 +84,7 @@ class MainViewModel(
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = docs.size > 1,
                     showScrollToLastMenuItem = docs.size > 1,
+                    showOnLockedScreen = showOnLockedScreen
                 ))
             }
         }

@@ -1,9 +1,11 @@
 package com.michaeltroger.gruenerpass.settings
 
+import android.os.Build
 import android.os.Bundle
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.locator.Locator
@@ -13,12 +15,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
 
+        setupBiometricSetting()
+        setupLockscreenSetting()
+    }
+
+    private fun setupLockscreenSetting() {
+        val preference = findPreference<Preference>(
+            getString(R.string.key_preference_show_on_locked_screen)
+        ) ?: error("Preference is required")
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            preference.isVisible = true
+        }
+    }
+
+    private fun setupBiometricSetting() {
         val preference = findPreference<ValidateSwitchPreferenceCompat>(
             getString(R.string.key_preference_biometric)
         ) ?: error("Preference is required")
 
         if (BiometricManager.from(requireContext())
-                .canAuthenticate(AUTHENTICATORS) == BiometricManager.BIOMETRIC_SUCCESS) {
+                .canAuthenticate(AUTHENTICATORS) == BiometricManager.BIOMETRIC_SUCCESS
+        ) {
             preference.isVisible = true
         }
 

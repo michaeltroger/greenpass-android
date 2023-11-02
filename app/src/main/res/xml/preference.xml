@@ -28,4 +28,12 @@
         android:title="@string/preference_add_documents_front"
         android:summary="@string/preference_add_documents_front_description"
         android:defaultValue="false"/>
+
+    <SwitchPreference
+        android:key="@string/key_preference_show_on_locked_screen"
+        android:icon="@drawable/door_open_24"
+        android:title="@string/preference_add_show_on_locked_screen"
+        android:summary="@string/preference_add_show_on_locked_screen_description"
+        android:defaultValue="false"
+        app:isPreferenceVisible="false"/>
 </PreferenceScreen>
