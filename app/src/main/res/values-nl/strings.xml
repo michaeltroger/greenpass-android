@@ -41,6 +41,8 @@
     <string name="export_all">Alle exporteren</string>
     <string name="preference_add_documents_front">Documenten vooraan toevoegen</string>
     <string name="preference_add_documents_front_description">Nieuwe Pdf\'s worden vooraan geplaatst in plaats van achteraan</string>
+    <string name="preference_add_show_on_locked_screen">Show over lock screen</string>
+    <string name="preference_add_show_on_locked_screen_description">Show PDFs even when screen is locked</string>
     <string name="scroll_to_first">Naar eerste PDF scrollen</string>
     <string name="scroll_to_last">Naar laatste PDF scrollen</string>
     <string name="pdfs">PDFs</string>
