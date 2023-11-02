@@ -1,0 +1,3 @@
+- Android 14 support
+- PDFs can be (optionally) shown on lock screen
+- Support for "Predictive back gesture", an Android 14 feature
