@@ -13,6 +13,8 @@ import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -57,6 +59,7 @@ private const val PDF_MIME_TYPE = "application/pdf"
 @Suppress("TooManyFunctions")
 class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
+    private var searchView: SearchView? = null
     private var menu: Menu? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
 
@@ -171,7 +174,23 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.menu, menu)
         this.menu = menu
+
+        val searchMenuItem = menu.findItem(R.id.search)
+        searchView = searchMenuItem.actionView as SearchView
+        searchView?.queryHint = requireContext().getString(R.string.search_query_hint)
+        if (vm.filter.isNotEmpty()) {
+            searchMenuItem.expandActionView()
+            searchView?.setQuery(vm.filter, false)
+            searchView?.clearFocus()
+        }
+        searchView?.setOnQueryTextListener(MyOnQueryTextListener())
+
         updateMenuState(vm.viewState.value)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        searchView?.setOnQueryTextListener(null)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
@@ -391,6 +410,17 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
             vm.deletePendingFileIfExists()
+        }
+    }
+
+    private inner class MyOnQueryTextListener : OnQueryTextListener {
+        override fun onQueryTextSubmit(query: String?): Boolean {
+            return false
+        }
+
+        override fun onQueryTextChange(newText: String?): Boolean {
+            vm.filterByFileName(newText!!)
+            return false
         }
     }
 }

@@ -42,6 +42,7 @@ class MainViewModel(
         )
     )
     val viewState: StateFlow<ViewState> = _viewState
+    var filter = ""
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
@@ -77,13 +78,20 @@ class MainViewModel(
                     showOnLockedScreen = showOnLockedScreen
                 ))
             } else {
+                val filteredDocs = docs.filter {
+                    if (filter.isEmpty()) {
+                        true
+                    } else {
+                        it.name.contains(filter, ignoreCase = true)
+                    }
+                }
                 _viewState.emit(ViewState.Normal(
-                    documents = docs,
+                    documents = filteredDocs,
                     searchQrCode = preferenceManager.searchForQrCode(),
                     fullBrightness = fullScreenBrightness,
                     showLockMenuItem = shouldAuthenticate,
-                    showScrollToFirstMenuItem = docs.size > 1,
-                    showScrollToLastMenuItem = docs.size > 1,
+                    showScrollToFirstMenuItem = filteredDocs.size > 1,
+                    showScrollToLastMenuItem = filteredDocs.size > 1,
                     showOnLockedScreen = showOnLockedScreen
                 ))
             }
@@ -252,6 +260,13 @@ class MainViewModel(
         pendingFile?.let {
             pendingFile = null
             fileRepo.deleteFile(it.id)
+        }
+    }
+
+    fun filterByFileName(query: String) {
+        viewModelScope.launch {
+            filter = query
+            updateState()
         }
     }
 }
