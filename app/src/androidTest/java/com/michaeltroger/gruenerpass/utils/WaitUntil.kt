@@ -9,13 +9,22 @@ fun waitUntilIdle() {
         .waitForIdle()
 }
 
-fun waitUntilNoException(timeoutMs: Long = 50000, function: () -> Any?) {
-    val startTimeMs = System.currentTimeMillis()
+fun waitUntilNoException(timeoutMs: Long = 5000, function: () -> Any?) {
+    var startTimeMs = System.currentTimeMillis()
+    val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     while (true) {
         try {
             function()
             return
         } catch (e: Exception) {
+            // if exception due to ANR then reset timer
+            if (e.toString().contains("RootViewWithoutFocusException")) {
+                val waitButton = uiDevice.findObject(UiSelector().textContains("Wait"))
+                if (waitButton.exists()) {
+                    waitButton.click()
+                }
+                startTimeMs = System.currentTimeMillis()
+            }
             if (System.currentTimeMillis() > startTimeMs + timeoutMs) {
                 throw TimeoutException(e)
             }
