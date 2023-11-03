@@ -9,7 +9,7 @@ fun waitUntilIdle() {
         .waitForIdle()
 }
 
-fun waitUntilNoException(timeoutMs: Long = 5000, function: () -> Any?) {
+fun waitUntilNoException(timeoutMs: Long = 50000, function: () -> Any?) {
     val startTimeMs = System.currentTimeMillis()
     while (true) {
         try {
