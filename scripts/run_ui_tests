@@ -13,13 +13,15 @@ adb shell rm -f -rR /sdcard/Pictures/error_screenshots
 adb shell mkdir /sdcard/testdata
 adb push testdata /sdcard/
 
-adb shell settings put global sysui_demo_allowed 1
-adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
-adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false
-adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile hide
-adb shell am broadcast -a com.android.systemui.demo -e command network -e wifi hide
-adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false
-adb shell am broadcast -a com.android.systemui.demo -e command battery -e level 100
+for ((n=0;n<5;n++)) # setting those is very flaky on the emulator, running them multiple times
+do
+ adb shell settings put global sysui_demo_allowed 1
+ adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
+ adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false
+ adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile hide
+ adb shell am broadcast -a com.android.systemui.demo -e command network -e wifi hide
+ adb shell am broadcast -a com.android.systemui.demo -e command battery -e level 100 -e plugged false
+done
 
 set +e # don't fail on errors
 
