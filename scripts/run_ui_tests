@@ -10,6 +10,14 @@ adb wait-for-device
 adb shell rm -f -rR /sdcard/Pictures/screenshots
 adb shell rm -f -rR /sdcard/Pictures/error_screenshots
 
+set +e # don't fail on errors
+adb shell ls /storage/emulated/0/
+adb shell ls /storage/emulated/
+adb shell ls /storage/
+
+adb shell ls /sdcard/
+
+set -e # fail on errors
 adb shell mkdir /sdcard/testdata
 adb push testdata /sdcard/
 
