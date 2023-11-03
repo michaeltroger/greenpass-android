@@ -16,7 +16,7 @@ adb push testdata /sdcard/
 adb shell settings put global sysui_demo_allowed 1
 adb shell am broadcast -a com.android.systemui.demo -e command clock -e hhmm 1200
 adb shell am broadcast -a com.android.systemui.demo -e command notifications -e visible false
-adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile show -e datatype none -e level 4
+adb shell am broadcast -a com.android.systemui.demo -e command network -e mobile hide
 adb shell am broadcast -a com.android.systemui.demo -e command network -e wifi hide
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e plugged false
 adb shell am broadcast -a com.android.systemui.demo -e command battery -e level 100
