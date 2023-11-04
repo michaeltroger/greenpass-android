@@ -1,0 +1,3 @@
+- Suche Dokumente bei ihrem Namen
+- Zeige den "Mehr" Button nicht im gesperrten Zustand
+- Zeigt am "Mehr" Bildschirm von welchem App Store die App installiert wurde

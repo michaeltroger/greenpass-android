@@ -1,0 +1,3 @@
+- Search documents by their names
+- Don't show "more" button in locked app state
+- Shows App store from which the app was installed on "More" screen
