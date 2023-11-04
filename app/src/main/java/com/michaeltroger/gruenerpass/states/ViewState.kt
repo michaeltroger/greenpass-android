@@ -14,11 +14,14 @@ sealed class ViewState {
     abstract val showAddButton: Boolean
     abstract val showScrollToFirstMenuItem: Boolean
     abstract val showScrollToLastMenuItem: Boolean
+    abstract val showSearchMenuItem: Boolean
+    abstract val showMoreMenuItem: Boolean
 
     data class Initial(
         override val fullBrightness: Boolean,
         override val showOnLockedScreen: Boolean
     ) : ViewState() {
+        override val showSearchMenuItem = false
         override val showLockMenuItem = false
         override val showDeleteAllMenuItem = false
         override val showAddMenuItem = false
@@ -28,6 +31,7 @@ sealed class ViewState {
         override val showAddButton = false
         override val showScrollToFirstMenuItem = false
         override val showScrollToLastMenuItem = false
+        override val showMoreMenuItem = true
     }
 
     data class Empty(
@@ -35,6 +39,7 @@ sealed class ViewState {
         override val showLockMenuItem: Boolean,
         override val showOnLockedScreen: Boolean
     ) : ViewState() {
+        override val showSearchMenuItem = false
         override val showDeleteAllMenuItem = false
         override val showAddMenuItem = false
         override val showSettingsMenuItem = true
@@ -43,16 +48,20 @@ sealed class ViewState {
         override val showAddButton = true
         override val showScrollToFirstMenuItem = false
         override val showScrollToLastMenuItem = false
+        override val showMoreMenuItem = true
     }
 
     data class Normal(
         val documents: List<Certificate>,
         val searchQrCode: Boolean,
+        val showDragButtons: Boolean,
+        val filter: String,
         override val fullBrightness: Boolean,
         override val showLockMenuItem: Boolean,
         override val showScrollToFirstMenuItem: Boolean,
         override val showScrollToLastMenuItem: Boolean,
-        override val showOnLockedScreen: Boolean
+        override val showOnLockedScreen: Boolean,
+        override val showSearchMenuItem: Boolean
     ) : ViewState() {
         override val showDeleteAllMenuItem = true
         override val showAddMenuItem = true
@@ -60,12 +69,14 @@ sealed class ViewState {
         override val showExportAllMenuItem = true
         override val showAuthenticateButton = false
         override val showAddButton = false
+        override val showMoreMenuItem = true
     }
 
     data class Locked(
         override val fullBrightness: Boolean,
         override val showOnLockedScreen: Boolean
     ) : ViewState() {
+        override val showSearchMenuItem = false
         override val showLockMenuItem = false
         override val showDeleteAllMenuItem = false
         override val showAddMenuItem = false
@@ -75,5 +86,6 @@ sealed class ViewState {
         override val showAddButton = false
         override val showScrollToFirstMenuItem = false
         override val showScrollToLastMenuItem = false
+        override val showMoreMenuItem = false
     }
 }
