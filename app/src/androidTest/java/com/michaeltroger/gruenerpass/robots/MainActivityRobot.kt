@@ -16,6 +16,7 @@ import org.hamcrest.CoreMatchers.`is`
 class MainActivityRobot {
 
     private val addButtonMatcher = withId(R.id.add_button)
+    private val menuAddButtonMatcher = withId(R.id.add)
 
     fun verifyEmptyState() = apply {
         waitUntilIdle()
@@ -39,9 +40,16 @@ class MainActivityRobot {
         }
     }
 
-    fun selectAddDocument(): AndroidFileAppRobot {
+    fun selectFirstDocument(): AndroidFileAppRobot {
         waitUntilNoException {
             onView(addButtonMatcher).click()
+        }
+        return AndroidFileAppRobot()
+    }
+
+    fun selectAnotherDocument(): AndroidFileAppRobot {
+        waitUntilNoException {
+            onView(menuAddButtonMatcher).click()
         }
         return AndroidFileAppRobot()
     }

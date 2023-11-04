@@ -23,7 +23,7 @@ class UiTest {
     @Test
     fun normalState() {
         MainActivityRobot()
-            .selectAddDocument()
+            .selectFirstDocument()
             .goToPdfFolder()
             .selectPdf(fileName = "demo.pdf")
             .verifyDocumentLoaded(docName = "demo")
@@ -34,11 +34,11 @@ class UiTest {
     @Test
     fun multipleDocuments() {
         MainActivityRobot()
-            .selectAddDocument()
+            .selectFirstDocument()
             .goToPdfFolder()
             .selectPdf(fileName = "demo.pdf")
             .verifyDocumentLoaded(docName = "demo")
-            .selectAddDocument()
+            .selectAnotherDocument()
             .goToPdfFolder()
             .selectPdf(fileName = "demo1.pdf")
             .verifyDocumentLoaded(docName = "demo1")
@@ -49,7 +49,7 @@ class UiTest {
     @Test
     fun qrCode() {
         MainActivityRobot()
-            .selectAddDocument()
+            .selectFirstDocument()
             .goToPdfFolder()
             .selectPdf(fileName = "qr.pdf")
             .verifyDocumentLoaded(docName = "qr", expectQr = true)
@@ -60,7 +60,7 @@ class UiTest {
     @Test
     fun passwordProtected() {
         MainActivityRobot()
-            .selectAddDocument()
+            .selectFirstDocument()
             .goToPdfFolder()
             .selectPasswordProtectedPdf(fileName = "password.pdf")
             .verifyPasswordDialogShown()
