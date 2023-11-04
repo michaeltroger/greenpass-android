@@ -263,7 +263,7 @@ class MainViewModel(
         }
     }
 
-    fun filterByFileName(query: String) {
+    fun onSearchQueryChanged(query: String) {
         viewModelScope.launch {
             filter = query
             updateState()

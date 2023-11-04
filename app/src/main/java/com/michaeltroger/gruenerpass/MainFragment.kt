@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -27,12 +25,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import com.michaeltroger.gruenerpass.authentication.BiometricAuthenticationCallback
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.extensions.getUri
@@ -40,7 +38,9 @@ import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
+import com.michaeltroger.gruenerpass.pager.certificates.CertificateLinearLayoutManager
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
+import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -51,7 +51,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 
-private const val WIDTH_FACTOR_MULTIPLE_DOCS = 0.95
 private const val TOUCH_SLOP_FACTOR = 8
 private const val SCROLL_TO_DELAY_MS = 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
@@ -61,7 +60,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     private var searchView: SearchView? = null
     private var menu: Menu? = null
-    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application)}
+    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application) }
 
     @OptIn(DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
@@ -97,12 +96,22 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
         binding = FragmentMainBinding.bind(view)
         executor = ContextCompat.getMainExecutor(requireContext())
-        biometricPrompt = BiometricPrompt(this, executor, MyAuthenticationCallback())
+        biometricPrompt = BiometricPrompt(
+            this,
+            executor,
+            BiometricAuthenticationCallback(
+                onSuccess = {
+                    requireActivity().onUserInteraction()
+                    vm.onAuthenticationSuccess()
+                },
+                onError = vm::deletePendingFileIfExists
+            )
+        )
 
         promptInfo = Locator.biometricPromptInfo(requireContext())
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
-        binding.certificates.layoutManager = MyInnerLayoutManager(requireContext())
+        binding.certificates.layoutManager = CertificateLinearLayoutManager(requireContext())
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         }).apply {
@@ -160,10 +169,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             is ViewState.Empty -> {
                 adapter.clear()
             }
+
             is ViewState.Locked -> {
                 adapter.clear()
                 biometricPrompt.authenticate(promptInfo)
             }
+
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
                 searchQrCode = state.searchQrCode,
@@ -183,7 +194,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             searchView?.setQuery(vm.filter, false)
             searchView?.clearFocus()
         }
-        searchView?.setOnQueryTextListener(MyOnQueryTextListener())
+        searchView?.setOnQueryTextListener(SearchQueryTextListener {
+            vm.onSearchQueryChanged(it)
+        })
 
         updateMenuState(vm.viewState.value)
     }
@@ -198,36 +211,44 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             openFilePicker()
             true
         }
+
         R.id.openMore -> {
             val intent = Intent(requireContext(), MoreActivity::class.java)
             startActivity(intent)
             true
         }
+
         R.id.openSettings -> {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
             true
         }
+
         R.id.deleteAll -> {
             showDoYouWantToDeleteAllDialog()
             true
         }
+
         R.id.lock -> {
             vm.lockApp()
             true
         }
+
         R.id.export_all -> {
             openShareAllFilePicker()
             true
         }
+
         R.id.scrollToFirst -> {
             scrollToFirstCertificate(delayMs = 0)
             true
         }
+
         R.id.scrollToLast -> {
             scrollToLastCertificate(delayMs = 0)
             true
         }
+
         else -> false
     }
 
@@ -293,7 +314,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                 fileName = it.id,
                 documentName = it.name,
                 searchQrCode = searchQrCode,
-                dispatcher= thread,
+                dispatcher = thread,
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
                     vm.onDocumentNameChanged(
@@ -310,10 +331,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     }
 
     private fun scrollToLastCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
-       lifecycleScope.launch {
-           delay(delayMs)
-           binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
-       }
+        lifecycleScope.launch {
+            delay(delayMs)
+            binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
+        }
     }
 
     private fun scrollToFirstCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
@@ -326,7 +347,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun showDoYouWantToDeleteAllDialog() {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(getString(R.string.dialog_delete_all_confirmation_message))
-            .setPositiveButton(R.string.ok)  { _, _ ->
+            .setPositiveButton(R.string.ok) { _, _ ->
                 vm.onDeleteAllConfirmed()
             }
             .setNegativeButton(getString(R.string.cancel), null)
@@ -338,8 +359,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun showDoYouWantToDeleteDialog(id: String) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(getString(R.string.dialog_delete_confirmation_message))
-            .setPositiveButton(R.string.ok)  { _, _ ->
-               vm.onDeleteConfirmed(id)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                vm.onDeleteConfirmed(id)
             }
             .setNegativeButton(getString(R.string.cancel), null)
             .create()
@@ -356,7 +377,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_password_protection_title))
             .setView(customAlertDialogView)
-            .setPositiveButton(R.string.ok)  { _, _ ->
+            .setPositiveButton(R.string.ok) { _, _ ->
                 vm.onPasswordEntered(passwordTextField.editText!!.text.toString())
             }
             .setNegativeButton(getString(R.string.cancel)) { _, _ ->
@@ -399,43 +420,5 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             requireActivity().setShowWhenLocked(showOnLockedScreen)
         }
-    }
-
-    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            // onUserInteraction() is not called by android in this case so we call it manually
-            requireActivity().onUserInteraction()
-            vm.onAuthenticationSuccess()
-        }
-
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            vm.deletePendingFileIfExists()
-        }
-    }
-
-    private inner class MyOnQueryTextListener : OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String): Boolean {
-            return false
-        }
-
-        override fun onQueryTextChange(newText: String): Boolean {
-            vm.filterByFileName(newText)
-            return false
-        }
-    }
-}
-
-private class MyInnerLayoutManager(context: Context) : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
-    override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
-        if (itemCount > 1) {
-            lp.width = (width * WIDTH_FACTOR_MULTIPLE_DOCS).toInt()
-        } else {
-            lp.width = width
-        }
-        return true
-    }
-
-    override fun canScrollHorizontally(): Boolean {
-        return itemCount > 1
     }
 }
