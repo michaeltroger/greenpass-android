@@ -83,7 +83,7 @@ class MainViewModel(
                     if (filter.isEmpty()) {
                         true
                     } else {
-                        it.name.contains(filter, ignoreCase = true)
+                        it.name.contains(filter.trim(), ignoreCase = true)
                     }
                 }
                 _viewState.emit(ViewState.Normal(
