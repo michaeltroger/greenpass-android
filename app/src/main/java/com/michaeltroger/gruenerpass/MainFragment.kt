@@ -262,6 +262,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
             findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
             findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
+            findItem(R.id.search)?.isVisible = state.showSearchMenuItem
+            if (!state.showSearchMenuItem) {
+                findItem(R.id.search)?.collapseActionView()
+            }
         }
     }
 
