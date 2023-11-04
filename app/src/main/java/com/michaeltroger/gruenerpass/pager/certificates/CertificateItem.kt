@@ -30,6 +30,7 @@ class CertificateItem(
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchQrCode: Boolean,
+    private val showDragButtons: Boolean,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameChanged: (String) -> Unit,
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
@@ -69,6 +70,7 @@ class CertificateItem(
                     onStartDrag(viewHolder)
                 },
                 onShareCalled = onShareCalled,
+                showDragButtons = showDragButtons
             ))
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(
@@ -97,5 +99,6 @@ class CertificateItem(
     override fun hasSameContentAs(other: Item<*>): Boolean {
         return (other as? CertificateItem)?.fileName == fileName
             && (other as? CertificateItem)?.searchQrCode == searchQrCode
+            && (other as? CertificateItem)?.showDragButtons == showDragButtons
     }
 }
