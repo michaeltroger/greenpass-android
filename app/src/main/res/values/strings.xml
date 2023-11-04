@@ -46,5 +46,5 @@
     <string name="scroll_to_last">Scroll to last PDF</string>
     <string name="pdfs">PDFs</string>
     <string name="search">Search</string>
-    <string name="search_query_hint">Filename</string>
+    <string name="search_query_hint">Document name</string>
 </resources>

@@ -414,12 +414,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     }
 
     private inner class MyOnQueryTextListener : OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String?): Boolean {
+        override fun onQueryTextSubmit(query: String): Boolean {
             return false
         }
 
-        override fun onQueryTextChange(newText: String?): Boolean {
-            vm.filterByFileName(newText!!)
+        override fun onQueryTextChange(newText: String): Boolean {
+            vm.filterByFileName(newText)
             return false
         }
     }
