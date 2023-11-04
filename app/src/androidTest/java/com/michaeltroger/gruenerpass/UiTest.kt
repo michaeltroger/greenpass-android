@@ -37,11 +37,11 @@ class UiTest {
             .selectFirstDocument()
             .goToPdfFolder()
             .selectPdf(fileName = "demo.pdf")
-            .verifyDocumentLoaded(docName = "demo")
+            .verifyDocumentLoaded(docName = "demo", expectedDocumentCount = 1)
             .selectAnotherDocument()
             .goToPdfFolder()
             .selectPdf(fileName = "demo1.pdf")
-            .verifyDocumentLoaded(docName = "demo1")
+            .verifyDocumentLoaded(docName = "demo1", expectedDocumentCount = 2)
 
         ScreenshotUtil.recordScreenshot("multiple_documents")
     }
