@@ -92,7 +92,8 @@ class MainViewModel(
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
-                    showOnLockedScreen = showOnLockedScreen
+                    showOnLockedScreen = showOnLockedScreen,
+                    showDragButtons = filteredDocs.size == docs.size && docs.size > 1
                 ))
             }
         }

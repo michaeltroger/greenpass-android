@@ -48,6 +48,7 @@ sealed class ViewState {
     data class Normal(
         val documents: List<Certificate>,
         val searchQrCode: Boolean,
+        val showDragButtons: Boolean,
         override val fullBrightness: Boolean,
         override val showLockMenuItem: Boolean,
         override val showScrollToFirstMenuItem: Boolean,

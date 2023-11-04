@@ -178,6 +178,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
                 searchQrCode = state.searchQrCode,
+                showDragButtons = state.showDragButtons
             )
         }
     }
@@ -307,13 +308,14 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         startActivity(Intent.createChooser(shareIntent, null))
     }
 
-    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
+    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean, showDragButtons: Boolean) {
         val items = documents.map {
             CertificateItem(
                 requireContext().applicationContext,
                 fileName = it.id,
                 documentName = it.name,
                 searchQrCode = searchQrCode,
+                showDragButtons = showDragButtons,
                 dispatcher = thread,
                 onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
