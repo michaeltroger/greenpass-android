@@ -203,7 +203,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
 
     override fun onPause() {
         super.onPause()
-        searchView?.setOnQueryTextListener(null)
+        searchView?.setOnQueryTextListener(null) // avoids an empty string to be sent
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
