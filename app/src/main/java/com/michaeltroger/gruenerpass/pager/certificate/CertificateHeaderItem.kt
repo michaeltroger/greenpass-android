@@ -12,6 +12,7 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 
+@Suppress("LongParameterList")
 class CertificateHeaderItem(
     private val documentName: String,
     private val fileName: String,
