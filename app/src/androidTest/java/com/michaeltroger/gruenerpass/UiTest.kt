@@ -32,6 +32,21 @@ class UiTest {
     }
 
     @Test
+    fun multipleDocuments() {
+        MainActivityRobot()
+            .selectAddDocument()
+            .goToPdfFolder()
+            .selectPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
+            .selectAddDocument()
+            .goToPdfFolder()
+            .selectPdf(fileName = "demo1.pdf")
+            .verifyDocumentLoaded(docName = "demo1")
+
+        ScreenshotUtil.recordScreenshot("multiple_documents")
+    }
+
+    @Test
     fun qrCode() {
         MainActivityRobot()
             .selectAddDocument()
