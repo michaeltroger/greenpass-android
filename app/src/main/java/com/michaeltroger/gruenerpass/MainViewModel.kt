@@ -42,7 +42,7 @@ class MainViewModel(
         )
     )
     val viewState: StateFlow<ViewState> = _viewState
-    var filter = ""
+    private var filter = ""
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
@@ -78,6 +78,7 @@ class MainViewModel(
                     showOnLockedScreen = showOnLockedScreen
                 ))
             } else {
+                val filter = filter
                 val filteredDocs = docs.filter {
                     if (filter.isEmpty()) {
                         true
@@ -94,7 +95,8 @@ class MainViewModel(
                     showScrollToLastMenuItem = filteredDocs.size > 1,
                     showOnLockedScreen = showOnLockedScreen,
                     showDragButtons = filteredDocs.size == docs.size && docs.size > 1,
-                    showSearchMenuItem = docs.size > 1
+                    showSearchMenuItem = docs.size > 1,
+                    filter = filter
                 ))
             }
         }

@@ -55,6 +55,7 @@ sealed class ViewState {
         val documents: List<Certificate>,
         val searchQrCode: Boolean,
         val showDragButtons: Boolean,
+        val filter: String,
         override val fullBrightness: Boolean,
         override val showLockMenuItem: Boolean,
         override val showScrollToFirstMenuItem: Boolean,

@@ -190,16 +190,21 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         val searchMenuItem = menu.findItem(R.id.search)
         searchView = searchMenuItem.actionView as SearchView
         searchView?.queryHint = requireContext().getString(R.string.search_query_hint)
-        if (vm.filter.isNotEmpty()) {
-            searchMenuItem.expandActionView()
-            searchView?.setQuery(vm.filter, false)
-            searchView?.clearFocus()
-        }
+        restorePendingSearchQueryFilter(searchMenuItem)
         searchView?.setOnQueryTextListener(SearchQueryTextListener {
             vm.onSearchQueryChanged(it)
         })
 
         updateMenuState(vm.viewState.value)
+    }
+
+    private fun restorePendingSearchQueryFilter(searchMenuItem: MenuItem) {
+        val pendingFilter = (vm.viewState.value as? ViewState.Normal)?.filter ?: return
+        if (pendingFilter.isNotEmpty()) {
+            searchMenuItem.expandActionView()
+            searchView?.setQuery(pendingFilter, false)
+            searchView?.clearFocus()
+        }
     }
 
     override fun onPause() {
