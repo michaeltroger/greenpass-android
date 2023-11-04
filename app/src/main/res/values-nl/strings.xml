@@ -46,4 +46,6 @@
     <string name="scroll_to_first">Naar eerste PDF scrollen</string>
     <string name="scroll_to_last">Naar laatste PDF scrollen</string>
     <string name="pdfs">PDFs</string>
+    <string name="search">Search</string>
+    <string name="search_query_hint">Documentnaam</string>
 </resources>
