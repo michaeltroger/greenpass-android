@@ -20,7 +20,7 @@ interface CertificateDialogs {
 
 class CertificateDialogsImpl : CertificateDialogs {
 
-    private val dialogs: MutableMap<String, Dialog?> = hashMapOf()
+    private var dialog: Dialog? = null
 
     override fun showDoYouWantToDeleteAllDialog(context: Context, onDeleteAllConfirmed: () -> Unit) {
         val dialog = MaterialAlertDialogBuilder(context)
@@ -28,9 +28,14 @@ class CertificateDialogsImpl : CertificateDialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteAllConfirmed()
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
+                this.dialog = null
+            }
+            .setOnCancelListener {
+                this.dialog = null
+            }
             .create()
-        dialogs["delete_all"] = dialog
+        this.dialog = dialog
         dialog.show()
     }
 
@@ -40,9 +45,14 @@ class CertificateDialogsImpl : CertificateDialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteConfirmed(id)
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
+                this.dialog = null
+            }
+            .setOnCancelListener {
+                this.dialog = null
+            }
             .create()
-        dialogs["delete"] = dialog
+        this.dialog = dialog
         dialog.show()
     }
 
@@ -63,19 +73,22 @@ class CertificateDialogsImpl : CertificateDialogs {
                 onPasswordEntered(passwordTextField.editText!!.text.toString())
             }
             .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
+                this.dialog = null
                 onCancelled()
             }
             .setOnCancelListener {
+                this.dialog = null
                 onCancelled()
             }
             .create()
-        dialogs["password"] = dialog
+        this.dialog = dialog
         dialog.show()
     }
 
     override fun closeAllDialogs() {
-        dialogs.values.filterNotNull().forEach {
-            if (it.isShowing) it.dismiss()
+        if (this.dialog?.isShowing == true) {
+            this.dialog?.dismiss()
         }
+        this.dialog = null
     }
 }
