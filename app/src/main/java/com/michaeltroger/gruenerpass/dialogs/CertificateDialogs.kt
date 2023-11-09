@@ -1,8 +1,8 @@
 package com.michaeltroger.gruenerpass.dialogs
 
+import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.R
@@ -20,7 +20,7 @@ interface CertificateDialogs {
 
 class CertificateDialogsImpl : CertificateDialogs {
 
-    private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
+    private val dialogs: MutableMap<String, Dialog?> = hashMapOf()
 
     override fun showDoYouWantToDeleteAllDialog(context: Context, onDeleteAllConfirmed: () -> Unit) {
         val dialog = MaterialAlertDialogBuilder(context)
