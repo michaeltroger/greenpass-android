@@ -4,14 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -26,9 +24,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.authentication.BiometricAuthenticationCallback
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
@@ -63,8 +59,6 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     @OptIn(DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
-    private val dialogs: MutableMap<String, AlertDialog?> = hashMapOf()
-
     private val adapter = CertificateAdapter()
     private var itemTouchHelper: ItemTouchHelper? = null
 
@@ -75,6 +69,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
     private val pdfSharing = Locator.pdfSharing()
+    private val certificateDialogs = Locator.certificateDialogs()
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -147,8 +142,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
                     when (it) {
-                        ViewEvent.CloseAllDialogs -> closeAllDialogs()
-                        ViewEvent.ShowPasswordDialog -> showEnterPasswordDialog()
+                        ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
+                        ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
+                            context = requireContext(),
+                            onPasswordEntered = vm::onPasswordEntered,
+                            onCancelled = vm::deletePendingFileIfExists
+                        )
                         ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
                         ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate()
                         ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate()
@@ -231,7 +230,10 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         }
 
         R.id.deleteAll -> {
-            showDoYouWantToDeleteAllDialog()
+            certificateDialogs.showDoYouWantToDeleteAllDialog(
+                context = requireContext(),
+                onDeleteAllConfirmed = vm::onDeleteAllConfirmed
+            )
             true
         }
 
@@ -299,7 +301,11 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                 searchQrCode = searchQrCode,
                 showDragButtons = showDragButtons,
                 dispatcher = thread,
-                onDeleteCalled = { showDoYouWantToDeleteDialog(it.id) },
+                onDeleteCalled = { certificateDialogs.showDoYouWantToDeleteDialog(
+                    context = requireContext(),
+                    id = it.id,
+                    onDeleteConfirmed = vm::onDeleteConfirmed
+                ) },
                 onDocumentNameChanged = { updatedDocumentName: String ->
                     vm.onDocumentNameChanged(
                         filename = it.id,
@@ -333,62 +339,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         }
     }
 
-    private fun showDoYouWantToDeleteAllDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.dialog_delete_all_confirmation_message))
-            .setPositiveButton(R.string.ok) { _, _ ->
-                vm.onDeleteAllConfirmed()
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .create()
-        dialogs["delete_all"] = dialog
-        dialog.show()
-    }
-
-    private fun showDoYouWantToDeleteDialog(id: String) {
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.dialog_delete_confirmation_message))
-            .setPositiveButton(R.string.ok) { _, _ ->
-                vm.onDeleteConfirmed(id)
-            }
-            .setNegativeButton(getString(R.string.cancel), null)
-            .create()
-        dialogs["delete"] = dialog
-        dialog.show()
-    }
-
-    private fun showEnterPasswordDialog() {
-        val customAlertDialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.layout_password_dialog, null, false)
-
-        val passwordTextField = customAlertDialogView.findViewById<TextInputLayout>(R.id.password_text_field)
-
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.dialog_password_protection_title))
-            .setView(customAlertDialogView)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                vm.onPasswordEntered(passwordTextField.editText!!.text.toString())
-            }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ ->
-                vm.deletePendingFileIfExists()
-            }
-            .setOnCancelListener {
-                vm.deletePendingFileIfExists()
-            }
-            .create()
-        dialogs["password"] = dialog
-        dialog.show()
-    }
-
     private fun showFileCanNotBeReadError() {
         binding.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-    private fun closeAllDialogs() {
-        dialogs.values.filterNotNull().forEach {
-            if (it.isShowing) it.dismiss()
         }
     }
 
