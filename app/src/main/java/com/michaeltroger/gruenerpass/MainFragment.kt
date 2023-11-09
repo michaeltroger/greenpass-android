@@ -13,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -50,10 +49,8 @@ private const val SCROLL_TO_DELAY_MS = 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
-class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
+class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private var searchView: SearchView? = null
-    private var menu: Menu? = null
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application) }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -71,6 +68,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private val pdfSharing = Locator.pdfSharing()
     private val certificateDialogs = Locator.certificateDialogs()
 
+    private val menuProvider = MainMenuProvider()
+
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.let { intent ->
@@ -86,8 +85,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentMainBinding.bind(view)
         executor = ContextCompat.getMainExecutor(requireContext())
@@ -158,7 +156,7 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     }
 
     private fun updateState(state: ViewState) {
-        updateMenuState(state)
+        menuProvider.updateMenuState(state)
         updateScreenBrightness(fullBrightness = state.fullBrightness)
         updateShowOnLockedScreen(showOnLockedScreen = state.showOnLockedScreen)
         binding.addButton.isVisible = state.showAddButton
@@ -182,106 +180,9 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         }
     }
 
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.menu, menu)
-        this.menu = menu
-
-        val searchMenuItem = menu.findItem(R.id.search)
-        searchView = searchMenuItem.actionView as SearchView
-        searchView?.queryHint = requireContext().getString(R.string.search_query_hint)
-        restorePendingSearchQueryFilter(searchMenuItem)
-        searchView?.setOnQueryTextListener(SearchQueryTextListener {
-            vm.onSearchQueryChanged(it)
-        })
-
-        updateMenuState(vm.viewState.value)
-    }
-
-    private fun restorePendingSearchQueryFilter(searchMenuItem: MenuItem) {
-        val pendingFilter = (vm.viewState.value as? ViewState.Normal)?.filter ?: return
-        if (pendingFilter.isNotEmpty()) {
-            searchMenuItem.expandActionView()
-            searchView?.setQuery(pendingFilter, false)
-            searchView?.clearFocus()
-        }
-    }
-
     override fun onPause() {
         super.onPause()
-        searchView?.setOnQueryTextListener(null) // avoids an empty string to be sent
-    }
-
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-        R.id.add -> {
-            openFilePicker()
-            true
-        }
-
-        R.id.openMore -> {
-            val intent = Intent(requireContext(), MoreActivity::class.java)
-            startActivity(intent)
-            true
-        }
-
-        R.id.openSettings -> {
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
-            true
-        }
-
-        R.id.deleteAll -> {
-            certificateDialogs.showDoYouWantToDeleteAllDialog(
-                context = requireContext(),
-                onDeleteAllConfirmed = vm::onDeleteAllConfirmed
-            )
-            true
-        }
-
-        R.id.lock -> {
-            vm.lockApp()
-            true
-        }
-
-        R.id.export_all -> {
-            (vm.viewState.value as? ViewState.Normal)?.documents?.let {
-                pdfSharing.openShareAllFilePicker(
-                    context = requireContext(),
-                    certificates = it,
-                )
-            }
-            true
-        }
-
-        R.id.scrollToFirst -> {
-            scrollToFirstCertificate(delayMs = 0)
-            true
-        }
-
-        R.id.scrollToLast -> {
-            scrollToLastCertificate(delayMs = 0)
-            true
-        }
-
-        else -> false
-    }
-
-    private fun updateMenuState(state: ViewState) {
-        menu?.apply {
-            findItem(R.id.add)?.isVisible = state.showAddMenuItem
-            findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
-            findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
-            findItem(R.id.lock)?.isVisible = state.showLockMenuItem
-            findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
-            findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
-            findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
-            findItem(R.id.search)?.apply {
-                isVisible = state.showSearchMenuItem
-                if (!state.showSearchMenuItem) {
-                    collapseActionView()
-                }
-            }
-            findItem(R.id.openMore)?.isVisible = state.showMoreMenuItem
-        }
+        menuProvider.onPause()
     }
 
     private fun openFilePicker() {
@@ -361,6 +262,112 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private fun updateShowOnLockedScreen(showOnLockedScreen: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             requireActivity().setShowWhenLocked(showOnLockedScreen)
+        }
+    }
+
+    private inner class MainMenuProvider : MenuProvider {
+        private var searchView: SearchView? = null
+        private var menu: Menu? = null
+
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.menu, menu)
+            this.menu = menu
+
+            val searchMenuItem = menu.findItem(R.id.search)
+            searchView = searchMenuItem.actionView as SearchView
+            searchView?.queryHint = requireContext().getString(R.string.search_query_hint)
+            restorePendingSearchQueryFilter(searchMenuItem)
+            searchView?.setOnQueryTextListener(SearchQueryTextListener {
+                vm.onSearchQueryChanged(it)
+            })
+
+            updateMenuState(vm.viewState.value)
+        }
+
+        override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
+            R.id.add -> {
+                openFilePicker()
+                true
+            }
+
+            R.id.openMore -> {
+                val intent = Intent(requireContext(), MoreActivity::class.java)
+                startActivity(intent)
+                true
+            }
+
+            R.id.openSettings -> {
+                val intent = Intent(requireContext(), SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+
+            R.id.deleteAll -> {
+                certificateDialogs.showDoYouWantToDeleteAllDialog(
+                    context = requireContext(),
+                    onDeleteAllConfirmed = vm::onDeleteAllConfirmed
+                )
+                true
+            }
+
+            R.id.lock -> {
+                vm.lockApp()
+                true
+            }
+
+            R.id.export_all -> {
+                (vm.viewState.value as? ViewState.Normal)?.documents?.let {
+                    pdfSharing.openShareAllFilePicker(
+                        context = requireContext(),
+                        certificates = it,
+                    )
+                }
+                true
+            }
+
+            R.id.scrollToFirst -> {
+                scrollToFirstCertificate(delayMs = 0)
+                true
+            }
+
+            R.id.scrollToLast -> {
+                scrollToLastCertificate(delayMs = 0)
+                true
+            }
+
+            else -> false
+        }
+
+        fun onPause() {
+            searchView?.setOnQueryTextListener(null) // avoids an empty string to be sent
+        }
+
+        private fun restorePendingSearchQueryFilter(searchMenuItem: MenuItem) {
+            val pendingFilter = (vm.viewState.value as? ViewState.Normal)?.filter ?: return
+            if (pendingFilter.isNotEmpty()) {
+                searchMenuItem.expandActionView()
+                searchView?.setQuery(pendingFilter, false)
+                searchView?.clearFocus()
+            }
+        }
+
+        fun updateMenuState(state: ViewState) {
+            menu?.apply {
+                findItem(R.id.add)?.isVisible = state.showAddMenuItem
+                findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
+                findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
+                findItem(R.id.lock)?.isVisible = state.showLockMenuItem
+                findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
+                findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
+                findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
+                findItem(R.id.search)?.apply {
+                    isVisible = state.showSearchMenuItem
+                    if (!state.showSearchMenuItem) {
+                        collapseActionView()
+                    }
+                }
+                findItem(R.id.openMore)?.isVisible = state.showMoreMenuItem
+            }
         }
     }
 }
