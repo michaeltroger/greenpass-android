@@ -18,6 +18,8 @@ import com.michaeltroger.gruenerpass.qr.QrRendererImpl
 import com.michaeltroger.gruenerpass.settings.PreferenceManager
 import com.michaeltroger.gruenerpass.settings.PreferenceManagerImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
+import com.michaeltroger.gruenerpass.sharing.PdfSharing
+import com.michaeltroger.gruenerpass.sharing.PdfSharingImpl
 
 object Locator {
 
@@ -46,4 +48,6 @@ object Locator {
     fun qrRenderer(): QrRenderer = QrRendererImpl()
 
     fun preferenceManager(context: Context): PreferenceManager = PreferenceManagerImpl(context)
+
+    fun pdfSharing(): PdfSharing = PdfSharingImpl()
 }

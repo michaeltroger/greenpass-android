@@ -15,7 +15,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
@@ -44,7 +43,6 @@ import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import java.io.File
 import java.util.concurrent.Executor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
@@ -75,6 +73,8 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+
+    private val pdfSharing = Locator.pdfSharing()
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -241,7 +241,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         }
 
         R.id.export_all -> {
-            openShareAllFilePicker()
+            (vm.viewState.value as? ViewState.Normal)?.documents?.let {
+                pdfSharing.openShareAllFilePicker(
+                    context = requireContext(),
+                    certificates = it,
+                )
+            }
             true
         }
 
@@ -285,41 +290,6 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
         resultLauncher.launch(intent)
     }
 
-    private fun openShareAllFilePicker() {
-        val state = vm.viewState.value as? ViewState.Normal ?: return
-        val pdfUris = state.documents.map { certificate ->
-            FileProvider.getUriForFile(
-                requireContext(),
-                getString(R.string.pdf_file_provider_authority),
-                File(requireContext().filesDir, certificate.id),
-                "${certificate.name}.pdf"
-            )
-        }
-
-        val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-            putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(pdfUris))
-            type = PDF_MIME_TYPE
-        }
-
-        startActivity(Intent.createChooser(shareIntent, null))
-    }
-
-    private fun openShareFilePicker(certificate: Certificate) {
-        val pdfUri = FileProvider.getUriForFile(
-            requireContext(),
-            getString(R.string.pdf_file_provider_authority),
-            File(requireContext().filesDir, certificate.id),
-            "${certificate.name}.pdf"
-        )
-
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_STREAM, pdfUri)
-            type = PDF_MIME_TYPE
-        }
-
-        startActivity(Intent.createChooser(shareIntent, null))
-    }
-
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean, showDragButtons: Boolean) {
         val items = documents.map {
             CertificateItem(
@@ -337,7 +307,12 @@ class MainFragment : Fragment(R.layout.fragment_main), MenuProvider {
                     )
                 },
                 onStartDrag = { viewHolder -> itemTouchHelper?.startDrag(viewHolder) },
-                onShareCalled = { openShareFilePicker(it) },
+                onShareCalled = {
+                    pdfSharing.openShareFilePicker(
+                        context = requireContext(),
+                        certificate = it,
+                    )
+                },
             )
         }
         adapter.setData(documents.map { it.id }.toList())
