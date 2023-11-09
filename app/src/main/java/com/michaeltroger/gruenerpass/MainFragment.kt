@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.michaeltroger.gruenerpass.authentication.BiometricAuthenticationCallback
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.extensions.getUri
@@ -92,13 +91,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         biometricPrompt = BiometricPrompt(
             this,
             executor,
-            BiometricAuthenticationCallback(
-                onSuccess = {
-                    requireActivity().onUserInteraction()
-                    vm.onAuthenticationSuccess()
-                },
-                onError = vm::deletePendingFileIfExists
-            )
+            MyAuthenticationCallback()
         )
 
         promptInfo = Locator.biometricPromptInfo(requireContext())
@@ -368,6 +361,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 }
                 findItem(R.id.openMore)?.isVisible = state.showMoreMenuItem
             }
+        }
+    }
+
+    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            requireActivity().onUserInteraction()
+            vm.onAuthenticationSuccess()
+        }
+
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            vm.deletePendingFileIfExists()
         }
     }
 }
