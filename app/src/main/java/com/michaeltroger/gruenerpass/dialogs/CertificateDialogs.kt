@@ -28,10 +28,8 @@ class CertificateDialogsImpl : CertificateDialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteAllConfirmed()
             }
-            .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
-                this.dialog = null
-            }
-            .setOnCancelListener {
+            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setOnDismissListener {
                 this.dialog = null
             }
             .create()
@@ -43,12 +41,11 @@ class CertificateDialogsImpl : CertificateDialogs {
         val dialog = MaterialAlertDialogBuilder(context)
             .setMessage(context.getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok) { _, _ ->
+                this.dialog = null
                 onDeleteConfirmed(id)
             }
-            .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
-                this.dialog = null
-            }
-            .setOnCancelListener {
+            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setOnDismissListener {
                 this.dialog = null
             }
             .create()
@@ -73,12 +70,13 @@ class CertificateDialogsImpl : CertificateDialogs {
                 onPasswordEntered(passwordTextField.editText!!.text.toString())
             }
             .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
-                this.dialog = null
                 onCancelled()
             }
             .setOnCancelListener {
-                this.dialog = null
                 onCancelled()
+            }
+            .setOnDismissListener {
+                this.dialog = null
             }
             .create()
         this.dialog = dialog
