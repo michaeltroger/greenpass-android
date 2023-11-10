@@ -42,6 +42,26 @@ class MainActivityRobot {
         }
     }
 
+    fun clickDeleteDocument(index: Int = 0): DeleteDialogRobot {
+        waitUntilNoException {
+            onView(withIndex(
+                withId(R.id.deleteIcon),
+                index = index
+            )).click()
+        }
+        return DeleteDialogRobot()
+    }
+
+    fun clickShareDocument(index: Int = 0): ShareDialogRobot {
+        waitUntilNoException {
+            onView(withIndex(
+                withId(R.id.shareIcon),
+                index = index
+            )).click()
+        }
+        return ShareDialogRobot()
+    }
+
     fun selectFirstDocument(): AndroidFileAppRobot {
         waitUntilNoException {
             onView(addButtonMatcher).click()

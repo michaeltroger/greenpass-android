@@ -72,6 +72,35 @@ class UiTest {
     }
 
     @Test
+    fun deleteDocument() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
+            .clickDeleteDocument()
+            .verifyDeleteDialogShown()
+            .cancelDelete()
+            .verifyDocumentLoaded(docName = "demo")
+            .clickDeleteDocument()
+            .confirmDelete()
+            .verifyEmptyState()
+    }
+
+    @Test
+    fun shareDocument() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
+            .clickShareDocument()
+            .verifyShareDialogShown()
+            .cancelShare()
+            .verifyDocumentLoaded(docName = "demo")
+    }
+
+    @Test
     fun fileOpenedFromFileManager() {
         AndroidFileAppRobot()
             .openFileManagerApp()
