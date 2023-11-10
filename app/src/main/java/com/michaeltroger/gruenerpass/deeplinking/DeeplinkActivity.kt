@@ -22,8 +22,6 @@ class DeeplinkActivity : AppCompatActivity() {
                     })
                 }
             }
-
-            finishAndRemoveTask()
         }
     }
 
