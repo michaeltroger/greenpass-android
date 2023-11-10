@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import androidx.test.core.app.ActivityScenario
+import com.michaeltroger.gruenerpass.robots.AndroidFileAppRobot
 import com.michaeltroger.gruenerpass.robots.MainActivityRobot
 import com.michaeltroger.gruenerpass.utils.FailingTestWatcher
 import com.michaeltroger.gruenerpass.utils.ScreenshotUtil
@@ -25,7 +26,7 @@ class UiTest {
         MainActivityRobot()
             .selectFirstDocument()
             .goToPdfFolder()
-            .selectPdf(fileName = "demo.pdf")
+            .openPdf(fileName = "demo.pdf")
             .verifyDocumentLoaded(docName = "demo")
 
         ScreenshotUtil.recordScreenshot("normal_state")
@@ -36,11 +37,11 @@ class UiTest {
         MainActivityRobot()
             .selectFirstDocument()
             .goToPdfFolder()
-            .selectPdf(fileName = "demo.pdf")
+            .openPdf(fileName = "demo.pdf")
             .verifyDocumentLoaded(docName = "demo", expectedDocumentCount = 1)
             .selectAnotherDocument()
             .goToPdfFolder()
-            .selectPdf(fileName = "demo1.pdf")
+            .openPdf(fileName = "demo1.pdf")
             .verifyDocumentLoaded(docName = "demo1", expectedDocumentCount = 2)
 
         ScreenshotUtil.recordScreenshot("multiple_documents")
@@ -51,7 +52,7 @@ class UiTest {
         MainActivityRobot()
             .selectFirstDocument()
             .goToPdfFolder()
-            .selectPdf(fileName = "qr.pdf")
+            .openPdf(fileName = "qr.pdf")
             .verifyDocumentLoaded(docName = "qr", expectQr = true)
 
         ScreenshotUtil.recordScreenshot("qr_code")
@@ -62,11 +63,31 @@ class UiTest {
         MainActivityRobot()
             .selectFirstDocument()
             .goToPdfFolder()
-            .selectPasswordProtectedPdf(fileName = "password.pdf")
+            .openPasswordProtectedPdf(fileName = "password.pdf")
             .verifyPasswordDialogShown()
             .enterPasswordAndConfirm(password = "test")
             .verifyDocumentLoaded(docName = "password")
 
         ScreenshotUtil.recordScreenshot("password_protected")
+    }
+
+    @Test
+    fun fileOpenedFromFileManager() {
+        AndroidFileAppRobot()
+            .openFileManagerApp()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
+    }
+
+    @Test
+    fun fileSharedFromFileManager() {
+        AndroidFileAppRobot()
+            .openFileManagerApp()
+            .goToPdfFolder()
+            .selectPdf(fileName = "demo.pdf")
+            .selectShare()
+            .selectGreenPass()
+            .verifyDocumentLoaded(docName = "demo")
     }
 }
