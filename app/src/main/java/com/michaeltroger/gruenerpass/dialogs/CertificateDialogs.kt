@@ -41,7 +41,6 @@ class CertificateDialogsImpl : CertificateDialogs {
         val dialog = MaterialAlertDialogBuilder(context)
             .setMessage(context.getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok) { _, _ ->
-                this.dialog = null
                 onDeleteConfirmed(id)
             }
             .setNegativeButton(context.getString(R.string.cancel), null)
