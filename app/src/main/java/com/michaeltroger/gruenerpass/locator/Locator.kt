@@ -5,6 +5,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.room.Room
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.AppDatabase
+import com.michaeltroger.gruenerpass.dialogs.CertificateDialogs
+import com.michaeltroger.gruenerpass.dialogs.CertificateDialogsImpl
 import com.michaeltroger.gruenerpass.file.DocumentNameRepo
 import com.michaeltroger.gruenerpass.file.DocumentNameRepoImpl
 import com.michaeltroger.gruenerpass.file.FileRepo
@@ -18,6 +20,8 @@ import com.michaeltroger.gruenerpass.qr.QrRendererImpl
 import com.michaeltroger.gruenerpass.settings.PreferenceManager
 import com.michaeltroger.gruenerpass.settings.PreferenceManagerImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
+import com.michaeltroger.gruenerpass.sharing.PdfSharing
+import com.michaeltroger.gruenerpass.sharing.PdfSharingImpl
 
 object Locator {
 
@@ -46,4 +50,8 @@ object Locator {
     fun qrRenderer(): QrRenderer = QrRendererImpl()
 
     fun preferenceManager(context: Context): PreferenceManager = PreferenceManagerImpl(context)
+
+    fun pdfSharing(): PdfSharing = PdfSharingImpl()
+
+    fun certificateDialogs(): CertificateDialogs = CertificateDialogsImpl()
 }
