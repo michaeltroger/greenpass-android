@@ -1,0 +1,59 @@
+package com.michaeltroger.gruenerpass
+
+import androidx.test.core.app.ActivityScenario
+import com.michaeltroger.gruenerpass.robots.MainActivityRobot
+import com.michaeltroger.gruenerpass.utils.FailingTestWatcher
+import com.michaeltroger.gruenerpass.utils.ScreenshotUtil
+import org.junit.Rule
+import org.junit.Test
+
+class ScreenshotTest {
+
+    private val scenario = ActivityScenario.launch(MainActivity::class.java)
+
+    @get:Rule
+    val failingTestWatcher = FailingTestWatcher()
+
+    @Test
+    fun emptyState() {
+        MainActivityRobot().verifyEmptyState()
+        ScreenshotUtil.recordScreenshot("empty_state")
+    }
+
+    @Test
+    fun normalState() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
+
+        ScreenshotUtil.recordScreenshot("normal_state")
+    }
+
+    @Test
+    fun multipleDocuments() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo", expectedDocumentCount = 1)
+            .selectAnotherDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo1.pdf")
+            .verifyDocumentLoaded(docName = "demo1", expectedDocumentCount = 2)
+
+        ScreenshotUtil.recordScreenshot("multiple_documents")
+    }
+
+    @Test
+    fun qrCode() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "qr.pdf")
+            .verifyDocumentLoaded(docName = "qr", expectQr = true)
+
+        ScreenshotUtil.recordScreenshot("qr_code")
+    }
+}
