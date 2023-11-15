@@ -6,8 +6,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.extensions.getInstallerPackageName
 import com.michaeltroger.gruenerpass.extensions.getPackageInfo
-import com.michaeltroger.gruenerpass.extensions.getSignature
-import javax.security.cert.X509Certificate
+import com.michaeltroger.gruenerpass.extensions.getSigningSubject
 
 class MoreFragment : PreferenceFragmentCompat() {
 
@@ -29,9 +28,7 @@ class MoreFragment : PreferenceFragmentCompat() {
             "com.amazon.venezia" -> "Amazon Appstore"
             "com.huawei.appmarket" -> "Huawei AppGallery"
             else -> {
-                val signature = requireContext().getSignature() ?: return
-                val certificate = X509Certificate.getInstance(signature.toByteArray())
-                if (certificate.subjectDN.name.contains("FDroid")) {
+                if (requireContext().getSigningSubject()?.contains("FDroid") == true) {
                     "F-Droid"
                 } else null
             }
