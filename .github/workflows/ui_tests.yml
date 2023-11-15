@@ -23,7 +23,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
-          cache: 'gradle'
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
