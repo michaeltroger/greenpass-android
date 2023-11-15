@@ -34,7 +34,8 @@ jobs:
           emulator-boot-timeout: 1000
           disk-size: 8G
           ram-size: 4048M
-          force-avd-creation: false
+          force-avd-creation: true
+          channel: canary
           disable-spellchecker: true
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
