@@ -15,15 +15,18 @@ fun Context.getPackageInfo(): PackageInfo =
         packageManager.getPackageInfo(packageName, 0)
     }
 
+@Suppress("SwallowedException")
 fun Context.getSigningSubject(): String? {
     val signature = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
-        packageInfo.signingInfo?.signingCertificateHistory?.firstOrNull()
+        packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+            .signingInfo
+            ?.signingCertificateHistory
+            ?.firstOrNull()
     } else {
         @Suppress("DEPRECATION")
-        val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-        @Suppress("DEPRECATION")
-        packageInfo.signatures?.firstOrNull()
+        packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+            .signatures
+            ?.firstOrNull()
     } ?: return null
     return try {
         X509Certificate.getInstance(signature.toByteArray())?.subjectDN?.name
