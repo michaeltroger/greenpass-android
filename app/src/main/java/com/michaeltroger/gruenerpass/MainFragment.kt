@@ -20,6 +20,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -28,13 +29,11 @@ import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.locator.Locator
-import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateLinearLayoutManager
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
-import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import java.util.concurrent.Executor
@@ -284,14 +283,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
             R.id.openMore -> {
-                val intent = Intent(requireContext(), MoreActivity::class.java)
-                startActivity(intent)
+                findNavController().navigate(R.id.navigate_to_more)
                 true
             }
 
             R.id.openSettings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
+                findNavController().navigate(R.id.navigate_to_settings)
                 true
             }
 

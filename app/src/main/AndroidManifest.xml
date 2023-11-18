@@ -37,14 +37,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.SettingsActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".more.MoreActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"

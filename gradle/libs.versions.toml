@@ -29,6 +29,8 @@ kotlin = "1.9.10"
 nl-littlerobots-version-catalog-update = "0.8.1"
 org-jetbrains-kotlinx-coroutines-test = "1.7.3"
 org-robolectric = "4.11"
+navigation-fragment-ktx = "2.7.5"
+navigation-ui-ktx = "2.7.5"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -58,6 +60,8 @@ io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", versi
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "org-jetbrains-kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation-fragment-ktx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation-ui-ktx" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
