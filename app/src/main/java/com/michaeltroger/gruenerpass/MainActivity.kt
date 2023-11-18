@@ -11,11 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.deeplinking.DeeplinkActivity
+import com.michaeltroger.gruenerpass.extensions.getUri
+import com.michaeltroger.gruenerpass.locator.Locator
+import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 
@@ -94,12 +96,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             timeoutHandler?.postDelayed(runnable, INTERACTION_TIMEOUT_MS)
         }
     }
-}
 
-private fun MainViewModel.setPendingFile(intent: Intent?) {
-    if (intent == null) return
-    @Suppress("DEPRECATION")
-    (intent.getParcelableExtra(DeeplinkActivity.KEY_EXTRA_PENDING_FILE) as Certificate?)?.let {
-        setPendingFile(it)
+    private fun MainViewModel.setPendingFile(intent: Intent?) {
+        if (intent == null) return
+        lifecycleScope.launch {
+            intent.getUri()?.let { uri ->
+                Locator.fileRepo(applicationContext).copyToApp(uri).also {
+                    setPendingFile(it)
+                }
+            }
+        }
     }
 }
