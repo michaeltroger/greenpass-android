@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass.pager.certificates
 
 import android.content.Context
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
@@ -57,7 +56,6 @@ class CertificateItem(
                       position: Int,
                       payloads: MutableList<Any>) {
         super.bind(viewHolder, position, payloads)
-        viewHolder.binding.certificate.layoutManager = LinearLayoutManager(viewHolder.binding.root.context)
         viewHolder.binding.certificate.adapter = adapter
         job = scope.launch {
             val itemList = mutableListOf<Group>()
