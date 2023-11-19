@@ -24,8 +24,8 @@ private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
-    private var timeoutHandler: Handler? = null
-    private var interactionTimeoutRunnable: Runnable? = null
+    private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
+    private lateinit var interactionTimeoutRunnable: Runnable
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         updateSettings()
 
-        timeoutHandler =  Handler(Looper.getMainLooper());
         interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
             if (navController.currentDestination?.id != R.id.mainFragment) {
@@ -64,6 +63,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onDestroy() {
         vm.deletePendingFileIfExists()
+        timeoutHandler.removeCallbacks(interactionTimeoutRunnable)
         super.onDestroy()
     }
 
@@ -97,16 +97,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun resetHandler() {
-        interactionTimeoutRunnable?.let { runnable ->
-            timeoutHandler?.removeCallbacks(runnable)
-            startTimeoutHandler()
-        }
+        timeoutHandler.removeCallbacks(interactionTimeoutRunnable)
+        startTimeoutHandler()
     }
 
     private fun startTimeoutHandler() {
-        interactionTimeoutRunnable?.let { runnable ->
-            timeoutHandler?.postDelayed(runnable, INTERACTION_TIMEOUT_MS)
-        }
+        timeoutHandler.postDelayed(interactionTimeoutRunnable, INTERACTION_TIMEOUT_MS)
     }
 
     private fun MainViewModel.setPendingFile(intent: Intent?) {

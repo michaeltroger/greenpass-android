@@ -48,7 +48,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val thread = newSingleThreadContext("RenderContext")
 
     private val adapter = CertificateAdapter()
-    private var itemTouchHelper: ItemTouchHelper? = null
+    private lateinit var itemTouchHelper: ItemTouchHelper
 
     private lateinit var binding: FragmentMainBinding
 
@@ -185,7 +185,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         documentName = updatedDocumentName
                     )
                 },
-                onStartDrag = { viewHolder -> itemTouchHelper?.startDrag(viewHolder) },
+                onStartDrag = { viewHolder -> itemTouchHelper.startDrag(viewHolder) },
                 onShareCalled = {
                     pdfSharing.openShareFilePicker(
                         context = requireContext(),
