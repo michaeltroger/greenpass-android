@@ -13,12 +13,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import java.util.concurrent.Executor
+import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 
@@ -41,6 +44,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         navController = navHost.navController
         setupActionBarWithNavController(navController = navController)
 
+        updateSettings()
+
         timeoutHandler =  Handler(Looper.getMainLooper());
         interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
@@ -51,6 +56,14 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         startTimeoutHandler()
 
         mainExecutor = ContextCompat.getMainExecutor(this)
+    }
+
+    private fun updateSettings() {
+        val preferenceUtil = PreferenceUtil(this)
+        lifecycleScope.launch {
+            preferenceUtil.updateScreenBrightness(this@MainActivity)
+            preferenceUtil.updateShowOnLockedScreen(this@MainActivity)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

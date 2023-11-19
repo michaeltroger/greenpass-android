@@ -1,12 +1,10 @@
 package com.michaeltroger.gruenerpass
 
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
@@ -122,8 +120,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
-        updateScreenBrightness(fullBrightness = state.fullBrightness)
-        updateShowOnLockedScreen(showOnLockedScreen = state.showOnLockedScreen)
         binding.addButton.isVisible = state.showAddButton
         binding.authenticate.isVisible = state.showAuthenticateButton
         when (state) {
@@ -203,25 +199,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun showFileCanNotBeReadError() {
         binding.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-    private fun updateScreenBrightness(fullBrightness: Boolean) {
-        requireActivity().window.apply {
-            attributes.apply {
-                screenBrightness = if (fullBrightness) {
-                    LayoutParams.BRIGHTNESS_OVERRIDE_FULL
-                } else {
-                    LayoutParams.BRIGHTNESS_OVERRIDE_NONE
-                }
-            }
-            addFlags(LayoutParams.SCREEN_BRIGHTNESS_CHANGED)
-        }
-    }
-
-    private fun updateShowOnLockedScreen(showOnLockedScreen: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            requireActivity().setShowWhenLocked(showOnLockedScreen)
         }
     }
 

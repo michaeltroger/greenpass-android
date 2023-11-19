@@ -37,10 +37,7 @@ class MainViewModel(
 ): AndroidViewModel(app), PreferenceListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
-        ViewState.Initial(
-            fullBrightness = preferenceManager.fullScreenBrightness(),
-            showOnLockedScreen = preferenceManager.showOnLockedScreen()
-        )
+        ViewState.Initial
     )
     val viewState: StateFlow<ViewState> = _viewState
     private var filter = ""
@@ -61,22 +58,15 @@ class MainViewModel(
     }
 
     private suspend fun updateState() {
-        val fullScreenBrightness = preferenceManager.fullScreenBrightness()
-        val showOnLockedScreen = preferenceManager.showOnLockedScreen()
         val shouldAuthenticate = preferenceManager.shouldAuthenticate()
 
         if (shouldAuthenticate && isLocked) {
-            _viewState.emit(ViewState.Locked(
-                fullBrightness = fullScreenBrightness,
-                showOnLockedScreen = showOnLockedScreen
-            ))
+            _viewState.emit(ViewState.Locked)
         } else {
             val docs = db.getAll()
             if (docs.isEmpty()) {
                 _viewState.emit(ViewState.Empty(
-                    fullBrightness = fullScreenBrightness,
                     showLockMenuItem = shouldAuthenticate,
-                    showOnLockedScreen = showOnLockedScreen
                 ))
             } else {
                 val filter = filter
@@ -90,11 +80,9 @@ class MainViewModel(
                 _viewState.emit(ViewState.Normal(
                     documents = filteredDocs,
                     searchQrCode = preferenceManager.searchForQrCode(),
-                    fullBrightness = fullScreenBrightness,
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
-                    showOnLockedScreen = showOnLockedScreen,
                     showDragButtons = filteredDocs.size == docs.size && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
                     filter = filter
