@@ -122,6 +122,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     override fun onDestroyView() {
+        binding!!.certificates.adapter = null
         binding = null
         super.onDestroyView()
     }

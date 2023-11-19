@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass.locator
 import android.content.Context
 import androidx.biometric.BiometricPrompt
 import androidx.room.Room
+import com.michaeltroger.gruenerpass.GreenPassApplication
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.AppDatabase
 import com.michaeltroger.gruenerpass.dialogs.CertificateDialogs
@@ -17,6 +18,7 @@ import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptorImpl
 import com.michaeltroger.gruenerpass.qr.QrRenderer
 import com.michaeltroger.gruenerpass.qr.QrRendererImpl
+import com.michaeltroger.gruenerpass.settings.EncryptedPreferenceDataStore
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.settings.PreferenceObserverImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
@@ -25,6 +27,9 @@ import com.michaeltroger.gruenerpass.sharing.PdfSharingImpl
 
 object Locator {
 
+    val context: Context by lazy {
+        GreenPassApplication.instance
+    }
     fun database(context: Context): AppDatabase = Room.databaseBuilder(
         context.applicationContext,
         AppDatabase::class.java, "greenpass"
@@ -54,4 +59,10 @@ object Locator {
     fun pdfSharing(): PdfSharing = PdfSharingImpl()
 
     fun certificateDialogs(): CertificateDialogs = CertificateDialogsImpl()
+
+    val encryptedPreferenceDataStore: EncryptedPreferenceDataStore by lazy {
+        EncryptedPreferenceDataStore(
+            context
+        )
+    }
 }

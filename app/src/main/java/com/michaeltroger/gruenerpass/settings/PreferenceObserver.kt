@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass.settings
 import android.content.Context
 import android.content.SharedPreferences
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.locator.Locator
 
 interface PreferenceChangeListener {
     fun refreshUi()
@@ -18,8 +19,8 @@ interface PreferenceObserver {
 
 class PreferenceObserverImpl(
     private val context: Context,
-    private val preferenceManager: SharedPreferences
-        = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
+    private val preferenceDataStore: EncryptedPreferenceDataStore
+    = Locator.encryptedPreferenceDataStore,
 ): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceChangeListener: PreferenceChangeListener? = null
@@ -29,16 +30,16 @@ class PreferenceObserverImpl(
 
     override fun init(preferenceChangeListener: PreferenceChangeListener) {
         this.preferenceChangeListener = preferenceChangeListener
-        preferenceManager.registerOnSharedPreferenceChangeListener(this)
-        shouldAuthenticate = preferenceManager.getBoolean(
+        preferenceDataStore.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        shouldAuthenticate = preferenceDataStore.getBoolean(
             context.getString(R.string.key_preference_biometric),
             false
         )
-        searchForQrCode = preferenceManager.getBoolean(
+        searchForQrCode = preferenceDataStore.getBoolean(
             context.getString(R.string.key_preference_search_for_qr_code),
             true
         )
-        addDocumentsFront = preferenceManager.getBoolean(
+        addDocumentsFront = preferenceDataStore.getBoolean(
             context.getString(R.string.key_preference_add_documents_front),
             false
         )
@@ -64,7 +65,7 @@ class PreferenceObserverImpl(
     }
 
     override fun onDestroy() {
-        preferenceManager.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceDataStore.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         preferenceChangeListener = null
     }
 }

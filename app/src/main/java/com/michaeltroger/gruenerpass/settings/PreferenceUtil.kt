@@ -2,17 +2,18 @@ package com.michaeltroger.gruenerpass.settings
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.view.WindowManager
+import androidx.preference.PreferenceDataStore
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.locator.Locator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class PreferenceUtil(
     private val context: Context,
-    private val preferenceManager: SharedPreferences
-    = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
+    private val preferenceManager: PreferenceDataStore
+    = Locator.encryptedPreferenceDataStore,
 ) {
 
     suspend fun updateScreenBrightness(activity: Activity) {
