@@ -9,8 +9,6 @@ import android.view.View
 import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -32,7 +30,6 @@ import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import java.util.concurrent.Executor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -55,10 +52,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var binding: FragmentMainBinding
 
-    private lateinit var executor: Executor
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
-
     private val pdfSharing = Locator.pdfSharing()
     private val certificateDialogs = Locator.certificateDialogs()
 
@@ -75,14 +68,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentMainBinding.bind(view)
-        executor = ContextCompat.getMainExecutor(requireContext())
-        biometricPrompt = BiometricPrompt(
-            this,
-            executor,
-            MyAuthenticationCallback()
-        )
-
-        promptInfo = Locator.biometricPromptInfo(requireContext())
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
@@ -101,7 +86,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.adapter = adapter
 
         binding.authenticate.setOnClickListener {
-            biometricPrompt.authenticate(promptInfo)
+            (requireActivity() as MainActivity).authenticate()
         }
 
         binding.addButton.setOnClickListener {
@@ -149,7 +134,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             is ViewState.Locked -> {
                 adapter.clear()
-                biometricPrompt.authenticate(promptInfo)
             }
 
             is ViewState.Normal -> showCertificateState(
@@ -345,14 +329,4 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            requireActivity().onUserInteraction()
-            vm.onAuthenticationSuccess()
-        }
-
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            vm.deletePendingFileIfExists()
-        }
-    }
 }

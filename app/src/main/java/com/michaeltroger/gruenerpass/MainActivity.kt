@@ -11,10 +11,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
+import com.michaeltroger.gruenerpass.locator.Locator
+import java.util.concurrent.Executor
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 
@@ -24,6 +28,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private var timeoutHandler: Handler? = null
     private var interactionTimeoutRunnable: Runnable? = null
     private lateinit var navController: NavController
+
+    private lateinit var mainExecutor: Executor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +44,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         timeoutHandler =  Handler(Looper.getMainLooper());
         interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
+            if (navController.currentDestination?.id != R.id.mainFragment) {
+                navController.popBackStack(R.id.mainFragment, false)
+            }
         }
         startTimeoutHandler()
+
+        mainExecutor = ContextCompat.getMainExecutor(this)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -96,6 +107,25 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun MainViewModel.setPendingFile(intent: Intent?) {
         intent?.getUri()?.let {
             setPendingFile(it)
+        }
+    }
+
+    fun authenticate() {
+        BiometricPrompt(
+            this,
+            mainExecutor,
+            MyAuthenticationCallback()
+        ).authenticate(Locator.biometricPromptInfo(this))
+    }
+
+    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            onUserInteraction()
+            vm.onAuthenticationSuccess()
+        }
+
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            vm.deletePendingFileIfExists()
         }
     }
 }
