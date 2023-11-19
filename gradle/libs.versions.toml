@@ -24,6 +24,7 @@ com-github-lisawray-groupie = "2.10.1"
 com-google-android-material = "1.10.0"
 com-google-devtools-ksp = "1.9.10-1.0.13"
 com-google-zxing-core = "3.3.3"
+com-squareup-leakcanary-android = "2.12"
 com-tom-roush-pdfbox-android = "2.0.25.0"
 io-gitlab-arturbosch-detekt = "1.23.1"
 io-kotest-assertions-core = "5.7.2"
@@ -59,6 +60,7 @@ com-github-lisawray-groupie = { module = "com.github.lisawray.groupie:groupie", 
 com-github-lisawray-groupie-viewbinding = { module = "com.github.lisawray.groupie:groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
 com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
 com-google-zxing-core = { module = "com.google.zxing:core", version.ref = "com-google-zxing-core" }
+com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }

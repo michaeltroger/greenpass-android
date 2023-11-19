@@ -120,6 +120,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
+    override fun onDestroyView() {
+        binding.certificates.adapter = null
+        super.onDestroyView()
+    }
+
     private fun authenticate() {
         BiometricPrompt(
             this,

@@ -89,6 +89,8 @@ licenseReport {
 }
 
 dependencies {
+    debugImplementation(libs.com.squareup.leakcanary.android)
+
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.biometric)
