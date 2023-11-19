@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.michaeltroger.gruenerpass.R
 
-interface PreferenceListener {
+interface PreferenceChangeListener {
     fun refreshUi()
 }
 
@@ -12,7 +12,8 @@ interface PreferenceObserver {
     fun searchForQrCode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
-    fun init(preferenceListener: PreferenceListener)
+    fun init(preferenceChangeListener: PreferenceChangeListener)
+    fun onDestroy()
 }
 
 class PreferenceObserverImpl(
@@ -21,13 +22,13 @@ class PreferenceObserverImpl(
         = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
 ): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var preferenceListener: PreferenceListener? = null
+    private var preferenceChangeListener: PreferenceChangeListener? = null
     private var searchForQrCode: Boolean = true
     private var shouldAuthenticate = false
     private var addDocumentsFront: Boolean = false
 
-    override fun init(preferenceListener: PreferenceListener) {
-        this.preferenceListener = preferenceListener
+    override fun init(preferenceChangeListener: PreferenceChangeListener) {
+        this.preferenceChangeListener = preferenceChangeListener
         preferenceManager.registerOnSharedPreferenceChangeListener(this)
         shouldAuthenticate = preferenceManager.getBoolean(
             context.getString(R.string.key_preference_biometric),
@@ -54,11 +55,16 @@ class PreferenceObserverImpl(
             }
             context.getString(R.string.key_preference_search_for_qr_code) -> {
                 searchForQrCode = sharedPreferences.getBoolean(key, true)
-                preferenceListener?.refreshUi()
+                preferenceChangeListener?.refreshUi()
             }
             context.getString(R.string.key_preference_add_documents_front) -> {
                 addDocumentsFront = sharedPreferences.getBoolean(key, false)
             }
         }
+    }
+
+    override fun onDestroy() {
+        preferenceManager.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceChangeListener = null
     }
 }

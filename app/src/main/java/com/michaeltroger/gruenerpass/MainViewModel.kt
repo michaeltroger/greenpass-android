@@ -13,7 +13,7 @@ import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
-import com.michaeltroger.gruenerpass.settings.PreferenceListener
+import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -34,7 +34,7 @@ class MainViewModel(
     private val logger: Logger = Locator.logger(),
     private val fileRepo: FileRepo = Locator.fileRepo(app),
     private val preferenceObserver: PreferenceObserver = Locator.preferenceManager(app)
-): AndroidViewModel(app), PreferenceListener {
+): AndroidViewModel(app), PreferenceChangeListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
         ViewState.Initial
@@ -263,6 +263,11 @@ class MainViewModel(
             filter = query
             updateState()
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        preferenceObserver.onDestroy()
     }
 }
 
