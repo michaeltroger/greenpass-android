@@ -1,4 +1,5 @@
 [versions]
+androidx-activity-ktx = "1.8.0"
 androidx-appcompat = "1.6.1"
 androidx-biometric = "1.1.0"
 androidx-constraintlayout = "2.1.4"
@@ -33,6 +34,7 @@ navigation-fragment-ktx = "2.7.5"
 navigation-ui-ktx = "2.7.5"
 
 [libraries]
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-ktx" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "androidx-biometric" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
