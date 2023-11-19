@@ -245,7 +245,7 @@ class MainViewModel(
         }
     }
 
-    override fun onPreferenceChanged() {
+    override fun refreshUi() {
         viewModelScope.launch {
             updateState()
         }

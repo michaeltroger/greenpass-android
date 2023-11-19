@@ -5,12 +5,10 @@ import android.content.SharedPreferences
 import com.michaeltroger.gruenerpass.R
 
 interface PreferenceListener {
-    fun onPreferenceChanged()
+    fun refreshUi()
 }
 
 interface PreferenceManager {
-    fun fullScreenBrightness(): Boolean
-    fun showOnLockedScreen(): Boolean
     fun searchForQrCode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
@@ -24,8 +22,6 @@ class PreferenceManagerImpl(
 ): PreferenceManager, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceListener: PreferenceListener? = null
-    private var fullScreenBrightness: Boolean = false
-    private var showOnLockedScreen: Boolean = false
     private var searchForQrCode: Boolean = true
     private var shouldAuthenticate = false
     private var addDocumentsFront: Boolean = false
@@ -41,22 +37,12 @@ class PreferenceManagerImpl(
             context.getString(R.string.key_preference_search_for_qr_code),
             true
         )
-        fullScreenBrightness = preferenceManager.getBoolean(
-            context.getString(R.string.key_preference_full_brightness),
-            false
-        )
-        showOnLockedScreen = preferenceManager.getBoolean(
-            context.getString(R.string.key_preference_show_on_locked_screen),
-            false
-        )
         addDocumentsFront = preferenceManager.getBoolean(
             context.getString(R.string.key_preference_add_documents_front),
             false
         )
     }
 
-    override fun fullScreenBrightness() = fullScreenBrightness
-    override fun showOnLockedScreen() = showOnLockedScreen
     override fun searchForQrCode() = searchForQrCode
     override fun shouldAuthenticate() = shouldAuthenticate
     override fun addDocumentsInFront() = addDocumentsFront
@@ -68,17 +54,11 @@ class PreferenceManagerImpl(
             }
             context.getString(R.string.key_preference_search_for_qr_code) -> {
                 searchForQrCode = sharedPreferences.getBoolean(key, true)
-            }
-            context.getString(R.string.key_preference_full_brightness) -> {
-                fullScreenBrightness = sharedPreferences.getBoolean(key, false)
-            }
-            context.getString(R.string.key_preference_show_on_locked_screen) -> {
-                showOnLockedScreen = sharedPreferences.getBoolean(key, false)
+                preferenceListener?.refreshUi()
             }
             context.getString(R.string.key_preference_add_documents_front) -> {
                 addDocumentsFront = sharedPreferences.getBoolean(key, false)
             }
         }
-        preferenceListener?.onPreferenceChanged()
     }
 }
