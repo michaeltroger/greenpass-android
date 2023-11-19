@@ -1,7 +1,5 @@
 package com.michaeltroger.gruenerpass
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -27,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
@@ -68,15 +65,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val menuProvider = MainMenuProvider()
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { intent ->
-                lifecycleScope.launch {
-                    val uri = intent.getUri() ?: return@launch
-                    val file = Locator.fileRepo(requireContext()).copyToApp(uri)
-                    vm.setPendingFile(file)
-                }
-            }
+    private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        lifecycleScope.launch {
+            val file = Locator.fileRepo(requireContext()).copyToApp(uri)
+            vm.setPendingFile(file)
         }
     }
 
@@ -178,11 +171,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun openFilePicker() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = PDF_MIME_TYPE
-        }
-        resultLauncher.launch(intent)
+        documentPick.launch(arrayOf(PDF_MIME_TYPE))
     }
 
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean, showDragButtons: Boolean) {
