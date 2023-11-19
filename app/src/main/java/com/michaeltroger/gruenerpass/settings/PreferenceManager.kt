@@ -55,25 +55,11 @@ class PreferenceManagerImpl(
         )
     }
 
-    override fun fullScreenBrightness(): Boolean {
-        return fullScreenBrightness
-    }
-
-    override fun showOnLockedScreen(): Boolean {
-        return showOnLockedScreen
-    }
-
-    override fun searchForQrCode(): Boolean {
-        return searchForQrCode
-    }
-
-    override fun shouldAuthenticate(): Boolean {
-        return shouldAuthenticate
-    }
-
-    override fun addDocumentsInFront(): Boolean {
-        return addDocumentsFront
-    }
+    override fun fullScreenBrightness() = fullScreenBrightness
+    override fun showOnLockedScreen() = showOnLockedScreen
+    override fun searchForQrCode() = searchForQrCode
+    override fun shouldAuthenticate() = shouldAuthenticate
+    override fun addDocumentsInFront() = addDocumentsFront
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         when (key) {
