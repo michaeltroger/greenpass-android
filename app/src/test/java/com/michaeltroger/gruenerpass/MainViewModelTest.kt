@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
+import android.net.Uri
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -11,7 +12,7 @@ import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
-import com.michaeltroger.gruenerpass.settings.PreferenceManager
+import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.michaeltroger.gruenerpass.utils.InstantExecutionRule
@@ -43,7 +44,7 @@ class MainViewModelTest {
 
     private val context = getApplicationContext<Application>()
     private val db = mockk<CertificateDao>(relaxed = true)
-    private val preferenceManager = mockk<PreferenceManager>(relaxed = true)
+    private val preferenceObserver = mockk<PreferenceObserver>(relaxed = true)
     private val pdfDecryptor = mockk<PdfDecryptor>(relaxed = true)
     private val pdfRenderer = mockk<PdfRenderer>(relaxed = true)
     private val fileRepo = mockk<FileRepo>(relaxed = true)
@@ -130,7 +131,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setPendingFile(Certificate("", ""))
+            vm.setPendingFile(Uri.EMPTY)
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ShowPasswordDialog
@@ -147,7 +148,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setPendingFile(Certificate("", ""))
+            vm.setPendingFile(Uri.EMPTY)
 
             expectNoEvents()
         }
@@ -167,7 +168,7 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         vm.viewEvent.test {
-            vm.setPendingFile(Certificate("", ""))
+            vm.setPendingFile(Uri.EMPTY)
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
             awaitItem() shouldBe ViewEvent.ScrollToLastCertificate
@@ -182,13 +183,13 @@ class MainViewModelTest {
             db = db,
             fileRepo = fileRepo,
             logger = logger,
-            preferenceManager = preferenceManager,
+            preferenceObserver = preferenceObserver,
             pdfDecryptor = pdfDecryptor,
         )
 
     private fun mockShouldAuthenticatePreference(prefValue: Boolean) {
         every {
-            preferenceManager.shouldAuthenticate()
+            preferenceObserver.shouldAuthenticate()
         } returns prefValue
     }
 

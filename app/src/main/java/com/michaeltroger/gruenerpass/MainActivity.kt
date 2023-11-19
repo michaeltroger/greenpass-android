@@ -11,8 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.deeplinking.DeeplinkActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.michaeltroger.gruenerpass.extensions.getUri
+import com.michaeltroger.gruenerpass.settings.PreferenceUtil
+import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 
@@ -21,18 +26,40 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val vm by viewModels<MainViewModel> { MainViewModelFactory(application)}
     private var timeoutHandler: Handler? = null
     private var interactionTimeoutRunnable: Runnable? = null
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (savedInstanceState == null) {
             vm.setPendingFile(intent)
         }
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHost.navController
+        setupActionBarWithNavController(navController = navController)
+
+        updateSettings()
+
         timeoutHandler =  Handler(Looper.getMainLooper());
         interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
+            if (navController.currentDestination?.id != R.id.mainFragment) {
+                navController.popBackStack(R.id.mainFragment, false)
+            }
         }
+        startTimeoutHandler()
+    }
 
-        startHandler()
+    private fun updateSettings() {
+        val preferenceUtil = PreferenceUtil(this)
+        lifecycleScope.launch {
+            preferenceUtil.updateScreenBrightness(this@MainActivity)
+            preferenceUtil.updateShowOnLockedScreen(this@MainActivity)
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     override fun onDestroy() {
@@ -72,21 +99,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun resetHandler() {
         interactionTimeoutRunnable?.let { runnable ->
             timeoutHandler?.removeCallbacks(runnable)
-            startHandler()
+            startTimeoutHandler()
         }
     }
 
-    private fun startHandler() {
+    private fun startTimeoutHandler() {
         interactionTimeoutRunnable?.let { runnable ->
             timeoutHandler?.postDelayed(runnable, INTERACTION_TIMEOUT_MS)
         }
     }
-}
 
-private fun MainViewModel.setPendingFile(intent: Intent?) {
-    if (intent == null) return
-    @Suppress("DEPRECATION")
-    (intent.getParcelableExtra(DeeplinkActivity.KEY_EXTRA_PENDING_FILE) as Certificate?)?.let {
-        setPendingFile(it)
+    private fun MainViewModel.setPendingFile(intent: Intent?) {
+        intent?.getUri()?.let {
+            setPendingFile(it)
+        }
     }
+
 }

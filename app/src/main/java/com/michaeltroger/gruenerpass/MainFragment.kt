@@ -1,14 +1,10 @@
 package com.michaeltroger.gruenerpass
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager.LayoutParams
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.biometric.BiometricPrompt
@@ -20,24 +16,20 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.locator.Locator
-import com.michaeltroger.gruenerpass.more.MoreActivity
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
-import com.michaeltroger.gruenerpass.pager.certificates.CertificateLinearLayoutManager
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
-import com.michaeltroger.gruenerpass.settings.SettingsActivity
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
-import java.util.concurrent.Executor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,25 +52,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var binding: FragmentMainBinding
 
-    private lateinit var executor: Executor
-    private lateinit var biometricPrompt: BiometricPrompt
-    private lateinit var promptInfo: BiometricPrompt.PromptInfo
-
     private val pdfSharing = Locator.pdfSharing()
     private val certificateDialogs = Locator.certificateDialogs()
 
     private val menuProvider = MainMenuProvider()
 
-    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { intent ->
-                lifecycleScope.launch {
-                    val uri = intent.getUri() ?: return@launch
-                    val file = Locator.fileRepo(requireContext()).copyToApp(uri)
-                    vm.setPendingFile(file)
-                }
-            }
-        }
+    private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        vm.setPendingFile(uri)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,17 +68,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentMainBinding.bind(view)
-        executor = ContextCompat.getMainExecutor(requireContext())
-        biometricPrompt = BiometricPrompt(
-            this,
-            executor,
-            MyAuthenticationCallback()
-        )
-
-        promptInfo = Locator.biometricPromptInfo(requireContext())
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
-        binding.certificates.layoutManager = CertificateLinearLayoutManager(requireContext())
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         }).apply {
@@ -114,7 +86,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.adapter = adapter
 
         binding.authenticate.setOnClickListener {
-            biometricPrompt.authenticate(promptInfo)
+            authenticate()
         }
 
         binding.addButton.setOnClickListener {
@@ -148,10 +120,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
+    private fun authenticate() {
+        BiometricPrompt(
+            this,
+            ContextCompat.getMainExecutor(requireContext()),
+            MyAuthenticationCallback()
+        ).authenticate(Locator.biometricPromptInfo(requireContext()))
+    }
+
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
-        updateScreenBrightness(fullBrightness = state.fullBrightness)
-        updateShowOnLockedScreen(showOnLockedScreen = state.showOnLockedScreen)
         binding.addButton.isVisible = state.showAddButton
         binding.authenticate.isVisible = state.showAuthenticateButton
         when (state) {
@@ -162,7 +140,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             is ViewState.Locked -> {
                 adapter.clear()
-                biometricPrompt.authenticate(promptInfo)
+                authenticate()
             }
 
             is ViewState.Normal -> showCertificateState(
@@ -179,11 +157,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun openFilePicker() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = PDF_MIME_TYPE
-        }
-        resultLauncher.launch(intent)
+        documentPick.launch(arrayOf(PDF_MIME_TYPE))
     }
 
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean, showDragButtons: Boolean) {
@@ -239,25 +213,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun updateScreenBrightness(fullBrightness: Boolean) {
-        requireActivity().window.apply {
-            attributes.apply {
-                screenBrightness = if (fullBrightness) {
-                    LayoutParams.BRIGHTNESS_OVERRIDE_FULL
-                } else {
-                    LayoutParams.BRIGHTNESS_OVERRIDE_NONE
-                }
-            }
-            addFlags(LayoutParams.SCREEN_BRIGHTNESS_CHANGED)
-        }
-    }
-
-    private fun updateShowOnLockedScreen(showOnLockedScreen: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            requireActivity().setShowWhenLocked(showOnLockedScreen)
-        }
-    }
-
     private inner class MainMenuProvider : MenuProvider {
         private var searchView: SearchView? = null
         private var menu: Menu? = null
@@ -284,14 +239,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
             R.id.openMore -> {
-                val intent = Intent(requireContext(), MoreActivity::class.java)
-                startActivity(intent)
+                findNavController().navigate(R.id.navigate_to_more)
                 true
             }
 
             R.id.openSettings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                startActivity(intent)
+                findNavController().navigate(R.id.navigate_to_settings)
                 true
             }
 

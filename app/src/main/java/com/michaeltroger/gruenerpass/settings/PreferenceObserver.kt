@@ -5,27 +5,23 @@ import android.content.SharedPreferences
 import com.michaeltroger.gruenerpass.R
 
 interface PreferenceListener {
-    fun onPreferenceChanged()
+    fun refreshUi()
 }
 
-interface PreferenceManager {
-    fun fullScreenBrightness(): Boolean
-    fun showOnLockedScreen(): Boolean
+interface PreferenceObserver {
     fun searchForQrCode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
     fun init(preferenceListener: PreferenceListener)
 }
 
-class PreferenceManagerImpl(
+class PreferenceObserverImpl(
     private val context: Context,
     private val preferenceManager: SharedPreferences
         = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
-): PreferenceManager, SharedPreferences.OnSharedPreferenceChangeListener {
+): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceListener: PreferenceListener? = null
-    private var fullScreenBrightness: Boolean = false
-    private var showOnLockedScreen: Boolean = false
     private var searchForQrCode: Boolean = true
     private var shouldAuthenticate = false
     private var addDocumentsFront: Boolean = false
@@ -41,39 +37,15 @@ class PreferenceManagerImpl(
             context.getString(R.string.key_preference_search_for_qr_code),
             true
         )
-        fullScreenBrightness = preferenceManager.getBoolean(
-            context.getString(R.string.key_preference_full_brightness),
-            false
-        )
-        showOnLockedScreen = preferenceManager.getBoolean(
-            context.getString(R.string.key_preference_show_on_locked_screen),
-            false
-        )
         addDocumentsFront = preferenceManager.getBoolean(
             context.getString(R.string.key_preference_add_documents_front),
             false
         )
     }
 
-    override fun fullScreenBrightness(): Boolean {
-        return fullScreenBrightness
-    }
-
-    override fun showOnLockedScreen(): Boolean {
-        return showOnLockedScreen
-    }
-
-    override fun searchForQrCode(): Boolean {
-        return searchForQrCode
-    }
-
-    override fun shouldAuthenticate(): Boolean {
-        return shouldAuthenticate
-    }
-
-    override fun addDocumentsInFront(): Boolean {
-        return addDocumentsFront
-    }
+    override fun searchForQrCode() = searchForQrCode
+    override fun shouldAuthenticate() = shouldAuthenticate
+    override fun addDocumentsInFront() = addDocumentsFront
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         when (key) {
@@ -82,17 +54,11 @@ class PreferenceManagerImpl(
             }
             context.getString(R.string.key_preference_search_for_qr_code) -> {
                 searchForQrCode = sharedPreferences.getBoolean(key, true)
-            }
-            context.getString(R.string.key_preference_full_brightness) -> {
-                fullScreenBrightness = sharedPreferences.getBoolean(key, false)
-            }
-            context.getString(R.string.key_preference_show_on_locked_screen) -> {
-                showOnLockedScreen = sharedPreferences.getBoolean(key, false)
+                preferenceListener?.refreshUi()
             }
             context.getString(R.string.key_preference_add_documents_front) -> {
                 addDocumentsFront = sharedPreferences.getBoolean(key, false)
             }
         }
-        preferenceListener?.onPreferenceChanged()
     }
 }

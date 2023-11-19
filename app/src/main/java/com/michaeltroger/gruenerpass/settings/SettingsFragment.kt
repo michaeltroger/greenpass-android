@@ -5,10 +5,12 @@ import android.os.Bundle
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.locator.Locator
+import kotlinx.coroutines.launch
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -17,6 +19,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         setupBiometricSetting()
         setupLockscreenSetting()
+        setupBrightnessSetting()
+    }
+
+    private fun setupBrightnessSetting() {
+        val preference = findPreference<Preference>(
+            getString(R.string.key_preference_full_brightness)
+        ) ?: error("Preference is required")
+
+        preference.setOnPreferenceClickListener {
+            lifecycleScope.launch {
+                PreferenceUtil(requireContext()).updateScreenBrightness(requireActivity())
+            }
+            true
+        }
     }
 
     private fun setupLockscreenSetting() {
@@ -26,6 +42,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             preference.isVisible = true
+            preference.setOnPreferenceClickListener {
+                lifecycleScope.launch {
+                    PreferenceUtil(requireContext()).updateShowOnLockedScreen(requireActivity())
+                }
+                true
+            }
         }
     }
 

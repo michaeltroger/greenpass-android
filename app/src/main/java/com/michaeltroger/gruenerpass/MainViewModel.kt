@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +14,7 @@ import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.settings.PreferenceListener
-import com.michaeltroger.gruenerpass.settings.PreferenceManager
+import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.Dispatchers
@@ -32,14 +33,11 @@ class MainViewModel(
     private val db: CertificateDao = Locator.database(app).certificateDao(),
     private val logger: Logger = Locator.logger(),
     private val fileRepo: FileRepo = Locator.fileRepo(app),
-    private val preferenceManager: PreferenceManager = Locator.preferenceManager(app)
+    private val preferenceObserver: PreferenceObserver = Locator.preferenceManager(app)
 ): AndroidViewModel(app), PreferenceListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
-        ViewState.Initial(
-            fullBrightness = preferenceManager.fullScreenBrightness(),
-            showOnLockedScreen = preferenceManager.showOnLockedScreen()
-        )
+        ViewState.Initial
     )
     val viewState: StateFlow<ViewState> = _viewState
     private var filter = ""
@@ -53,29 +51,22 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            preferenceManager.init(this@MainViewModel)
-            isLocked = preferenceManager.shouldAuthenticate()
+            preferenceObserver.init(this@MainViewModel)
+            isLocked = preferenceObserver.shouldAuthenticate()
             updateState()
         }
     }
 
     private suspend fun updateState() {
-        val fullScreenBrightness = preferenceManager.fullScreenBrightness()
-        val showOnLockedScreen = preferenceManager.showOnLockedScreen()
-        val shouldAuthenticate = preferenceManager.shouldAuthenticate()
+        val shouldAuthenticate = preferenceObserver.shouldAuthenticate()
 
         if (shouldAuthenticate && isLocked) {
-            _viewState.emit(ViewState.Locked(
-                fullBrightness = fullScreenBrightness,
-                showOnLockedScreen = showOnLockedScreen
-            ))
+            _viewState.emit(ViewState.Locked)
         } else {
             val docs = db.getAll()
             if (docs.isEmpty()) {
                 _viewState.emit(ViewState.Empty(
-                    fullBrightness = fullScreenBrightness,
                     showLockMenuItem = shouldAuthenticate,
-                    showOnLockedScreen = showOnLockedScreen
                 ))
             } else {
                 val filter = filter
@@ -88,12 +79,10 @@ class MainViewModel(
                 }
                 _viewState.emit(ViewState.Normal(
                     documents = filteredDocs,
-                    searchQrCode = preferenceManager.searchForQrCode(),
-                    fullBrightness = fullScreenBrightness,
+                    searchQrCode = preferenceObserver.searchForQrCode(),
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
-                    showOnLockedScreen = showOnLockedScreen,
                     showDragButtons = filteredDocs.size == docs.size && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
                     filter = filter
@@ -102,10 +91,12 @@ class MainViewModel(
         }
     }
 
-    fun setPendingFile(file: Certificate) {
-        logger.logDebug(file)
-        this.pendingFile = file
+    fun setPendingFile(uri: Uri) {
         viewModelScope.launch {
+            val file = fileRepo.copyToApp(uri)
+            logger.logDebug(file)
+            pendingFile = file
+
             val state = viewState.filter {
                 it !is ViewState.Initial
             }.first() // wait for initial loading to be finished
@@ -172,7 +163,7 @@ class MainViewModel(
             renderer.close()
         }
 
-        val addDocumentsInFront = preferenceManager.addDocumentsInFront()
+        val addDocumentsInFront = preferenceObserver.addDocumentsInFront()
         if (addDocumentsInFront) {
             val all = listOf(pendingFile) + db.getAll()
             db.replaceAll(*all.toTypedArray())
@@ -242,7 +233,7 @@ class MainViewModel(
     }
 
     fun onInteractionTimeout() {
-        if (preferenceManager.shouldAuthenticate()) {
+        if (preferenceObserver.shouldAuthenticate()) {
             lockApp()
         }
     }
@@ -254,7 +245,7 @@ class MainViewModel(
         }
     }
 
-    override fun onPreferenceChanged() {
+    override fun refreshUi() {
         viewModelScope.launch {
             updateState()
         }
