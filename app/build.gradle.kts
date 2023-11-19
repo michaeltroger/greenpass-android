@@ -20,7 +20,7 @@ android {
         applicationId = "com.michaeltroger.gruenerpass"
         minSdk = 21
         targetSdk = 34
-        versionCode = 50
+        versionCode = 51
         versionName = "3.4.0"
 
         ksp {
