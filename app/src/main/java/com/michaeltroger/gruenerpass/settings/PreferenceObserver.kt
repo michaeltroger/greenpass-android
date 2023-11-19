@@ -19,8 +19,7 @@ interface PreferenceObserver {
 
 class PreferenceObserverImpl(
     private val context: Context,
-    private val preferenceDataStore: EncryptedPreferenceDataStore
-    = Locator.encryptedPreferenceDataStore,
+    private val sharedPreferences: SharedPreferences = Locator.encryptedSharedPreferences,
 ): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceChangeListener: PreferenceChangeListener? = null
@@ -30,16 +29,16 @@ class PreferenceObserverImpl(
 
     override fun init(preferenceChangeListener: PreferenceChangeListener) {
         this.preferenceChangeListener = preferenceChangeListener
-        preferenceDataStore.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        shouldAuthenticate = preferenceDataStore.getBoolean(
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        shouldAuthenticate = sharedPreferences.getBoolean(
             context.getString(R.string.key_preference_biometric),
             false
         )
-        searchForQrCode = preferenceDataStore.getBoolean(
+        searchForQrCode = sharedPreferences.getBoolean(
             context.getString(R.string.key_preference_search_for_qr_code),
             true
         )
-        addDocumentsFront = preferenceDataStore.getBoolean(
+        addDocumentsFront = sharedPreferences.getBoolean(
             context.getString(R.string.key_preference_add_documents_front),
             false
         )
@@ -65,7 +64,7 @@ class PreferenceObserverImpl(
     }
 
     override fun onDestroy() {
-        preferenceDataStore.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         preferenceChangeListener = null
     }
 }

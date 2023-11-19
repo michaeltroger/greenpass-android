@@ -9,7 +9,7 @@ class AppMigrateFrom50 {
 
     fun invoke(context: Context) {
         val oldPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val newPreferences =  Locator.encryptedPreferenceDataStore.sharedPreferences
+        val newPreferences = Locator.encryptedSharedPreferences
         newPreferences.edit {
             oldPreferences.all.forEach { (key, value) ->
                 when (value) {
@@ -23,6 +23,8 @@ class AppMigrateFrom50 {
                 }
             }
         }
-        oldPreferences.edit().clear().apply()
+        oldPreferences.edit {
+            clear()
+        }
     }
 }

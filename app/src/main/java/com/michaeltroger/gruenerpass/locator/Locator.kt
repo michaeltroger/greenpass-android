@@ -1,8 +1,11 @@
 package com.michaeltroger.gruenerpass.locator
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.biometric.BiometricPrompt
 import androidx.room.Room
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.michaeltroger.gruenerpass.GreenPassApplication
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.AppDatabase
@@ -60,9 +63,21 @@ object Locator {
 
     fun certificateDialogs(): CertificateDialogs = CertificateDialogsImpl()
 
+    val encryptedSharedPreferences: SharedPreferences by lazy {
+        EncryptedSharedPreferences.create(
+            context,
+            "secret_shared_prefs",
+            MasterKey.Builder(context)
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build(),
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
+
     val encryptedPreferenceDataStore: EncryptedPreferenceDataStore by lazy {
         EncryptedPreferenceDataStore(
-            context
+            encryptedSharedPreferences
         )
     }
 }

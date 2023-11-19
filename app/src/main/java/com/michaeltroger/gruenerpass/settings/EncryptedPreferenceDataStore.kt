@@ -1,23 +1,11 @@
 package com.michaeltroger.gruenerpass.settings
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceDataStore
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
 
 class EncryptedPreferenceDataStore(
-    context: Context,
-    val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
-        context,
-        "secret_shared_prefs",
-        MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build(),
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+    private val sharedPreferences: SharedPreferences
 ) : PreferenceDataStore() {
 
     override fun putString(key: String, value: String?) {
