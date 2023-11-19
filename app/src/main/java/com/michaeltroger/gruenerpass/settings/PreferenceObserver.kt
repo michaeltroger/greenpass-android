@@ -8,18 +8,18 @@ interface PreferenceListener {
     fun refreshUi()
 }
 
-interface PreferenceManager {
+interface PreferenceObserver {
     fun searchForQrCode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
     fun init(preferenceListener: PreferenceListener)
 }
 
-class PreferenceManagerImpl(
+class PreferenceObserverImpl(
     private val context: Context,
     private val preferenceManager: SharedPreferences
         = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
-): PreferenceManager, SharedPreferences.OnSharedPreferenceChangeListener {
+): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceListener: PreferenceListener? = null
     private var searchForQrCode: Boolean = true

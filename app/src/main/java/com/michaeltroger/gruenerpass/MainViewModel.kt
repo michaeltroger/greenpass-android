@@ -14,7 +14,7 @@ import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.settings.PreferenceListener
-import com.michaeltroger.gruenerpass.settings.PreferenceManager
+import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +33,7 @@ class MainViewModel(
     private val db: CertificateDao = Locator.database(app).certificateDao(),
     private val logger: Logger = Locator.logger(),
     private val fileRepo: FileRepo = Locator.fileRepo(app),
-    private val preferenceManager: PreferenceManager = Locator.preferenceManager(app)
+    private val preferenceObserver: PreferenceObserver = Locator.preferenceManager(app)
 ): AndroidViewModel(app), PreferenceListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
@@ -51,14 +51,14 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            preferenceManager.init(this@MainViewModel)
-            isLocked = preferenceManager.shouldAuthenticate()
+            preferenceObserver.init(this@MainViewModel)
+            isLocked = preferenceObserver.shouldAuthenticate()
             updateState()
         }
     }
 
     private suspend fun updateState() {
-        val shouldAuthenticate = preferenceManager.shouldAuthenticate()
+        val shouldAuthenticate = preferenceObserver.shouldAuthenticate()
 
         if (shouldAuthenticate && isLocked) {
             _viewState.emit(ViewState.Locked)
@@ -79,7 +79,7 @@ class MainViewModel(
                 }
                 _viewState.emit(ViewState.Normal(
                     documents = filteredDocs,
-                    searchQrCode = preferenceManager.searchForQrCode(),
+                    searchQrCode = preferenceObserver.searchForQrCode(),
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
@@ -163,7 +163,7 @@ class MainViewModel(
             renderer.close()
         }
 
-        val addDocumentsInFront = preferenceManager.addDocumentsInFront()
+        val addDocumentsInFront = preferenceObserver.addDocumentsInFront()
         if (addDocumentsInFront) {
             val all = listOf(pendingFile) + db.getAll()
             db.replaceAll(*all.toTypedArray())
@@ -233,7 +233,7 @@ class MainViewModel(
     }
 
     fun onInteractionTimeout() {
-        if (preferenceManager.shouldAuthenticate()) {
+        if (preferenceObserver.shouldAuthenticate()) {
             lockApp()
         }
     }
