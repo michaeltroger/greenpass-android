@@ -86,11 +86,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.adapter = adapter
 
         binding.authenticate.setOnClickListener {
-            BiometricPrompt(
-                this,
-                ContextCompat.getMainExecutor(requireContext()),
-                MyAuthenticationCallback()
-            ).authenticate(Locator.biometricPromptInfo(requireContext()))
+            authenticate()
         }
 
         binding.addButton.setOnClickListener {
@@ -124,6 +120,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
+    private fun authenticate() {
+        BiometricPrompt(
+            this,
+            ContextCompat.getMainExecutor(requireContext()),
+            MyAuthenticationCallback()
+        ).authenticate(Locator.biometricPromptInfo(requireContext()))
+    }
+
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
         binding.addButton.isVisible = state.showAddButton
@@ -136,6 +140,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             is ViewState.Locked -> {
                 adapter.clear()
+                authenticate()
             }
 
             is ViewState.Normal -> showCertificateState(
