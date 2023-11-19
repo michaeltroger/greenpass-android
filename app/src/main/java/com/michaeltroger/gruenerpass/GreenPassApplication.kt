@@ -7,6 +7,12 @@ class GreenPassApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         AppMigrator(applicationContext).performMigration()
+    }
+
+    companion object {
+        lateinit var instance: GreenPassApplication
+            private set
     }
 }
