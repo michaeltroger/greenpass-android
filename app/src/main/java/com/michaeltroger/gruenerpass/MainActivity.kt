@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
         }
-
-        startHandler()
+        startTimeoutHandler()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -84,11 +83,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private fun resetHandler() {
         interactionTimeoutRunnable?.let { runnable ->
             timeoutHandler?.removeCallbacks(runnable)
-            startHandler()
+            startTimeoutHandler()
         }
     }
 
-    private fun startHandler() {
+    private fun startTimeoutHandler() {
         interactionTimeoutRunnable?.let { runnable ->
             timeoutHandler?.postDelayed(runnable, INTERACTION_TIMEOUT_MS)
         }
