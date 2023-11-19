@@ -50,7 +50,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val adapter = CertificateAdapter()
     private lateinit var itemTouchHelper: ItemTouchHelper
 
-    private lateinit var binding: FragmentMainBinding
+    private var binding: FragmentMainBinding? = null
 
     private val pdfSharing = Locator.pdfSharing()
     private val certificateDialogs = Locator.certificateDialogs()
@@ -68,6 +68,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentMainBinding.bind(view)
+        val binding = binding!!
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
@@ -121,7 +122,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     override fun onDestroyView() {
-        binding.certificates.adapter = null
+        binding = null
         super.onDestroyView()
     }
 
@@ -135,8 +136,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
-        binding.addButton.isVisible = state.showAddButton
-        binding.authenticate.isVisible = state.showAuthenticateButton
+        binding!!.addButton.isVisible = state.showAddButton
+        binding!!.authenticate.isVisible = state.showAuthenticateButton
         when (state) {
             is ViewState.Initial -> {} // nothing to do
             is ViewState.Empty -> {
@@ -201,19 +202,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun scrollToLastCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
         lifecycleScope.launch {
             delay(delayMs)
-            binding.certificates.smoothScrollToPosition(adapter.itemCount - 1)
+            binding!!.certificates.smoothScrollToPosition(adapter.itemCount - 1)
         }
     }
 
     private fun scrollToFirstCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
         lifecycleScope.launch {
             delay(delayMs)
-            binding.certificates.smoothScrollToPosition(0)
+            binding!!.certificates.smoothScrollToPosition(0)
         }
     }
 
     private fun showFileCanNotBeReadError() {
-        binding.root.let {
+        binding!!.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }
