@@ -19,7 +19,7 @@ import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import kotlinx.coroutines.launch
 
-private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
+private const val INTERACTION_TIMEOUT_MS = 10 * 1000L
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
