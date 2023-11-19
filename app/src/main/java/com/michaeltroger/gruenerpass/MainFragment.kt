@@ -67,10 +67,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@registerForActivityResult
-        lifecycleScope.launch {
-            val file = Locator.fileRepo(requireContext()).copyToApp(uri)
-            vm.setPendingFile(file)
-        }
+        vm.setPendingFile(uri)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

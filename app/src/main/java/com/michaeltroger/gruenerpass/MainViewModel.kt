@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -102,10 +103,12 @@ class MainViewModel(
         }
     }
 
-    fun setPendingFile(file: Certificate) {
-        logger.logDebug(file)
-        this.pendingFile = file
+    fun setPendingFile(uri: Uri) {
         viewModelScope.launch {
+            val file = fileRepo.copyToApp(uri)
+            logger.logDebug(file)
+            pendingFile = file
+
             val state = viewState.filter {
                 it !is ViewState.Initial
             }.first() // wait for initial loading to be finished
