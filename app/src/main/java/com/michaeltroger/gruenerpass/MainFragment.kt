@@ -28,7 +28,6 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
-import com.michaeltroger.gruenerpass.pager.certificates.CertificateLinearLayoutManager
 import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.states.ViewEvent
@@ -86,7 +85,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         promptInfo = Locator.biometricPromptInfo(requireContext())
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
-        binding.certificates.layoutManager = CertificateLinearLayoutManager(requireContext())
         itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
             vm.onDragFinished(it)
         }).apply {
