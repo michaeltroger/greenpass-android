@@ -7,6 +7,8 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -84,7 +86,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.adapter = adapter
 
         binding.authenticate.setOnClickListener {
-            (requireActivity() as MainActivity).authenticate()
+            BiometricPrompt(
+                this,
+                ContextCompat.getMainExecutor(requireContext()),
+                MyAuthenticationCallback()
+            ).authenticate(Locator.biometricPromptInfo(requireContext()))
         }
 
         binding.addButton.setOnClickListener {
@@ -306,4 +312,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
+    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            requireActivity().onUserInteraction()
+            vm.onAuthenticationSuccess()
+        }
+
+        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            vm.deletePendingFileIfExists()
+        }
+    }
 }

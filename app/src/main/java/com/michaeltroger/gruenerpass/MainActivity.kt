@@ -11,16 +11,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
-import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
-import java.util.concurrent.Executor
 import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
@@ -31,8 +27,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private var timeoutHandler: Handler? = null
     private var interactionTimeoutRunnable: Runnable? = null
     private lateinit var navController: NavController
-
-    private lateinit var mainExecutor: Executor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +48,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
         startTimeoutHandler()
-
-        mainExecutor = ContextCompat.getMainExecutor(this)
     }
 
     private fun updateSettings() {
@@ -123,22 +115,4 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
     }
 
-    fun authenticate() {
-        BiometricPrompt(
-            this,
-            mainExecutor,
-            MyAuthenticationCallback()
-        ).authenticate(Locator.biometricPromptInfo(this))
-    }
-
-    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            onUserInteraction()
-            vm.onAuthenticationSuccess()
-        }
-
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            vm.deletePendingFileIfExists()
-        }
-    }
 }
