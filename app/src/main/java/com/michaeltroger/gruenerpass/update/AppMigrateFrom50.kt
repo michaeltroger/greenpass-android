@@ -10,7 +10,7 @@ class AppMigrateFrom50 {
     fun invoke(context: Context) {
         val oldPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val newPreferences = Locator.encryptedSharedPreferences
-        newPreferences.edit {
+        newPreferences.edit(commit = true) {
             oldPreferences.all.forEach { (key, value) ->
                 when (value) {
                     is Boolean -> putBoolean(key, value)
@@ -19,7 +19,6 @@ class AppMigrateFrom50 {
                     is Int -> putInt(key, value)
                     is Long -> putLong(key, value)
                     is Set<*> -> putStringSet(key, value.map { it.toString() }.toSet())
-                    else -> throw IllegalStateException("unsupported type for shared preferences migration")
                 }
             }
         }
