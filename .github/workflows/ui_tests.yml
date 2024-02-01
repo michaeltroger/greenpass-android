@@ -38,7 +38,7 @@ jobs:
           api-level: 34
           arch: x86_64
           target: default
-          profile: pixel_6_pro
+          profile: Medium_Phone_API_34
           emulator-boot-timeout: 1000
           disk-size: 8G
           ram-size: 4048M
