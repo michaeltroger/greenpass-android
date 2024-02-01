@@ -15,8 +15,6 @@ import kotlinx.coroutines.launch
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        preferenceManager.preferenceDataStore = Locator.encryptedPreferenceDataStore
-
         setPreferencesFromResource(R.xml.preference, rootKey)
 
         setupBiometricSetting()

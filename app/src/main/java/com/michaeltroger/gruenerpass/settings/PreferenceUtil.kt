@@ -6,18 +6,18 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.view.WindowManager
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.locator.Locator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class PreferenceUtil(
     private val context: Context,
-    private val sharedPreferences: SharedPreferences = Locator.encryptedSharedPreferences,
+    private val preferenceManager: SharedPreferences
+    = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
 ) {
 
     suspend fun updateScreenBrightness(activity: Activity) {
         val fullBrightness = withContext(Dispatchers.IO) {
-            sharedPreferences.getBoolean(
+            preferenceManager.getBoolean(
                 context.getString(R.string.key_preference_full_brightness),
                 false
             )
@@ -38,7 +38,7 @@ class PreferenceUtil(
     suspend fun updateShowOnLockedScreen(activity: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             val showOnLockedScreen = withContext(Dispatchers.IO) {
-                sharedPreferences.getBoolean(
+                preferenceManager.getBoolean(
                     context.getString(R.string.key_preference_show_on_locked_screen),
                     false
                 )

@@ -58,9 +58,6 @@ class AppMigrator(ctx: Context) {
         if (previousVersion < 28) {
             AppMigrateFrom27().invoke(context)
         }
-        if (previousVersion < 51) {
-            AppMigrateFrom50().invoke(context)
-        }
 
         persistCurrentAppVersionCode()
     }

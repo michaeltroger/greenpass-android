@@ -11,7 +11,7 @@
         <include domain="root" />
         <include domain="file" />
         <include domain="database" />
-        <exclude domain="sharedpref" />
+        <include domain="sharedpref" />
         <include domain="external" />
     </device-transfer>
 </data-extraction-rules>
