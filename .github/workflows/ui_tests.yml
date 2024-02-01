@@ -38,7 +38,7 @@ jobs:
           api-level: 34
           arch: x86_64
           target: default
-          profile: Medium_Phone_API_34
+          profile: medium_phone
           emulator-boot-timeout: 1000
           disk-size: 8G
           ram-size: 4048M
