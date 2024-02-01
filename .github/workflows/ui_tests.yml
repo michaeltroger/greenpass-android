@@ -38,7 +38,7 @@ jobs:
           api-level: 34
           arch: x86_64
           target: default
-          profile: pixel
+          profile: pixel_3
           emulator-boot-timeout: 1000
           disk-size: 8G
           ram-size: 4048M
