@@ -11,19 +11,27 @@ concurrency:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     env:
       JAVA_VERSION: '17'
 
     steps:
       - name: checkout
         uses: actions/checkout@v3
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'temurin'
           cache: 'gradle'
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -39,11 +47,13 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: scripts/run_ui_tests
+
       - name: Upload screenshots
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
+
       - name: Create screenshot pull request if on main branch
         uses: peter-evans/create-pull-request@v5
         if: github.ref == 'refs/heads/main'
@@ -53,6 +63,7 @@ jobs:
           commit-message: Update of screenshots
           add-paths: |
             screenshots/*
+
       - name: Upload test report
         uses: actions/upload-artifact@v3
         if: always()
