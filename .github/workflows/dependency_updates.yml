@@ -14,7 +14,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      JAVA_VERSION: '17'
+      JAVA_VERSION: '21'
 
     steps:
     - name: Checkout repo
