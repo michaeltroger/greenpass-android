@@ -1,0 +1,4 @@
+- Behebt einen Fehler beim Öffnen von Dokumenten
+- Verbessert die Dokumentensuche
+- Aktualisierung der verwendeten Bibliotheken (Dependencies)
+- Leistungsverbesserungen

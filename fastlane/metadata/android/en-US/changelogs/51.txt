@@ -1,0 +1,4 @@
+- Fixes an issue with the opening of documents
+- Improves the document search
+- Update of libraries used in the app
+- Performance improvements
