@@ -28,7 +28,7 @@
     <string name="more">Mehr</string>
     <string name="privacy_policy">Datenschutzerklärung</string>
     <string name="preference_max_brightness">100\u0025 Helligkeit</string>
-    <string name="preference_max_brightness_description">Die Dokumente immer mit voller Display-Helligkeit anzeigen.</string>
+    <string name="preference_max_brightness_description">Die App immer mit voller Display-Helligkeit anzeigen.</string>
     <string name="licenses">Lizenzen</string>
     <string name="licenses_summary">Zeige die Open-Source-Lizenzen, die in diesem Projekt verwendet werden</string>
     <string name="version">Version %1$s</string>
@@ -42,7 +42,7 @@
     <string name="preference_add_documents_front">Dokumente vorne einfügen</string>
     <string name="preference_add_documents_front_description">Neue PDFs werden vorne statt hinten eingefügt</string>
     <string name="preference_add_show_on_locked_screen">Über Sperrbildschirm anzeigen</string>
-    <string name="preference_add_show_on_locked_screen_description">PDFs auch bei gesperrtem Bildschirm anzeigen</string>
+    <string name="preference_add_show_on_locked_screen_description">Erlaube vollen Zugriff auf die App, selbst wenn der Bildschirm gesperrt ist.</string>
     <string name="scroll_to_first">Zum ersten PDF scrollen</string>
     <string name="scroll_to_last">Zum letzten PDF scrollen</string>
     <string name="pdfs">PDFs</string>

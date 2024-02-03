@@ -28,7 +28,7 @@
     <string name="more">Meer</string>
     <string name="privacy_policy">Privacybeleid</string>
     <string name="preference_max_brightness">100\u0025 helderheid</string>
-    <string name="preference_max_brightness_description">Altijd de documenten met volledige schermhelderheid weergeven.</string>
+    <string name="preference_max_brightness_description">Always display the app with full screen brightness.</string>
     <string name="licenses">Licenties</string>
     <string name="licenses_summary">Toon de in dit project gebruikte opensource licenties</string>
     <string name="version">Versie %1$s</string>
@@ -42,7 +42,7 @@
     <string name="preference_add_documents_front">Documenten vooraan toevoegen</string>
     <string name="preference_add_documents_front_description">Nieuwe PDF\'s worden vooraan geplaatst in plaats van achteraan</string>
     <string name="preference_add_show_on_locked_screen">Weergeven op Vergrendelscherm</string>
-    <string name="preference_add_show_on_locked_screen_description">PDF\'s weergeven zelfs wanneer het scherm is vergrendeld</string>
+    <string name="preference_add_show_on_locked_screen_description">Allow to fully access the app even when the screen is locked.</string>
     <string name="scroll_to_first">Naar eerste PDF scrollen</string>
     <string name="scroll_to_last">Naar laatste PDF scrollen</string>
     <string name="pdfs">PDF\'s</string>
