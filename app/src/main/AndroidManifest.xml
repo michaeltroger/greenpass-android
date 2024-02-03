@@ -20,7 +20,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:screenOrientation="sensorPortrait"
-            tools:ignore="LockedOrientationActivity" >
+            tools:ignore="DiscouragedApi,LockedOrientationActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
