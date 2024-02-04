@@ -44,7 +44,7 @@
     <string name="preference_add_documents_front">Documenten vooraan toevoegen</string>
     <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back.</string>
     <string name="preference_add_show_on_locked_screen">Weergeven op Vergrendelscherm</string>
-    <string name="preference_add_show_on_locked_screen_description">Allows to access the app without unlocking your phone. Can be used e.g. for safely handing over your phone for ticket checks. Don\'t use this setting permanently.</string>
+    <string name="preference_add_show_on_locked_screen_description">Allows to access the app without unlocking your phone. Don\'t use this setting permanently.</string>
     <string name="scroll_to_first">Naar eerste PDF scrollen</string>
     <string name="scroll_to_last">Naar laatste PDF scrollen</string>
     <string name="pdfs">PDF\'s</string>
