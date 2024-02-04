@@ -44,7 +44,7 @@
     <string name="preference_add_documents_front">Dokumente vorne einfügen</string>
     <string name="preference_add_documents_front_description">Neue PDFs werden vorne statt hinten eingefügt.</string>
     <string name="preference_add_show_on_locked_screen">Über Sperrbildschirm anzeigen</string>
-    <string name="preference_add_show_on_locked_screen_description">Allows to access the app without unlocking your phone. Don\'t use this setting permanently.</string>
+    <string name="preference_add_show_on_locked_screen_description">Ermöglicht den Zugriff auf die App, ohne das Handy zu entsperren. Verwende diese Einstellung nicht permanent.</string>
     <string name="scroll_to_first">Zum ersten PDF scrollen</string>
     <string name="scroll_to_last">Zum letzten PDF scrollen</string>
     <string name="pdfs">PDFs</string>
