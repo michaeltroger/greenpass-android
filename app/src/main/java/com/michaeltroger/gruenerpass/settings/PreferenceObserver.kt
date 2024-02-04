@@ -12,6 +12,7 @@ interface PreferenceObserver {
     fun searchForQrCode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
+    fun showOnLockedScreen(): Boolean
     fun init(preferenceChangeListener: PreferenceChangeListener)
     fun onDestroy()
 }
@@ -26,6 +27,7 @@ class PreferenceObserverImpl(
     private var searchForQrCode: Boolean = true
     private var shouldAuthenticate = false
     private var addDocumentsFront: Boolean = false
+    private var showOnLockedScreen: Boolean = false
 
     override fun init(preferenceChangeListener: PreferenceChangeListener) {
         this.preferenceChangeListener = preferenceChangeListener
@@ -42,11 +44,16 @@ class PreferenceObserverImpl(
             context.getString(R.string.key_preference_add_documents_front),
             false
         )
+        showOnLockedScreen = preferenceManager.getBoolean(
+            context.getString(R.string.key_preference_show_on_locked_screen),
+            false
+        )
     }
 
     override fun searchForQrCode() = searchForQrCode
     override fun shouldAuthenticate() = shouldAuthenticate
     override fun addDocumentsInFront() = addDocumentsFront
+    override fun showOnLockedScreen() = showOnLockedScreen
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         when (key) {
@@ -59,6 +66,10 @@ class PreferenceObserverImpl(
             }
             context.getString(R.string.key_preference_add_documents_front) -> {
                 addDocumentsFront = sharedPreferences.getBoolean(key, false)
+            }
+            context.getString(R.string.key_preference_show_on_locked_screen) -> {
+                showOnLockedScreen = sharedPreferences.getBoolean(key, false)
+                preferenceChangeListener?.refreshUi()
             }
         }
     }

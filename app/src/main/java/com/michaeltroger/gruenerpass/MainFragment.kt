@@ -246,6 +246,11 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 true
             }
 
+            R.id.warning -> {
+                certificateDialogs.showWarningDialog(context = requireContext())
+                true
+            }
+
             R.id.openMore -> {
                 findNavController().navigate(R.id.navigate_to_more)
                 true
@@ -308,6 +313,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         fun updateMenuState(state: ViewState) {
             menu?.apply {
                 findItem(R.id.add)?.isVisible = state.showAddMenuItem
+                findItem(R.id.warning)?.isVisible = state.showWarningButton
                 findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
                 findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
                 findItem(R.id.lock)?.isVisible = state.showLockMenuItem

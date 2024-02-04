@@ -16,6 +16,7 @@ interface CertificateDialogs {
     )
     fun showDoYouWantToDeleteDialog(context: Context, id: String, onDeleteConfirmed: (String) -> Unit)
     fun showDoYouWantToDeleteAllDialog(context: Context, onDeleteAllConfirmed: () -> Unit)
+    fun showWarningDialog(context: Context)
 }
 
 class CertificateDialogsImpl : CertificateDialogs {
@@ -29,6 +30,18 @@ class CertificateDialogsImpl : CertificateDialogs {
                 onDeleteAllConfirmed()
             }
             .setNegativeButton(context.getString(R.string.cancel), null)
+            .setOnDismissListener {
+                this.dialog = null
+            }
+            .create()
+        this.dialog = dialog
+        dialog.show()
+    }
+
+    override fun showWarningDialog(context: Context) {
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setMessage(context.getString(R.string.dialog_warning))
+            .setPositiveButton(R.string.ok, null)
             .setOnDismissListener {
                 this.dialog = null
             }

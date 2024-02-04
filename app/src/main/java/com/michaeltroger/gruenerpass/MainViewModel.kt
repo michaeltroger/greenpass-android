@@ -85,7 +85,8 @@ class MainViewModel(
                     showScrollToLastMenuItem = filteredDocs.size > 1,
                     showDragButtons = filteredDocs.size == docs.size && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
-                    filter = filter
+                    filter = filter,
+                    showWarningButton = preferenceObserver.showOnLockedScreen(),
                 ))
             }
         }

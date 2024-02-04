@@ -8,6 +8,15 @@
         android:visible="false"
         app:showAsAction="collapseActionView|always"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/warning"
+        android:icon="@drawable/warning_24px"
+        android:title="@string/warning"
+        android:visible="false"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
     <item
         android:id="@+id/add"
         android:icon="@drawable/baseline_add_24"
