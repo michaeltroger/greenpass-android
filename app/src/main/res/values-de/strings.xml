@@ -6,6 +6,7 @@
     <string name="document_name">Dokumentenname</string>
     <string name="qr_code">QR-Code</string>
     <string name="add">Hinzufügen</string>
+    <string name="warning">Warning</string>
     <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
     <string name="dialog_password_protection_title">Passwortgeschütztes PDF entschlüsseln</string>
     <string name="dialog_password_protection_hint">Passwort eingeben</string>
@@ -37,12 +38,13 @@
     <string name="changelog_summary">Änderungen in dieser App-Version</string>
     <string name="delete_all">Alle löschen</string>
     <string name="dialog_delete_all_confirmation_message">Willst du wirklich alle Dokumente aus der App löschen?</string>
+    <string name="dialog_warning">Warning! The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
     <string name="lock">Sperren</string>
     <string name="export_all">Alle exportieren</string>
     <string name="preference_add_documents_front">Dokumente vorne einfügen</string>
-    <string name="preference_add_documents_front_description">Neue PDFs werden vorne statt hinten eingefügt</string>
+    <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back.</string>
     <string name="preference_add_show_on_locked_screen">Über Sperrbildschirm anzeigen</string>
-    <string name="preference_add_show_on_locked_screen_description">Erlaube vollen Zugriff auf die App, selbst wenn der Bildschirm gesperrt ist.</string>
+    <string name="preference_add_show_on_locked_screen_description">Allows to access the app without unlocking your phone. Can be used e.g. for safely handing over your phone for ticket checks. Don\'t use this setting permanently.</string>
     <string name="scroll_to_first">Zum ersten PDF scrollen</string>
     <string name="scroll_to_last">Zum letzten PDF scrollen</string>
     <string name="pdfs">PDFs</string>
