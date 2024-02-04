@@ -1,0 +1,1 @@
+- Show a warning when "show over lock screen" is enabled
