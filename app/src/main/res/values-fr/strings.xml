@@ -6,6 +6,7 @@
     <string name="document_name">Document name</string>
     <string name="qr_code">QR code</string>
     <string name="add">Ajouter</string>
+    <string name="warning">Warning</string>
     <string name="error_reading_pdf">Erreur lors de la lecture du PDF. Essayez un autre fichier ou dossier</string>
     <string name="dialog_password_protection_title">Déchiffrer le PDF protégé par mot de passe</string>
     <string name="dialog_password_protection_hint">Saisir le mot de passe</string>
@@ -37,12 +38,13 @@
     <string name="changelog_summary">Changes in this app version</string>
     <string name="delete_all">Delete all</string>
     <string name="dialog_delete_all_confirmation_message">Do you really want to delete all documents from the app?</string>
+    <string name="dialog_warning">Warning! The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
     <string name="lock">Lock</string>
     <string name="export_all">Export all</string>
     <string name="preference_add_documents_front">Add documents in front</string>
-    <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back</string>
+    <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back.</string>
     <string name="preference_add_show_on_locked_screen">Show over lock screen</string>
-    <string name="preference_add_show_on_locked_screen_description">Allow to fully access the app even when the screen is locked.</string>
+    <string name="preference_add_show_on_locked_screen_description">Allows to access the app without unlocking your phone. Can be used e.g. for safely handing over your phone for ticket checks. Don\'t use this setting permanently.</string>
     <string name="scroll_to_first">Scroll to first PDF</string>
     <string name="scroll_to_last">Scroll to last PDF</string>
     <string name="pdfs">PDFs</string>
