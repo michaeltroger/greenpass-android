@@ -1,6 +1,7 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
     alias(libs.plugins.com.android.application) apply false
     alias(libs.plugins.com.github.ben.manes.versions) apply true
     alias(libs.plugins.com.github.jk1.dependency.license.report) apply false
