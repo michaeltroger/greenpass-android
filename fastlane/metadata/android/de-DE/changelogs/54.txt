@@ -1,0 +1,2 @@
+- Behebt fehlerhafte Anzeige des Sperren-Buttons nach Änderung der Authentifizierungseinstellung
+- Behebt F-Droid Build-Fehler durch Downgrade von Java

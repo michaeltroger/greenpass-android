@@ -1,0 +1,2 @@
+- Fix lock menu item wrongly displayed after toggling authentication setting
+- Fixed F-Droid build by downgrading Java

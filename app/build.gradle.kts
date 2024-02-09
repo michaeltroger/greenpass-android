@@ -20,8 +20,8 @@ android {
         applicationId = "com.michaeltroger.gruenerpass"
         minSdk = 21
         targetSdk = 34
-        versionCode = 53
-        versionName = "3.4.3"
+        versionCode = 54
+        versionName = "3.4.4"
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
