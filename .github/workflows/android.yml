@@ -11,10 +11,18 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      JAVA_VERSION: '17'
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: 'gradle'
     - name: Run Detekt
       run: ./gradlew detekt
     - name: Run Lint
