@@ -59,6 +59,7 @@ class PreferenceObserverImpl(
         when (key) {
             context.getString(R.string.key_preference_biometric) -> {
                 shouldAuthenticate = sharedPreferences.getBoolean(key, false)
+                preferenceChangeListener?.refreshUi()
             }
             context.getString(R.string.key_preference_search_for_qr_code) -> {
                 searchForQrCode = sharedPreferences.getBoolean(key, true)
