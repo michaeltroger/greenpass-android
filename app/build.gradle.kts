@@ -81,7 +81,7 @@ android {
     }
 }
 
-kotlin.jvmToolchain(17)
+kotlin.jvmToolchain(21)
 
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
