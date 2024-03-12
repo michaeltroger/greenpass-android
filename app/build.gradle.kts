@@ -1,4 +1,4 @@
-import com.github.jk1.license.filter.*
+import com.github.jk1.license.filter.LicenseBundleNormalizer
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.Properties
@@ -86,7 +86,7 @@ kotlin.jvmToolchain(17)
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
     configurations = arrayOf("releaseRuntimeClasspath")
-    filters = arrayOf(LicenseBundleNormalizer(), ExcludeTransitiveDependenciesFilter())
+    filters = arrayOf(LicenseBundleNormalizer())
 }
 
 dependencies {
