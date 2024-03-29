@@ -18,6 +18,9 @@ versionCatalogUpdate {
             libs.com.tom.roush.pdfbox.android // versions >= 2.0.26.0 increase app size by 4MB (issue is in its dependency >= org.bouncycastle:bcprov-jdk15to18:1.72)
         ))
     }
+    keep {
+        keepUnusedVersions = true // otherwise it would delete Java and SDK variables
+    }
 }
 
 fun isNonStable(version: String): Boolean {
