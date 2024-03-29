@@ -24,6 +24,7 @@ jobs:
       with:
         java-version: ${{ env.JAVA_VERSION }}
         distribution: 'temurin'
+        cache: 'gradle'
     - name: Update dependencies
       run: ./gradlew versionCatalogUpdate
     - name: Create license report
