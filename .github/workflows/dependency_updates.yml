@@ -17,6 +17,13 @@ jobs:
       JAVA_VERSION: '17'
 
     steps:
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Checkout repo
       uses: actions/checkout@v4
     - name: Set up JDK
