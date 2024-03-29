@@ -34,9 +34,9 @@ kotlin = "1.9.23"
 nl-littlerobots-version-catalog-update = "0.8.4"
 org-jetbrains-kotlinx-coroutines-test = "1.8.0"
 org-robolectric = "4.11.1"
+sdk-compile = "34"
 sdk-min = "21"
 sdk-target = "34"
-sdk-compile = "34"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-ktx" }
