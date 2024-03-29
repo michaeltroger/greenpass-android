@@ -14,12 +14,12 @@ plugins {
 
 android {
     namespace = "com.michaeltroger.gruenerpass"
-    compileSdk = 34
+    compileSdk = libs.versions.sdk.compile.get().toInt()
 
     defaultConfig {
         applicationId = "com.michaeltroger.gruenerpass"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = libs.versions.sdk.min.get().toInt()
+        targetSdk = libs.versions.sdk.target.get().toInt()
         versionCode = 54
         versionName = "3.4.4"
 
@@ -69,6 +69,7 @@ android {
         warningsAsErrors = true
     }
 
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests {
             isIncludeAndroidResources = true
@@ -81,7 +82,7 @@ android {
     }
 }
 
-kotlin.jvmToolchain(17)
+kotlin.jvmToolchain(libs.versions.java.get().toInt())
 
 licenseReport {
     outputDir = "$rootDir/docs/licenses"
