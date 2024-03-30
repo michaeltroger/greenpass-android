@@ -50,4 +50,6 @@
     <string name="pdfs">PDF</string>
     <string name="search">Αναζήτηση</string>
     <string name="search_query_hint">Όνομα εγγράφου</string>
+    <string name="dialog_document_name_hint">Όνομα εγγράφου</string>
+    <string name="dialog_document_name_title">Change document name</string>
 </resources>
