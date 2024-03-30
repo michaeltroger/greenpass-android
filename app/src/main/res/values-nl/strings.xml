@@ -50,4 +50,6 @@
     <string name="pdfs">PDF\'s</string>
     <string name="search">Zoeken</string>
     <string name="search_query_hint">Documentnaam</string>
+    <string name="dialog_document_name_hint">Documentnaam</string>
+    <string name="dialog_document_name_title">Change document name</string>
 </resources>
