@@ -52,7 +52,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupBiometricSetting() {
-        val preference = findPreference<ValidateSwitchPreferenceCompat>(
+        val preference = findPreference<ValidateSwitchPreference>(
             getString(R.string.key_preference_biometric)
         ) ?: error("Preference is required")
 
