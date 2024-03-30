@@ -50,4 +50,6 @@
     <string name="pdfs">PDFs</string>
     <string name="search">Suchen</string>
     <string name="search_query_hint">Dokumentenname</string>
+    <string name="dialog_document_name_hint">Dokumentenname</string>
+    <string name="dialog_document_name_title">Change document name</string>
 </resources>
