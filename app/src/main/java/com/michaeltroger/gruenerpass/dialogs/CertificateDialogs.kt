@@ -3,9 +3,13 @@ package com.michaeltroger.gruenerpass.dialogs
 import android.app.Dialog
 import android.content.Context
 import android.view.LayoutInflater
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.documentorder.DocumentOrderItem
+import com.xwray.groupie.GroupieAdapter
 
 interface CertificateDialogs {
     fun closeAllDialogs()
@@ -21,6 +25,11 @@ interface CertificateDialogs {
         context: Context,
         originalDocumentName: String,
         onDocumentNameChanged: (String) -> Unit
+    )
+    fun showChangeDocumentOrder(
+        context: Context,
+        originalOrder: List<Certificate>,
+        onOrderChanged: (List<String>) -> Unit
     )
 }
 
@@ -70,7 +79,11 @@ class CertificateDialogsImpl : CertificateDialogs {
         dialog.show()
     }
 
-    override fun showChangeDocumentNameDialog(context: Context, originalDocumentName: String, onDocumentNameChanged: (String) -> Unit) {
+    override fun showChangeDocumentNameDialog(
+        context: Context,
+        originalDocumentName: String,
+        onDocumentNameChanged: (String) -> Unit
+    ) {
         val customAlertDialogView = LayoutInflater.from(context)
             .inflate(R.layout.layout_document_name_dialog, null, false)
 
@@ -83,6 +96,75 @@ class CertificateDialogsImpl : CertificateDialogs {
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDocumentNameChanged(textField.editText!!.text.toString())
+            }
+            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setOnDismissListener {
+                this.dialog = null
+            }
+            .create()
+        this.dialog = dialog
+        dialog.show()
+    }
+
+    override fun showChangeDocumentOrder(
+        context: Context,
+        originalOrder: List<Certificate>,
+        onOrderChanged: (List<String>) -> Unit
+    ) {
+        val customAlertDialogView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_document_order_dialog, null, false)
+
+        val myAdapter = GroupieAdapter()
+        val list = originalOrder.toMutableList()
+
+        fun onUpClicked(id: String) {
+            val index = list.indexOfFirst {
+                it.id == id
+            }
+            val original = list.getOrNull(index)
+            val new = list.getOrNull(index - 1)
+            if (new != null) {
+                list[index - 1] = original!!
+                list[index] = new
+                myAdapter.notifyItemMoved(index, index - 1)
+            }
+        }
+
+        fun onDownClicked(id: String) {
+            val index = list.indexOfFirst {
+                it.id == id
+            }
+            val original = list.getOrNull(index)
+            val new = list.getOrNull(index + 1)
+            if (new != null) {
+                list[index + 1] = original!!
+                list[index] = new
+                myAdapter.notifyItemMoved(index, index + 1)
+            }
+        }
+
+        myAdapter.update(
+            originalOrder.map { certificate ->
+                DocumentOrderItem(
+                    fileName = certificate.id,
+                    documentName = certificate.name,
+                    onDownClicked = {
+                        onDownClicked(certificate.id)
+                    },
+                    onUpClicked = {
+                        onUpClicked(certificate.id)
+                    }
+                )
+            }
+        )
+
+        customAlertDialogView.findViewById<RecyclerView>(R.id.document_order).adapter = myAdapter
+
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setTitle(context.getString(R.string.dialog_document_order_title))
+            .setView(customAlertDialogView)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                onOrderChanged(list.map { it.id })
             }
             .setNegativeButton(context.getString(R.string.cancel), null)
             .setOnDismissListener {

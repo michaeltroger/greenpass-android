@@ -14,4 +14,6 @@
     <string name="pdf_file_provider_authority">com.michaeltroger.gruenerpass.pdffileprovider</string>
     <string name="changelog_uri">https://github.com/michaeltroger/greenpass-android/releases</string>
     <string name="key_preference_add_documents_front">addDocumentsFront</string>
+    <string name="up">˄</string>
+    <string name="down">˅</string>
 </resources>

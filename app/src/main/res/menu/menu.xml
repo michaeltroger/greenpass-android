@@ -50,6 +50,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/changeOrder"
+        android:title="@string/change_order"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/scrollToFirst"
         android:title="@string/scroll_to_first"
         android:visible="false"
