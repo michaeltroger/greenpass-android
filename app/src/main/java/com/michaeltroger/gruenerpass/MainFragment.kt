@@ -169,30 +169,38 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean, showDragButtons: Boolean) {
-        val items = documents.map {
+        val items = documents.map { certificate ->
             CertificateItem(
                 requireContext().applicationContext,
-                fileName = it.id,
-                documentName = it.name,
+                fileName = certificate.id,
+                documentName = certificate.name,
                 searchQrCode = searchQrCode,
                 showDragButtons = showDragButtons,
                 dispatcher = thread,
-                onDeleteCalled = { certificateDialogs.showDoYouWantToDeleteDialog(
-                    context = requireContext(),
-                    id = it.id,
-                    onDeleteConfirmed = vm::onDeleteConfirmed
-                ) },
-                onDocumentNameChanged = { updatedDocumentName: String ->
-                    vm.onDocumentNameChanged(
-                        filename = it.id,
-                        documentName = updatedDocumentName
+                onDeleteCalled = {
+                    certificateDialogs.showDoYouWantToDeleteDialog(
+                        context = requireContext(),
+                        id = certificate.id,
+                        onDeleteConfirmed = vm::onDeleteConfirmed
+                    )
+                },
+                onDocumentNameClicked = {
+                    certificateDialogs.showChangeDocumentNameDialog(
+                        context = requireContext(),
+                        originalDocumentName = certificate.name,
+                        onDocumentNameChanged = { newDocumentName ->
+                            vm.onDocumentNameChanged(
+                                filename = certificate.id,
+                                documentName = newDocumentName
+                            )
+                        }
                     )
                 },
                 onStartDrag = { viewHolder -> itemTouchHelper.startDrag(viewHolder) },
                 onShareCalled = {
                     pdfSharing.openShareFilePicker(
                         context = requireContext(),
-                        certificate = it,
+                        certificate = certificate,
                     )
                 },
             )
