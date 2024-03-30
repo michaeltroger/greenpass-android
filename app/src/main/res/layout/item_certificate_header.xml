@@ -17,20 +17,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="UselessLeaf" />
 
-    <EditText
+    <TextView
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="@dimen/space_small"
-        android:importantForAutofill="no"
-        android:maxLines="1"
-        android:hint="@string/document_name"
-        android:imeOptions="actionDone"
-        android:inputType="text|textNoSuggestions"
-        android:background="@null"
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:textColor="?colorOnSecondary"
+        android:ellipsize="marquee"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/deleteIcon"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Document name with very very very long text"/>
 
     <ImageView
         android:id="@+id/deleteIcon"

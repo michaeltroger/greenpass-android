@@ -17,6 +17,11 @@ interface CertificateDialogs {
     fun showDoYouWantToDeleteDialog(context: Context, id: String, onDeleteConfirmed: (String) -> Unit)
     fun showDoYouWantToDeleteAllDialog(context: Context, onDeleteAllConfirmed: () -> Unit)
     fun showWarningDialog(context: Context)
+    fun showChangeDocumentNameDialog(
+        context: Context,
+        originalDocumentName: String,
+        onDocumentNameChanged: (String) -> Unit
+    )
 }
 
 class CertificateDialogsImpl : CertificateDialogs {
@@ -55,6 +60,29 @@ class CertificateDialogsImpl : CertificateDialogs {
             .setMessage(context.getString(R.string.dialog_delete_confirmation_message))
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteConfirmed(id)
+            }
+            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setOnDismissListener {
+                this.dialog = null
+            }
+            .create()
+        this.dialog = dialog
+        dialog.show()
+    }
+
+    override fun showChangeDocumentNameDialog(context: Context, originalDocumentName: String, onDocumentNameChanged: (String) -> Unit) {
+        val customAlertDialogView = LayoutInflater.from(context)
+            .inflate(R.layout.layout_document_name_dialog, null, false)
+
+        val textField = customAlertDialogView.findViewById<TextInputLayout>(R.id.document_name_text_field).apply {
+            editText!!.setText(originalDocumentName)
+        }
+
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setTitle(context.getString(R.string.dialog_document_name_title))
+            .setView(customAlertDialogView)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                onDocumentNameChanged(textField.editText!!.text.toString())
             }
             .setNegativeButton(context.getString(R.string.cancel), null)
             .setOnDismissListener {

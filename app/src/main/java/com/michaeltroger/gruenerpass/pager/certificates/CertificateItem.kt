@@ -31,7 +31,7 @@ class CertificateItem(
     private val searchQrCode: Boolean,
     private val showDragButtons: Boolean,
     private val onDeleteCalled: () -> Unit,
-    private val onDocumentNameChanged: (String) -> Unit,
+    private val onDocumentNameClicked: () -> Unit,
     private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
     private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateBinding>() {
@@ -63,7 +63,7 @@ class CertificateItem(
                 documentName = documentName,
                 fileName = fileName,
                 onDeleteCalled = onDeleteCalled,
-                onDocumentNameChanged = onDocumentNameChanged,
+                onDocumentNameClicked = onDocumentNameClicked,
                 onStartDrag =  {
                     onStartDrag(viewHolder)
                 },
@@ -96,6 +96,7 @@ class CertificateItem(
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
         return (other as? CertificateItem)?.fileName == fileName
+            && (other as? CertificateItem)?.documentName == documentName
             && (other as? CertificateItem)?.searchQrCode == searchQrCode
             && (other as? CertificateItem)?.showDragButtons == showDragButtons
     }

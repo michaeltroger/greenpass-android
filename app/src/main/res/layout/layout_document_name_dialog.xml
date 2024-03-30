@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/password_text_field"
+        android:id="@+id/document_name_text_field"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_medium"
@@ -15,14 +15,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:hint="@string/dialog_password_protection_hint"
+        android:hint="@string/dialog_document_name_hint"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:singleLine="true"
-            android:inputType="textPassword"/>
+            android:inputType="text"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
