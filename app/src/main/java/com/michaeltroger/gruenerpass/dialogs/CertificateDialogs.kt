@@ -79,7 +79,11 @@ class CertificateDialogsImpl : CertificateDialogs {
         dialog.show()
     }
 
-    override fun showChangeDocumentNameDialog(context: Context, originalDocumentName: String, onDocumentNameChanged: (String) -> Unit) {
+    override fun showChangeDocumentNameDialog(
+        context: Context,
+        originalDocumentName: String,
+        onDocumentNameChanged: (String) -> Unit
+    ) {
         val customAlertDialogView = LayoutInflater.from(context)
             .inflate(R.layout.layout_document_name_dialog, null, false)
 
@@ -102,7 +106,11 @@ class CertificateDialogsImpl : CertificateDialogs {
         dialog.show()
     }
 
-    override fun showChangeDocumentOrder(context: Context, originalOrder: List<Certificate>, onOrderChanged: (List<String>) -> Unit) {
+    override fun showChangeDocumentOrder(
+        context: Context,
+        originalOrder: List<Certificate>,
+        onOrderChanged: (List<String>) -> Unit
+    ) {
         val customAlertDialogView = LayoutInflater.from(context)
             .inflate(R.layout.layout_document_order_dialog, null, false)
 
