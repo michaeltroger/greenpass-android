@@ -17,7 +17,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -26,7 +25,6 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
-import com.michaeltroger.gruenerpass.pager.certificates.ItemTouchHelperCallback
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -48,7 +46,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private val thread = newSingleThreadContext("RenderContext")
 
     private val adapter = CertificateAdapter()
-    private lateinit var itemTouchHelper: ItemTouchHelper
 
     private var binding: FragmentMainBinding? = null
 
@@ -71,11 +68,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         val binding = binding!!
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
-        itemTouchHelper = ItemTouchHelper(ItemTouchHelperCallback(adapter) {
-            vm.onDragFinished(it)
-        }).apply {
-            attachToRecyclerView(binding.certificates)
-        }
 
         try { // reduce scroll sensitivity for horizontal scrolling to improve vertical scrolling
             val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
@@ -122,7 +114,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     override fun onDestroyView() {
-        itemTouchHelper.attachToRecyclerView(null)
         binding!!.certificates.adapter = null
         binding = null
         super.onDestroyView()
@@ -154,7 +145,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
                 searchQrCode = state.searchQrCode,
-                showDragButtons = state.showDragButtons
             )
         }
     }
@@ -168,14 +158,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         documentPick.launch(arrayOf(PDF_MIME_TYPE))
     }
 
-    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean, showDragButtons: Boolean) {
+    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
         val items = documents.map { certificate ->
             CertificateItem(
                 requireContext().applicationContext,
                 fileName = certificate.id,
                 documentName = certificate.name,
                 searchQrCode = searchQrCode,
-                showDragButtons = showDragButtons,
                 dispatcher = thread,
                 onDeleteCalled = {
                     certificateDialogs.showDoYouWantToDeleteDialog(
@@ -196,7 +185,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                         }
                     )
                 },
-                onStartDrag = { viewHolder -> itemTouchHelper.startDrag(viewHolder) },
                 onShareCalled = {
                     pdfSharing.openShareFilePicker(
                         context = requireContext(),
@@ -302,6 +290,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 true
             }
 
+            R.id.changeOrder -> {
+                certificateDialogs.showChangeDocumentOrder(
+                    context = requireContext(),
+                    originalOrder =  (vm.viewState.value as ViewState.Normal).documents,
+                    onOrderChanged = {
+                        vm.onOrderChanged(it)
+                    }
+                )
+                true
+            }
+
             else -> false
         }
 
@@ -326,6 +325,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
                 findItem(R.id.lock)?.isVisible = state.showLockMenuItem
                 findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
+                findItem(R.id.changeOrder)?.isVisible = state.showChangeOrderMenuItem
                 findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
                 findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
                 findItem(R.id.search)?.apply {

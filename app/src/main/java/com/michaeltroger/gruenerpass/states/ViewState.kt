@@ -15,6 +15,7 @@ sealed class ViewState {
     abstract val showSearchMenuItem: Boolean
     abstract val showMoreMenuItem: Boolean
     abstract val showWarningButton: Boolean
+    abstract val showChangeOrderMenuItem: Boolean
 
     data object Initial : ViewState() {
         override val showSearchMenuItem = false
@@ -29,6 +30,7 @@ sealed class ViewState {
         override val showScrollToLastMenuItem = false
         override val showMoreMenuItem = true
         override val showWarningButton = false
+        override val showChangeOrderMenuItem = false
     }
 
     data class Empty(
@@ -45,12 +47,13 @@ sealed class ViewState {
         override val showScrollToLastMenuItem = false
         override val showMoreMenuItem = true
         override val showWarningButton = false
+        override val showChangeOrderMenuItem = false
     }
 
     data class Normal(
         val documents: List<Certificate>,
         val searchQrCode: Boolean,
-        val showDragButtons: Boolean,
+        override val showChangeOrderMenuItem: Boolean,
         val filter: String,
         override val showLockMenuItem: Boolean,
         override val showScrollToFirstMenuItem: Boolean,
@@ -80,5 +83,6 @@ sealed class ViewState {
         override val showScrollToLastMenuItem = false
         override val showMoreMenuItem = false
         override val showWarningButton = false
+        override val showChangeOrderMenuItem = false
     }
 }

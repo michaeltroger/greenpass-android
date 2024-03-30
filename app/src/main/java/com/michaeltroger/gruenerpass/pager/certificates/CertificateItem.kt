@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass.pager.certificates
 
 import android.content.Context
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
 import com.michaeltroger.gruenerpass.locator.Locator
@@ -29,10 +28,8 @@ class CertificateItem(
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchQrCode: Boolean,
-    private val showDragButtons: Boolean,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameClicked: () -> Unit,
-    private val onStartDrag: (RecyclerView.ViewHolder) -> Unit,
     private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateBinding>() {
 
@@ -64,11 +61,7 @@ class CertificateItem(
                 fileName = fileName,
                 onDeleteCalled = onDeleteCalled,
                 onDocumentNameClicked = onDocumentNameClicked,
-                onStartDrag =  {
-                    onStartDrag(viewHolder)
-                },
                 onShareCalled = onShareCalled,
-                showDragButtons = showDragButtons
             ))
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(
@@ -98,6 +91,5 @@ class CertificateItem(
         return (other as? CertificateItem)?.fileName == fileName
             && (other as? CertificateItem)?.documentName == documentName
             && (other as? CertificateItem)?.searchQrCode == searchQrCode
-            && (other as? CertificateItem)?.showDragButtons == showDragButtons
     }
 }

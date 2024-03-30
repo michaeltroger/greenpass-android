@@ -83,7 +83,7 @@ class MainViewModel(
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
-                    showDragButtons = filteredDocs.size == docs.size && docs.size > 1,
+                    showChangeOrderMenuItem = filteredDocs.size == docs.size && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
                     filter = filter,
                     showWarningButton = preferenceObserver.showOnLockedScreen(),
@@ -208,7 +208,7 @@ class MainViewModel(
     }
 
     @Suppress("SpreadOperator")
-    fun onDragFinished(sortedIdList: List<String>) {
+    fun onOrderChanged(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
             db.getAll().forEach {
