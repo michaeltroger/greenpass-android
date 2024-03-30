@@ -27,6 +27,7 @@ class MoreFragment : PreferenceFragmentCompat() {
             "com.android.vending" -> "Google Play Store"
             "com.amazon.venezia" -> "Amazon Appstore"
             "com.huawei.appmarket" -> "Huawei AppGallery"
+            "org.fdroid.fdroid" -> "F-Droid"
             else -> {
                 if (requireContext().getSigningSubject()?.contains("FDroid") == true) {
                     "F-Droid"
