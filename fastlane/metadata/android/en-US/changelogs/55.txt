@@ -1,8 +1,8 @@
  - Aztec Code support (experimental)
- - Improved document renaming: A click on the document name opens now a dialog for renaming
- - Improved document ordering: A new menu item for changing order has been added, instead of the old badly working drag-and-drop method
- - When filtering documents through the search, then you can now choose between sharing/deleting all or just the currently visible ones
- - Add "open in new window" icons to the links on the "More" screen to better indicate that you leave the app
+ - Improved document renaming
+ - Improved document ordering
+ - When documents are filtered, then you can choose between sharing/deleting all or just the currently visible ones
+ - Add "open in new window" icons to the links on the "More" screen
  - Fix Authentication preference display when a high font size is chosen
  - Performance improvements
  - Greek translation (thx to "OpenContribution")

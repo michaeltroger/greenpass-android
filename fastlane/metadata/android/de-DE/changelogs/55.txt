@@ -1,9 +1,8 @@
  - Aztec Code Support (experimentell)
- - Verbessertes Umbennen von Dokumenten: Ein Klick auf den Dokumentenname öffnet nun einen Dialog zum Umbenennen
- - Verbessertes Ändern der Dokumentenreihenfolge: Ein neuer Menüpunkt zum Ändern der Reihenfolge wurde hinzugefügt, anstatt der alten schlecht funktionierenden Drag-and-Drop-Methode
- - Wenn Dokumente durch die Suche gefiltert werden, können Sie jetzt zwischen dem Teilen/Löschen aller oder nur der aktuell sichtbaren wählen
- - "In neuem Fenster öffnen" Icons zu den Links auf dem "Mehr" Bildschirm hinzugefügt, um besser darzustellen, dass die App verlassen wird
- - Behebt ein Problem mit der Darstellung der Authentifizierung-Einstellung, wenn eine große Schriftgröße gewählt ist
+ - Verbessertes Umbennen von Dokumenten
+ - Verbessertes Ändern der Reihenfolge
+ - Wenn Dokumente gefiltert werden, kann nun gewählt werden zw. Teilen/Löschen aller oder nur der aktuell sichtbaren
+ - "In neuem Fenster öffnen" Icons zu den Links auf dem "Mehr" Bildschirm hinzugefügt
+ - Behebt ein Problem mit der Darstellung der Authentifizierung-Einstellung, bei großer Schriftgröße
  - Leistungsverbesserungen
  - Griechische Übersetzung (danke an "OpenContribution")
- - Aktualisierung von Abhängigkeiten (Dependencies)
