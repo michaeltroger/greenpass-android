@@ -40,14 +40,20 @@ class AndroidFileAppRobot {
                 uiDevice.findObject(testDataDirSelector).click()
 
                 uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+                if (!uiDevice.hasObject(pdfSelector)) {
+                    return@forEach
+                }
 
-                uiDevice.wait(Until.hasObject(listViewSelector), TIMEOUT)
-                uiDevice.findObject(listViewSelector).click()
-
-                return@apply
+                return@forEach
             } catch (e: NullPointerException) {
                 //ignoring
             }
+        }
+        try {
+            uiDevice.wait(Until.hasObject(listViewSelector), TIMEOUT)
+            uiDevice.findObject(listViewSelector).click()
+        } catch (e: NullPointerException) {
+            //ignoring
         }
     }
 
