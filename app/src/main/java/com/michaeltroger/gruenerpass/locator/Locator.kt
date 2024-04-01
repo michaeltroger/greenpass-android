@@ -47,7 +47,7 @@ object Locator {
         documentNameRepo(context.applicationContext)
     )
 
-    fun qrRenderer(): BarcodeRenderer = BarcodeRendererImpl()
+    fun barcodeRenderer(): BarcodeRenderer = BarcodeRendererImpl()
 
     fun preferenceManager(context: Context): PreferenceObserver = PreferenceObserverImpl(context)
 

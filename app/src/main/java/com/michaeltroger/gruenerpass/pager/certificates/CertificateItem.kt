@@ -67,7 +67,7 @@ class CertificateItem(
                 itemList.add(
                     PdfPageItem(
                         pdfRenderer = renderer,
-                        barcodeRenderer = Locator.qrRenderer(),
+                        barcodeRenderer = Locator.barcodeRenderer(),
                         pageIndex = pageIndex,
                         fileName = fileName,
                         searchBarcode = searchBarcode
