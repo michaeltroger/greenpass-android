@@ -82,7 +82,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         binding.addButton.setOnClickListener {
-            openFilePicker()
+            vm.onAddFileSelected()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -149,6 +149,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
             ViewEvent.ShowSettings -> findNavController().navigate(R.id.navigate_to_settings)
             ViewEvent.ShowMore -> findNavController().navigate(R.id.navigate_to_more)
+            ViewEvent.AddFile -> documentPick.launch(arrayOf(PDF_MIME_TYPE))
         }
     }
 
@@ -191,10 +192,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onPause() {
         super.onPause()
         menuProvider.onPause()
-    }
-
-    private fun openFilePicker() {
-        documentPick.launch(arrayOf(PDF_MIME_TYPE))
     }
 
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
@@ -274,10 +271,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             updateMenuState(vm.viewState.value)
         }
 
-        @Suppress("CyclomaticComplexMethod")
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
             R.id.add -> {
-                openFilePicker()
+                vm.onAddFileSelected()
                 true
             }
 

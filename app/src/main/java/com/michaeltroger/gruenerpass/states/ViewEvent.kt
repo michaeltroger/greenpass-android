@@ -16,6 +16,7 @@ sealed class ViewEvent {
     data object ShowWarningDialog : ViewEvent()
     data object ShowSettings : ViewEvent()
     data object ShowMore : ViewEvent()
+    data object AddFile : ViewEvent()
 
     data class DeleteFiltered(val documentCount: Int) : ViewEvent()
     data class ChangeDocumentOrder(val originalOrder: List<Certificate>) : ViewEvent()

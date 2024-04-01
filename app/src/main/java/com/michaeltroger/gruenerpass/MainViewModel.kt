@@ -343,6 +343,12 @@ class MainViewModel(
             ViewEvent.ShowMore
         )
     }
+
+    fun onAddFileSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.AddFile
+        )
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
