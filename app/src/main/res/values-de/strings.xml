@@ -3,7 +3,7 @@
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
     <string name="document_name">Dokumentenname</string>
-    <string name="barcode">QR-Code</string>
+    <string name="barcode">Barcode</string>
     <string name="add">Hinzufügen</string>
     <string name="warning">Warnung</string>
     <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Abbrechen</string>
     <string name="dialog_delete_confirmation_message">Willst du das Dokument wirklich aus der App löschen?</string>
     <string name="require_authentication">Authentifizierung erforderlich</string>
-    <string name="preference_search_barcode">QR-Code extrahieren</string>
-    <string name="preference_search_barcode_description">Durchsuche jede PDF-Seite nach einem QR-Code.</string>
+    <string name="preference_search_barcode">Extract barcode</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR and Aztec (experimental).</string>
     <string name="settings">Einstellungen</string>
     <string name="authenticate">Authentifizieren</string>
     <string name="report_issue_summary">Probleme bei Verwendung der App? Lass uns helfen</string>
@@ -49,13 +49,13 @@
     <string name="pdfs">PDFs</string>
     <string name="search">Suchen</string>
     <string name="search_query_hint">Dokumentenname</string>
-    <string name="dialog_document_name_title">Change document name</string>
-    <string name="dialog_document_order_title">Change document order</string>
-    <string name="change_order">Change order</string>
-    <string name="export_filtered">Export currently filtered</string>
-    <string name="delete_filtered">Delete currently filtered</string>
+    <string name="dialog_document_name_title">Dokumentenname ändern</string>
+    <string name="dialog_document_order_title">Reihenfolge ändern</string>
+    <string name="change_order">Reihenfolge ändern</string>
+    <string name="export_filtered">Aktuell gefilterte exportieren</string>
+    <string name="delete_filtered">Aktuell gefilterte löschen</string>
     <plurals name="dialog_delete_filtered_confirmation_message">
         <item quantity="one">Do you really want to delete %d document from the app?</item>
-        <item quantity="other">Do you really want to delete %d documents from the app?</item>
+        <item quantity="other">Willst du wirklich %d Dokumente aus der App löschen?</item>
     </plurals>
 </resources>
