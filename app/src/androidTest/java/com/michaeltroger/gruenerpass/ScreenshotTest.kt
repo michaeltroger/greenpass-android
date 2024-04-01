@@ -1,5 +1,6 @@
 package com.michaeltroger.gruenerpass
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.core.app.ActivityScenario
 import com.michaeltroger.gruenerpass.robots.MainActivityRobot
 import com.michaeltroger.gruenerpass.utils.FailingTestWatcher
@@ -56,4 +57,21 @@ class ScreenshotTest {
 
         ScreenshotUtil.recordScreenshot("qr_code")
     }
+
+    @Test
+    fun darkMode() {
+        enableDarkMode()
+        MainActivityRobot().verifyEmptyState()
+
+        ScreenshotUtil.recordScreenshot("dark_mode")
+    }
+
+    private fun enableDarkMode() =
+        scenario.apply {
+            onActivity {
+                AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES
+                )
+            }
+        }
 }
