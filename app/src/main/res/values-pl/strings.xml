@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Green Pass</string>
     <string name="delete">Usuń</string>
-    <string name="move">Move</string>
     <string name="document_name">Document name</string>
     <string name="qr_code">QR code</string>
     <string name="add">Dodaj</string>
@@ -50,4 +49,7 @@
     <string name="pdfs">PDFs</string>
     <string name="search">Search</string>
     <string name="search_query_hint">Document name</string>
+    <string name="dialog_document_name_title">Change document name</string>
+    <string name="dialog_document_order_title">Change document order</string>
+    <string name="change_order">Change order</string>
 </resources>

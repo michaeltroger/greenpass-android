@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Green Pass</string>
     <string name="delete">Διαγραφή</string>
-    <string name="move">Μετακίνηση</string>
     <string name="document_name">Όνομα εγγράφου</string>
     <string name="qr_code">Κωδικος QR</string>
     <string name="add">Προσθήκη</string>
@@ -50,4 +49,7 @@
     <string name="pdfs">PDF</string>
     <string name="search">Αναζήτηση</string>
     <string name="search_query_hint">Όνομα εγγράφου</string>
+    <string name="dialog_document_name_title">Change document name</string>
+    <string name="dialog_document_order_title">Change document order</string>
+    <string name="change_order">Change order</string>
 </resources>
