@@ -3,7 +3,7 @@
     <string name="app_name">Green Pass</string>
     <string name="delete">Verwijderen</string>
     <string name="document_name">Documentnaam</string>
-    <string name="barcode">QR-code</string>
+    <string name="barcode">Barcode</string>
     <string name="add">Toevoegen</string>
     <string name="warning">Warning</string>
     <string name="error_reading_pdf">Fout bij het lezen van de PDF. Probeer een ander bestand of bestandslocatie</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Afbreken</string>
     <string name="dialog_delete_confirmation_message">Wil je het document uit de app verwijderen?</string>
     <string name="require_authentication">Verificatie vereist</string>
-    <string name="preference_search_barcode">QR-code inlezen</string>
-    <string name="preference_search_barcode_description">Scan elke PDF-pagina voor een QR-code.</string>
+    <string name="preference_search_barcode">Extract barcode</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR and Aztec (experimental).</string>
     <string name="settings">Instellingen</string>
     <string name="authenticate">Verifiëren</string>
     <string name="report_issue_summary">Problemen met het gebruik van de app? Laat me proberen je te helpen</string>

@@ -3,7 +3,7 @@
     <string name="app_name">Green Pass</string>
     <string name="delete">Xóa</string>
     <string name="document_name">Document name</string>
-    <string name="barcode">QR code</string>
+    <string name="barcode">Barcode</string>
     <string name="add">Thêm</string>
     <string name="warning">Warning</string>
     <string name="error_reading_pdf">Lỗi khi đọc PDF. Hãy thử mở tệp lại hoặc mở vị trí khác</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Hủy</string>
     <string name="dialog_delete_confirmation_message">Bạn có thực sự muốn xóa tài liệu này?</string>
     <string name="require_authentication">Yêu cầu xác thực</string>
-    <string name="preference_search_barcode">Trích xuất mã QR</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a QR code.</string>
+    <string name="preference_search_barcode">Extract barcode</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR and Aztec (experimental).</string>
     <string name="settings">Cài đặt</string>
     <string name="authenticate">Xác thực</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
