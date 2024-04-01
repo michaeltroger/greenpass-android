@@ -66,12 +66,11 @@ class ScreenshotTest {
         ScreenshotUtil.recordScreenshot("dark_mode")
     }
 
-    private fun enableDarkMode() =
-        scenario.apply {
-            onActivity {
-                AppCompatDelegate.setDefaultNightMode(
-                    AppCompatDelegate.MODE_NIGHT_YES
-                )
-            }
+    private fun enableDarkMode() {
+        scenario.onActivity {
+            AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_YES
+            )
         }
+    }
 }
