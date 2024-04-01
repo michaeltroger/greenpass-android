@@ -27,10 +27,10 @@ class MainActivityRobot {
         }
     }
 
-    fun verifyDocumentLoaded(docName: String, expectedDocumentCount: Int = 1, expectQr: Boolean = false) = apply {
+    fun verifyDocumentLoaded(docName: String, expectedDocumentCount: Int = 1, expectBarcode: Boolean = false) = apply {
         waitUntilNoException {
             onView(withIndex(
-                withTagValue(`is`(if (expectQr) "qr_loaded" else "pdf_loaded")),
+                withTagValue(`is`(if (expectBarcode) "barcode_loaded" else "pdf_loaded")),
                 index = expectedDocumentCount - 1
             )).verifyIsDisplayed()
 

@@ -16,7 +16,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 private const val TAG_PDF_LOADED = "pdf_loaded"
-private const val TAG_BARCODE_LOADED = "qr_loaded"
+private const val TAG_BARCODE_LOADED = "barcode_loaded"
 
 class PdfPageItem(
     private val pdfRenderer: PdfRenderer,

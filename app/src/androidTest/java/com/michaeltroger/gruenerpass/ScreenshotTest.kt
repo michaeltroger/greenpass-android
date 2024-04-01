@@ -53,9 +53,20 @@ class ScreenshotTest {
             .selectFirstDocument()
             .goToPdfFolder()
             .openPdf(fileName = "qr.pdf")
-            .verifyDocumentLoaded(docName = "qr", expectQr = true)
+            .verifyDocumentLoaded(docName = "qr", expectBarcode = true)
 
         ScreenshotUtil.recordScreenshot("qr_code")
+    }
+
+    @Test
+    fun aztecCode() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "aztec.pdf")
+            .verifyDocumentLoaded(docName = "aztec", expectBarcode = true)
+
+        ScreenshotUtil.recordScreenshot("aztec_code")
     }
 
     @Test
