@@ -77,16 +77,18 @@ class MainViewModel(
                         it.name.contains(filter.trim(), ignoreCase = true)
                     }
                 }
+                val areDocumentsFilteredOut = filteredDocs.size != docs.size
                 _viewState.emit(ViewState.Normal(
                     documents = filteredDocs,
                     searchQrCode = preferenceObserver.searchForQrCode(),
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
-                    showChangeOrderMenuItem = filteredDocs.size == docs.size && docs.size > 1,
+                    showChangeOrderMenuItem = !areDocumentsFilteredOut && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
                     filter = filter,
                     showWarningButton = preferenceObserver.showOnLockedScreen(),
+                    showExportFilteredMenuItem = areDocumentsFilteredOut
                 ))
             }
         }
@@ -269,6 +271,19 @@ class MainViewModel(
     override fun onCleared() {
         super.onCleared()
         preferenceObserver.onDestroy()
+    }
+
+    fun onExportFilteredSelected() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        _viewEvent.emit(
+            ViewEvent.ExportFiltered(docs)
+        )
+    }
+
+    fun onExportAllSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ExportFiltered(db.getAll())
+        )
     }
 }
 

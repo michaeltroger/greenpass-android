@@ -7,6 +7,7 @@ sealed class ViewState {
     abstract val showDeleteAllMenuItem: Boolean
     abstract val showAddMenuItem: Boolean
     abstract val showSettingsMenuItem: Boolean
+    abstract val showExportFilteredMenuItem: Boolean
     abstract val showExportAllMenuItem: Boolean
     abstract val showAuthenticateButton: Boolean
     abstract val showAddButton: Boolean
@@ -24,6 +25,7 @@ sealed class ViewState {
         override val showAddMenuItem = false
         override val showSettingsMenuItem = false
         override val showExportAllMenuItem = false
+        override val showExportFilteredMenuItem = false
         override val showAuthenticateButton = false
         override val showAddButton = false
         override val showScrollToFirstMenuItem = false
@@ -41,6 +43,7 @@ sealed class ViewState {
         override val showAddMenuItem = false
         override val showSettingsMenuItem = true
         override val showExportAllMenuItem = false
+        override val showExportFilteredMenuItem = false
         override val showAuthenticateButton = false
         override val showAddButton = true
         override val showScrollToFirstMenuItem = false
@@ -60,6 +63,7 @@ sealed class ViewState {
         override val showScrollToLastMenuItem: Boolean,
         override val showSearchMenuItem: Boolean,
         override val showWarningButton: Boolean,
+        override val showExportFilteredMenuItem: Boolean,
     ) : ViewState() {
         override val showDeleteAllMenuItem = true
         override val showAddMenuItem = true
@@ -77,6 +81,7 @@ sealed class ViewState {
         override val showAddMenuItem = false
         override val showSettingsMenuItem = false
         override val showExportAllMenuItem = false
+        override val showExportFilteredMenuItem = false
         override val showAuthenticateButton = true
         override val showAddButton = false
         override val showScrollToFirstMenuItem = false

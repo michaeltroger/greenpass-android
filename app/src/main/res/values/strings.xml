@@ -51,4 +51,5 @@
     <string name="dialog_document_name_title">Change document name</string>
     <string name="dialog_document_order_title">Change document order</string>
     <string name="change_order">Change order</string>
+    <string name="export_filtered">Export currently filtered</string>
 </resources>

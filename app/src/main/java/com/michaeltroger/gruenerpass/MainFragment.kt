@@ -97,18 +97,35 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
-                    when (it) {
-                        ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
-                        ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
-                            context = requireContext(),
-                            onPasswordEntered = vm::onPasswordEntered,
-                            onCancelled = vm::deletePendingFileIfExists
-                        )
-                        ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
-                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate()
-                        ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate()
-                    }
+                    handleEvents(it)
                 }
+            }
+        }
+    }
+
+    private fun handleEvents(it: ViewEvent) {
+        when (it) {
+            ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
+            ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
+                context = requireContext(),
+                onPasswordEntered = vm::onPasswordEntered,
+                onCancelled = vm::deletePendingFileIfExists
+            )
+
+            ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+            ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate()
+            ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate()
+            is ViewEvent.ExportAll -> {
+                pdfSharing.openShareAllFilePicker(
+                    context = requireContext(),
+                    certificates = it.list,
+                )
+            }
+            is ViewEvent.ExportFiltered -> {
+                pdfSharing.openShareAllFilePicker(
+                    context = requireContext(),
+                    certificates = it.list,
+                )
             }
         }
     }
@@ -269,13 +286,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 true
             }
 
+            R.id.export_filtered -> {
+                vm.onExportFilteredSelected()
+                true
+            }
+
             R.id.export_all -> {
-                (vm.viewState.value as? ViewState.Normal)?.documents?.let {
-                    pdfSharing.openShareAllFilePicker(
-                        context = requireContext(),
-                        certificates = it,
-                    )
-                }
+                vm.onExportAllSelected()
                 true
             }
 
@@ -324,6 +341,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
                 findItem(R.id.lock)?.isVisible = state.showLockMenuItem
                 findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
+                findItem(R.id.export_filtered)?.isVisible = state.showExportFilteredMenuItem
                 findItem(R.id.changeOrder)?.isVisible = state.showChangeOrderMenuItem
                 findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
                 findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
