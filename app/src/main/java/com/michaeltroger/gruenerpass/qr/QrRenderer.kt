@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BinaryBitmap
+import com.google.zxing.DecodeHintType
 import com.google.zxing.LuminanceSource
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.RGBLuminanceSource
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 private const val QR_CODE_SIZE = 400
+private val decodeHints: Map<DecodeHintType,*> = mapOf(DecodeHintType.TRY_HARDER to true)
 
 interface QrRenderer {
     suspend fun getQrCodeIfPresent(document: Bitmap?): Bitmap?
@@ -38,7 +40,7 @@ class QrRendererImpl(
             val source: LuminanceSource = RGBLuminanceSource(width, height, intArray)
             val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
 
-            return qrCodeReader.decode(binaryBitmap).text
+            return qrCodeReader.decode(binaryBitmap, decodeHints).text
         } catch (ignore: Exception) {}
         catch (ignore: OutOfMemoryError) {}
         return null

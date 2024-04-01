@@ -14,7 +14,6 @@ plugins {
 versionCatalogUpdate {
     pin {
         libraries.set(listOf(
-            libs.com.google.zxing.core, // last version to support API < 24
             libs.com.tom.roush.pdfbox.android // versions >= 2.0.26.0 increase app size by 4MB (issue is in its dependency >= org.bouncycastle:bcprov-jdk15to18:1.72)
         ))
     }
