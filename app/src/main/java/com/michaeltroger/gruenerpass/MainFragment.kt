@@ -127,6 +127,19 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     certificates = it.list,
                 )
             }
+            ViewEvent.DeleteAll -> {
+                certificateDialogs.showDoYouWantToDeleteAllDialog(
+                    context = requireContext(),
+                    onDeleteAllConfirmed = vm::onDeleteAllConfirmed
+                )
+            }
+            is ViewEvent.DeleteFiltered -> {
+                certificateDialogs.showDoYouWantToDeleteFilteredDialog(
+                    context = requireContext(),
+                    onDeleteFilteredConfirmed = vm::onDeleteFilteredConfirmed,
+                    documentCount = it.documentCount
+                )
+            }
         }
     }
 
@@ -273,11 +286,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 true
             }
 
+
+            R.id.deleteFiltered -> {
+                vm.onDeleteFilteredSelected()
+                true
+            }
+
             R.id.deleteAll -> {
-                certificateDialogs.showDoYouWantToDeleteAllDialog(
-                    context = requireContext(),
-                    onDeleteAllConfirmed = vm::onDeleteAllConfirmed
-                )
+                vm.onDeleteAllSelected()
                 true
             }
 
@@ -307,13 +323,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
             R.id.changeOrder -> {
-                certificateDialogs.showChangeDocumentOrder(
-                    context = requireContext(),
-                    originalOrder =  (vm.viewState.value as ViewState.Normal).documents,
-                    onOrderChanged = {
-                        vm.onOrderChanged(it)
-                    }
-                )
+                (vm.viewState.value as? ViewState.Normal)?.documents?.let { docs ->
+                    certificateDialogs.showChangeDocumentOrder(
+                        context = requireContext(),
+                        originalOrder =  docs,
+                        onOrderChanged = { newOrder ->
+                            vm.onOrderChanged(newOrder)
+                        }
+                    )
+                }
+
                 true
             }
 
@@ -339,6 +358,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 findItem(R.id.warning)?.isVisible = state.showWarningButton
                 findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
                 findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
+                findItem(R.id.deleteFiltered)?.isVisible = state.showDeleteFilteredMenuItem
                 findItem(R.id.lock)?.isVisible = state.showLockMenuItem
                 findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
                 findItem(R.id.export_filtered)?.isVisible = state.showExportFilteredMenuItem

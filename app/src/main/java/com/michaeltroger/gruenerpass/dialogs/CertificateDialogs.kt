@@ -20,6 +20,7 @@ interface CertificateDialogs {
     )
     fun showDoYouWantToDeleteDialog(context: Context, id: String, onDeleteConfirmed: (String) -> Unit)
     fun showDoYouWantToDeleteAllDialog(context: Context, onDeleteAllConfirmed: () -> Unit)
+    fun showDoYouWantToDeleteFilteredDialog(context: Context, documentCount: Int, onDeleteFilteredConfirmed: () -> Unit)
     fun showWarningDialog(context: Context)
     fun showChangeDocumentNameDialog(
         context: Context,
@@ -42,6 +43,21 @@ class CertificateDialogsImpl : CertificateDialogs {
             .setMessage(context.getString(R.string.dialog_delete_all_confirmation_message))
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteAllConfirmed()
+            }
+            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setOnDismissListener {
+                this.dialog = null
+            }
+            .create()
+        this.dialog = dialog
+        dialog.show()
+    }
+
+    override fun showDoYouWantToDeleteFilteredDialog(context: Context, documentCount: Int, onDeleteFilteredConfirmed: () -> Unit) {
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setMessage(context.resources.getQuantityString(R.plurals.dialog_delete_filtered_confirmation_message, documentCount, documentCount))
+            .setPositiveButton(R.string.ok) { _, _ ->
+                onDeleteFilteredConfirmed()
             }
             .setNegativeButton(context.getString(R.string.cancel), null)
             .setOnDismissListener {

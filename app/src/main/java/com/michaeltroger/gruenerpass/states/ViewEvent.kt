@@ -10,4 +10,6 @@ sealed class ViewEvent {
     data object ScrollToFirstCertificate : ViewEvent()
     data class ExportAll(val list: List<Certificate>) : ViewEvent()
     data class ExportFiltered(val list: List<Certificate>) : ViewEvent()
+    data object DeleteAll : ViewEvent()
+    data class DeleteFiltered(val documentCount: Int) : ViewEvent()
 }

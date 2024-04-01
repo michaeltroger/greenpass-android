@@ -38,6 +38,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/deleteFiltered"
+        android:title="@string/delete_filtered"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/deleteAll"
         android:title="@string/delete_all"
         android:visible="false"

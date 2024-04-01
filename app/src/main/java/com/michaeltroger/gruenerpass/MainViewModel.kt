@@ -88,7 +88,8 @@ class MainViewModel(
                     showSearchMenuItem = docs.size > 1,
                     filter = filter,
                     showWarningButton = preferenceObserver.showOnLockedScreen(),
-                    showExportFilteredMenuItem = areDocumentsFilteredOut
+                    showExportFilteredMenuItem = areDocumentsFilteredOut,
+                    showDeleteFilteredMenuItem = areDocumentsFilteredOut,
                 ))
             }
         }
@@ -198,15 +199,22 @@ class MainViewModel(
         }
     }
 
-    fun onDeleteAllConfirmed() {
-        viewModelScope.launch {
-            val certificates = db.getAll()
-            db.deleteAll()
-            updateState()
-            certificates.forEach {
-                fileRepo.deleteFile(it.id)
-            }
+    fun onDeleteAllConfirmed() = viewModelScope.launch {
+        val certificates = db.getAll()
+        db.deleteAll()
+        updateState()
+        certificates.forEach {
+            fileRepo.deleteFile(it.id)
         }
+    }
+
+    fun onDeleteFilteredConfirmed() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        docs.forEach {
+            db.delete(it.id)
+            fileRepo.deleteFile(it.id)
+        }
+        updateState()
     }
 
     @Suppress("SpreadOperator")
@@ -283,6 +291,19 @@ class MainViewModel(
     fun onExportAllSelected() = viewModelScope.launch {
         _viewEvent.emit(
             ViewEvent.ExportFiltered(db.getAll())
+        )
+    }
+
+    fun onDeleteFilteredSelected() = viewModelScope.launch {
+        val docsSize = (viewState.value as? ViewState.Normal)?.documents?.size ?: return@launch
+        _viewEvent.emit(
+            ViewEvent.DeleteFiltered(documentCount = docsSize)
+        )
+    }
+
+    fun onDeleteAllSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.DeleteAll
         )
     }
 }

@@ -4,6 +4,7 @@ import com.michaeltroger.gruenerpass.db.Certificate
 
 sealed class ViewState {
     abstract val showLockMenuItem: Boolean
+    abstract val showDeleteFilteredMenuItem: Boolean
     abstract val showDeleteAllMenuItem: Boolean
     abstract val showAddMenuItem: Boolean
     abstract val showSettingsMenuItem: Boolean
@@ -22,6 +23,7 @@ sealed class ViewState {
         override val showSearchMenuItem = false
         override val showLockMenuItem = false
         override val showDeleteAllMenuItem = false
+        override val showDeleteFilteredMenuItem = false
         override val showAddMenuItem = false
         override val showSettingsMenuItem = false
         override val showExportAllMenuItem = false
@@ -39,6 +41,7 @@ sealed class ViewState {
         override val showLockMenuItem: Boolean,
     ) : ViewState() {
         override val showSearchMenuItem = false
+        override val showDeleteFilteredMenuItem = false
         override val showDeleteAllMenuItem = false
         override val showAddMenuItem = false
         override val showSettingsMenuItem = true
@@ -63,6 +66,7 @@ sealed class ViewState {
         override val showScrollToLastMenuItem: Boolean,
         override val showSearchMenuItem: Boolean,
         override val showWarningButton: Boolean,
+        override val showDeleteFilteredMenuItem: Boolean,
         override val showExportFilteredMenuItem: Boolean,
     ) : ViewState() {
         override val showDeleteAllMenuItem = true
@@ -77,6 +81,7 @@ sealed class ViewState {
     data object Locked : ViewState() {
         override val showSearchMenuItem = false
         override val showLockMenuItem = false
+        override val showDeleteFilteredMenuItem = false
         override val showDeleteAllMenuItem = false
         override val showAddMenuItem = false
         override val showSettingsMenuItem = false
