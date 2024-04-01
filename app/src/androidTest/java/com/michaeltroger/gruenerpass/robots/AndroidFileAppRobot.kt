@@ -17,7 +17,6 @@ class AndroidFileAppRobot {
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     private val hamburgerSelector = By.desc("Show roots")
-    private val listViewSelector = By.desc("List view")
     private val rootDirSelector = By.textStartsWith("Android SDK")
     private val testDataDirSelector = By.text("testdata")
     private val pdfSelector = By.textEndsWith(".pdf")
