@@ -80,7 +80,7 @@ class MainViewModel(
                 val areDocumentsFilteredOut = filteredDocs.size != docs.size
                 _viewState.emit(ViewState.Normal(
                     documents = filteredDocs,
-                    searchQrCode = preferenceObserver.searchForQrCode(),
+                    searchBarcode = preferenceObserver.searchForBarcode(),
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,

@@ -3,7 +3,7 @@
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
     <string name="document_name">Dokumentenname</string>
-    <string name="qr_code">QR-Code</string>
+    <string name="barcode">QR-Code</string>
     <string name="add">Hinzufügen</string>
     <string name="warning">Warnung</string>
     <string name="error_reading_pdf">Fehler beim Lesen des PDF. Versuch eine andere Datei oder einen anderen Speicherort</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Abbrechen</string>
     <string name="dialog_delete_confirmation_message">Willst du das Dokument wirklich aus der App löschen?</string>
     <string name="require_authentication">Authentifizierung erforderlich</string>
-    <string name="preference_search_qr">QR-Code extrahieren</string>
-    <string name="preference_search_qr_description">Durchsuche jede PDF-Seite nach einem QR-Code.</string>
+    <string name="preference_search_barcode">QR-Code extrahieren</string>
+    <string name="preference_search_barcode_description">Durchsuche jede PDF-Seite nach einem QR-Code.</string>
     <string name="settings">Einstellungen</string>
     <string name="authenticate">Authentifizieren</string>
     <string name="report_issue_summary">Probleme bei Verwendung der App? Lass uns helfen</string>

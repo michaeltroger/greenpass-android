@@ -3,7 +3,7 @@
     <string name="app_name">Green Pass</string>
     <string name="delete">Διαγραφή</string>
     <string name="document_name">Όνομα εγγράφου</string>
-    <string name="qr_code">Κωδικος QR</string>
+    <string name="barcode">Κωδικος QR</string>
     <string name="add">Προσθήκη</string>
     <string name="warning">Προσοχή</string>
     <string name="error_reading_pdf">Σφάλμα κατά την ανάγνωση του PDF. Δοκιμάστε ένα άλλο αρχείο ή τοποθεσία αρχείου</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Ακύρωση</string>
     <string name="dialog_delete_confirmation_message">Θέλετε πράγματι να διαγράψετε το έγγραφο από την εφαρμογή;</string>
     <string name="require_authentication">Απαίτηση πιστοποίησης</string>
-    <string name="preference_search_qr">Εξαγωγή κωδικου QR</string>
-    <string name="preference_search_qr_description">Σαρώστε κάθε σελίδα PDF για κωδικό QR.</string>
+    <string name="preference_search_barcode">Εξαγωγή κωδικου QR</string>
+    <string name="preference_search_barcode_description">Σαρώστε κάθε σελίδα PDF για κωδικό QR.</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="authenticate">Ταυτοποίηση</string>
     <string name="report_issue_summary">Έχετε πρόβλημα με τη χρήση της εφαρμογής; Αφήστε μας να σας βοηθήσουμε</string>

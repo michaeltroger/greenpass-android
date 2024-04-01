@@ -15,8 +15,8 @@ import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.logging.LoggerImpl
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptorImpl
-import com.michaeltroger.gruenerpass.qr.QrRenderer
-import com.michaeltroger.gruenerpass.qr.QrRendererImpl
+import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
+import com.michaeltroger.gruenerpass.barcode.BarcodeRendererImpl
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.settings.PreferenceObserverImpl
 import com.michaeltroger.gruenerpass.settings.SettingsFragment
@@ -47,7 +47,7 @@ object Locator {
         documentNameRepo(context.applicationContext)
     )
 
-    fun qrRenderer(): QrRenderer = QrRendererImpl()
+    fun barcodeRenderer(): BarcodeRenderer = BarcodeRendererImpl()
 
     fun preferenceManager(context: Context): PreferenceObserver = PreferenceObserverImpl(context)
 

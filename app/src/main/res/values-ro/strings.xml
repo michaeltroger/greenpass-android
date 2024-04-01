@@ -3,7 +3,7 @@
     <string name="app_name">Paşaportul verde</string>
     <string name="delete">Șterge</string>
     <string name="document_name">Document name</string>
-    <string name="qr_code">QR code</string>
+    <string name="barcode">QR code</string>
     <string name="add">Adaugă</string>
     <string name="warning">Warning</string>
     <string name="error_reading_pdf">Eroare la citirea PDF-ului. Încearcă un alt fișier sau o altă locație a fișierului</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Anulează</string>
     <string name="dialog_delete_confirmation_message">Sigur dorești să ștergi documentul din aplicație?</string>
     <string name="require_authentication">Require authentication</string>
-    <string name="preference_search_qr">Extract QR code</string>
-    <string name="preference_search_qr_description">Scan each PDF page for a QR code.</string>
+    <string name="preference_search_barcode">Extract QR code</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a QR code.</string>
     <string name="settings">Setări</string>
     <string name="authenticate">Authenticate</string>
     <string name="report_issue_summary">Any problem using the app? Let me try to help you</string>
