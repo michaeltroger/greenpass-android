@@ -52,4 +52,9 @@
     <string name="dialog_document_name_title">Change document name</string>
     <string name="dialog_document_order_title">Change document order</string>
     <string name="change_order">Change order</string>
+    <string name="export_filtered">Export currently filtered</string>
+    <string name="delete_filtered">Delete currently filtered</string>
+    <plurals name="dialog_delete_filtered_confirmation_message">
+        <item quantity="other">Do you really want to delete %d documents from the app?</item>
+    </plurals>
 </resources>
