@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 
 private const val TOUCH_SLOP_FACTOR = 8
-private const val SCROLL_TO_DELAY_MS = 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
@@ -113,8 +112,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             )
 
             ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
-            ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate()
-            ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate()
+            is ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate(it.delayMs)
+            is ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate(it.delayMs)
             is ViewEvent.ExportAll -> {
                 pdfSharing.openShareAllFilePicker(
                     context = requireContext(),
@@ -226,14 +225,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         adapter.update(items)
     }
 
-    private fun scrollToLastCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
+    private fun scrollToLastCertificate(delayMs: Long) {
         lifecycleScope.launch {
             delay(delayMs)
             binding!!.certificates.smoothScrollToPosition(adapter.itemCount - 1)
         }
     }
 
-    private fun scrollToFirstCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
+    private fun scrollToFirstCertificate(delayMs: Long) {
         lifecycleScope.launch {
             delay(delayMs)
             binding!!.certificates.smoothScrollToPosition(0)
@@ -313,12 +312,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
             R.id.scrollToFirst -> {
-                scrollToFirstCertificate(delayMs = 0)
+                vm.onScrollToFirstSelected()
                 true
             }
 
             R.id.scrollToLast -> {
-                scrollToLastCertificate(delayMs = 0)
+                vm.onScrollToLastSelected()
                 true
             }
 

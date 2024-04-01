@@ -178,9 +178,9 @@ class MainViewModel(
         updateState()
 
         if (addDocumentsInFront) {
-            _viewEvent.emit(ViewEvent.ScrollToFirstCertificate)
+            _viewEvent.emit(ViewEvent.ScrollToFirstCertificate())
         } else {
-            _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
+            _viewEvent.emit(ViewEvent.ScrollToLastCertificate())
         }
     }
 
@@ -304,6 +304,18 @@ class MainViewModel(
     fun onDeleteAllSelected() = viewModelScope.launch {
         _viewEvent.emit(
             ViewEvent.DeleteAll
+        )
+    }
+
+    fun onScrollToFirstSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ScrollToFirstCertificate(0)
+        )
+    }
+
+    fun onScrollToLastSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ScrollToLastCertificate(0)
         )
     }
 }
