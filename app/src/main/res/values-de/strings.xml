@@ -55,7 +55,7 @@
     <string name="export_filtered">Aktuell gefilterte exportieren</string>
     <string name="delete_filtered">Aktuell gefilterte löschen</string>
     <plurals name="dialog_delete_filtered_confirmation_text">
-        <item quantity="one">Do you really want to delete %d document from the app?</item>
-        <item quantity="other">Do you really want to delete %d documents from the app?</item>
+        <item quantity="one">Willst du wirklich %d Dokument aus der App löschen?</item>
+        <item quantity="other">Willst du wirklich %d Dokumente aus der App löschen?</item>
     </plurals>
 </resources>
