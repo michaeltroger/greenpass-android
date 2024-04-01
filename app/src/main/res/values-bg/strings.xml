@@ -3,7 +3,7 @@
     <string name="app_name">Зелен паспорт</string>
     <string name="delete">Изтриване</string>
     <string name="document_name">Document name</string>
-    <string name="qr_code">QR code</string>
+    <string name="barcode">QR code</string>
     <string name="add">Добавяне</string>
     <string name="warning">Warning</string>
     <string name="error_reading_pdf">Грешка при четене на PDF файла. Опитайте с друг файл или местоположение на файла</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Отказ</string>
     <string name="dialog_delete_confirmation_message">Наистина ли искате да изтриете документа от приложението?</string>
     <string name="require_authentication">Изискване за удостоверяване</string>
-    <string name="preference_search_qr">Извличане на QR кода</string>
-    <string name="preference_search_qr_description">Scan each PDF page for a QR code.</string>
+    <string name="preference_search_barcode">Извличане на QR кода</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a QR code.</string>
     <string name="settings">Настройки</string>
     <string name="authenticate">Удостоверяване</string>
     <string name="report_issue_summary">Имате проблем с приложението? Нека се опитам да ви помогна</string>

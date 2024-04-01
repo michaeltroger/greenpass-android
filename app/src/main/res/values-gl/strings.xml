@@ -3,7 +3,7 @@
     <string name="app_name">Green Pass</string>
     <string name="delete">Eliminar</string>
     <string name="document_name">Document name</string>
-    <string name="qr_code">QR code</string>
+    <string name="barcode">QR code</string>
     <string name="add">Engadir</string>
     <string name="warning">Warning</string>
     <string name="error_reading_pdf">Erro ao ler o PDF. Inténtao con outro ficheiro ou localización</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Cancelar</string>
     <string name="dialog_delete_confirmation_message">Tes a certeza de querer eliminar o documento da aplicación?</string>
     <string name="require_authentication">Require autenticación</string>
-    <string name="preference_search_qr">Extract QR code</string>
-    <string name="preference_search_qr_description">Scan each PDF page for a QR code.</string>
+    <string name="preference_search_barcode">Extract QR code</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a QR code.</string>
     <string name="settings">Axustes</string>
     <string name="authenticate">Autenticar</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>

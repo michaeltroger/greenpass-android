@@ -6,7 +6,7 @@
     <string name="contributing_uri">https://github.com/michaeltroger/greenpass-android</string>
     <string name="privacy_policy_uri">https://michaeltroger.com/greenpass/privacy</string>
     <string name="key_preference_biometric">shouldAuthenticate</string>
-    <string name="key_preference_search_for_qr_code">searchForQrCode</string>
+    <string name="key_preference_search_for_barcode">searchForQrCode</string>
     <string name="key_preference_full_brightness">fullBrightness</string>
     <string name="key_preference_show_on_locked_screen">showOnLockedScreen</string>
     <string name="key_preference_version">version</string>

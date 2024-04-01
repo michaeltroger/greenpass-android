@@ -37,7 +37,7 @@ class PreferenceObserverImpl(
             false
         )
         searchForBarcode = preferenceManager.getBoolean(
-            context.getString(R.string.key_preference_search_for_qr_code),
+            context.getString(R.string.key_preference_search_for_barcode),
             true
         )
         addDocumentsFront = preferenceManager.getBoolean(
@@ -61,7 +61,7 @@ class PreferenceObserverImpl(
                 shouldAuthenticate = sharedPreferences.getBoolean(key, false)
                 preferenceChangeListener?.refreshUi()
             }
-            context.getString(R.string.key_preference_search_for_qr_code) -> {
+            context.getString(R.string.key_preference_search_for_barcode) -> {
                 searchForBarcode = sharedPreferences.getBoolean(key, true)
                 preferenceChangeListener?.refreshUi()
             }
