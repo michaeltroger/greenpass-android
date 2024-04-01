@@ -102,6 +102,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     private fun handleEvent(it: ViewEvent) {
         when (it) {
             ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
