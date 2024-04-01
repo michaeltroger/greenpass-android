@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 
 private const val RETRIALS = 3
@@ -44,16 +46,10 @@ class AndroidFileAppRobot {
                     return@forEach
                 }
 
-                return@forEach
+                return@apply
             } catch (e: NullPointerException) {
                 //ignoring
             }
-        }
-        try {
-            uiDevice.wait(Until.hasObject(listViewSelector), TIMEOUT)
-            uiDevice.findObject(listViewSelector).click()
-        } catch (e: NullPointerException) {
-            //ignoring
         }
     }
 
@@ -72,8 +68,12 @@ class AndroidFileAppRobot {
     }
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
+        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
+        uiScrollable.scrollTextIntoView(fileName)
+
         val selector = By.text(fileName)
         uiDevice.wait(Until.hasObject(selector), TIMEOUT)
+
         if (longClick) {
             uiDevice.findObject(selector).longClick()
         } else {
