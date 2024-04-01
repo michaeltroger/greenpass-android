@@ -96,13 +96,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
-                    handleEvents(it)
+                    handleEvent(it)
                 }
             }
         }
     }
 
-    private fun handleEvents(it: ViewEvent) {
+    private fun handleEvent(it: ViewEvent) {
         when (it) {
             ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
             ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
