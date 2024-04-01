@@ -3,7 +3,7 @@
     <string name="app_name">Green Pass</string>
     <string name="delete">Smazat</string>
     <string name="document_name">Document name</string>
-    <string name="barcode">QR code</string>
+    <string name="barcode">Barcode</string>
     <string name="add">Přidat</string>
     <string name="warning">Warning</string>
     <string name="error_reading_pdf">Při čtení souboru PDF došlo k chybě. Zkuste jiný soubor nebo jiné umístění souboru</string>
@@ -13,8 +13,8 @@
     <string name="cancel">Zrušit</string>
     <string name="dialog_delete_confirmation_message">Opravdu si přejete odstranit tento dokument z aplikace?</string>
     <string name="require_authentication">Vyžadovat ověření</string>
-    <string name="preference_search_barcode">Extrahovat QR kód</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a QR code.</string>
+    <string name="preference_search_barcode">Extract barcode</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR and Aztec (experimental).</string>
     <string name="settings">Nastavení</string>
     <string name="authenticate">Přihlásit se</string>
     <string name="report_issue_summary">Jakýkoliv problém s používáním aplikace? Nechte mě vyzkoušet vám pomoct</string>
