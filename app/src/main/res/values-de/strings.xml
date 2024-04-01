@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Grüner Pass</string>
     <string name="delete">Löschen</string>
-    <string name="move">Verschieben</string>
     <string name="document_name">Dokumentenname</string>
     <string name="qr_code">QR-Code</string>
     <string name="add">Hinzufügen</string>
@@ -50,4 +49,7 @@
     <string name="pdfs">PDFs</string>
     <string name="search">Suchen</string>
     <string name="search_query_hint">Dokumentenname</string>
+    <string name="dialog_document_name_title">Change document name</string>
+    <string name="dialog_document_order_title">Change document order</string>
+    <string name="change_order">Change order</string>
 </resources>
