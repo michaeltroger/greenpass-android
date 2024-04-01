@@ -184,7 +184,7 @@ class MainViewModel(
         }
     }
 
-    fun onDocumentNameChanged(filename: String, documentName: String) {
+    fun onDocumentNameChangeConfirmed(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
             updateState()
@@ -347,6 +347,23 @@ class MainViewModel(
     fun onAddFileSelected() = viewModelScope.launch {
         _viewEvent.emit(
             ViewEvent.AddFile
+        )
+    }
+
+    fun onDeleteCalled(id: String) = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowDoYouWantToDeleteDialog(
+                id = id,
+            )
+        )
+    }
+
+    fun onChangeDocumentNameSelected(id: String, name: String) = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ChangeDocumentName(
+                id = id,
+                name = name
+            )
         )
     }
 }

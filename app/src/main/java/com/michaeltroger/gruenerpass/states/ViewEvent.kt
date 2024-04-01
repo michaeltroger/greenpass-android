@@ -20,4 +20,6 @@ sealed class ViewEvent {
 
     data class DeleteFiltered(val documentCount: Int) : ViewEvent()
     data class ChangeDocumentOrder(val originalOrder: List<Certificate>) : ViewEvent()
+    data class ShowDoYouWantToDeleteDialog(val id: String) : ViewEvent()
+    data class ChangeDocumentName(val id: String, val name: String) : ViewEvent()
 }

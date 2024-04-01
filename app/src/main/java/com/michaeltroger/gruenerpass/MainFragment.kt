@@ -150,6 +150,23 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             ViewEvent.ShowSettings -> findNavController().navigate(R.id.navigate_to_settings)
             ViewEvent.ShowMore -> findNavController().navigate(R.id.navigate_to_more)
             ViewEvent.AddFile -> documentPick.launch(arrayOf(PDF_MIME_TYPE))
+            is ViewEvent.ShowDoYouWantToDeleteDialog -> {
+                certificateDialogs.showDoYouWantToDeleteDialog(
+                    context = requireContext(),
+                    id = it.id,
+                    onDeleteConfirmed = vm::onDeleteConfirmed
+                )
+            }
+            is ViewEvent.ChangeDocumentName -> {
+                certificateDialogs.showChangeDocumentNameDialog(
+                    context = requireContext(),
+                    originalDocumentName = it.name,
+                    onDocumentNameChanged = { newName ->
+                        vm.onDocumentNameChangeConfirmed(documentName = newName, filename = it.id)
+                    }
+                )
+
+            }
         }
     }
 
@@ -203,23 +220,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 searchQrCode = searchQrCode,
                 dispatcher = thread,
                 onDeleteCalled = {
-                    certificateDialogs.showDoYouWantToDeleteDialog(
-                        context = requireContext(),
-                        id = certificate.id,
-                        onDeleteConfirmed = vm::onDeleteConfirmed
-                    )
+                    vm.onDeleteCalled(certificate.id)
                 },
                 onDocumentNameClicked = {
-                    certificateDialogs.showChangeDocumentNameDialog(
-                        context = requireContext(),
-                        originalDocumentName = certificate.name,
-                        onDocumentNameChanged = { newDocumentName ->
-                            vm.onDocumentNameChanged(
-                                filename = certificate.id,
-                                documentName = newDocumentName
-                            )
-                        }
-                    )
+                    vm.onChangeDocumentNameSelected(certificate.id, certificate.name)
                 },
                 onShareCalled = {
                     pdfSharing.openShareFilePicker(
