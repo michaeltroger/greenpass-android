@@ -167,6 +167,12 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 )
 
             }
+            is ViewEvent.Share -> {
+                pdfSharing.openShareFilePicker(
+                    context = requireContext(),
+                    certificate = it.certificate,
+                )
+            }
         }
     }
 
@@ -226,10 +232,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     vm.onChangeDocumentNameSelected(certificate.id, certificate.name)
                 },
                 onShareCalled = {
-                    pdfSharing.openShareFilePicker(
-                        context = requireContext(),
-                        certificate = certificate,
-                    )
+                    vm.onShareSelected(certificate)
                 },
             )
         }

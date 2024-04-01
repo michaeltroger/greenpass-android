@@ -366,6 +366,12 @@ class MainViewModel(
             )
         )
     }
+
+    fun onShareSelected(certificate: Certificate) = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.Share(certificate)
+        )
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
