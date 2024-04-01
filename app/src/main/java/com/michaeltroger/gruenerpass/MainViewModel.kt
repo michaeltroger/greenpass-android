@@ -218,7 +218,7 @@ class MainViewModel(
     }
 
     @Suppress("SpreadOperator")
-    fun onOrderChanged(sortedIdList: List<String>) {
+    fun onOrderChangeConfirmed(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
             db.getAll().forEach {
@@ -316,6 +316,31 @@ class MainViewModel(
     fun onScrollToLastSelected() = viewModelScope.launch {
         _viewEvent.emit(
             ViewEvent.ScrollToLastCertificate(0)
+        )
+    }
+
+    fun onChangeOrderSelected() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        _viewEvent.emit(
+            ViewEvent.ChangeDocumentOrder(originalOrder = docs)
+        )
+    }
+
+    fun onShowWarningDialogSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowWarningDialog
+        )
+    }
+
+    fun onShowSettingsSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowSettings
+        )
+    }
+
+    fun onShowMoreSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowMore
         )
     }
 }

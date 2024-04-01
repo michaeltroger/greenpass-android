@@ -139,6 +139,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     documentCount = it.documentCount
                 )
             }
+            is ViewEvent.ChangeDocumentOrder -> {
+                certificateDialogs.showChangeDocumentOrder(
+                    context = requireContext(),
+                    originalOrder = it.originalOrder,
+                    onOrderChanged = vm::onOrderChangeConfirmed
+                )
+            }
+            ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
+            ViewEvent.ShowSettings -> findNavController().navigate(R.id.navigate_to_settings)
+            ViewEvent.ShowMore -> findNavController().navigate(R.id.navigate_to_more)
         }
     }
 
@@ -272,17 +282,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
             R.id.warning -> {
-                certificateDialogs.showWarningDialog(context = requireContext())
+                vm.onShowWarningDialogSelected()
                 true
             }
 
             R.id.openMore -> {
-                findNavController().navigate(R.id.navigate_to_more)
+                vm.onShowMoreSelected()
                 true
             }
 
             R.id.openSettings -> {
-                findNavController().navigate(R.id.navigate_to_settings)
+                vm.onShowSettingsSelected()
                 true
             }
 
@@ -322,16 +332,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
 
             R.id.changeOrder -> {
-                (vm.viewState.value as? ViewState.Normal)?.documents?.let { docs ->
-                    certificateDialogs.showChangeDocumentOrder(
-                        context = requireContext(),
-                        originalOrder =  docs,
-                        onOrderChanged = { newOrder ->
-                            vm.onOrderChanged(newOrder)
-                        }
-                    )
-                }
-
+                vm.onChangeOrderSelected()
                 true
             }
 

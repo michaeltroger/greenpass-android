@@ -13,5 +13,10 @@ sealed class ViewEvent {
     data class ExportAll(val list: List<Certificate>) : ViewEvent()
     data class ExportFiltered(val list: List<Certificate>) : ViewEvent()
     data object DeleteAll : ViewEvent()
+    data object ShowWarningDialog : ViewEvent()
+    data object ShowSettings : ViewEvent()
+    data object ShowMore : ViewEvent()
+
     data class DeleteFiltered(val documentCount: Int) : ViewEvent()
+    data class ChangeDocumentOrder(val originalOrder: List<Certificate>) : ViewEvent()
 }
