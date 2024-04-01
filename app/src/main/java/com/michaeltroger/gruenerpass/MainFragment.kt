@@ -264,6 +264,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             updateMenuState(vm.viewState.value)
         }
 
+        @Suppress("CyclomaticComplexMethod")
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
             R.id.add -> {
                 openFilePicker()
@@ -284,7 +285,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 findNavController().navigate(R.id.navigate_to_settings)
                 true
             }
-
 
             R.id.deleteFiltered -> {
                 vm.onDeleteFilteredSelected()

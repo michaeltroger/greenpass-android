@@ -53,9 +53,17 @@ class CertificateDialogsImpl : CertificateDialogs {
         dialog.show()
     }
 
-    override fun showDoYouWantToDeleteFilteredDialog(context: Context, documentCount: Int, onDeleteFilteredConfirmed: () -> Unit) {
+    override fun showDoYouWantToDeleteFilteredDialog(
+        context: Context,
+        documentCount: Int,
+        onDeleteFilteredConfirmed: () -> Unit
+    ) {
         val dialog = MaterialAlertDialogBuilder(context)
-            .setMessage(context.resources.getQuantityString(R.plurals.dialog_delete_filtered_confirmation_message, documentCount, documentCount))
+            .setMessage(context.resources.getQuantityString(
+                R.plurals.dialog_delete_filtered_confirmation_message,
+                documentCount,
+                documentCount
+            ))
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteFilteredConfirmed()
             }
