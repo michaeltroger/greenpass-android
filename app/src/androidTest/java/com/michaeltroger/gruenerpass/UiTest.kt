@@ -52,4 +52,17 @@ class UiTest {
             .cancelShare()
             .verifyDocumentLoaded(docName = "demo")
     }
+
+    @Test
+    fun changeDocumentName() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "demo.pdf")
+            .verifyDocumentLoaded(docName = "demo")
+            .clickRenameDocument()
+            .verifyChangeDocumentNameDialogShown()
+            .changeDocumentNameAndConfirm(newDocumentName = "newName")
+            .verifyDocumentLoaded(docName = "newName")
+    }
 }

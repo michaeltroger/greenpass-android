@@ -62,6 +62,16 @@ class MainActivityRobot {
         return ShareDialogRobot()
     }
 
+    fun clickRenameDocument(index: Int = 0): ChangeDocumentNameDialogRobot {
+        waitUntilNoException {
+            onView(withIndex(
+                withId(R.id.name),
+                index = index
+            )).click()
+        }
+        return ChangeDocumentNameDialogRobot()
+    }
+
     fun selectFirstDocument(): AndroidFileAppRobot {
         waitUntilNoException {
             onView(addButtonMatcher).click()
