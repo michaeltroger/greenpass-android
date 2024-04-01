@@ -60,7 +60,7 @@ class CertificateDialogsImpl : CertificateDialogs {
     ) {
         val dialog = MaterialAlertDialogBuilder(context)
             .setMessage(context.resources.getQuantityString(
-                R.plurals.dialog_delete_filtered_confirmation_message,
+                R.plurals.dialog_delete_filtered_confirmation_text,
                 documentCount,
                 documentCount
             ))

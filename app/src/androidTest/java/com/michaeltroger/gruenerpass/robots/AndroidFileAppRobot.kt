@@ -15,6 +15,7 @@ class AndroidFileAppRobot {
     private val context = InstrumentationRegistry.getInstrumentation().context
 
     private val hamburgerSelector = By.desc("Show roots")
+    private val listViewSelector = By.desc("List view")
     private val rootDirSelector = By.textStartsWith("Android SDK")
     private val testDataDirSelector = By.text("testdata")
     private val pdfSelector = By.textEndsWith(".pdf")
@@ -39,9 +40,9 @@ class AndroidFileAppRobot {
                 uiDevice.findObject(testDataDirSelector).click()
 
                 uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
-                if (!uiDevice.hasObject(pdfSelector)) {
-                    return@forEach
-                }
+
+                uiDevice.wait(Until.hasObject(listViewSelector), TIMEOUT)
+                uiDevice.findObject(listViewSelector).click()
 
                 return@apply
             } catch (e: NullPointerException) {
