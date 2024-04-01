@@ -55,6 +55,7 @@
     <string name="delete_filtered">Delete currently filtered</string>
     <plurals name="dialog_delete_filtered_confirmation_message">
         <item quantity="one">Do you really want to delete %d document from the app?</item>
+        <item quantity="many">Do you really want to delete %d documents from the app?</item>
         <item quantity="other">Do you really want to delete %d documents from the app?</item>
     </plurals>
 
