@@ -77,16 +77,19 @@ class MainViewModel(
                         it.name.contains(filter.trim(), ignoreCase = true)
                     }
                 }
+                val areDocumentsFilteredOut = filteredDocs.size != docs.size
                 _viewState.emit(ViewState.Normal(
                     documents = filteredDocs,
                     searchQrCode = preferenceObserver.searchForQrCode(),
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
-                    showChangeOrderMenuItem = filteredDocs.size == docs.size && docs.size > 1,
+                    showChangeOrderMenuItem = !areDocumentsFilteredOut && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
                     filter = filter,
                     showWarningButton = preferenceObserver.showOnLockedScreen(),
+                    showExportFilteredMenuItem = areDocumentsFilteredOut,
+                    showDeleteFilteredMenuItem = areDocumentsFilteredOut,
                 ))
             }
         }
@@ -175,13 +178,13 @@ class MainViewModel(
         updateState()
 
         if (addDocumentsInFront) {
-            _viewEvent.emit(ViewEvent.ScrollToFirstCertificate)
+            _viewEvent.emit(ViewEvent.ScrollToFirstCertificate())
         } else {
-            _viewEvent.emit(ViewEvent.ScrollToLastCertificate)
+            _viewEvent.emit(ViewEvent.ScrollToLastCertificate())
         }
     }
 
-    fun onDocumentNameChanged(filename: String, documentName: String) {
+    fun onDocumentNameChangeConfirmed(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
             updateState()
@@ -196,19 +199,26 @@ class MainViewModel(
         }
     }
 
-    fun onDeleteAllConfirmed() {
-        viewModelScope.launch {
-            val certificates = db.getAll()
-            db.deleteAll()
-            updateState()
-            certificates.forEach {
-                fileRepo.deleteFile(it.id)
-            }
+    fun onDeleteAllConfirmed() = viewModelScope.launch {
+        val certificates = db.getAll()
+        db.deleteAll()
+        updateState()
+        certificates.forEach {
+            fileRepo.deleteFile(it.id)
         }
     }
 
+    fun onDeleteFilteredConfirmed() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        docs.forEach {
+            db.delete(it.id)
+            fileRepo.deleteFile(it.id)
+        }
+        updateState()
+    }
+
     @Suppress("SpreadOperator")
-    fun onOrderChanged(sortedIdList: List<String>) {
+    fun onOrderChangeConfirmed(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
             db.getAll().forEach {
@@ -269,6 +279,98 @@ class MainViewModel(
     override fun onCleared() {
         super.onCleared()
         preferenceObserver.onDestroy()
+    }
+
+    fun onExportFilteredSelected() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        _viewEvent.emit(
+            ViewEvent.ExportFiltered(docs)
+        )
+    }
+
+    fun onExportAllSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ExportFiltered(db.getAll())
+        )
+    }
+
+    fun onDeleteFilteredSelected() = viewModelScope.launch {
+        val docsSize = (viewState.value as? ViewState.Normal)?.documents?.size ?: return@launch
+        _viewEvent.emit(
+            ViewEvent.DeleteFiltered(documentCount = docsSize)
+        )
+    }
+
+    fun onDeleteAllSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.DeleteAll
+        )
+    }
+
+    fun onScrollToFirstSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ScrollToFirstCertificate(0)
+        )
+    }
+
+    fun onScrollToLastSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ScrollToLastCertificate(0)
+        )
+    }
+
+    fun onChangeOrderSelected() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        _viewEvent.emit(
+            ViewEvent.ChangeDocumentOrder(originalOrder = docs)
+        )
+    }
+
+    fun onShowWarningDialogSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowWarningDialog
+        )
+    }
+
+    fun onShowSettingsSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowSettings
+        )
+    }
+
+    fun onShowMoreSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowMore
+        )
+    }
+
+    fun onAddFileSelected() = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.AddFile
+        )
+    }
+
+    fun onDeleteCalled(id: String) = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ShowDoYouWantToDeleteDialog(
+                id = id,
+            )
+        )
+    }
+
+    fun onChangeDocumentNameSelected(id: String, name: String) = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.ChangeDocumentName(
+                id = id,
+                name = name
+            )
+        )
+    }
+
+    fun onShareSelected(certificate: Certificate) = viewModelScope.launch {
+        _viewEvent.emit(
+            ViewEvent.Share(certificate)
+        )
     }
 }
 

@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 
 private const val TOUCH_SLOP_FACTOR = 8
-private const val SCROLL_TO_DELAY_MS = 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
@@ -83,7 +82,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         binding.addButton.setOnClickListener {
-            openFilePicker()
+            vm.onAddFileSelected()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -97,18 +96,83 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.viewEvent.collect {
-                    when (it) {
-                        ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
-                        ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
-                            context = requireContext(),
-                            onPasswordEntered = vm::onPasswordEntered,
-                            onCancelled = vm::deletePendingFileIfExists
-                        )
-                        ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
-                        ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate()
-                        ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate()
-                    }
+                    handleEvent(it)
                 }
+            }
+        }
+    }
+
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
+    private fun handleEvent(it: ViewEvent) {
+        when (it) {
+            ViewEvent.CloseAllDialogs -> certificateDialogs.closeAllDialogs()
+            ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
+                context = requireContext(),
+                onPasswordEntered = vm::onPasswordEntered,
+                onCancelled = vm::deletePendingFileIfExists
+            )
+
+            ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+            is ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate(it.delayMs)
+            is ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate(it.delayMs)
+            is ViewEvent.ExportAll -> {
+                pdfSharing.openShareAllFilePicker(
+                    context = requireContext(),
+                    certificates = it.list,
+                )
+            }
+            is ViewEvent.ExportFiltered -> {
+                pdfSharing.openShareAllFilePicker(
+                    context = requireContext(),
+                    certificates = it.list,
+                )
+            }
+            ViewEvent.DeleteAll -> {
+                certificateDialogs.showDoYouWantToDeleteAllDialog(
+                    context = requireContext(),
+                    onDeleteAllConfirmed = vm::onDeleteAllConfirmed
+                )
+            }
+            is ViewEvent.DeleteFiltered -> {
+                certificateDialogs.showDoYouWantToDeleteFilteredDialog(
+                    context = requireContext(),
+                    onDeleteFilteredConfirmed = vm::onDeleteFilteredConfirmed,
+                    documentCount = it.documentCount
+                )
+            }
+            is ViewEvent.ChangeDocumentOrder -> {
+                certificateDialogs.showChangeDocumentOrder(
+                    context = requireContext(),
+                    originalOrder = it.originalOrder,
+                    onOrderChanged = vm::onOrderChangeConfirmed
+                )
+            }
+            ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
+            ViewEvent.ShowSettings -> findNavController().navigate(R.id.navigate_to_settings)
+            ViewEvent.ShowMore -> findNavController().navigate(R.id.navigate_to_more)
+            ViewEvent.AddFile -> documentPick.launch(arrayOf(PDF_MIME_TYPE))
+            is ViewEvent.ShowDoYouWantToDeleteDialog -> {
+                certificateDialogs.showDoYouWantToDeleteDialog(
+                    context = requireContext(),
+                    id = it.id,
+                    onDeleteConfirmed = vm::onDeleteConfirmed
+                )
+            }
+            is ViewEvent.ChangeDocumentName -> {
+                certificateDialogs.showChangeDocumentNameDialog(
+                    context = requireContext(),
+                    originalDocumentName = it.name,
+                    onDocumentNameChanged = { newName ->
+                        vm.onDocumentNameChangeConfirmed(documentName = newName, filename = it.id)
+                    }
+                )
+
+            }
+            is ViewEvent.Share -> {
+                pdfSharing.openShareFilePicker(
+                    context = requireContext(),
+                    certificate = it.certificate,
+                )
             }
         }
     }
@@ -154,10 +218,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         menuProvider.onPause()
     }
 
-    private fun openFilePicker() {
-        documentPick.launch(arrayOf(PDF_MIME_TYPE))
-    }
-
     private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
         val items = documents.map { certificate ->
             CertificateItem(
@@ -167,43 +227,27 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 searchQrCode = searchQrCode,
                 dispatcher = thread,
                 onDeleteCalled = {
-                    certificateDialogs.showDoYouWantToDeleteDialog(
-                        context = requireContext(),
-                        id = certificate.id,
-                        onDeleteConfirmed = vm::onDeleteConfirmed
-                    )
+                    vm.onDeleteCalled(certificate.id)
                 },
                 onDocumentNameClicked = {
-                    certificateDialogs.showChangeDocumentNameDialog(
-                        context = requireContext(),
-                        originalDocumentName = certificate.name,
-                        onDocumentNameChanged = { newDocumentName ->
-                            vm.onDocumentNameChanged(
-                                filename = certificate.id,
-                                documentName = newDocumentName
-                            )
-                        }
-                    )
+                    vm.onChangeDocumentNameSelected(certificate.id, certificate.name)
                 },
                 onShareCalled = {
-                    pdfSharing.openShareFilePicker(
-                        context = requireContext(),
-                        certificate = certificate,
-                    )
+                    vm.onShareSelected(certificate)
                 },
             )
         }
         adapter.update(items)
     }
 
-    private fun scrollToLastCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
+    private fun scrollToLastCertificate(delayMs: Long) {
         lifecycleScope.launch {
             delay(delayMs)
             binding!!.certificates.smoothScrollToPosition(adapter.itemCount - 1)
         }
     }
 
-    private fun scrollToFirstCertificate(delayMs: Long = SCROLL_TO_DELAY_MS) {
+    private fun scrollToFirstCertificate(delayMs: Long) {
         lifecycleScope.launch {
             delay(delayMs)
             binding!!.certificates.smoothScrollToPosition(0)
@@ -237,30 +281,32 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
             R.id.add -> {
-                openFilePicker()
+                vm.onAddFileSelected()
                 true
             }
 
             R.id.warning -> {
-                certificateDialogs.showWarningDialog(context = requireContext())
+                vm.onShowWarningDialogSelected()
                 true
             }
 
             R.id.openMore -> {
-                findNavController().navigate(R.id.navigate_to_more)
+                vm.onShowMoreSelected()
                 true
             }
 
             R.id.openSettings -> {
-                findNavController().navigate(R.id.navigate_to_settings)
+                vm.onShowSettingsSelected()
+                true
+            }
+
+            R.id.deleteFiltered -> {
+                vm.onDeleteFilteredSelected()
                 true
             }
 
             R.id.deleteAll -> {
-                certificateDialogs.showDoYouWantToDeleteAllDialog(
-                    context = requireContext(),
-                    onDeleteAllConfirmed = vm::onDeleteAllConfirmed
-                )
+                vm.onDeleteAllSelected()
                 true
             }
 
@@ -269,34 +315,28 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 true
             }
 
+            R.id.export_filtered -> {
+                vm.onExportFilteredSelected()
+                true
+            }
+
             R.id.export_all -> {
-                (vm.viewState.value as? ViewState.Normal)?.documents?.let {
-                    pdfSharing.openShareAllFilePicker(
-                        context = requireContext(),
-                        certificates = it,
-                    )
-                }
+                vm.onExportAllSelected()
                 true
             }
 
             R.id.scrollToFirst -> {
-                scrollToFirstCertificate(delayMs = 0)
+                vm.onScrollToFirstSelected()
                 true
             }
 
             R.id.scrollToLast -> {
-                scrollToLastCertificate(delayMs = 0)
+                vm.onScrollToLastSelected()
                 true
             }
 
             R.id.changeOrder -> {
-                certificateDialogs.showChangeDocumentOrder(
-                    context = requireContext(),
-                    originalOrder =  (vm.viewState.value as ViewState.Normal).documents,
-                    onOrderChanged = {
-                        vm.onOrderChanged(it)
-                    }
-                )
+                vm.onChangeOrderSelected()
                 true
             }
 
@@ -322,8 +362,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 findItem(R.id.warning)?.isVisible = state.showWarningButton
                 findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
                 findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
+                findItem(R.id.deleteFiltered)?.isVisible = state.showDeleteFilteredMenuItem
                 findItem(R.id.lock)?.isVisible = state.showLockMenuItem
                 findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
+                findItem(R.id.export_filtered)?.isVisible = state.showExportFilteredMenuItem
                 findItem(R.id.changeOrder)?.isVisible = state.showChangeOrderMenuItem
                 findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
                 findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
