@@ -171,7 +171,7 @@ class MainViewModelTest {
             vm.setPendingFile(Uri.EMPTY)
 
             awaitItem() shouldBe ViewEvent.CloseAllDialogs
-            awaitItem() shouldBe ViewEvent.ScrollToLastCertificate
+            awaitItem() shouldBe ViewEvent.ScrollToLastCertificate()
         }
 
         vm.viewState.value should beInstanceOf<ViewState.Normal>()
