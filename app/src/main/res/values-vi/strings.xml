@@ -54,6 +54,7 @@
     <string name="change_order">Change order</string>
     <string name="export_filtered">Export currently filtered</string>
     <string name="delete_filtered">Delete currently filtered</string>
+    <!--suppress MissingQuantity -->
     <plurals name="dialog_delete_filtered_confirmation_text">
         <item quantity="other">Do you really want to delete %d documents from the app?</item>
     </plurals>
