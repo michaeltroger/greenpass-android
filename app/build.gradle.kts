@@ -109,8 +109,8 @@ dependencies {
     implementation(libs.com.github.chrisbanes.photoview)
     implementation(libs.com.github.lisawray.groupie)
     implementation(libs.com.github.lisawray.groupie.viewbinding)
+    implementation(libs.com.github.markusfisch.zxing.cpp)
     implementation(libs.com.google.android.material)
-    implementation(libs.com.google.zxing.core)
     implementation(libs.com.tom.roush.pdfbox.android)
 
     ksp(libs.androidx.room.compiler)

@@ -27,7 +27,7 @@ class CertificateItem(
     private val fileName: String,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
-    private val searchQrCode: Boolean,
+    private val searchBarcode: Boolean,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameClicked: () -> Unit,
     private val onShareCalled: () -> Unit,
@@ -67,10 +67,10 @@ class CertificateItem(
                 itemList.add(
                     PdfPageItem(
                         pdfRenderer = renderer,
-                        qrRenderer = Locator.qrRenderer(),
+                        barcodeRenderer = Locator.qrRenderer(),
                         pageIndex = pageIndex,
                         fileName = fileName,
-                        searchQrCode = searchQrCode
+                        searchBarcode = searchBarcode
                     )
                 )
             }
@@ -90,6 +90,6 @@ class CertificateItem(
     override fun hasSameContentAs(other: Item<*>): Boolean {
         return (other as? CertificateItem)?.fileName == fileName
             && (other as? CertificateItem)?.documentName == documentName
-            && (other as? CertificateItem)?.searchQrCode == searchQrCode
+            && (other as? CertificateItem)?.searchBarcode == searchBarcode
     }
 }

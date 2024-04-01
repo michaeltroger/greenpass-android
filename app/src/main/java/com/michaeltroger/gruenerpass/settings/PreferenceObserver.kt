@@ -9,7 +9,7 @@ interface PreferenceChangeListener {
 }
 
 interface PreferenceObserver {
-    fun searchForQrCode(): Boolean
+    fun searchForBarcode(): Boolean
     fun shouldAuthenticate(): Boolean
     fun addDocumentsInFront(): Boolean
     fun showOnLockedScreen(): Boolean
@@ -24,7 +24,7 @@ class PreferenceObserverImpl(
 ): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceChangeListener: PreferenceChangeListener? = null
-    private var searchForQrCode: Boolean = true
+    private var searchForBarcode: Boolean = true
     private var shouldAuthenticate = false
     private var addDocumentsFront: Boolean = false
     private var showOnLockedScreen: Boolean = false
@@ -36,7 +36,7 @@ class PreferenceObserverImpl(
             context.getString(R.string.key_preference_biometric),
             false
         )
-        searchForQrCode = preferenceManager.getBoolean(
+        searchForBarcode = preferenceManager.getBoolean(
             context.getString(R.string.key_preference_search_for_qr_code),
             true
         )
@@ -50,7 +50,7 @@ class PreferenceObserverImpl(
         )
     }
 
-    override fun searchForQrCode() = searchForQrCode
+    override fun searchForBarcode() = searchForBarcode
     override fun shouldAuthenticate() = shouldAuthenticate
     override fun addDocumentsInFront() = addDocumentsFront
     override fun showOnLockedScreen() = showOnLockedScreen
@@ -62,7 +62,7 @@ class PreferenceObserverImpl(
                 preferenceChangeListener?.refreshUi()
             }
             context.getString(R.string.key_preference_search_for_qr_code) -> {
-                searchForQrCode = sharedPreferences.getBoolean(key, true)
+                searchForBarcode = sharedPreferences.getBoolean(key, true)
                 preferenceChangeListener?.refreshUi()
             }
             context.getString(R.string.key_preference_add_documents_front) -> {

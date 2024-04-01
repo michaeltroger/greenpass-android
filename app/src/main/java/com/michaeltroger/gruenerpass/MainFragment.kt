@@ -208,7 +208,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
-                searchQrCode = state.searchQrCode,
+                searchBarcode = state.searchBarcode,
             )
         }
     }
@@ -218,13 +218,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         menuProvider.onPause()
     }
 
-    private fun showCertificateState(documents: List<Certificate>, searchQrCode: Boolean) {
+    private fun showCertificateState(documents: List<Certificate>, searchBarcode: Boolean) {
         val items = documents.map { certificate ->
             CertificateItem(
                 requireContext().applicationContext,
                 fileName = certificate.id,
                 documentName = certificate.name,
-                searchQrCode = searchQrCode,
+                searchBarcode = searchBarcode,
                 dispatcher = thread,
                 onDeleteCalled = {
                     vm.onDeleteCalled(certificate.id)
