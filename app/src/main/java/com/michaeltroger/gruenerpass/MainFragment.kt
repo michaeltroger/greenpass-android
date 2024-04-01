@@ -23,11 +23,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.locator.Locator
-import com.michaeltroger.gruenerpass.pager.certificates.CertificateAdapter
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -45,7 +45,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     @OptIn(DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
-    private val adapter = CertificateAdapter()
+    private val adapter = GroupieAdapter()
 
     private var binding: FragmentMainBinding? = null
 
@@ -193,7 +193,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 },
             )
         }
-        adapter.setData(documents.map { it.id }.toList())
         adapter.update(items)
     }
 
