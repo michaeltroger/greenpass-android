@@ -62,10 +62,10 @@ app-cash-turbine = { module = "app.cash.turbine:turbine", version.ref = "app-cas
 com-github-chrisbanes-photoview = { module = "com.github.chrisbanes:PhotoView", version.ref = "com-github-chrisbanes-photoview" }
 com-github-lisawray-groupie = { module = "com.github.lisawray.groupie:groupie", version.ref = "com-github-lisawray-groupie" }
 com-github-lisawray-groupie-viewbinding = { module = "com.github.lisawray.groupie:groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
+com-github-markusfisch-zxing-cpp = { module = "com.github.markusfisch:zxing-cpp", version.ref = "com-github-markusfisch-zxing-cpp" }
 com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
 com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
-com-github-markusfisch-zxing-cpp = { module = "com.github.markusfisch:zxing-cpp", version.ref = "com-github-markusfisch-zxing-cpp" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "org-jetbrains-kotlinx-coroutines-test" }
