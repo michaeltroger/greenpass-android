@@ -56,7 +56,7 @@
     <string name="delete_filtered">Εξαγωγή φιλτραρισμένων</string>
     <!--suppress MissingQuantity -->
     <plurals name="dialog_delete_filtered_confirmation_text">
-        <item quantity="one">Do you really want to delete %d document from the app?</item>
-        <item quantity="other">Do you really want to delete %d documents from the app?</item>
+        <item quantity="one">Θέλετε πράγματι να διαγράψετε %d έγγραφο από την εφαρμογή;</item>
+        <item quantity="other">Θέλετε πράγματι να διαγράψετε %d έγγραφα από την εφαρμογή;</item>
     </plurals>
 </resources>
