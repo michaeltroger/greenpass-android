@@ -112,35 +112,29 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 onCancelled = vm::deletePendingFileIfExists
             )
 
-            ViewEvent.ErrorParsingFile -> showFileCanNotBeReadError()
+            ViewEvent.ShowParsingFileError -> showFileCanNotBeReadError()
             is ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate(it.delayMs)
             is ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate(it.delayMs)
-            is ViewEvent.ExportAll -> {
+            is ViewEvent.ShareMultiple -> {
                 pdfSharing.openShareAllFilePicker(
                     context = requireContext(),
                     certificates = it.list,
                 )
             }
-            is ViewEvent.ExportFiltered -> {
-                pdfSharing.openShareAllFilePicker(
-                    context = requireContext(),
-                    certificates = it.list,
-                )
-            }
-            ViewEvent.DeleteAll -> {
+            ViewEvent.ShowDeleteAllDialog -> {
                 certificateDialogs.showDoYouWantToDeleteAllDialog(
                     context = requireContext(),
                     onDeleteAllConfirmed = vm::onDeleteAllConfirmed
                 )
             }
-            is ViewEvent.DeleteFiltered -> {
+            is ViewEvent.ShowDeleteFilteredDialog -> {
                 certificateDialogs.showDoYouWantToDeleteFilteredDialog(
                     context = requireContext(),
                     onDeleteFilteredConfirmed = vm::onDeleteFilteredConfirmed,
-                    documentCount = it.documentCount
+                    documentCount = it.documentCountToBeDeleted
                 )
             }
-            is ViewEvent.ChangeDocumentOrder -> {
+            is ViewEvent.ShowChangeDocumentOrderDialog -> {
                 certificateDialogs.showChangeDocumentOrder(
                     context = requireContext(),
                     originalOrder = it.originalOrder,
@@ -148,20 +142,20 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 )
             }
             ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
-            ViewEvent.ShowSettings -> findNavController().navigate(R.id.navigate_to_settings)
-            ViewEvent.ShowMore -> findNavController().navigate(R.id.navigate_to_more)
+            ViewEvent.ShowSettingsScreen -> findNavController().navigate(R.id.navigate_to_settings)
+            ViewEvent.ShowMoreScreen -> findNavController().navigate(R.id.navigate_to_more)
             ViewEvent.AddFile -> documentPick.launch(arrayOf(PDF_MIME_TYPE))
-            is ViewEvent.ShowDoYouWantToDeleteDialog -> {
+            is ViewEvent.ShowDeleteDialog -> {
                 certificateDialogs.showDoYouWantToDeleteDialog(
                     context = requireContext(),
                     id = it.id,
                     onDeleteConfirmed = vm::onDeleteConfirmed
                 )
             }
-            is ViewEvent.ChangeDocumentName -> {
+            is ViewEvent.ShowChangeDocumentNameDialog -> {
                 certificateDialogs.showChangeDocumentNameDialog(
                     context = requireContext(),
-                    originalDocumentName = it.name,
+                    originalDocumentName = it.originalName,
                     onDocumentNameChanged = { newName ->
                         vm.onDocumentNameChangeConfirmed(documentName = newName, filename = it.id)
                     }

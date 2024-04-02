@@ -125,7 +125,7 @@ class MainViewModel(
                 }
             } catch (e: Throwable) {
                 logger.logError(e.toString())
-                _viewEvent.emit(ViewEvent.ErrorParsingFile)
+                _viewEvent.emit(ViewEvent.ShowParsingFileError)
             }
         }
     }
@@ -159,7 +159,7 @@ class MainViewModel(
             renderer.loadFile()
         } catch (e: Exception) {
             logger.logError(e.toString())
-            _viewEvent.emit(ViewEvent.ErrorParsingFile)
+            _viewEvent.emit(ViewEvent.ShowParsingFileError)
             fileRepo.deleteFile(pendingFile.id)
             this.pendingFile = null
             return
@@ -284,26 +284,26 @@ class MainViewModel(
     fun onExportFilteredSelected() = viewModelScope.launch {
         val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
         _viewEvent.emit(
-            ViewEvent.ExportFiltered(docs)
+            ViewEvent.ShareMultiple(docs)
         )
     }
 
     fun onExportAllSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ExportFiltered(db.getAll())
+            ViewEvent.ShareMultiple(db.getAll())
         )
     }
 
     fun onDeleteFilteredSelected() = viewModelScope.launch {
         val docsSize = (viewState.value as? ViewState.Normal)?.documents?.size ?: return@launch
         _viewEvent.emit(
-            ViewEvent.DeleteFiltered(documentCount = docsSize)
+            ViewEvent.ShowDeleteFilteredDialog(documentCountToBeDeleted = docsSize)
         )
     }
 
     fun onDeleteAllSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.DeleteAll
+            ViewEvent.ShowDeleteAllDialog
         )
     }
 
@@ -322,7 +322,7 @@ class MainViewModel(
     fun onChangeOrderSelected() = viewModelScope.launch {
         val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
         _viewEvent.emit(
-            ViewEvent.ChangeDocumentOrder(originalOrder = docs)
+            ViewEvent.ShowChangeDocumentOrderDialog(originalOrder = docs)
         )
     }
 
@@ -334,13 +334,13 @@ class MainViewModel(
 
     fun onShowSettingsSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ShowSettings
+            ViewEvent.ShowSettingsScreen
         )
     }
 
     fun onShowMoreSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ShowMore
+            ViewEvent.ShowMoreScreen
         )
     }
 
@@ -352,7 +352,7 @@ class MainViewModel(
 
     fun onDeleteCalled(id: String) = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ShowDoYouWantToDeleteDialog(
+            ViewEvent.ShowDeleteDialog(
                 id = id,
             )
         )
@@ -360,9 +360,9 @@ class MainViewModel(
 
     fun onChangeDocumentNameSelected(id: String, name: String) = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ChangeDocumentName(
+            ViewEvent.ShowChangeDocumentNameDialog(
                 id = id,
-                name = name
+                originalName = name
             )
         )
     }

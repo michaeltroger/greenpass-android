@@ -5,22 +5,20 @@ import com.michaeltroger.gruenerpass.db.Certificate
 private const val SCROLL_TO_DELAY_MS = 1000L
 
 sealed class ViewEvent {
+    data object AddFile : ViewEvent()
+    data object ShowParsingFileError : ViewEvent()
     data object ShowPasswordDialog : ViewEvent()
     data object CloseAllDialogs : ViewEvent()
-    data object ErrorParsingFile : ViewEvent()
     data class ScrollToLastCertificate(val delayMs: Long = SCROLL_TO_DELAY_MS) : ViewEvent()
     data class ScrollToFirstCertificate(val delayMs: Long = SCROLL_TO_DELAY_MS) : ViewEvent()
-    data class ExportAll(val list: List<Certificate>) : ViewEvent()
-    data class ExportFiltered(val list: List<Certificate>) : ViewEvent()
-    data object DeleteAll : ViewEvent()
-    data object ShowWarningDialog : ViewEvent()
-    data object ShowSettings : ViewEvent()
-    data object ShowMore : ViewEvent()
-    data object AddFile : ViewEvent()
-
-    data class DeleteFiltered(val documentCount: Int) : ViewEvent()
-    data class ChangeDocumentOrder(val originalOrder: List<Certificate>) : ViewEvent()
-    data class ShowDoYouWantToDeleteDialog(val id: String) : ViewEvent()
-    data class ChangeDocumentName(val id: String, val name: String) : ViewEvent()
     data class Share(val certificate: Certificate) : ViewEvent()
+    data class ShareMultiple(val list: List<Certificate>) : ViewEvent()
+    data class ShowDeleteDialog(val id: String) : ViewEvent()
+    data object ShowDeleteAllDialog : ViewEvent()
+    data class ShowDeleteFilteredDialog(val documentCountToBeDeleted: Int) : ViewEvent()
+    data object ShowWarningDialog : ViewEvent()
+    data object ShowSettingsScreen : ViewEvent()
+    data object ShowMoreScreen : ViewEvent()
+    data class ShowChangeDocumentOrderDialog(val originalOrder: List<Certificate>) : ViewEvent()
+    data class ShowChangeDocumentNameDialog(val id: String, val originalName: String) : ViewEvent()
 }
