@@ -25,13 +25,14 @@ com-github-markusfisch-zxing-cpp = "v2.2.0.4"
 com-google-android-material = "1.11.0"
 com-google-devtools-ksp = "1.9.23-1.0.19"
 com-squareup-leakcanary-android = "2.13"
-com-tom-roush-pdfbox-android = "2.0.25.0"
+com-tom-roush-pdfbox-android = "2.0.27.0"
 io-gitlab-arturbosch-detekt = "1.23.6"
 io-kotest-assertions-core = "5.8.1"
 io-mockk = "1.13.10"
 java = "17"
 kotlin = "1.9.23"
 nl-littlerobots-version-catalog-update = "0.8.4"
+org-bouncycastle = "1.77"
 org-jetbrains-kotlinx-coroutines-test = "1.8.0"
 org-robolectric = "4.12"
 sdk-compile = "34"
@@ -68,6 +69,9 @@ com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
+org-bouncycastle-bcpkix-jdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "org-bouncycastle" }
+org-bouncycastle-bcprov-jdk15to18 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "org-bouncycastle" }
+org-bouncycastle-bcutil-jdk15to18 = { module = "org.bouncycastle:bcutil-jdk15to18", version.ref = "org-bouncycastle" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "org-jetbrains-kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
 
