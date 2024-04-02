@@ -13,8 +13,8 @@
     <string name="cancel">Ακύρωση</string>
     <string name="dialog_delete_confirmation_message">Θέλετε πράγματι να διαγράψετε το έγγραφο από την εφαρμογή;</string>
     <string name="require_authentication">Απαίτηση πιστοποίησης</string>
-    <string name="preference_search_barcode">Extract barcode</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR and Aztec (experimental).</string>
+    <string name="preference_search_barcode">Εξαγωγή barcode</string>
+    <string name="preference_search_barcode_description">Σαρώστε κάθε σελίδα PDF για ένα barcode. Επί του παρόντος υποστηριζόμενες μορφές είναι QR και Aztec (πειραματικό).</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="authenticate">Ταυτοποίηση</string>
     <string name="report_issue_summary">Έχετε πρόβλημα με τη χρήση της εφαρμογής; Αφήστε μας να σας βοηθήσουμε</string>
@@ -49,11 +49,11 @@
     <string name="pdfs">PDF</string>
     <string name="search">Αναζήτηση</string>
     <string name="search_query_hint">Όνομα εγγράφου</string>
-    <string name="dialog_document_name_title">Change document name</string>
-    <string name="dialog_document_order_title">Change document order</string>
-    <string name="change_order">Change order</string>
-    <string name="export_filtered">Export currently filtered</string>
-    <string name="delete_filtered">Delete currently filtered</string>
+    <string name="dialog_document_name_title">Αλλαγή ονόματος εγγράφου</string>
+    <string name="dialog_document_order_title">Αλλαγή σειράς εγγράφου</string>
+    <string name="change_order">Αλλαγή σειράς</string>
+    <string name="export_filtered">Εξαγωγή φιλτραρισμένων</string>
+    <string name="delete_filtered">Εξαγωγή φιλτραρισμένων</string>
     <!--suppress MissingQuantity -->
     <plurals name="dialog_delete_filtered_confirmation_text">
         <item quantity="one">Do you really want to delete %d document from the app?</item>
