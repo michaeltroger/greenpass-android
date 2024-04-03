@@ -23,7 +23,7 @@ com-github-jk1-dependency-license-report = "2.6"
 com-github-lisawray-groupie = "2.10.1"
 com-github-markusfisch-zxing-cpp = "v2.2.0.4"
 com-google-android-material = "1.11.0"
-com-google-dagger-hilt-android = "2.48"
+com-google-dagger-hilt-android = "2.51.1"
 com-google-devtools-ksp = "1.9.23-1.0.19"
 com-squareup-leakcanary-android = "2.13"
 com-tom-roush-pdfbox-android = "2.0.27.0"
@@ -66,10 +66,10 @@ com-github-lisawray-groupie = { module = "com.github.lisawray.groupie:groupie", 
 com-github-lisawray-groupie-viewbinding = { module = "com.github.lisawray.groupie:groupie-viewbinding", version.ref = "com-github-lisawray-groupie" }
 com-github-markusfisch-zxing-cpp = { module = "com.github.markusfisch:zxing-cpp", version.ref = "com-github-markusfisch-zxing-cpp" }
 com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
-com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
-com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
 com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "com-google-dagger-hilt-android" }
 com-google-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "com-google-dagger-hilt-android" }
+com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
+com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
 org-bouncycastle-bcpkix-jdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "org-bouncycastle" }
