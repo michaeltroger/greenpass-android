@@ -29,6 +29,7 @@ import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
@@ -41,7 +42,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application) }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
     private val adapter = GroupieAdapter()

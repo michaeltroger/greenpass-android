@@ -91,7 +91,12 @@ licenseReport {
 }
 
 dependencies {
+    // assure consistent versions
+    implementation(platform(libs.org.jetbrains.kotlin.bom))
+    implementation(platform(libs.org.jetbrains.kotlinx.coroutines.bom))
+
     debugImplementation(libs.com.squareup.leakcanary.android)
+
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.biometric)
