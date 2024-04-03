@@ -6,13 +6,14 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.view.WindowManager
 import com.michaeltroger.gruenerpass.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class PreferenceUtil(
-    private val context: Context,
-    private val preferenceManager: SharedPreferences
-    = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
+class PreferenceUtil @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val preferenceManager: SharedPreferences,
 ) {
 
     suspend fun updateScreenBrightness(activity: Activity) {

@@ -19,6 +19,7 @@ import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 
@@ -26,6 +27,10 @@ private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val vm by viewModels<MainViewModel>()
+
+    @Inject
+    lateinit var preferenceUtil: PreferenceUtil
+
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
     private lateinit var navController: NavController
@@ -52,7 +57,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun updateSettings() {
-        val preferenceUtil = PreferenceUtil(this)
         lifecycleScope.launch {
             preferenceUtil.updateScreenBrightness(this@MainActivity)
             preferenceUtil.updateShowOnLockedScreen(this@MainActivity)

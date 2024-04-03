@@ -18,6 +18,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
+    @Inject
+    lateinit var preferenceUtil: PreferenceUtil
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
@@ -34,7 +36,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         preference.setOnPreferenceClickListener {
             lifecycleScope.launch {
-                PreferenceUtil(requireContext()).updateScreenBrightness(requireActivity())
+                preferenceUtil.updateScreenBrightness(requireActivity())
             }
             true
         }
@@ -49,7 +51,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preference.isVisible = true
             preference.setOnPreferenceClickListener {
                 lifecycleScope.launch {
-                    PreferenceUtil(requireContext()).updateShowOnLockedScreen(requireActivity())
+                    preferenceUtil.updateShowOnLockedScreen(requireActivity())
                 }
                 true
             }
