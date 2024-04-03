@@ -3,16 +3,17 @@ package com.michaeltroger.gruenerpass.file
 import android.content.Context
 import android.net.Uri
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.di.IoDispatcher
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 interface FileRepo {
     suspend fun copyToApp(uri: Uri): Certificate
@@ -20,10 +21,10 @@ interface FileRepo {
     fun getFile(fileName: String): File
 }
 
-class FileRepoImpl(
-    private val context: Context,
-    private val documentNameRepo: DocumentNameRepo = Locator.documentNameRepo(context),
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+class FileRepoImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val documentNameRepo: DocumentNameRepo,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : FileRepo {
 
     override suspend fun copyToApp(uri: Uri): Certificate = withContext(dispatcher) {

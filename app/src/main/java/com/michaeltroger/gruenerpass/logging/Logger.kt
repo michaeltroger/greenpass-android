@@ -2,6 +2,7 @@ package com.michaeltroger.gruenerpass.logging
 
 import android.util.Log
 import com.michaeltroger.gruenerpass.BuildConfig
+import javax.inject.Inject
 
 private const val TAG = "greenpass"
 private val log: Boolean = BuildConfig.DEBUG
@@ -11,7 +12,7 @@ interface Logger {
     fun logError(value: Any?)
 }
 
-class LoggerImpl : Logger {
+class LoggerImpl @Inject constructor() : Logger {
     override fun logDebug(value: Any?) {
         if (log) {
             Log.d(TAG, value.toString())

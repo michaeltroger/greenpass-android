@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.michaeltroger.gruenerpass.extensions.getPackageInfo
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -16,12 +17,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-class AppMigrator(ctx: Context) {
+class AppMigrator @Inject constructor(@ApplicationContext ctx: Context) {
 
     private val context = ctx.applicationContext
+
+    @Inject
+    lateinit var from6: AppMigrateFrom6
+    @Inject
+    lateinit var from27: AppMigrateFrom27
 
     private val appVersionCode = longPreferencesKey("app_version_code")
     private val appVersionCodeFlow: Flow<Long> = context.dataStore.data
@@ -53,10 +60,10 @@ class AppMigrator(ctx: Context) {
         }
 
         if (previousVersion < 7) {
-            AppMigrateFrom6().invoke(context)
+            from6()
         }
         if (previousVersion < 28) {
-            AppMigrateFrom27().invoke(context)
+            from27()
         }
 
         persistCurrentAppVersionCode()

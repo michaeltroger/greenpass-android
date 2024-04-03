@@ -3,13 +3,10 @@ package com.michaeltroger.gruenerpass
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
-import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.logging.Logger
 import com.michaeltroger.gruenerpass.pdf.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
@@ -17,6 +14,7 @@ import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,15 +23,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
-class MainViewModel(
+@HiltViewModel
+class MainViewModel @Inject constructor(
     app: Application,
-    private val pdfDecryptor: PdfDecryptor = Locator.pdfDecryptor(),
-    private val db: CertificateDao = Locator.database(app).certificateDao(),
-    private val logger: Logger = Locator.logger(),
-    private val fileRepo: FileRepo = Locator.fileRepo(app),
-    private val preferenceObserver: PreferenceObserver = Locator.preferenceManager(app)
+    private val pdfDecryptor: PdfDecryptor,
+    private val db: CertificateDao,
+    private val logger: Logger,
+    private val fileRepo: FileRepo,
+    private val preferenceObserver: PreferenceObserver
 ): AndroidViewModel(app), PreferenceChangeListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
@@ -371,12 +371,5 @@ class MainViewModel(
         _viewEvent.emit(
             ViewEvent.Share(certificate)
         )
-    }
-}
-
-@Suppress("UNCHECKED_CAST")
-class MainViewModelFactory(private val app: Application) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel(app) as T
     }
 }

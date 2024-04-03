@@ -1,10 +1,11 @@
 package com.michaeltroger.gruenerpass.barcode
 
 import android.graphics.Bitmap
+import com.michaeltroger.gruenerpass.di.IoDispatcher
 import de.markusfisch.android.zxingcpp.ZxingCpp
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
 private const val BARCODE_SIZE = 400
@@ -21,8 +22,8 @@ interface BarcodeRenderer {
     suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap?
 }
 
-class BarcodeRendererImpl(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+class BarcodeRendererImpl @Inject constructor(
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : BarcodeRenderer {
 
     override suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap? = withContext(dispatcher) {

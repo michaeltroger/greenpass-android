@@ -6,6 +6,7 @@ import androidx.core.content.FileProvider
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.Certificate
 import java.io.File
+import javax.inject.Inject
 
 private const val PDF_MIME_TYPE = "application/pdf"
 
@@ -14,7 +15,7 @@ interface PdfSharing {
     fun openShareAllFilePicker(context: Context, certificates: List<Certificate>)
     fun openShareFilePicker(context: Context, certificate: Certificate)
 }
-class PdfSharingImpl : PdfSharing {
+class PdfSharingImpl @Inject constructor() : PdfSharing {
 
     override fun openShareAllFilePicker(context: Context, certificates: List<Certificate>) {
         val pdfUris = certificates.map { certificate ->

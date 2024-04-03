@@ -20,27 +20,32 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.locator.Locator
+import com.michaeltroger.gruenerpass.dialogs.CertificateDialogs
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
+import com.michaeltroger.gruenerpass.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import com.xwray.groupie.GroupieAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
+import javax.inject.Inject
 
 private const val TOUCH_SLOP_FACTOR = 8
 private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
+@AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_main) {
 
-    private val vm by activityViewModels<MainViewModel> { MainViewModelFactory(app = requireActivity().application) }
+    private val vm by activityViewModels<MainViewModel>()
 
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
@@ -49,8 +54,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private var binding: FragmentMainBinding? = null
 
-    private val pdfSharing = Locator.pdfSharing()
-    private val certificateDialogs = Locator.certificateDialogs()
+    @Inject
+    lateinit var pdfSharing: PdfSharing
+    @Inject
+    lateinit var certificateDialogs: CertificateDialogs
+    @Inject
+    lateinit var barcodeRenderer: BarcodeRenderer
+    @Inject
+    lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
 
     private val menuProvider = MainMenuProvider()
 
@@ -183,7 +194,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             this,
             ContextCompat.getMainExecutor(requireContext()),
             MyAuthenticationCallback()
-        ).authenticate(Locator.biometricPromptInfo(requireContext()))
+        ).authenticate(biometricPromptInfo)
     }
 
     private fun updateState(state: ViewState) {
@@ -218,6 +229,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             CertificateItem(
                 requireContext().applicationContext,
                 fileName = certificate.id,
+                barcodeRenderer = barcodeRenderer,
                 documentName = certificate.name,
                 searchBarcode = searchBarcode,
                 dispatcher = thread,

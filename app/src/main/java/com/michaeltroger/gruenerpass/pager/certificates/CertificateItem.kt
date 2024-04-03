@@ -3,8 +3,8 @@ package com.michaeltroger.gruenerpass.pager.certificates
 import android.content.Context
 import android.view.View
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
-import com.michaeltroger.gruenerpass.locator.Locator
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pdf.PdfRenderer
@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 class CertificateItem(
     context: Context,
     private val fileName: String,
+    private val barcodeRenderer: BarcodeRenderer,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchBarcode: Boolean,
@@ -67,7 +68,7 @@ class CertificateItem(
                 itemList.add(
                     PdfPageItem(
                         pdfRenderer = renderer,
-                        barcodeRenderer = Locator.barcodeRenderer(),
+                        barcodeRenderer = barcodeRenderer,
                         pageIndex = pageIndex,
                         fileName = fileName,
                         searchBarcode = searchBarcode

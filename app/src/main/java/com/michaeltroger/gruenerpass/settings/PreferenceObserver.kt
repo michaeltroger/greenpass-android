@@ -3,6 +3,8 @@ package com.michaeltroger.gruenerpass.settings
 import android.content.Context
 import android.content.SharedPreferences
 import com.michaeltroger.gruenerpass.R
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 interface PreferenceChangeListener {
     fun refreshUi()
@@ -17,10 +19,9 @@ interface PreferenceObserver {
     fun onDestroy()
 }
 
-class PreferenceObserverImpl(
-    private val context: Context,
-    private val preferenceManager: SharedPreferences
-        = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context),
+class PreferenceObserverImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val preferenceManager: SharedPreferences,
 ): PreferenceObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private var preferenceChangeListener: PreferenceChangeListener? = null

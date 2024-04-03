@@ -10,6 +10,7 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.documentorder.DocumentOrderItem
 import com.xwray.groupie.GroupieAdapter
+import javax.inject.Inject
 
 interface CertificateDialogs {
     fun closeAllDialogs()
@@ -34,7 +35,7 @@ interface CertificateDialogs {
     )
 }
 
-class CertificateDialogsImpl : CertificateDialogs {
+class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
 
     private var dialog: Dialog? = null
 
