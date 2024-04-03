@@ -14,10 +14,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 @InstallIn(FragmentComponent::class)
 object BiometricPromptModule {
     @Provides
-    fun provideBiometricPromptInfo(@ApplicationContext context: Context): BiometricPrompt.PromptInfo = BiometricPrompt.PromptInfo.Builder()
+    fun provideBiometricPromptInfo(@ApplicationContext context: Context): BiometricPrompt.PromptInfo =
+        BiometricPrompt.PromptInfo.Builder()
         .setTitle(context.getString(R.string.authenticate))
         .setConfirmationRequired(false)
         .setAllowedAuthenticators(SettingsFragment.AUTHENTICATORS)
         .build()
-
 }

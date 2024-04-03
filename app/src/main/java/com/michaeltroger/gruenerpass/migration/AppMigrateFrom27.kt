@@ -11,7 +11,10 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AppMigrateFrom27 @Inject constructor(@ApplicationContext private val context: Context, private val db: CertificateDao) {
+class AppMigrateFrom27 @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val db: CertificateDao
+) {
 
     @OptIn(DelicateCoroutinesApi::class)
     operator fun invoke() {
