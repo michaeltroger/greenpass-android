@@ -6,6 +6,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.com.github.jk1.dependency.license.report)
+    alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.com.google.devtools.ksp)
     alias(libs.plugins.io.gitlab.arturbosch.detekt)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -115,6 +116,7 @@ dependencies {
     implementation(libs.com.github.lisawray.groupie.viewbinding)
     implementation(libs.com.github.markusfisch.zxing.cpp)
     implementation(libs.com.google.android.material)
+    implementation(libs.com.google.dagger.hilt.android)
     implementation(libs.com.tom.roush.pdfbox.android)
 
     // The bouncy castle libs are generally only transitive dependencies through pdfbox and only indirectly needed in this app
@@ -124,6 +126,7 @@ dependencies {
     implementation(libs.org.bouncycastle.bcutil.jdk15to18)
 
     ksp(libs.androidx.room.compiler)
+    ksp(libs.com.google.dagger.hilt.compiler)
 
     testImplementation(libs.androidx.test.ext.junit.ktx)
     testImplementation(libs.app.cash.turbine)

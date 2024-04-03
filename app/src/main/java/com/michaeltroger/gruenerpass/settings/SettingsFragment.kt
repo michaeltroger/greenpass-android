@@ -9,10 +9,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.locator.Locator
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    @Inject
+    lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
@@ -68,11 +73,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     preference.isChecked = !preference.isChecked
                 }
             })
-        val promptInfo = Locator.biometricPromptInfo(requireContext())
 
         preference.apply {
             setOnPreferenceClickListener {
-                biometricPrompt.authenticate(promptInfo)
+                biometricPrompt.authenticate(biometricPromptInfo)
                 true
             }
         }

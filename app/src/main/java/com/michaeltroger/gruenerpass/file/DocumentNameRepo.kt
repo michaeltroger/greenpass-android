@@ -4,15 +4,17 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 interface DocumentNameRepo {
     suspend fun getDocumentName(uri: Uri): String
 }
 
-class DocumentNameRepoImpl(private val context: Context) : DocumentNameRepo {
+class DocumentNameRepoImpl @Inject constructor(@ApplicationContext private val context: Context) : DocumentNameRepo {
 
     override suspend fun getDocumentName(uri: Uri): String {
         return context.getDocumentName(uri)
