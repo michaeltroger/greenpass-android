@@ -72,8 +72,8 @@ io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }
 org-bouncycastle-bcpkix-jdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "org-bouncycastle" }
 org-bouncycastle-bcprov-jdk15to18 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "org-bouncycastle" }
 org-bouncycastle-bcutil-jdk15to18 = { module = "org.bouncycastle:bcutil-jdk15to18", version.ref = "org-bouncycastle" }
-org-jetbrains-kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin"}
-org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines"}
+org-jetbrains-kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
 
