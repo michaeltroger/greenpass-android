@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.update
+package com.michaeltroger.gruenerpass.migration
 
 import android.content.Context
 import com.michaeltroger.gruenerpass.db.Certificate

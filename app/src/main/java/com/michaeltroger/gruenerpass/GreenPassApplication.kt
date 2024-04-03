@@ -1,7 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import android.app.Application
-import com.michaeltroger.gruenerpass.update.AppMigrator
+import com.michaeltroger.gruenerpass.migration.AppMigrator
 
 class GreenPassApplication : Application() {
 
