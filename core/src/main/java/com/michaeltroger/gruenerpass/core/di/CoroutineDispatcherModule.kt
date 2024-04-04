@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.di
+package com.michaeltroger.gruenerpass.core.di
 
 import dagger.Module
 import dagger.Provides
@@ -10,29 +10,29 @@ import javax.inject.Qualifier
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CoroutineDispatchersModule {
+public object CoroutineDispatchersModule {
     @IoDispatcher
     @Provides
-    fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    internal fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @DefaultDispatcher
     @Provides
-    fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    internal  fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @MainDispatcher
     @Provides
-    fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    internal fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }
 
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class IoDispatcher
+public annotation class IoDispatcher
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class DefaultDispatcher
+public annotation class DefaultDispatcher
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
-annotation class MainDispatcher
+public annotation class MainDispatcher

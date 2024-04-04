@@ -59,7 +59,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var certificateDialogs: CertificateDialogs
     @Inject
-    lateinit var barcodeRenderer: BarcodeRenderer
+    lateinit var barcodeRenderer: com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
     @Inject
     lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
 

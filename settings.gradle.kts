@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 }
 
 include(":app")
+include(":barcode")
+include(":core")
+include(":pdfdecryptor")
