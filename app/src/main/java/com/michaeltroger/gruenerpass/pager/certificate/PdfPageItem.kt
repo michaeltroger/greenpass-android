@@ -20,7 +20,7 @@ private const val TAG_BARCODE_LOADED = "barcode_loaded"
 
 class PdfPageItem(
     private val pdfRenderer: PdfRenderer,
-    private val barcodeRenderer: com.michaeltroger.gruenerpass.barcode.BarcodeRenderer,
+    private val barcodeRenderer: BarcodeRenderer,
     private val fileName: String,
     private val pageIndex: Int,
     private val searchBarcode: Boolean,

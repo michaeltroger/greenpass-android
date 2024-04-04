@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class CertificateItem(
     context: Context,
     private val fileName: String,
-    private val barcodeRenderer: com.michaeltroger.gruenerpass.barcode.BarcodeRenderer,
+    private val barcodeRenderer: BarcodeRenderer,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchBarcode: Boolean,
