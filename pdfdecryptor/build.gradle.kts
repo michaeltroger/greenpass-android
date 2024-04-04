@@ -7,6 +7,9 @@ plugins {
 android {
     namespace = "com.michaeltroger.gruenerpass.pdfdecryptor"
     compileSdk = libs.versions.sdk.compile.get().toInt()
+    defaultConfig {
+        minSdk = libs.versions.sdk.min.get().toInt()
+    }
 }
 
 kotlin {
