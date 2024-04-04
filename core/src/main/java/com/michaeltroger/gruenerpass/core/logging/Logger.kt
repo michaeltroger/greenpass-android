@@ -1,18 +1,18 @@
-package com.michaeltroger.gruenerpass.logging
+package com.michaeltroger.gruenerpass.core.logging
 
 import android.util.Log
-import com.michaeltroger.gruenerpass.BuildConfig
+import com.michaeltroger.gruenerpass.core.BuildConfig
 import javax.inject.Inject
 
 private const val TAG = "greenpass"
 private val log: Boolean = BuildConfig.DEBUG
 
-interface Logger {
-    fun logDebug(value: Any?)
-    fun logError(value: Any?)
+public interface Logger {
+    public fun logDebug(value: Any?)
+    public fun logError(value: Any?)
 }
 
-class LoggerImpl @Inject constructor() : Logger {
+internal class LoggerImpl @Inject constructor() : Logger {
     override fun logDebug(value: Any?) {
         if (log) {
             Log.d(TAG, value.toString())

@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.core.di
+package com.michaeltroger.gruenerpass.core.dispatcher.di
 
 import dagger.Module
 import dagger.Provides

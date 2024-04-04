@@ -10,6 +10,9 @@ android {
     defaultConfig {
         minSdk = libs.versions.sdk.min.get().toInt()
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 kotlin {

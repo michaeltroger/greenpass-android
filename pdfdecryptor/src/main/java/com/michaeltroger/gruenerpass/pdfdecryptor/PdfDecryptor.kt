@@ -1,6 +1,6 @@
 package com.michaeltroger.gruenerpass.pdfdecryptor
 
-import com.michaeltroger.gruenerpass.core.di.IoDispatcher
+import com.michaeltroger.gruenerpass.core.dispatcher.di.IoDispatcher
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import java.io.File
