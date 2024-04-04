@@ -1,7 +1,7 @@
 package com.michaeltroger.gruenerpass.barcode
 
 import android.graphics.Bitmap
-import com.michaeltroger.gruenerpass.di.IoDispatcher
+import com.michaeltroger.gruenerpass.core.di.IoDispatcher
 import de.markusfisch.android.zxingcpp.ZxingCpp
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -18,11 +18,11 @@ private val readerOptions = ZxingCpp.ReaderOptions(
     maxNumberOfSymbols = 1
 )
 
-interface BarcodeRenderer {
-    suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap?
+public interface BarcodeRenderer {
+    public suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap?
 }
 
-class BarcodeRendererImpl @Inject constructor(
+internal class BarcodeRendererImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : BarcodeRenderer {
 

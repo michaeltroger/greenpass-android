@@ -98,6 +98,10 @@ dependencies {
 
     debugImplementation(libs.com.squareup.leakcanary.android)
 
+    implementation(project(":barcode"))
+    implementation(project(":core"))
+    implementation(project(":pdfdecryptor"))
+
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.biometric)
@@ -114,16 +118,8 @@ dependencies {
     implementation(libs.com.github.chrisbanes.photoview)
     implementation(libs.com.github.lisawray.groupie)
     implementation(libs.com.github.lisawray.groupie.viewbinding)
-    implementation(libs.com.github.markusfisch.zxing.cpp)
     implementation(libs.com.google.android.material)
     implementation(libs.com.google.dagger.hilt.android)
-    implementation(libs.com.tom.roush.pdfbox.android)
-
-    // The bouncy castle libs are generally only transitive dependencies through pdfbox and only indirectly needed in this app
-    // However pdfbox doesn't use up-to-date version and therefore we are explicitly forcing the latest version here
-    implementation(libs.org.bouncycastle.bcprov.jdk15to18)
-    implementation(libs.org.bouncycastle.bcpkix.jdk15to18)
-    implementation(libs.org.bouncycastle.bcutil.jdk15to18)
 
     ksp(libs.androidx.room.compiler)
     ksp(libs.com.google.dagger.hilt.compiler)

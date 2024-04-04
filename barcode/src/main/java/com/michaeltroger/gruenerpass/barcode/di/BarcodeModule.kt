@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.barcode.di;
+package com.michaeltroger.gruenerpass.barcode.di
 
 
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
@@ -10,10 +10,10 @@ import dagger.hilt.android.components.FragmentComponent
 
 @Module
 @InstallIn(FragmentComponent::class)
-abstract class BarcodeModule {
+public abstract class BarcodeModule {
 
     @Binds
-    abstract fun bindBarcodeRenderer(
+    internal abstract fun bindBarcodeRenderer(
         barcodeRendererImpl: BarcodeRendererImpl
     ): BarcodeRenderer
 }

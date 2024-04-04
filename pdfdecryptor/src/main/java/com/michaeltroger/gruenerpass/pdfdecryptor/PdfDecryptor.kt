@@ -1,6 +1,6 @@
-package com.michaeltroger.gruenerpass.pdf
+package com.michaeltroger.gruenerpass.pdfdecryptor
 
-import com.michaeltroger.gruenerpass.di.IoDispatcher
+import com.michaeltroger.gruenerpass.core.di.IoDispatcher
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import java.io.File
@@ -9,14 +9,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-interface PdfDecryptor {
+public interface PdfDecryptor {
     @Throws(Exception::class, OutOfMemoryError::class)
-    suspend fun isPdfPasswordProtected(file: File): Boolean
+    public suspend fun isPdfPasswordProtected(file: File): Boolean
     @Throws(Exception::class)
-    suspend fun decrypt(password: String, file: File)
+    public suspend fun decrypt(password: String, file: File)
 }
 
-class PdfDecryptorImpl @Inject constructor(
+internal class PdfDecryptorImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ): PdfDecryptor {
 
