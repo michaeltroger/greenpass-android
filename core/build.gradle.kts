@@ -12,6 +12,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        androidResources = false
     }
 }
 
@@ -21,6 +22,8 @@ kotlin {
 }
 
 dependencies {
+    api(libs.org.jetbrains.kotlinx.coroutines.android)
+
     implementation(libs.com.google.dagger.hilt.android)
 
     ksp(libs.com.google.dagger.hilt.compiler)
