@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.pdf
+package com.michaeltroger.gruenerpass.pdfrenderer
 
 import android.app.ActivityManager
 import android.content.Context
@@ -15,31 +15,31 @@ import kotlinx.coroutines.withContext
 private const val PDF_RESOLUTION_MULTIPLIER = 2
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
-object PdfRendererBuilder {
-    fun create(
+public object PdfRendererBuilder {
+    public fun create(
         context: Context,
         fileName: String,
         renderContext: CoroutineDispatcher
-    ): com.michaeltroger.gruenerpass.pdf.PdfRenderer = PdfRendererImpl(
+    ): com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer = PdfRendererImpl(
         context = context,
         fileName = fileName,
         renderContext = renderContext
     )
 }
 
-interface PdfRenderer {
+public interface PdfRenderer {
     @Throws(Exception::class)
-    suspend fun loadFile()
-    suspend fun getPageCount(): Int
-    fun close()
-    suspend fun renderPage(pageIndex: Int): Bitmap?
+    public suspend fun loadFile()
+    public suspend fun getPageCount(): Int
+    public fun close()
+    public suspend fun renderPage(pageIndex: Int): Bitmap?
 }
 
 private class PdfRendererImpl(
     private val context: Context,
     fileName: String,
     private val renderContext: CoroutineDispatcher
-): com.michaeltroger.gruenerpass.pdf.PdfRenderer {
+): com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer {
 
     private val file = File(context.filesDir, fileName)
 

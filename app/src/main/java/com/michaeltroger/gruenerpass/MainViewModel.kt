@@ -9,7 +9,7 @@ import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
 import com.michaeltroger.gruenerpass.core.logging.Logger
 import com.michaeltroger.gruenerpass.pdfdecryptor.PdfDecryptor
-import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent

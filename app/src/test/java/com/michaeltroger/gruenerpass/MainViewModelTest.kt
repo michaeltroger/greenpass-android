@@ -10,8 +10,8 @@ import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
 import com.michaeltroger.gruenerpass.core.logging.Logger
 import com.michaeltroger.gruenerpass.pdfdecryptor.PdfDecryptor
-import com.michaeltroger.gruenerpass.pdf.PdfRenderer
-import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
+import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -206,9 +206,9 @@ class MainViewModelTest {
     }
 
     private fun mockPdfRenderer() {
-        mockkObject(PdfRendererBuilder)
+        mockkObject(com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder)
         every {
-            PdfRendererBuilder.create(any(), any(), any())
+            com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder.create(any(), any(), any())
         } returns pdfRenderer
     }
 

@@ -7,8 +7,8 @@ import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
 import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
 import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
-import com.michaeltroger.gruenerpass.pdf.PdfRenderer
-import com.michaeltroger.gruenerpass.pdf.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
+import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item

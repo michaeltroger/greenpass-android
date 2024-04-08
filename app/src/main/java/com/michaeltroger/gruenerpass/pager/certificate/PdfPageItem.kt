@@ -4,7 +4,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
-import com.michaeltroger.gruenerpass.pdf.PdfRenderer
+import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
@@ -19,7 +19,7 @@ private const val TAG_PDF_LOADED = "pdf_loaded"
 private const val TAG_BARCODE_LOADED = "barcode_loaded"
 
 class PdfPageItem(
-    private val pdfRenderer: PdfRenderer,
+    private val pdfRenderer: com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer,
     private val barcodeRenderer: BarcodeRenderer,
     private val fileName: String,
     private val pageIndex: Int,

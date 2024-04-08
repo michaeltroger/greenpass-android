@@ -100,6 +100,7 @@ dependencies {
     implementation(project(":barcode"))
     implementation(project(":core"))
     implementation(project(":pdfdecryptor"))
+    implementation(project(":pdfrenderer"))
 
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
