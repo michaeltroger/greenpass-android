@@ -1,7 +1,7 @@
-package com.michaeltroger.gruenerpass.core.logging.di
+package com.michaeltroger.gruenerpass.logger.logging.di
 
-import com.michaeltroger.gruenerpass.core.logging.Logger
-import com.michaeltroger.gruenerpass.core.logging.LoggerImpl
+import com.michaeltroger.gruenerpass.logger.logging.Logger
+import com.michaeltroger.gruenerpass.logger.logging.LoggerImpl
 
 import dagger.Binds
 import dagger.Module

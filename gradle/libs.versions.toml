@@ -25,20 +25,17 @@ com-github-markusfisch-zxing-cpp = "v2.2.0.4"
 com-google-android-material = "1.11.0"
 com-google-dagger-hilt-android = "2.51.1"
 com-google-devtools-ksp = "1.9.23-1.0.19"
+com-squareup-javapoet = "1.13.0"
 com-squareup-leakcanary-android = "2.13"
 com-tom-roush-pdfbox-android = "2.0.27.0"
 io-gitlab-arturbosch-detekt = "1.23.6"
 io-kotest-assertions-core = "5.8.1"
 io-mockk = "1.13.10"
-java = "17"
 kotlin = "1.9.23"
 nl-littlerobots-version-catalog-update = "0.8.4"
 org-bouncycastle = "1.77"
 org-jetbrains-kotlinx-coroutines = "1.8.0"
 org-robolectric = "4.12.1"
-sdk-compile = "34"
-sdk-min = "21"
-sdk-target = "34"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-ktx" }
@@ -68,6 +65,7 @@ com-github-markusfisch-zxing-cpp = { module = "com.github.markusfisch:zxing-cpp"
 com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
 com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "com-google-dagger-hilt-android" }
 com-google-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "com-google-dagger-hilt-android" }
+com-squareup-javapoet = { module = "com.squareup:javapoet", version.ref = "com-squareup-javapoet" }
 com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
@@ -80,15 +78,14 @@ org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx
 org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
+plugin-com-android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin" }
+plugin-com-android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin" }
+plugin-org-jetbrains-kotlin-android = { module = "org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin", version.ref = "kotlin" }
+plugin-com-google-devtools-ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "com-google-devtools-ksp" }
+plugin-com-google-dagger-hilt-android = { module = "com.google.dagger.hilt.android:com.google.dagger.hilt.android.gradle.plugin", version.ref = "com-google-dagger-hilt-android" }
+plugin-org-jetbrains-kotlin-jvm = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+plugin-com-github-jk1-dependency-license-report = { module = "com.github.jk1.dependency-license-report:com.github.jk1.dependency-license-report.gradle.plugin", version.ref = "com-github-jk1-dependency-license-report" }
+plugin-io-gitlab-arturbosch-detekt = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "io-gitlab-arturbosch-detekt" }
 
 [plugins]
-com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
-com-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "com-github-ben-manes-versions" }
-com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "com-github-jk1-dependency-license-report" }
-com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "com-google-dagger-hilt-android" }
-com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
-io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
-nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-org-jetbrains-kotlin-plugin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }

@@ -3,7 +3,7 @@ package com.michaeltroger.gruenerpass.file
 import android.content.Context
 import android.net.Uri
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.core.dispatcher.di.IoDispatcher
+import com.michaeltroger.gruenerpass.coroutines.dispatcher.di.IoDispatcher
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream

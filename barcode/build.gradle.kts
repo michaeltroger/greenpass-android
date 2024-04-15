@@ -1,30 +1,10 @@
 plugins {
-    id(libs.plugins.com.android.library.get().pluginId)
-    id(libs.plugins.org.jetbrains.kotlin.android.get().pluginId)
-    id(libs.plugins.com.google.devtools.ksp.get().pluginId)
+    id("greenpass.lib-conventions")
 }
 
-android {
-    namespace = "com.michaeltroger.gruenerpass.barcode"
-    compileSdk = libs.versions.sdk.compile.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.sdk.min.get().toInt()
-    }
-    buildFeatures {
-        androidResources = false
-    }
-}
-
-kotlin {
-    explicitApi()
-    jvmToolchain(libs.versions.java.get().toInt())
-}
+android.namespace = "com.michaeltroger.gruenerpass.barcode"
 
 dependencies {
-    implementation(project(":core"))
-
-    implementation(libs.com.google.dagger.hilt.android)
+    implementation(project(":coroutines"))
     implementation(libs.com.github.markusfisch.zxing.cpp)
-
-    ksp(libs.com.google.dagger.hilt.compiler)
 }

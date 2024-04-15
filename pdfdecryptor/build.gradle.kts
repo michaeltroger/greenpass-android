@@ -1,29 +1,11 @@
 plugins {
-    id(libs.plugins.com.android.library.get().pluginId)
-    id(libs.plugins.org.jetbrains.kotlin.android.get().pluginId)
-    id(libs.plugins.com.google.devtools.ksp.get().pluginId)
+    id("greenpass.lib-conventions")
 }
 
-android {
-    namespace = "com.michaeltroger.gruenerpass.pdfdecryptor"
-    compileSdk = libs.versions.sdk.compile.get().toInt()
-    defaultConfig {
-        minSdk = libs.versions.sdk.min.get().toInt()
-    }
-    buildFeatures {
-        androidResources = false
-    }
-}
-
-kotlin {
-    explicitApi()
-    jvmToolchain(libs.versions.java.get().toInt())
-}
+android.namespace = "com.michaeltroger.gruenerpass.pdfdecryptor"
 
 dependencies {
-    implementation(project(":core"))
-
-    implementation(libs.com.google.dagger.hilt.android)
+    implementation(project(":coroutines"))
     implementation(libs.com.tom.roush.pdfbox.android)
 
     // The bouncy castle libs are generally only transitive dependencies through pdfbox and only indirectly needed in this app
@@ -31,6 +13,4 @@ dependencies {
     implementation(libs.org.bouncycastle.bcprov.jdk15to18)
     implementation(libs.org.bouncycastle.bcpkix.jdk15to18)
     implementation(libs.org.bouncycastle.bcutil.jdk15to18)
-
-    ksp(libs.com.google.dagger.hilt.compiler)
 }

@@ -1,7 +1,7 @@
 package com.michaeltroger.gruenerpass.barcode
 
 import android.graphics.Bitmap
-import com.michaeltroger.gruenerpass.core.dispatcher.di.IoDispatcher
+import com.michaeltroger.gruenerpass.coroutines.dispatcher.di.IoDispatcher
 import de.markusfisch.android.zxingcpp.ZxingCpp
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext

@@ -13,9 +13,11 @@ dependencyResolutionManagement {
         maven { setUrl("https://jitpack.io") }
     }
 }
+rootProject.name = "green-pass"
 
 include(":app")
 include(":barcode")
-include(":core")
+include(":coroutines")
+include(":logger")
 include(":pdfdecryptor")
 include(":pdfrenderer")
