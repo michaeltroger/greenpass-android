@@ -39,6 +39,7 @@ android {
 
     lint {
         warningsAsErrors = true
+        checkDependencies = true
     }
 
     buildTypes {
