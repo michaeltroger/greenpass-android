@@ -110,6 +110,6 @@ jobs:
       with:
         name: test_reports
         path: |
-          app/build/reports/detekt/detekt.html
-          app/build/reports/lint-results-release.html
+          */build/reports/detekt/detekt.html
+          */build/reports/lint-results-release.html
           app/build/reports/tests/testReleaseUnitTest/
