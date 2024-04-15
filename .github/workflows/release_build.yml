@@ -112,4 +112,4 @@ jobs:
         path: |
           */build/reports/detekt/detekt.html
           */build/reports/lint-results-release.html
-          app/build/reports/tests/testReleaseUnitTest/
+          */build/reports/tests/testReleaseUnitTest/

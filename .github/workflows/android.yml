@@ -44,4 +44,4 @@ jobs:
         path: |
           */build/reports/detekt/detekt.html
           */build/reports/lint-results-debug.html
-          app/build/reports/tests/testDebugUnitTest/
+          */build/reports/tests/testDebugUnitTest/
