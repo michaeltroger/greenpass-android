@@ -25,7 +25,6 @@ com-github-markusfisch-zxing-cpp = "v2.2.0.4"
 com-google-android-material = "1.11.0"
 com-google-dagger-hilt-android = "2.51.1"
 com-google-devtools-ksp = "1.9.23-1.0.20"
-com-squareup-javapoet = "1.13.0"
 com-squareup-leakcanary-android = "2.13"
 com-tom-roush-pdfbox-android = "2.0.27.0"
 io-gitlab-arturbosch-detekt = "1.23.6"
@@ -65,7 +64,6 @@ com-github-markusfisch-zxing-cpp = { module = "com.github.markusfisch:zxing-cpp"
 com-google-android-material = { module = "com.google.android.material:material", version.ref = "com-google-android-material" }
 com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "com-google-dagger-hilt-android" }
 com-google-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "com-google-dagger-hilt-android" }
-com-squareup-javapoet = { module = "com.squareup:javapoet", version.ref = "com-squareup-javapoet" }
 com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
@@ -89,3 +87,4 @@ plugin-io-gitlab-arturbosch-detekt = { module = "io.gitlab.arturbosch.detekt:io.
 
 [plugins]
 com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "com-github-ben-manes-versions" }
+nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }

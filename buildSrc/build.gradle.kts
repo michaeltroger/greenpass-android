@@ -7,7 +7,6 @@ dependencies {
     implementation(libs.plugin.com.android.application)
     implementation(libs.plugin.org.jetbrains.kotlin.android)
     implementation(libs.plugin.com.google.dagger.hilt.android)
-    implementation(libs.com.squareup.javapoet)
     implementation(libs.plugin.com.google.devtools.ksp)
     implementation(libs.plugin.org.jetbrains.kotlin.jvm)
     implementation(libs.plugin.com.github.jk1.dependency.license.report)
