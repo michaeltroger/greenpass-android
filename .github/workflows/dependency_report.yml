@@ -1,4 +1,4 @@
-name: Dependency updates
+name: Dependency report update
 
 on:
   push:
@@ -25,8 +25,6 @@ jobs:
         java-version: ${{ env.JAVA_VERSION }}
         distribution: 'temurin'
         cache: 'gradle'
-    - name: Update dependencies
-      run: ./gradlew versionCatalogUpdate
     - name: Create license report
       run: |
         ./gradlew generateLicenseReport
@@ -34,9 +32,8 @@ jobs:
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
-        branch: feature/update_dependencies
-        title: Update of dependencies
-        commit-message: Update of dependencies
+        branch: feature/update_dependency_report
+        title: Update of dependency report
+        commit-message: Update of dependency report
         add-paths: |
           docs/licenses/*
-          gradle/libs.versions.toml
