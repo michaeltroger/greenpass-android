@@ -1,7 +1,7 @@
-package com.michaeltroger.gruenerpass.core.logging
+package com.michaeltroger.gruenerpass.logger.logging
 
 import android.util.Log
-import com.michaeltroger.gruenerpass.core.BuildConfig
+import com.michaeltroger.gruenerpass.logger.BuildConfig
 import javax.inject.Inject
 
 private const val TAG = "greenpass"

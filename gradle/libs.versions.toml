@@ -1,5 +1,5 @@
 [versions]
-android-gradle-plugin = "8.3.1"
+android-gradle-plugin = "8.3.2"
 androidx-activity-ktx = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-biometric = "1.2.0-alpha05"
@@ -17,9 +17,8 @@ androidx-test-ext-junit-ktx = "1.1.5"
 androidx-test-orchestrator = "1.4.2"
 androidx-test-uiautomator = "2.3.0"
 app-cash-turbine = "1.1.0"
-com-github-ben-manes-versions = "0.51.0"
 com-github-chrisbanes-photoview = "2.3.0"
-com-github-jk1-dependency-license-report = "2.6"
+com-github-jk1-dependency-license-report = "2.7"
 com-github-lisawray-groupie = "2.10.1"
 com-github-markusfisch-zxing-cpp = "v2.2.0.4"
 com-google-android-material = "1.11.0"
@@ -30,15 +29,10 @@ com-tom-roush-pdfbox-android = "2.0.27.0"
 io-gitlab-arturbosch-detekt = "1.23.6"
 io-kotest-assertions-core = "5.8.1"
 io-mockk = "1.13.10"
-java = "17"
 kotlin = "1.9.23"
-nl-littlerobots-version-catalog-update = "0.8.4"
 org-bouncycastle = "1.78"
 org-jetbrains-kotlinx-coroutines = "1.8.0"
 org-robolectric = "4.12.1"
-sdk-compile = "34"
-sdk-min = "21"
-sdk-target = "34"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity-ktx" }
@@ -80,15 +74,11 @@ org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kot
 org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
-
-[plugins]
-com-android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
-com-android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
-com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "com-github-ben-manes-versions" }
-com-github-jk1-dependency-license-report = { id = "com.github.jk1.dependency-license-report", version.ref = "com-github-jk1-dependency-license-report" }
-com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "com-google-dagger-hilt-android" }
-com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "com-google-devtools-ksp" }
-io-gitlab-arturbosch-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "io-gitlab-arturbosch-detekt" }
-nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "nl-littlerobots-version-catalog-update" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-org-jetbrains-kotlin-plugin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+plugin-com-android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin" }
+plugin-com-android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin" }
+plugin-com-github-jk1-dependency-license-report = { module = "com.github.jk1.dependency-license-report:com.github.jk1.dependency-license-report.gradle.plugin", version.ref = "com-github-jk1-dependency-license-report" }
+plugin-com-google-dagger-hilt-android = { module = "com.google.dagger.hilt.android:com.google.dagger.hilt.android.gradle.plugin", version.ref = "com-google-dagger-hilt-android" }
+plugin-com-google-devtools-ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "com-google-devtools-ksp" }
+plugin-io-gitlab-arturbosch-detekt = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "io-gitlab-arturbosch-detekt" }
+plugin-org-jetbrains-kotlin-android = { module = "org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin", version.ref = "kotlin" }
+plugin-org-jetbrains-kotlin-jvm = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }

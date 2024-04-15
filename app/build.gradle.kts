@@ -1,104 +1,21 @@
-import com.github.jk1.license.filter.LicenseBundleNormalizer
-import java.io.FileInputStream
-import java.io.IOException
-import java.util.Properties
-
 plugins {
-    alias(libs.plugins.com.android.application)
-    alias(libs.plugins.com.github.jk1.dependency.license.report)
-    alias(libs.plugins.com.google.dagger.hilt.android)
-    alias(libs.plugins.com.google.devtools.ksp)
-    alias(libs.plugins.io.gitlab.arturbosch.detekt)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.org.jetbrains.kotlin.plugin.parcelize)
+    id("greenpass.app-conventions")
 }
 
 android {
     namespace = "com.michaeltroger.gruenerpass"
-    compileSdk = libs.versions.sdk.compile.get().toInt()
 
     defaultConfig {
         applicationId = "com.michaeltroger.gruenerpass"
-        minSdk = libs.versions.sdk.min.get().toInt()
-        targetSdk = libs.versions.sdk.target.get().toInt()
         versionCode = 55
         versionName = "4.0.0"
-
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
     }
-
-    buildFeatures {
-        viewBinding = true
-    }
-
-    buildTypes {
-        debug {
-            versionNameSuffix = "-debug"
-        }
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-
-            signingConfigs {
-                create("release") {
-                    try {
-                        val keystorePropertiesFile = rootProject.file("credentials/keystore.properties")
-                        val keystoreProperties = Properties()
-                        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
-                        keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
-                        keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-                        storeFile = rootProject.file("credentials/${keystoreProperties.getProperty("STORE_FILE")}")
-                        storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
-                    } catch(ignored: IOException) {
-                        println("No signing configuration found, ignoring: $ignored")
-                    }
-                }
-            }
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
-
-    lint {
-        warningsAsErrors = true
-    }
-
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-        execution = "ANDROIDX_TEST_ORCHESTRATOR"
-    }
-
-    kotlinOptions {
-        allWarningsAsErrors = true
-    }
-}
-
-kotlin.jvmToolchain(libs.versions.java.get().toInt())
-
-licenseReport {
-    outputDir = "$rootDir/docs/licenses"
-    configurations = arrayOf("releaseRuntimeClasspath")
-    filters = arrayOf(LicenseBundleNormalizer())
 }
 
 dependencies {
-    // assure consistent versions
-    implementation(platform(libs.org.jetbrains.kotlin.bom))
-    implementation(platform(libs.org.jetbrains.kotlinx.coroutines.bom))
-
-    debugImplementation(libs.com.squareup.leakcanary.android)
-
     implementation(project(":barcode"))
-    implementation(project(":core"))
+    implementation(project(":coroutines"))
+    implementation(project(":logger"))
     implementation(project(":pdfdecryptor"))
     implementation(project(":pdfrenderer"))
 
@@ -114,15 +31,10 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.preference.ktx)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.com.github.chrisbanes.photoview)
     implementation(libs.com.github.lisawray.groupie)
     implementation(libs.com.github.lisawray.groupie.viewbinding)
     implementation(libs.com.google.android.material)
-    implementation(libs.com.google.dagger.hilt.android)
-
-    ksp(libs.androidx.room.compiler)
-    ksp(libs.com.google.dagger.hilt.compiler)
 
     testImplementation(libs.androidx.test.ext.junit.ktx)
     testImplementation(libs.app.cash.turbine)
