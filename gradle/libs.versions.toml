@@ -24,7 +24,7 @@ com-github-lisawray-groupie = "2.10.1"
 com-github-markusfisch-zxing-cpp = "v2.2.0.4"
 com-google-android-material = "1.11.0"
 com-google-dagger-hilt-android = "2.51.1"
-com-google-devtools-ksp = "1.9.23-1.0.19"
+com-google-devtools-ksp = "1.9.23-1.0.20"
 com-squareup-javapoet = "1.13.0"
 com-squareup-leakcanary-android = "2.13"
 com-tom-roush-pdfbox-android = "2.0.27.0"
@@ -33,7 +33,7 @@ io-kotest-assertions-core = "5.8.1"
 io-mockk = "1.13.10"
 kotlin = "1.9.23"
 nl-littlerobots-version-catalog-update = "0.8.4"
-org-bouncycastle = "1.77"
+org-bouncycastle = "1.78"
 org-jetbrains-kotlinx-coroutines = "1.8.0"
 org-robolectric = "4.12.1"
 
@@ -74,8 +74,8 @@ org-bouncycastle-bcpkix-jdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to1
 org-bouncycastle-bcprov-jdk15to18 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "org-bouncycastle" }
 org-bouncycastle-bcutil-jdk15to18 = { module = "org.bouncycastle:bcutil-jdk15to18", version.ref = "org-bouncycastle" }
 org-jetbrains-kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
-org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android" }
+org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
 plugin-com-android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin" }
