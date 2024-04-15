@@ -76,14 +76,14 @@ org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kot
 org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
-plugin-com-android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin" }
 plugin-com-android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin" }
-plugin-org-jetbrains-kotlin-android = { module = "org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin", version.ref = "kotlin" }
-plugin-com-google-devtools-ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "com-google-devtools-ksp" }
-plugin-com-google-dagger-hilt-android = { module = "com.google.dagger.hilt.android:com.google.dagger.hilt.android.gradle.plugin", version.ref = "com-google-dagger-hilt-android" }
-plugin-org-jetbrains-kotlin-jvm = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+plugin-com-android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin" }
 plugin-com-github-jk1-dependency-license-report = { module = "com.github.jk1.dependency-license-report:com.github.jk1.dependency-license-report.gradle.plugin", version.ref = "com-github-jk1-dependency-license-report" }
+plugin-com-google-dagger-hilt-android = { module = "com.google.dagger.hilt.android:com.google.dagger.hilt.android.gradle.plugin", version.ref = "com-google-dagger-hilt-android" }
+plugin-com-google-devtools-ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "com-google-devtools-ksp" }
 plugin-io-gitlab-arturbosch-detekt = { module = "io.gitlab.arturbosch.detekt:io.gitlab.arturbosch.detekt.gradle.plugin", version.ref = "io-gitlab-arturbosch-detekt" }
+plugin-org-jetbrains-kotlin-android = { module = "org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin", version.ref = "kotlin" }
+plugin-org-jetbrains-kotlin-jvm = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
 
 [plugins]
 com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "com-github-ben-manes-versions" }
