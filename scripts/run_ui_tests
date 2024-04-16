@@ -25,7 +25,7 @@ done
 
 set +e # don't fail on errors
 
-./gradlew connectedDebugAndroidTest
+./gradlew :app:connectedDebugAndroidTest
 exit_code=$?
 
 adb pull /sdcard/Pictures/error_screenshots app/build
