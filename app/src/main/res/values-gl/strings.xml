@@ -14,7 +14,7 @@
     <string name="dialog_delete_confirmation_message">Tes a certeza de querer eliminar o documento da aplicación?</string>
     <string name="require_authentication">Require autenticación</string>
     <string name="preference_search_barcode">Extract barcode</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR and Aztec (experimental).</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR, Aztec, DataMatrix and PDF417.</string>
     <string name="settings">Axustes</string>
     <string name="authenticate">Autenticar</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
