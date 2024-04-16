@@ -1,6 +1,7 @@
 # Security Policy
 
 ## Supported Versions
+In between versions don't receive security updates. Please always use the latest version.
 
 | Version | Supported          |
 |---------| ------------------ |
@@ -8,7 +9,7 @@
 | < 4.0   | :x:                |
 
 ## Reporting a Vulnerability
-You can privately report vulnerabilities on GitHub through the "Security" -> "Report a vulnerability" function (preferred).
+You can privately report vulnerabilities on GitHub through the ["Security" -> "Report a vulnerability"](https://github.com/michaeltroger/greenpass-android/security/advisories/new) function (preferred).
 If you don't have a GitHub account you can also contact me via [email](https://michaeltroger.com/contact).
 
 If you prefer to share an issue publicly, then please create a ticket in the form of a [GitHub Issue](https://github.com/michaeltroger/greenpass-android/issues).
