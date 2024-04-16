@@ -10,7 +10,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-public abstract class PdfModule {
+public abstract class PdfDecryptorModule {
 
     @Binds
     internal abstract fun bindPdfDecryptor(

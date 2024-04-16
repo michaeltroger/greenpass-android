@@ -16,7 +16,7 @@ dependencies {
     implementation(project(":barcode"))
     implementation(project(":coroutines"))
     implementation(project(":logger"))
-    implementation(project(":pdfdecryptor"))
+    implementation(project(":pdfimporter"))
     implementation(project(":pdfrenderer"))
 
     implementation(libs.androidx.activity.ktx)

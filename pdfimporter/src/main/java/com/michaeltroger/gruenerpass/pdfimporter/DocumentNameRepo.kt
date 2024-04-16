@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.file
+package com.michaeltroger.gruenerpass.pdfimporter
 
 import android.content.ContentResolver
 import android.content.Context
@@ -10,11 +10,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-interface DocumentNameRepo {
+internal interface DocumentNameRepo {
     suspend fun getDocumentName(uri: Uri): String
 }
 
-class DocumentNameRepoImpl @Inject constructor(@ApplicationContext private val context: Context) : DocumentNameRepo {
+internal class DocumentNameRepoImpl @Inject constructor(@ApplicationContext private val context: Context) : DocumentNameRepo {
 
     override suspend fun getDocumentName(uri: Uri): String {
         return context.getDocumentName(uri)

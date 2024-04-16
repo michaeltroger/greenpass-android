@@ -7,15 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
-import com.michaeltroger.gruenerpass.logger.logging.Logger
-import com.michaeltroger.gruenerpass.pdfdecryptor.PdfDecryptor
-import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.mapper.toCertificate
+import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
+import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,10 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     app: Application,
-    private val pdfDecryptor: PdfDecryptor,
     private val db: CertificateDao,
-    private val logger: Logger,
     private val fileRepo: FileRepo,
+    private val pdfImporter: PdfImporter,
     private val preferenceObserver: PreferenceObserver
 ): AndroidViewModel(app), PreferenceChangeListener {
 
@@ -46,8 +44,6 @@ class MainViewModel @Inject constructor(
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     private var isLocked: Boolean = false
-
-    private var pendingFile: Certificate? = null
 
     init {
         viewModelScope.launch {
@@ -97,10 +93,7 @@ class MainViewModel @Inject constructor(
 
     fun setPendingFile(uri: Uri) {
         viewModelScope.launch {
-            val file = fileRepo.copyToApp(uri)
-            logger.logDebug(file)
-            pendingFile = file
-
+            pdfImporter.preparePendingFile(uri)
             val state = viewState.filter {
                 it !is ViewState.Initial
             }.first() // wait for initial loading to be finished
@@ -112,69 +105,44 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    private fun processPendingFile() {
-        val pendingFile = pendingFile!!
-        viewModelScope.launch {
-            try {
-                val file = fileRepo.getFile(pendingFile.id)
-                if (pdfDecryptor.isPdfPasswordProtected(file)) {
-                    _viewEvent.emit(ViewEvent.ShowPasswordDialog)
-                } else {
-                    insertIntoDatabaseIfValidPdf()
-                }
-            } catch (e: Throwable) {
-                logger.logError(e.toString())
+    private suspend fun processPendingFile() {
+        when (val result = pdfImporter.importPdf()) {
+            PdfImportResult.ParsingError -> {
                 _viewEvent.emit(ViewEvent.ShowParsingFileError)
             }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    fun onPasswordEntered(password: String) {
-        val pendingFile = pendingFile!!
-        viewModelScope.launch {
-            try {
-                val file = fileRepo.getFile(pendingFile.id)
-                pdfDecryptor.decrypt(password = password, file = file)
-            } catch (e: Exception) {
-                logger.logError(e.toString())
+            is PdfImportResult.PasswordRequired -> {
                 _viewEvent.emit(ViewEvent.ShowPasswordDialog)
-                return@launch
             }
-
-            insertIntoDatabaseIfValidPdf()
+            is PdfImportResult.Success -> {
+                insertIntoDatabase(result.pendingCertificate.toCertificate())
+            }
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "SpreadOperator")
-    private suspend fun insertIntoDatabaseIfValidPdf() {
-        val pendingFile = pendingFile!!
-        val renderer = PdfRendererBuilder.create(
-            getApplication(),
-            fileName = pendingFile.id,
-            renderContext = Dispatchers.IO
-        )
-        try {
-            renderer.loadFile()
-        } catch (e: Exception) {
-            logger.logError(e.toString())
-            _viewEvent.emit(ViewEvent.ShowParsingFileError)
-            fileRepo.deleteFile(pendingFile.id)
-            this.pendingFile = null
-            return
-        } finally {
-            renderer.close()
+    fun onPasswordEntered(password: String) {
+        viewModelScope.launch {
+            when (val result = pdfImporter.importPasswordProtectedPdf(password)) {
+                PdfImportResult.ParsingError -> {
+                    _viewEvent.emit(ViewEvent.ShowParsingFileError)
+                }
+                is PdfImportResult.PasswordRequired -> {
+                    _viewEvent.emit(ViewEvent.ShowPasswordDialog)
+                }
+                is PdfImportResult.Success -> {
+                    insertIntoDatabase(result.pendingCertificate.toCertificate())
+                }
+            }
         }
+    }
 
+    private suspend fun insertIntoDatabase(certificate: Certificate) {
         val addDocumentsInFront = preferenceObserver.addDocumentsInFront()
         if (addDocumentsInFront) {
-            val all = listOf(pendingFile) + db.getAll()
+            val all = listOf(certificate) + db.getAll()
             db.replaceAll(*all.toTypedArray())
         } else {
-            db.insertAll(pendingFile)
+            db.insertAll(certificate)
         }
-        this.pendingFile = null
         updateState()
 
         if (addDocumentsInFront) {
@@ -235,10 +203,10 @@ class MainViewModel @Inject constructor(
     fun onAuthenticationSuccess() {
         viewModelScope.launch {
             isLocked = false
-            if (pendingFile == null) {
-                updateState()
-            } else {
+            if (pdfImporter.hasPendingFile()) {
                 processPendingFile()
+            } else {
+                updateState()
             }
         }
     }
@@ -263,10 +231,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun deletePendingFileIfExists() {
-        pendingFile?.let {
-            pendingFile = null
-            fileRepo.deleteFile(it.id)
-        }
+        pdfImporter.deletePendingFile()
     }
 
     fun onSearchQueryChanged(query: String) {
