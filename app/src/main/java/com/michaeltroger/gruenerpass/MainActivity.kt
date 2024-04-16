@@ -75,6 +75,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        if (navController.currentDestination?.id != R.id.mainFragment) {
+            navController.popBackStack(R.id.mainFragment, false)
+        }
         vm.setPendingFile(intent)
     }
 
