@@ -8,7 +8,6 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -190,11 +189,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun authenticate() {
-        BiometricPrompt(
-            this,
-            ContextCompat.getMainExecutor(requireContext()),
-            MyAuthenticationCallback()
-        ).authenticate(biometricPromptInfo)
+        lifecycleScope.launch {
+            delay(1000)
+            BiometricPrompt(
+                this@MainFragment,
+                MyAuthenticationCallback()
+            ).authenticate(biometricPromptInfo)
+        }
     }
 
     private fun updateState(state: ViewState) {
