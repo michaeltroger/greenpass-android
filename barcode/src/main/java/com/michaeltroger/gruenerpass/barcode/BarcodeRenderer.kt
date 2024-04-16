@@ -10,12 +10,19 @@ import javax.inject.Inject
 
 private const val BARCODE_SIZE = 400
 private val readerOptions = ZxingCpp.ReaderOptions(
-    formats = setOf(ZxingCpp.BarcodeFormat.QR_CODE, ZxingCpp.BarcodeFormat.AZTEC),
+    formats = setOf(
+        ZxingCpp.BarcodeFormat.AZTEC,
+        ZxingCpp.BarcodeFormat.QR_CODE,
+    ),
     tryHarder = true,
     tryRotate = true,
     tryInvert = true,
     tryDownscale = true,
-    maxNumberOfSymbols = 1
+    maxNumberOfSymbols = 2,
+)
+private val preferredPriority = listOf(
+    ZxingCpp.BarcodeFormat.AZTEC,
+    ZxingCpp.BarcodeFormat.QR_CODE,
 )
 
 public interface BarcodeRenderer {
@@ -33,15 +40,17 @@ internal class BarcodeRendererImpl @Inject constructor(
 
     private fun Bitmap.extractBarcode(): ZxingCpp.Result? {
         try {
-            return ZxingCpp.readBitmap(
+            val resultsList = ZxingCpp.readBitmap(
                 bitmap = this,
                 left = 0,
                 top = 0,
                 width = this.width,
                 height = this.height,
                 rotation = 0,
-                options = readerOptions
-            )?.firstOrNull()
+                options = readerOptions,
+            )
+            val resultsMap = resultsList?.associateBy { it.format } ?: return null
+            return preferredPriority.firstNotNullOf { resultsMap[it] }
         } catch (ignore: Exception) {}
         catch (ignore: OutOfMemoryError) {}
         return null
