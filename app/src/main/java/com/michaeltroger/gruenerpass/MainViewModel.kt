@@ -135,6 +135,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    @Suppress("SpreadOperator")
     private suspend fun insertIntoDatabase(certificate: Certificate) {
         val addDocumentsInFront = preferenceObserver.addDocumentsInFront()
         if (addDocumentsInFront) {

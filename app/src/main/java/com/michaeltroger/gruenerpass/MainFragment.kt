@@ -39,6 +39,7 @@ import javax.inject.Inject
 
 private const val TOUCH_SLOP_FACTOR = 8
 private const val PDF_MIME_TYPE = "application/pdf"
+private const val DELAY_AUTHENTICATION_PROMPT_MS = 1000L
 
 @Suppress("TooManyFunctions")
 @AndroidEntryPoint
@@ -89,7 +90,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.certificates.adapter = adapter
 
         binding.authenticate.setOnClickListener {
-            authenticate()
+            authenticate(delayMs = 0)
         }
 
         binding.addButton.setOnClickListener {
@@ -188,9 +189,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onDestroyView()
     }
 
-    private fun authenticate() {
+    private fun authenticate(delayMs: Long = DELAY_AUTHENTICATION_PROMPT_MS) {
         lifecycleScope.launch {
-            delay(1000)
+            delay(delayMs)
             BiometricPrompt(
                 this@MainFragment,
                 MyAuthenticationCallback()
