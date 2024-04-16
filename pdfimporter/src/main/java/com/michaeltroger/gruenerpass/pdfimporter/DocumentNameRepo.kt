@@ -14,7 +14,9 @@ internal interface DocumentNameRepo {
     suspend fun getDocumentName(uri: Uri): String
 }
 
-internal class DocumentNameRepoImpl @Inject constructor(@ApplicationContext private val context: Context) : DocumentNameRepo {
+internal class DocumentNameRepoImpl @Inject constructor(
+    @ApplicationContext private val context: Context
+) : DocumentNameRepo {
 
     override suspend fun getDocumentName(uri: Uri): String {
         return context.getDocumentName(uri)

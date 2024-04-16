@@ -41,6 +41,7 @@ internal class PdfImporterImpl @Inject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught", "ReturnCount")
     override suspend fun importPdf(): PdfImportResult {
         val pendingFile = pendingFile ?: return PdfImportResult.ParsingError
         try {
@@ -60,6 +61,7 @@ internal class PdfImporterImpl @Inject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun importPasswordProtectedPdf(password: String): PdfImportResult {
         val pendingFile = pendingFile ?: return PdfImportResult.ParsingError
         return try {
@@ -76,6 +78,7 @@ internal class PdfImporterImpl @Inject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun isValidPdf(certificate: PendingCertificate): Boolean {
         val renderer = PdfRendererBuilder.create(
             app,
