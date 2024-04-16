@@ -15,7 +15,7 @@ Very simple app, that does nothing more than conveniently storing and displaying
 The PDF file has to be imported into the app. Following the barcode is displayed in fullscreen, as well as the PDF document itself. That's already it.
 
 <b>More Features</b>
-- Can detect Aztec codes (experimental) and QR codes
+- Can detect Aztec, QR, DataMatrix and PDF417 barcodes
 - Authentication
 - PDFs can be individually sorted and named
 - PDFs can be opened

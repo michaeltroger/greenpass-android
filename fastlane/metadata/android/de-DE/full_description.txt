@@ -15,7 +15,7 @@ Sehr simple App, die nichts anderes macht als PDF Zertifikate bequem aufzubewahr
 Die PDF-Datei muss in die App importiert werden. Anschließend wird der Barcode im Vollbild angezeigt, sowie das PDF-Dokument selbst. Das war's auch schon.
 
 <b>Mehr Funktionen</b>
-- Kann Aztec Codes (experimentell) und QR Codes erkennen
+- Kann Aztec, QR, DataMatrix und PDF417 Barcodes erkennen
 - Authentifizierung
 - PDFs individuell sortierbar und benennbar
 - PDFs können geöffnet werden
