@@ -1,7 +1,5 @@
 package com.michaeltroger.gruenerpass.file.di;
 
-import com.michaeltroger.gruenerpass.file.DocumentNameRepo
-import com.michaeltroger.gruenerpass.file.DocumentNameRepoImpl
 import com.michaeltroger.gruenerpass.file.FileRepo
 import com.michaeltroger.gruenerpass.file.FileRepoImpl
 
@@ -15,12 +13,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class FileModule {
 
     @Binds
-    abstract fun bindDocumentNameRepo(
-        documentNameRepoImpl: DocumentNameRepoImpl
-    ): DocumentNameRepo
-
-    @Binds
-    abstract fun bindLogger(
+    abstract fun bindFileRepo(
         fileRepoImpl: FileRepoImpl
     ): FileRepo
 }
