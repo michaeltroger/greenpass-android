@@ -8,9 +8,9 @@ import app.cash.turbine.test
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
-import com.michaeltroger.gruenerpass.logger.logging.Logger
-import com.michaeltroger.gruenerpass.pdfdecryptor.PdfDecryptor
-import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
+import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
+import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
+import com.michaeltroger.gruenerpass.pdfimporter.PendingCertificate
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
 import com.michaeltroger.gruenerpass.states.ViewEvent
 import com.michaeltroger.gruenerpass.states.ViewState
@@ -18,18 +18,14 @@ import com.michaeltroger.gruenerpass.utils.InstantExecutionRule
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.beInstanceOf
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,15 +40,8 @@ class MainViewModelTest {
     private val context = getApplicationContext<Application>()
     private val db = mockk<CertificateDao>(relaxed = true)
     private val preferenceObserver = mockk<PreferenceObserver>(relaxed = true)
-    private val pdfDecryptor = mockk<PdfDecryptor>(relaxed = true)
-    private val pdfRenderer = mockk<PdfRenderer>(relaxed = true)
+    private val pdfImporter = mockk<PdfImporter>(relaxed = true)
     private val fileRepo = mockk<FileRepo>(relaxed = true)
-    private val logger = mockk<Logger>(relaxed = true)
-
-    @Before
-    fun startUp() {
-        mockPdfRenderer()
-    }
 
     @After
     fun tearDown() {
@@ -124,7 +113,7 @@ class MainViewModelTest {
     fun `verify enter password dialog shown`() = runTest {
         mockDbEntries(listOf(mockk()))
         mockShouldAuthenticatePreference(false)
-        mockIsPasswordProtectedFile(true)
+        mockPdfImporter(PdfImportResult.PasswordRequired)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -158,10 +147,8 @@ class MainViewModelTest {
     @Test
     fun `verify added new certificate`() = runTest {
         mockDbEntries(listOf(mockk()))
-        mockIsPasswordProtectedFile(false)
+        mockPdfImporter()
         mockShouldAuthenticatePreference(false)
-        mockCopyPdfToAppSuccess()
-        mockLoadFileSuccess(true)
 
         val vm = createVM()
         advanceUntilIdle()
@@ -181,9 +168,8 @@ class MainViewModelTest {
             app = context,
             db = db,
             fileRepo = fileRepo,
-            logger = logger,
             preferenceObserver = preferenceObserver,
-            pdfDecryptor = pdfDecryptor,
+            pdfImporter = pdfImporter,
         )
 
     private fun mockShouldAuthenticatePreference(prefValue: Boolean) {
@@ -192,39 +178,12 @@ class MainViewModelTest {
         } returns prefValue
     }
 
-    private fun mockIsPasswordProtectedFile(value: Boolean) {
+    private fun mockPdfImporter(
+        value: PdfImportResult = PdfImportResult.Success(PendingCertificate(fileName = "any.pdf", documentName = "Doc name"))
+    ) {
         coEvery {
-            pdfDecryptor.isPdfPasswordProtected(any())
+            pdfImporter.importPdf()
         } returns value
-    }
-
-    private fun mockCopyPdfToAppSuccess() {
-        coEvery {
-            fileRepo.copyToApp(any())
-        } returns Certificate("any.pdf", "Doc name")
-    }
-
-    private fun mockPdfRenderer() {
-        mockkObject(com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder)
-        every {
-            com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder.create(any(), any(), any())
-        } returns pdfRenderer
-    }
-
-    private fun mockLoadFileSuccess(value: Boolean) {
-        when (value) {
-            true -> {
-                coEvery {
-                    pdfRenderer.loadFile()
-                } just Runs
-            }
-            false -> {
-                coEvery {
-                    pdfRenderer.loadFile()
-                }.throws(Exception())
-            }
-        }
-
     }
 
     private fun mockDbEntries(certificates: List<Certificate>) {
