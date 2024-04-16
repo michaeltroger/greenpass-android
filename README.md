@@ -3,7 +3,8 @@
 
 Unofficial app that is fully open source. This app is a simple to use PDF Wallet.
 That means it takes over the task to store and display your most important PDF certificates.
-It includes a convenient fullscreen barcode rendering, if a QR code or an Aztec code is present in the PDF.
+It includes a convenient fullscreen barcode rendering, if a barcode is present in the PDF.
+Currently supported formats are QR, Aztec, DataMatrix and PDF417.
 
 Help translating the app: https://crwd.in/green-pass
 

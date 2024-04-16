@@ -70,6 +70,28 @@ class ScreenshotTest {
     }
 
     @Test
+    fun dataMatrixCode() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "datamatrix.pdf")
+            .verifyDocumentLoaded(docName = "datamatrix", expectBarcode = true)
+
+        ScreenshotUtil.recordScreenshot("data_matrix")
+    }
+
+    @Test
+    fun pdf417Code() {
+        MainActivityRobot()
+            .selectFirstDocument()
+            .goToPdfFolder()
+            .openPdf(fileName = "pdf417.pdf")
+            .verifyDocumentLoaded(docName = "pdf417", expectBarcode = true)
+
+        ScreenshotUtil.recordScreenshot("pdf417")
+    }
+
+    @Test
     fun darkMode() {
         enableDarkMode()
         MainActivityRobot().verifyEmptyState()
