@@ -179,7 +179,9 @@ class MainViewModelTest {
     }
 
     private fun mockPdfImporter(
-        value: PdfImportResult = PdfImportResult.Success(PendingCertificate(fileName = "any.pdf", documentName = "Doc name"))
+        value: PdfImportResult = PdfImportResult.Success(
+            PendingCertificate(fileName = "any.pdf", documentName = "Doc name")
+        )
     ) {
         coEvery {
             pdfImporter.importPdf()
