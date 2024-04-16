@@ -22,11 +22,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.log
 
 @Suppress("TooManyFunctions")
 @HiltViewModel
@@ -54,19 +51,8 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            viewState.collect {
-                logger.logDebug(it)
-            }
-        }
-        viewModelScope.launch {
-            viewEvent.collect {
-                logger.logDebug(it)
-            }
-        }
-        viewModelScope.launch {
             preferenceObserver.init(this@MainViewModel)
             isLocked = preferenceObserver.shouldAuthenticate()
-
             updateState()
         }
     }
