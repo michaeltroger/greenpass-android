@@ -57,6 +57,7 @@ internal class BarcodeRendererImpl @Inject constructor(
         return null
     }
 
+    @Suppress("MagicNumber")
     private fun Bitmap.getCropRectangles(): List<Rect> {
         val halfWidth = width / 2
         val halfHeight = height / 2
