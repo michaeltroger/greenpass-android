@@ -38,6 +38,7 @@ internal class BarcodeRendererImpl @Inject constructor(
         encodeBarcodeAsBitmap(extractedCode)
     }
 
+    @Suppress("ReturnCount")
     private fun Bitmap.extractBarcode(): ZxingCpp.Result? {
         try {
             val resultsList = ZxingCpp.readBitmap(
