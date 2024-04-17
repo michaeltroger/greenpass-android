@@ -1,12 +1,11 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.certificate
 
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.biometric.BiometricPrompt
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -14,15 +13,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
-import com.michaeltroger.gruenerpass.databinding.FragmentMainBinding
+import com.michaeltroger.gruenerpass.databinding.FragmentCertificateBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.dialogs.CertificateDialogs
 import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
-import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.sharing.PdfSharing
-import com.michaeltroger.gruenerpass.states.ViewEvent
-import com.michaeltroger.gruenerpass.states.ViewState
+import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
+import com.michaeltroger.gruenerpass.certificate.states.ViewState
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -34,20 +33,19 @@ import javax.inject.Inject
 
 private const val TOUCH_SLOP_FACTOR = 8
 private const val PDF_MIME_TYPE = "application/pdf"
-private const val DELAY_AUTHENTICATION_PROMPT_MS = 1000L
 
 @Suppress("TooManyFunctions")
 @AndroidEntryPoint
-class MainFragment : Fragment(R.layout.fragment_main) {
+class CertificateFragment : Fragment(R.layout.fragment_certificate) {
 
-    private val vm by activityViewModels<MainViewModel>()
+    private val vm by viewModels<CertificateViewModel>()
 
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
     private val adapter = GroupieAdapter()
 
-    private var binding: FragmentMainBinding? = null
+    private var binding: FragmentCertificateBinding? = null
 
     @Inject
     lateinit var pdfSharing: PdfSharing
@@ -55,10 +53,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     lateinit var certificateDialogs: CertificateDialogs
     @Inject
     lateinit var barcodeRenderer: BarcodeRenderer
-    @Inject
-    lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
 
-    private lateinit var menuProvider: MainMenuProvider
+    private lateinit var menuProvider: CertificateMenuProvider
 
     private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -68,10 +64,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        menuProvider = MainMenuProvider(requireContext(), vm)
+        menuProvider = CertificateMenuProvider(requireContext(), vm)
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        binding = FragmentMainBinding.bind(view)
+        binding = FragmentCertificateBinding.bind(view)
         val binding = binding!!
 
         PagerSnapHelper().attachToRecyclerView(binding.certificates)
@@ -84,10 +80,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         } catch (ignore: Exception) {}
 
         binding.certificates.adapter = adapter
-
-        binding.authenticate.setOnClickListener {
-            authenticate(delayMs = 0)
-        }
 
         binding.addButton.setOnClickListener {
             vm.onAddFileSelected()
@@ -185,31 +177,14 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         super.onDestroyView()
     }
 
-    private fun authenticate(delayMs: Long = DELAY_AUTHENTICATION_PROMPT_MS) {
-        lifecycleScope.launch {
-            delay(delayMs)
-            BiometricPrompt(
-                this@MainFragment,
-                MyAuthenticationCallback()
-            ).authenticate(biometricPromptInfo)
-        }
-    }
-
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
         binding!!.addButton.isVisible = state.showAddButton
-        binding!!.authenticate.isVisible = state.showAuthenticateButton
         when (state) {
             is ViewState.Initial -> {} // nothing to do
             is ViewState.Empty -> {
                 adapter.clear()
             }
-
-            is ViewState.Locked -> {
-                adapter.clear()
-                authenticate()
-            }
-
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
                 searchBarcode = state.searchBarcode,
@@ -262,17 +237,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun showFileCanNotBeReadError() {
         binding!!.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-    private inner class MyAuthenticationCallback : BiometricPrompt.AuthenticationCallback() {
-        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-            requireActivity().onUserInteraction()
-            vm.onAuthenticationSuccess()
-        }
-
-        override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            vm.deletePendingFileIfExists()
         }
     }
 }

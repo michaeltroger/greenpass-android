@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.certificate
 
 import android.content.Context
 import android.view.Menu
@@ -6,12 +6,13 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
+import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
-import com.michaeltroger.gruenerpass.states.ViewState
+import com.michaeltroger.gruenerpass.certificate.states.ViewState
 
-class MainMenuProvider(
+class CertificateMenuProvider(
     private val context: Context,
-    private val vm: MainViewModel
+    private val vm: CertificateViewModel
 ) : MenuProvider {
     private var searchView: SearchView? = null
     private var menu: Menu? = null

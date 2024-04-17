@@ -11,9 +11,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
@@ -43,17 +46,40 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         }
         val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHost.navController
-        setupActionBarWithNavController(navController = navController)
+        setupActionBarWithNavController(
+            navController = navController,
+            configuration = AppBarConfiguration.Builder(
+                R.id.certificateFragment,
+                R.id.lockFragment,
+                R.id.startFragment,
+            ).build()
+        )
 
         updateSettings()
 
         interactionTimeoutRunnable = Runnable {
             vm.onInteractionTimeout()
-            if (navController.currentDestination?.id != R.id.mainFragment) {
-                navController.popBackStack(R.id.mainFragment, false)
-            }
         }
         startTimeoutHandler()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.lockedState.collect { isLocked: Boolean ->
+                    when (isLocked) {
+                        true -> {
+                            if (navController.currentDestination?.id != R.id.lockFragment) {
+                                navController.navigate(R.id.navigate_to_lock)
+                            }
+                        }
+                        false -> {
+                            if (navController.currentDestination?.id != R.id.certificateFragment) {
+                                navController.navigate(R.id.navigate_to_certificate)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun updateSettings() {
@@ -68,16 +94,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     override fun onDestroy() {
-        vm.deletePendingFileIfExists()
+        vm.deletePendingFile()
         timeoutHandler.removeCallbacks(interactionTimeoutRunnable)
         super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        if (navController.currentDestination?.id != R.id.mainFragment) {
-            navController.popBackStack(R.id.mainFragment, false)
-        }
         vm.setPendingFile(intent)
     }
 
@@ -119,5 +142,4 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             setPendingFile(it)
         }
     }
-
 }

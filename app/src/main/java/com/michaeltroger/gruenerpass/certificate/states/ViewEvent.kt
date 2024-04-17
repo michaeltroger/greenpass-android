@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.states
+package com.michaeltroger.gruenerpass.certificate.states
 
 import com.michaeltroger.gruenerpass.db.Certificate
 
