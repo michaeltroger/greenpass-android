@@ -13,8 +13,6 @@ fun SharedPreferences.getBooleanFlow(prefKey: String) = callbackFlow {
         }
     }
     registerOnSharedPreferenceChangeListener(listener)
-    if (contains(prefKey)) {
-        send(getBoolean(prefKey, false))
-    }
+    send(getBoolean(prefKey, false))
     awaitClose { unregisterOnSharedPreferenceChangeListener(listener) }
 }.buffer(Channel.UNLIMITED)
