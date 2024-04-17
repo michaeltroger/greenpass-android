@@ -1,14 +1,9 @@
 package com.michaeltroger.gruenerpass
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.SearchView
 import androidx.biometric.BiometricPrompt
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -63,7 +58,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     @Inject
     lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
 
-    private val menuProvider = MainMenuProvider()
+    private lateinit var menuProvider: MainMenuProvider
 
     private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -73,6 +68,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        menuProvider = MainMenuProvider(requireContext(), vm)
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentMainBinding.bind(view)
@@ -266,126 +262,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun showFileCanNotBeReadError() {
         binding!!.root.let {
             Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
-    private inner class MainMenuProvider : MenuProvider {
-        private var searchView: SearchView? = null
-        private var menu: Menu? = null
-
-        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-            menuInflater.inflate(R.menu.menu, menu)
-            this.menu = menu
-
-            val searchMenuItem = menu.findItem(R.id.search)
-            searchView = searchMenuItem.actionView as SearchView
-            searchView?.queryHint = requireContext().getString(R.string.search_query_hint)
-            restorePendingSearchQueryFilter(searchMenuItem)
-            searchView?.setOnQueryTextListener(SearchQueryTextListener {
-                vm.onSearchQueryChanged(it)
-            })
-
-            updateMenuState(vm.viewState.value)
-        }
-
-        override fun onMenuItemSelected(menuItem: MenuItem): Boolean = when (menuItem.itemId) {
-            R.id.add -> {
-                vm.onAddFileSelected()
-                true
-            }
-
-            R.id.warning -> {
-                vm.onShowWarningDialogSelected()
-                true
-            }
-
-            R.id.openMore -> {
-                vm.onShowMoreSelected()
-                true
-            }
-
-            R.id.openSettings -> {
-                vm.onShowSettingsSelected()
-                true
-            }
-
-            R.id.deleteFiltered -> {
-                vm.onDeleteFilteredSelected()
-                true
-            }
-
-            R.id.deleteAll -> {
-                vm.onDeleteAllSelected()
-                true
-            }
-
-            R.id.lock -> {
-                vm.lockApp()
-                true
-            }
-
-            R.id.export_filtered -> {
-                vm.onExportFilteredSelected()
-                true
-            }
-
-            R.id.export_all -> {
-                vm.onExportAllSelected()
-                true
-            }
-
-            R.id.scrollToFirst -> {
-                vm.onScrollToFirstSelected()
-                true
-            }
-
-            R.id.scrollToLast -> {
-                vm.onScrollToLastSelected()
-                true
-            }
-
-            R.id.changeOrder -> {
-                vm.onChangeOrderSelected()
-                true
-            }
-
-            else -> false
-        }
-
-        fun onPause() {
-            searchView?.setOnQueryTextListener(null) // avoids an empty string to be sent
-        }
-
-        private fun restorePendingSearchQueryFilter(searchMenuItem: MenuItem) {
-            val pendingFilter = (vm.viewState.value as? ViewState.Normal)?.filter ?: return
-            if (pendingFilter.isNotEmpty()) {
-                searchMenuItem.expandActionView()
-                searchView?.setQuery(pendingFilter, false)
-                searchView?.clearFocus()
-            }
-        }
-
-        fun updateMenuState(state: ViewState) {
-            menu?.apply {
-                findItem(R.id.add)?.isVisible = state.showAddMenuItem
-                findItem(R.id.warning)?.isVisible = state.showWarningButton
-                findItem(R.id.openSettings)?.isVisible = state.showSettingsMenuItem
-                findItem(R.id.deleteAll)?.isVisible = state.showDeleteAllMenuItem
-                findItem(R.id.deleteFiltered)?.isVisible = state.showDeleteFilteredMenuItem
-                findItem(R.id.lock)?.isVisible = state.showLockMenuItem
-                findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
-                findItem(R.id.export_filtered)?.isVisible = state.showExportFilteredMenuItem
-                findItem(R.id.changeOrder)?.isVisible = state.showChangeOrderMenuItem
-                findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
-                findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
-                findItem(R.id.search)?.apply {
-                    isVisible = state.showSearchMenuItem
-                    if (!state.showSearchMenuItem) {
-                        collapseActionView()
-                    }
-                }
-                findItem(R.id.openMore)?.isVisible = state.showMoreMenuItem
-            }
         }
     }
 
