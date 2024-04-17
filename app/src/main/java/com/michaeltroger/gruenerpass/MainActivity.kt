@@ -29,7 +29,7 @@ private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val vm by viewModels<MainActivityViewModel>()
+    private val vm by viewModels<MainViewModel>()
 
     @Inject
     lateinit var preferenceUtil: PreferenceUtil
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         timeoutHandler.postDelayed(interactionTimeoutRunnable, INTERACTION_TIMEOUT_MS)
     }
 
-    private fun MainActivityViewModel.setPendingFile(intent: Intent?) {
+    private fun MainViewModel.setPendingFile(intent: Intent?) {
         intent?.getUri()?.let {
             setPendingFile(it)
         }
