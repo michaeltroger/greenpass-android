@@ -1,8 +1,8 @@
-package com.michaeltroger.gruenerpass.dialogs.di;
+package com.michaeltroger.gruenerpass.certificate.dialogs.di;
 
 
-import com.michaeltroger.gruenerpass.dialogs.CertificateDialogs
-import com.michaeltroger.gruenerpass.dialogs.CertificateDialogsImpl
+import com.michaeltroger.gruenerpass.certificate.dialogs.CertificateDialogs
+import com.michaeltroger.gruenerpass.certificate.dialogs.CertificateDialogsImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

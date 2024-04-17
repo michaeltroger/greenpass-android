@@ -1,8 +1,8 @@
-package com.michaeltroger.gruenerpass.sharing.di;
+package com.michaeltroger.gruenerpass.certificate.sharing.di;
 
 
-import com.michaeltroger.gruenerpass.sharing.PdfSharing
-import com.michaeltroger.gruenerpass.sharing.PdfSharingImpl
+import com.michaeltroger.gruenerpass.certificate.sharing.PdfSharing
+import com.michaeltroger.gruenerpass.certificate.sharing.PdfSharingImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.documentorder
+package com.michaeltroger.gruenerpass.certificate.documentorder
 
 import android.view.View
 import com.michaeltroger.gruenerpass.R

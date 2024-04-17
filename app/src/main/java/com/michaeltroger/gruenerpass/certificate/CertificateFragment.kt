@@ -17,9 +17,9 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.FragmentCertificateBinding
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.dialogs.CertificateDialogs
-import com.michaeltroger.gruenerpass.pager.certificates.CertificateItem
-import com.michaeltroger.gruenerpass.sharing.PdfSharing
+import com.michaeltroger.gruenerpass.certificate.dialogs.CertificateDialogs
+import com.michaeltroger.gruenerpass.certificate.pager.certificates.CertificateItem
+import com.michaeltroger.gruenerpass.certificate.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificate.states.ViewState
 import com.xwray.groupie.GroupieAdapter

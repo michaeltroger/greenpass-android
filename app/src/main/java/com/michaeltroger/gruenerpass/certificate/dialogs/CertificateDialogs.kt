@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.dialogs
+package com.michaeltroger.gruenerpass.certificate.dialogs
 
 import android.app.Dialog
 import android.content.Context
@@ -8,7 +8,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.documentorder.DocumentOrderItem
+import com.michaeltroger.gruenerpass.certificate.documentorder.DocumentOrderItem
 import com.xwray.groupie.GroupieAdapter
 import javax.inject.Inject
 

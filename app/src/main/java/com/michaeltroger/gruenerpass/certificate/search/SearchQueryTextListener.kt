@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.search
+package com.michaeltroger.gruenerpass.certificate.search
 
 import androidx.appcompat.widget.SearchView
 

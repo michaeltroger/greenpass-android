@@ -7,7 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuProvider
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.search.SearchQueryTextListener
+import com.michaeltroger.gruenerpass.certificate.search.SearchQueryTextListener
 import com.michaeltroger.gruenerpass.certificate.states.ViewState
 
 class CertificateMenuProvider(

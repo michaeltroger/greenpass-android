@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.sharing
+package com.michaeltroger.gruenerpass.certificate.sharing
 
 import android.content.Context
 import android.content.Intent

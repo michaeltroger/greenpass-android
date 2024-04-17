@@ -7,9 +7,9 @@ import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificate.states.ViewState
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
-import com.michaeltroger.gruenerpass.file.FileRepo
+import com.michaeltroger.gruenerpass.certificate.file.FileRepo
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
-import com.michaeltroger.gruenerpass.mapper.toCertificate
+import com.michaeltroger.gruenerpass.certificate.mapper.toCertificate
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener

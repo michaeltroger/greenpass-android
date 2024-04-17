@@ -1,7 +1,7 @@
-package com.michaeltroger.gruenerpass.file.di;
+package com.michaeltroger.gruenerpass.certificate.file.di;
 
-import com.michaeltroger.gruenerpass.file.FileRepo
-import com.michaeltroger.gruenerpass.file.FileRepoImpl
+import com.michaeltroger.gruenerpass.certificate.file.FileRepo
+import com.michaeltroger.gruenerpass.certificate.file.FileRepoImpl
 
 import dagger.Binds
 import dagger.Module

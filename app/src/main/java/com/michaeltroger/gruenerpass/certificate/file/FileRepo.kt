@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.file
+package com.michaeltroger.gruenerpass.certificate.file
 
 import android.content.Context
 import com.michaeltroger.gruenerpass.coroutines.dispatcher.di.IoDispatcher

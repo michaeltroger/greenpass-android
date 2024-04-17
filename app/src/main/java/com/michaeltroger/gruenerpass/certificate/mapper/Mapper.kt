@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.mapper
+package com.michaeltroger.gruenerpass.certificate.mapper
 
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.pdfimporter.PendingCertificate

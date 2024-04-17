@@ -1,12 +1,12 @@
-package com.michaeltroger.gruenerpass.pager.certificates
+package com.michaeltroger.gruenerpass.certificate.pager.certificates
 
 import android.content.Context
 import android.view.View
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
-import com.michaeltroger.gruenerpass.pager.certificate.CertificateHeaderItem
-import com.michaeltroger.gruenerpass.pager.certificate.PdfPageItem
+import com.michaeltroger.gruenerpass.certificate.pager.certificate.CertificateHeaderItem
+import com.michaeltroger.gruenerpass.certificate.pager.certificate.PdfPageItem
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import com.xwray.groupie.Group
@@ -57,13 +57,15 @@ class CertificateItem(
         viewHolder.binding.certificate.adapter = adapter
         job = scope.launch {
             val itemList = mutableListOf<Group>()
-            itemList.add(CertificateHeaderItem(
+            itemList.add(
+                CertificateHeaderItem(
                 documentName = documentName,
                 fileName = fileName,
                 onDeleteCalled = onDeleteCalled,
                 onDocumentNameClicked = onDocumentNameClicked,
                 onShareCalled = onShareCalled,
-            ))
+            )
+            )
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(
                     PdfPageItem(
