@@ -19,11 +19,19 @@ class MainActivityRobot {
 
     private val addButtonMatcher = withId(R.id.add_button)
     private val menuAddButtonMatcher = withId(R.id.add)
+    private val authenticateButtonMatcher = withId(R.id.authenticate)
 
     fun verifyEmptyState() = apply {
         waitUntilIdle()
         waitUntilNoException {
             onView(addButtonMatcher).verifyIsDisplayed()
+        }
+    }
+
+    fun verifyLockedState() = apply {
+        waitUntilIdle()
+        waitUntilNoException {
+            onView(authenticateButtonMatcher).verifyIsDisplayed()
         }
     }
 
