@@ -6,11 +6,16 @@ import com.michaeltroger.gruenerpass.logger.logging.Logger
 import com.michaeltroger.gruenerpass.pdfdecryptor.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 public interface PdfImporter {
     public suspend fun preparePendingFile(uri: Uri)
-    public fun hasPendingFile(): Boolean
+    public fun hasPendingFile(): Flow<Boolean>
     public fun deletePendingFile()
     public suspend fun importPdf(): PdfImportResult
     public suspend fun importPasswordProtectedPdf(password: String): PdfImportResult
@@ -23,27 +28,30 @@ internal class PdfImporterImpl @Inject constructor(
     private val logger: Logger,
 ) : PdfImporter {
 
-    private var pendingFile: PendingCertificate? = null
+    private val _pendingFile: MutableStateFlow<PendingCertificate?> = MutableStateFlow(
+        null
+    )
+    private val pendingFile: StateFlow<PendingCertificate?> = _pendingFile
 
     override suspend fun preparePendingFile(uri: Uri) {
-        pendingFile = fileRepo.copyToApp(uri)
+        _pendingFile.value = fileRepo.copyToApp(uri)
         logger.logDebug(pendingFile)
     }
 
-    override fun hasPendingFile(): Boolean {
-        return pendingFile != null
-    }
+    override fun hasPendingFile(): Flow<Boolean> = pendingFile.map {
+        it != null
+    }.distinctUntilChanged()
 
     override fun deletePendingFile() {
-        pendingFile?.let {
-            pendingFile = null
+        pendingFile.value?.let {
+            _pendingFile.value = null
             fileRepo.deleteFile(it.fileName)
         }
     }
 
     @Suppress("TooGenericExceptionCaught", "ReturnCount")
     override suspend fun importPdf(): PdfImportResult {
-        val pendingFile = pendingFile ?: return PdfImportResult.ParsingError
+        val pendingFile = pendingFile.value ?: return PdfImportResult.ParsingError
         try {
             val file = fileRepo.getFile(pendingFile.fileName)
             return if (pdfDecryptor.isPdfPasswordProtected(file)) {
@@ -63,7 +71,7 @@ internal class PdfImporterImpl @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun importPasswordProtectedPdf(password: String): PdfImportResult {
-        val pendingFile = pendingFile ?: return PdfImportResult.ParsingError
+        val pendingFile = pendingFile.value ?: return PdfImportResult.ParsingError
         return try {
             val file = fileRepo.getFile(pendingFile.fileName)
             pdfDecryptor.decrypt(password = password, file = file)
@@ -93,7 +101,7 @@ internal class PdfImporterImpl @Inject constructor(
             fileRepo.deleteFile(certificate.fileName)
             false
         } finally {
-            this.pendingFile = null
+            _pendingFile.value = null
             renderer.close()
         }
     }

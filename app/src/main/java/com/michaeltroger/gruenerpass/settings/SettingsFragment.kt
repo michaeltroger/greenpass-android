@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +21,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     lateinit var biometricPromptInfo: BiometricPrompt.PromptInfo
     @Inject
     lateinit var preferenceUtil: PreferenceUtil
+    @Inject
+    lateinit var lockedRepo: AppLockedRepo
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference, rootKey)
@@ -72,7 +75,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(requireContext()),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    preference.isChecked = !preference.isChecked
+                    lifecycleScope.launch {
+                        lockedRepo.unlockApp()
+                        preference.isChecked = !preference.isChecked
+                    }
                 }
             })
 

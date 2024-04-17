@@ -1,19 +1,19 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.certificate
 
-import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
+import com.michaeltroger.gruenerpass.certificate.states.ViewState
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.file.FileRepo
+import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import com.michaeltroger.gruenerpass.mapper.toCertificate
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
 import com.michaeltroger.gruenerpass.settings.PreferenceObserver
-import com.michaeltroger.gruenerpass.states.ViewEvent
-import com.michaeltroger.gruenerpass.states.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,13 +26,13 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions")
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    app: Application,
+class CertificateViewModel @Inject constructor(
     private val db: CertificateDao,
     private val fileRepo: FileRepo,
     private val pdfImporter: PdfImporter,
+    private val lockedRepo: AppLockedRepo,
     private val preferenceObserver: PreferenceObserver
-): AndroidViewModel(app), PreferenceChangeListener {
+): ViewModel(), PreferenceChangeListener {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
         ViewState.Initial
@@ -43,38 +43,40 @@ class MainViewModel @Inject constructor(
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
-    private var isLocked: Boolean = false
-
     init {
         viewModelScope.launch {
-            preferenceObserver.init(this@MainViewModel)
-            isLocked = preferenceObserver.shouldAuthenticate()
+            preferenceObserver.init(this@CertificateViewModel)
             updateState()
+        }
+        viewModelScope.launch {
+            pdfImporter.hasPendingFile().filter { it }.collect {
+                _viewEvent.emit(ViewEvent.CloseAllDialogs)
+                processPendingFile()
+            }
         }
     }
 
     private suspend fun updateState() {
         val shouldAuthenticate = preferenceObserver.shouldAuthenticate()
-
-        if (shouldAuthenticate && isLocked) {
-            _viewState.emit(ViewState.Locked)
-        } else {
-            val docs = db.getAll()
-            if (docs.isEmpty()) {
-                _viewState.emit(ViewState.Empty(
+        val docs = db.getAll()
+        if (docs.isEmpty()) {
+            _viewState.emit(
+                ViewState.Empty(
                     showLockMenuItem = shouldAuthenticate,
-                ))
-            } else {
-                val filter = filter
-                val filteredDocs = docs.filter {
-                    if (filter.isEmpty()) {
-                        true
-                    } else {
-                        it.name.contains(filter.trim(), ignoreCase = true)
-                    }
+                )
+            )
+        } else {
+            val filter = filter
+            val filteredDocs = docs.filter {
+                if (filter.isEmpty()) {
+                    true
+                } else {
+                    it.name.contains(filter.trim(), ignoreCase = true)
                 }
-                val areDocumentsFilteredOut = filteredDocs.size != docs.size
-                _viewState.emit(ViewState.Normal(
+            }
+            val areDocumentsFilteredOut = filteredDocs.size != docs.size
+            _viewState.emit(
+                ViewState.Normal(
                     documents = filteredDocs,
                     searchBarcode = preferenceObserver.searchForBarcode(),
                     showLockMenuItem = shouldAuthenticate,
@@ -86,22 +88,18 @@ class MainViewModel @Inject constructor(
                     showWarningButton = preferenceObserver.showOnLockedScreen(),
                     showExportFilteredMenuItem = areDocumentsFilteredOut,
                     showDeleteFilteredMenuItem = areDocumentsFilteredOut,
-                ))
-            }
+                )
+            )
         }
     }
 
     fun setPendingFile(uri: Uri) {
         viewModelScope.launch {
-            pdfImporter.preparePendingFile(uri)
-            val state = viewState.filter {
+            viewState.filter {
                 it !is ViewState.Initial
             }.first() // wait for initial loading to be finished
 
-            if (state !is ViewState.Locked) {
-                _viewEvent.emit(ViewEvent.CloseAllDialogs)
-                processPendingFile()
-            }
+            pdfImporter.preparePendingFile(uri)
         }
     }
 
@@ -201,27 +199,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun onAuthenticationSuccess() {
-        viewModelScope.launch {
-            isLocked = false
-            if (pdfImporter.hasPendingFile()) {
-                processPendingFile()
-            } else {
-                updateState()
-            }
-        }
-    }
-
-    fun onInteractionTimeout() {
-        if (preferenceObserver.shouldAuthenticate()) {
-            lockApp()
-        }
-    }
-
     fun lockApp() {
-        isLocked = true
         viewModelScope.launch {
-            updateState()
+            lockedRepo.lockApp()
         }
     }
 
