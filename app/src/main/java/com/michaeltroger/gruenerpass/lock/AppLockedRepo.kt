@@ -31,7 +31,8 @@ class AppLockedRepoImpl @Inject constructor(
     private val shouldAuthenticate =
         sharedPrefs.getBooleanFlow(context.getString(R.string.key_preference_biometric))
 
-    override fun isAppLocked() = shouldAuthenticate.combine(isLocked) { shouldAuthenticate: Boolean, isLocked: Boolean ->
+    override fun isAppLocked() = shouldAuthenticate.combine(isLocked) {
+        shouldAuthenticate: Boolean, isLocked: Boolean ->
         shouldAuthenticate && isLocked
     }.distinctUntilChanged()
 
