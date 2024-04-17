@@ -34,7 +34,6 @@ import javax.inject.Inject
 private const val TOUCH_SLOP_FACTOR = 8
 private const val PDF_MIME_TYPE = "application/pdf"
 
-@Suppress("TooManyFunctions")
 @AndroidEntryPoint
 class CertificateFragment : Fragment(R.layout.fragment_certificate) {
 
