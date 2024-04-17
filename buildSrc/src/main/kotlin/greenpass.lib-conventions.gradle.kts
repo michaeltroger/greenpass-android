@@ -13,6 +13,7 @@ android {
     buildFeatures {
         androidResources = false
         buildConfig = false
+        resValues = false
     }
     defaultConfig {
         minSdk = Versions.MIN_SDK
