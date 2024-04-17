@@ -60,11 +60,13 @@ internal class PdfImporterImpl @Inject constructor(
                 if (isValidPdf(pendingFile)) {
                     PdfImportResult.Success(pendingFile)
                 } else {
+                    deletePendingFile()
                     PdfImportResult.ParsingError
                 }
             }
         } catch (e: Throwable) {
             logger.logError(e.toString())
+            deletePendingFile()
             return PdfImportResult.ParsingError
         }
     }
@@ -78,6 +80,7 @@ internal class PdfImporterImpl @Inject constructor(
             if (isValidPdf(pendingFile)) {
                 PdfImportResult.Success(pendingFile)
             } else {
+                deletePendingFile()
                 PdfImportResult.ParsingError
             }
         } catch (e: Exception) {
