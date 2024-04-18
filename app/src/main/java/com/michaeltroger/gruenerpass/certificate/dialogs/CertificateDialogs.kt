@@ -189,12 +189,8 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
                 DocumentOrderItem(
                     fileName = certificate.id,
                     documentName = certificate.name,
-                    onDownClicked = {
-                        onDownClicked(it)
-                    },
-                    onUpClicked = {
-                        onUpClicked(it)
-                    }
+                    onDownClicked = ::onDownClicked,
+                    onUpClicked = ::onUpClicked
                 )
             }
             myAdapter.update(items)
