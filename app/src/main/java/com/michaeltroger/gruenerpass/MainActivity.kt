@@ -31,7 +31,7 @@ private const val PDF_MIME_TYPE = "application/pdf"
 
 @Suppress("TooManyFunctions")
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
     private val vm by viewModels<MainViewModel>()
 
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         vm.setPendingFile(intent)
     }
 
-    fun addFile() {
+    override fun addFile() {
         documentPick.launch(arrayOf(PDF_MIME_TYPE))
     }
 
@@ -154,4 +154,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             setPendingFile(it)
         }
     }
+}
+
+interface AddFile {
+    fun addFile()
 }

@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.MainActivity
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
@@ -137,7 +138,7 @@ class CertificateFragment : Fragment(R.layout.fragment_certificate) {
             ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
             ViewEvent.ShowSettingsScreen -> findNavController().navigate(R.id.navigate_to_settings)
             ViewEvent.ShowMoreScreen -> findNavController().navigate(R.id.navigate_to_more)
-            ViewEvent.AddFile -> (requireActivity() as MainActivity).addFile()
+            ViewEvent.AddFile -> (requireActivity() as? AddFile)?.addFile()
             is ViewEvent.ShowDeleteDialog -> {
                 certificateDialogs.showDoYouWantToDeleteDialog(
                     context = requireContext(),
