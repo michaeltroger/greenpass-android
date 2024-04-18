@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.certificates.pager.certificates
+package com.michaeltroger.gruenerpass.certificates.pager
 
 import android.content.Context
 import android.util.AttributeSet

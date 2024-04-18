@@ -75,7 +75,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
                             navController.navigate(R.id.navigate_to_certificate)
                         }
                         !isLocked && navController.currentDestination?.id == R.id.startFragment -> {
-                            navController.navigate(R.id.navigate_to_certificate)
+                            navController.navigate(R.id.certificatesListFragment)
+                            //navController.navigate(R.id.navigate_to_certificate)
                         }
                     }
 

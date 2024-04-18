@@ -27,8 +27,8 @@
         android:id="@+id/certificates"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        app:layoutManager=".certificates.pager.CertificateLinearLayoutManager"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:contentDescription="@string/pdfs"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.certificates
+package com.michaeltroger.gruenerpass.certificateslist
 
 import android.os.Bundle
 import android.view.View
@@ -9,48 +9,37 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
+import com.michaeltroger.gruenerpass.certificates.CertificatesMenuProvider
+import com.michaeltroger.gruenerpass.certificates.CertificatesViewModel
 import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateDialogs
-import com.michaeltroger.gruenerpass.certificates.pager.item.CertificateItem
 import com.michaeltroger.gruenerpass.certificates.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificates.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificates.states.ViewState
-import com.michaeltroger.gruenerpass.databinding.FragmentCertificatesBinding
+import com.michaeltroger.gruenerpass.certificateslist.pager.item.CertificateListItem
+import com.michaeltroger.gruenerpass.databinding.FragmentCertificatesListBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 import javax.inject.Inject
 
-private const val TOUCH_SLOP_FACTOR = 8
-
 @AndroidEntryPoint
-class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
+class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
 
     private val vm by viewModels<CertificatesViewModel>()
 
-    @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-    private val thread = newSingleThreadContext("RenderContext")
-
     private val adapter = GroupieAdapter()
 
-    private var binding: FragmentCertificatesBinding? = null
+    private var binding: FragmentCertificatesListBinding? = null
 
     @Inject
     lateinit var pdfSharing: PdfSharing
     @Inject
     lateinit var certificateDialogs: CertificateDialogs
-    @Inject
-    lateinit var barcodeRenderer: BarcodeRenderer
 
     private lateinit var menuProvider: CertificatesMenuProvider
 
@@ -60,17 +49,8 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
         menuProvider = CertificatesMenuProvider(requireContext(), vm)
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
-        binding = FragmentCertificatesBinding.bind(view)
+        binding = FragmentCertificatesListBinding.bind(view)
         val binding = binding!!
-
-        PagerSnapHelper().attachToRecyclerView(binding.certificates)
-
-        try { // reduce scroll sensitivity for horizontal scrolling to improve vertical scrolling
-            val touchSlopField = RecyclerView::class.java.getDeclaredField("mTouchSlop")
-            touchSlopField.isAccessible = true
-            val touchSlop = touchSlopField.get(binding.certificates) as Int
-            touchSlopField.set(binding.certificates, touchSlop * TOUCH_SLOP_FACTOR)
-        } catch (ignore: Exception) {}
 
         binding.certificates.adapter = adapter
 
@@ -193,13 +173,10 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
 
     private fun showCertificateState(documents: List<Certificate>, searchBarcode: Boolean) {
         val items = documents.map { certificate ->
-            CertificateItem(
-                requireContext().applicationContext,
+            CertificateListItem(
                 fileName = certificate.id,
-                barcodeRenderer = barcodeRenderer,
                 documentName = certificate.name,
                 searchBarcode = searchBarcode,
-                dispatcher = thread,
                 onDeleteCalled = {
                     vm.onDeleteCalled(certificate.id)
                 },

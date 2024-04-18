@@ -1,4 +1,4 @@
-package com.michaeltroger.gruenerpass.certificates.pager.certificate
+package com.michaeltroger.gruenerpass.certificates.pager.item.partials
 
 import android.view.View
 import com.michaeltroger.gruenerpass.R

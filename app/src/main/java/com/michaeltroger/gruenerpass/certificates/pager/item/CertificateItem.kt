@@ -1,12 +1,12 @@
-package com.michaeltroger.gruenerpass.certificates.pager.certificates
+package com.michaeltroger.gruenerpass.certificates.pager.item
 
 import android.content.Context
 import android.view.View
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateBinding
-import com.michaeltroger.gruenerpass.certificates.pager.certificate.CertificateHeaderItem
-import com.michaeltroger.gruenerpass.certificates.pager.certificate.PdfPageItem
+import com.michaeltroger.gruenerpass.certificates.pager.item.partials.CertificateHeaderItem
+import com.michaeltroger.gruenerpass.certificates.pager.item.partials.PdfPageItem
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import com.xwray.groupie.Group
