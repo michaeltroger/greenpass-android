@@ -73,4 +73,14 @@
         android:id="@+id/certificatesListFragment"
         android:name="com.michaeltroger.gruenerpass.certificateslist.CertificatesListFragment"
         android:label="@string/app_name"/>
+
+    <fragment
+        android:id="@+id/certificateDetailsFragment"
+        android:name="com.michaeltroger.gruenerpass.certificatedetails.CertificateDetailsFragment"
+        android:label="@string/app_name">
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+    </fragment>
 </navigation>

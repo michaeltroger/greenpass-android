@@ -13,7 +13,8 @@ class CertificateListItem(
     private val documentName: String,
     private val searchBarcode: Boolean,
     private val onDeleteCalled: () -> Unit,
-    private val onDocumentNameClicked: () -> Unit,
+    private val onOpenDetails: () -> Unit,
+    private val onChangeDocumentNameClicked: () -> Unit,
     private val onShareCalled: () -> Unit,
 ) : BindableItem<ItemCertificateListBinding>() {
 
@@ -30,16 +31,17 @@ class CertificateListItem(
         super.bind(viewHolder, position, payloads)
         viewHolder.binding.apply {
             name.text = documentName
-            name.setOnClickListener {
-                onDocumentNameClicked()
+            root.setOnClickListener {
+                onOpenDetails()
             }
-
-            deleteIcon.setOnClickListener {
-                onDeleteCalled()
+            editNameIcon.setOnClickListener {
+                onChangeDocumentNameClicked()
             }
-
             shareIcon.setOnClickListener {
                 onShareCalled()
+            }
+            deleteIcon.setOnClickListener {
+                onDeleteCalled()
             }
         }
     }

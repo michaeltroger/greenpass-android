@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.certificatedetails.CertificateDetailsFragment
 import com.michaeltroger.gruenerpass.certificates.CertificatesMenuProvider
 import com.michaeltroger.gruenerpass.certificates.CertificatesViewModel
 import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateDialogs
@@ -180,8 +181,11 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
                 onDeleteCalled = {
                     vm.onDeleteCalled(certificate.id)
                 },
-                onDocumentNameClicked = {
+                onChangeDocumentNameClicked = {
                     vm.onChangeDocumentNameSelected(certificate.id, certificate.name)
+                },
+                onOpenDetails = {
+                    findNavController().navigate(R.id.certificateDetailsFragment, CertificateDetailsFragment.createBundle(certificate.id))
                 },
                 onShareCalled = {
                     vm.onShareSelected(certificate)

@@ -27,6 +27,18 @@
         android:paddingStart="@dimen/space_small"
         android:paddingEnd="@dimen/space_small"
         android:contentDescription="@string/delete"
+        app:layout_constraintEnd_toStartOf="@id/editNameIcon"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/name"/>
+
+    <ImageView
+        android:id="@+id/editNameIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/share_24px"
+        android:paddingStart="@dimen/space_small"
+        android:paddingEnd="@dimen/space_small"
+        android:contentDescription="@string/delete"
         app:layout_constraintEnd_toStartOf="@id/shareIcon"
         app:layout_constraintTop_toTopOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"/>
