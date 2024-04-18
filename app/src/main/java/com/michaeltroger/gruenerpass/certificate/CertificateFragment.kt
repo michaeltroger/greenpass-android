@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass.certificate
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,15 +12,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.michaeltroger.gruenerpass.MainActivity
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
-import com.michaeltroger.gruenerpass.databinding.FragmentCertificateBinding
-import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.certificate.dialogs.CertificateDialogs
 import com.michaeltroger.gruenerpass.certificate.pager.certificates.CertificateItem
 import com.michaeltroger.gruenerpass.certificate.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificate.states.ViewState
+import com.michaeltroger.gruenerpass.databinding.FragmentCertificateBinding
+import com.michaeltroger.gruenerpass.db.Certificate
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -32,7 +32,6 @@ import kotlinx.coroutines.newSingleThreadContext
 import javax.inject.Inject
 
 private const val TOUCH_SLOP_FACTOR = 8
-private const val PDF_MIME_TYPE = "application/pdf"
 
 @AndroidEntryPoint
 class CertificateFragment : Fragment(R.layout.fragment_certificate) {
@@ -54,11 +53,6 @@ class CertificateFragment : Fragment(R.layout.fragment_certificate) {
     lateinit var barcodeRenderer: BarcodeRenderer
 
     private lateinit var menuProvider: CertificateMenuProvider
-
-    private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri == null) return@registerForActivityResult
-        vm.setPendingFile(uri)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -143,7 +137,7 @@ class CertificateFragment : Fragment(R.layout.fragment_certificate) {
             ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
             ViewEvent.ShowSettingsScreen -> findNavController().navigate(R.id.navigate_to_settings)
             ViewEvent.ShowMoreScreen -> findNavController().navigate(R.id.navigate_to_more)
-            ViewEvent.AddFile -> documentPick.launch(arrayOf(PDF_MIME_TYPE))
+            ViewEvent.AddFile -> (requireActivity() as MainActivity).addFile()
             is ViewEvent.ShowDeleteDialog -> {
                 certificateDialogs.showDoYouWantToDeleteDialog(
                     context = requireContext(),

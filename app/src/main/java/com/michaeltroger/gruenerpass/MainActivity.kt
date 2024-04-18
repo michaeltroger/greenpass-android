@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
+private const val PDF_MIME_TYPE = "application/pdf"
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -38,6 +40,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
     private lateinit var navController: NavController
+
+    private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@registerForActivityResult
+        vm.setPendingFile(uri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +109,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         vm.setPendingFile(intent)
+    }
+
+    fun addFile() {
+        documentPick.launch(arrayOf(PDF_MIME_TYPE))
     }
 
     /**

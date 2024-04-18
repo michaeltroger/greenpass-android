@@ -1,15 +1,14 @@
 package com.michaeltroger.gruenerpass.certificate
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michaeltroger.gruenerpass.certificate.file.FileRepo
+import com.michaeltroger.gruenerpass.certificate.mapper.toCertificate
 import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificate.states.ViewState
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.CertificateDao
-import com.michaeltroger.gruenerpass.certificate.file.FileRepo
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
-import com.michaeltroger.gruenerpass.certificate.mapper.toCertificate
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -90,16 +88,6 @@ class CertificateViewModel @Inject constructor(
                     showDeleteFilteredMenuItem = areDocumentsFilteredOut,
                 )
             )
-        }
-    }
-
-    fun setPendingFile(uri: Uri) {
-        viewModelScope.launch {
-            viewState.filter {
-                it !is ViewState.Initial
-            }.first() // wait for initial loading to be finished
-
-            pdfImporter.preparePendingFile(uri)
         }
     }
 
