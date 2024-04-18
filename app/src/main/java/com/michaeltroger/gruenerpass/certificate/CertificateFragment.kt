@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
-import com.michaeltroger.gruenerpass.MainActivity
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.certificate.dialogs.CertificateDialogs
