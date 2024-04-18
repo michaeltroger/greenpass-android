@@ -102,6 +102,9 @@ class CertificateViewModel @Inject constructor(
             is PdfImportResult.Success -> {
                 insertIntoDatabase(result.pendingCertificate.toCertificate())
             }
+            PdfImportResult.NoFileToImport -> {
+                // ignore
+            }
         }
     }
 
@@ -116,6 +119,9 @@ class CertificateViewModel @Inject constructor(
                 }
                 is PdfImportResult.Success -> {
                     insertIntoDatabase(result.pendingCertificate.toCertificate())
+                }
+                PdfImportResult.NoFileToImport -> {
+                    // ignore
                 }
             }
         }

@@ -34,6 +34,7 @@ internal class PdfImporterImpl @Inject constructor(
     private val pendingFile: StateFlow<PendingCertificate?> = _pendingFile
 
     override suspend fun preparePendingFile(uri: Uri) {
+        deletePendingFile()
         _pendingFile.value = fileRepo.copyToApp(uri)
         logger.logDebug(pendingFile.value)
     }
@@ -51,7 +52,7 @@ internal class PdfImporterImpl @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught", "ReturnCount")
     override suspend fun importPdf(): PdfImportResult {
-        val pendingFile = pendingFile.value ?: return PdfImportResult.ParsingError
+        val pendingFile = pendingFile.value ?: return PdfImportResult.NoFileToImport
         try {
             val file = fileRepo.getFile(pendingFile.fileName)
             return if (pdfDecryptor.isPdfPasswordProtected(file)) {
@@ -73,7 +74,7 @@ internal class PdfImporterImpl @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun importPasswordProtectedPdf(password: String): PdfImportResult {
-        val pendingFile = pendingFile.value ?: return PdfImportResult.ParsingError
+        val pendingFile = pendingFile.value ?: return PdfImportResult.NoFileToImport
         return try {
             val file = fileRepo.getFile(pendingFile.fileName)
             pdfDecryptor.decrypt(password = password, file = file)
@@ -114,4 +115,5 @@ public sealed class PdfImportResult {
     public data class Success(val pendingCertificate: PendingCertificate) : PdfImportResult()
     public data object PasswordRequired : PdfImportResult()
     public data object ParsingError : PdfImportResult()
+    public data object NoFileToImport : PdfImportResult()
 }
