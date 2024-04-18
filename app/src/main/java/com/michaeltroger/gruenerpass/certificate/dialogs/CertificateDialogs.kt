@@ -11,6 +11,7 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.certificate.documentorder.DocumentOrderItem
 import com.xwray.groupie.GroupieAdapter
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,7 +37,7 @@ interface CertificateDialogs {
         scope: CoroutineScope,
         originalOrder: List<Certificate>,
         onOrderChanged: (List<String>) -> Unit
-    )
+    ): Job
 }
 
 class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
@@ -141,11 +142,12 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         scope: CoroutineScope,
         originalOrder: List<Certificate>,
         onOrderChanged: (List<String>) -> Unit
-    ) {
+    ) = scope.launch {
         val customAlertDialogView = LayoutInflater.from(context)
             .inflate(R.layout.layout_document_order_dialog, null, false)
 
         val myAdapter = GroupieAdapter()
+        customAlertDialogView.findViewById<RecyclerView>(R.id.document_order).adapter = myAdapter
         val listFlow: MutableStateFlow<List<Certificate>> = MutableStateFlow(originalOrder)
 
         fun onUpClicked(id: String) {
@@ -168,26 +170,6 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
             listFlow.value = newState
         }
 
-        scope.launch {
-            listFlow.collect { list ->
-                val items = list.map { certificate ->
-                    DocumentOrderItem(
-                        fileName = certificate.id,
-                        documentName = certificate.name,
-                        onDownClicked = {
-                            onDownClicked(it)
-                        },
-                        onUpClicked = {
-                            onUpClicked(it)
-                        }
-                    )
-                }
-                myAdapter.update(items)
-            }
-        }
-
-        customAlertDialogView.findViewById<RecyclerView>(R.id.document_order).adapter = myAdapter
-
         val dialog = MaterialAlertDialogBuilder(context)
             .setTitle(R.string.dialog_document_order_title)
             .setView(customAlertDialogView)
@@ -196,12 +178,29 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
             }
             .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {
-                this.dialog = null
+                this@CertificateDialogsImpl.dialog = null
             }
             .create()
-        this.dialog = dialog
+        this@CertificateDialogsImpl.dialog = dialog
         dialog.show()
+
+        listFlow.collect { list ->
+            val items = list.map { certificate ->
+                DocumentOrderItem(
+                    fileName = certificate.id,
+                    documentName = certificate.name,
+                    onDownClicked = {
+                        onDownClicked(it)
+                    },
+                    onUpClicked = {
+                        onUpClicked(it)
+                    }
+                )
+            }
+            myAdapter.update(items)
+        }
     }
+
 
     override fun showEnterPasswordDialog(
         context: Context,
