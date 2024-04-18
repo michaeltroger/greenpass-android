@@ -4,7 +4,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -72,20 +71,26 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preference.isVisible = true
         }
 
-        val biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(requireContext()),
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    lifecycleScope.launch {
-                        lockedRepo.unlockApp()
-                        preference.isChecked = !preference.isChecked
-                    }
-                }
-            })
-
         preference.apply {
             setOnPreferenceClickListener {
-                biometricPrompt.authenticate(biometricPromptInfo)
+                BiometricPrompt(
+                    this@SettingsFragment,
+                    MyAuthenticationCallback(preference)
+                ).authenticate(biometricPromptInfo)
                 true
+            }
+        }
+    }
+
+    private inner class MyAuthenticationCallback(
+        private val preference: ValidateSwitchPreference
+    ) : BiometricPrompt.AuthenticationCallback() {
+
+        override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+            lifecycleScope.launch {
+                requireActivity().onUserInteraction()
+                lockedRepo.unlockApp()
+                preference.isChecked = !preference.isChecked
             }
         }
     }
