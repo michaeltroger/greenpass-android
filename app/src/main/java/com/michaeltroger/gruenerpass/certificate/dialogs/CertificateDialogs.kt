@@ -10,6 +10,9 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.certificate.documentorder.DocumentOrderItem
 import com.xwray.groupie.GroupieAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 interface CertificateDialogs {
@@ -30,6 +33,7 @@ interface CertificateDialogs {
     )
     fun showChangeDocumentOrder(
         context: Context,
+        scope: CoroutineScope,
         originalOrder: List<Certificate>,
         onOrderChanged: (List<String>) -> Unit
     )
@@ -134,6 +138,7 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
 
     override fun showChangeDocumentOrder(
         context: Context,
+        scope: CoroutineScope,
         originalOrder: List<Certificate>,
         onOrderChanged: (List<String>) -> Unit
     ) {
@@ -141,48 +146,45 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
             .inflate(R.layout.layout_document_order_dialog, null, false)
 
         val myAdapter = GroupieAdapter()
-        val list = originalOrder.toMutableList()
+        val listFlow: MutableStateFlow<List<Certificate>> = MutableStateFlow(originalOrder)
 
         fun onUpClicked(id: String) {
-            val index = list.indexOfFirst {
+            val index = listFlow.value.indexOfFirst {
                 it.id == id
             }
-            val original = list.getOrNull(index)
-            val new = list.getOrNull(index - 1)
-            if (new != null) {
-                list[index - 1] = original!!
-                list[index] = new
-                myAdapter.notifyItemMoved(index, index - 1)
-            }
+            val newState = listFlow.value.toMutableList()
+            newState[index] = listFlow.value.getOrNull(index - 1) ?: return
+            newState[index - 1] = listFlow.value[index]
+            listFlow.value = newState
         }
 
         fun onDownClicked(id: String) {
-            val index = list.indexOfFirst {
+            val index = listFlow.value.indexOfFirst {
                 it.id == id
             }
-            val original = list.getOrNull(index)
-            val new = list.getOrNull(index + 1)
-            if (new != null) {
-                list[index + 1] = original!!
-                list[index] = new
-                myAdapter.notifyItemMoved(index, index + 1)
-            }
+            val newState = listFlow.value.toMutableList()
+            newState[index] = listFlow.value.getOrNull(index + 1) ?: return
+            newState[index + 1] = listFlow.value[index]
+            listFlow.value = newState
         }
 
-        myAdapter.update(
-            originalOrder.map { certificate ->
-                DocumentOrderItem(
-                    fileName = certificate.id,
-                    documentName = certificate.name,
-                    onDownClicked = {
-                        onDownClicked(certificate.id)
-                    },
-                    onUpClicked = {
-                        onUpClicked(certificate.id)
-                    }
-                )
+        scope.launch {
+            listFlow.collect { list ->
+                val items = list.map { certificate ->
+                    DocumentOrderItem(
+                        fileName = certificate.id,
+                        documentName = certificate.name,
+                        onDownClicked = {
+                            onDownClicked(it)
+                        },
+                        onUpClicked = {
+                            onUpClicked(it)
+                        }
+                    )
+                }
+                myAdapter.update(items)
             }
-        )
+        }
 
         customAlertDialogView.findViewById<RecyclerView>(R.id.document_order).adapter = myAdapter
 
@@ -190,7 +192,7 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
             .setTitle(R.string.dialog_document_order_title)
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok) { _, _ ->
-                onOrderChanged(list.map { it.id })
+                onOrderChanged(listFlow.value.map { it.id })
             }
             .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {

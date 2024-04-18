@@ -10,8 +10,8 @@ import com.xwray.groupie.viewbinding.GroupieViewHolder
 class DocumentOrderItem(
     private val fileName: String,
     private val documentName: String,
-    private val onUpClicked: () -> Unit,
-    private val onDownClicked: () -> Unit,
+    private val onUpClicked: (String) -> Unit,
+    private val onDownClicked: (String) -> Unit,
 ) : BindableItem<ItemDocumentOrderBinding>() {
 
     override fun initializeViewBinding(view: View): ItemDocumentOrderBinding = ItemDocumentOrderBinding.bind(view)
@@ -29,10 +29,10 @@ class DocumentOrderItem(
         viewHolder.binding.apply {
             documentNameTextField.text = documentName
             up.setOnClickListener {
-                onUpClicked()
+                onUpClicked(fileName)
             }
             down.setOnClickListener {
-                onDownClicked()
+                onDownClicked(fileName)
             }
         }
 

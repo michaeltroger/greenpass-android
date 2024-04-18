@@ -130,6 +130,7 @@ class CertificateFragment : Fragment(R.layout.fragment_certificate) {
             is ViewEvent.ShowChangeDocumentOrderDialog -> {
                 certificateDialogs.showChangeDocumentOrder(
                     context = requireContext(),
+                    scope = lifecycleScope,
                     originalOrder = it.originalOrder,
                     onOrderChanged = vm::onOrderChangeConfirmed
                 )
