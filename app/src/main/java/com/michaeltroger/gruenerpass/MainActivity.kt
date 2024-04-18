@@ -17,7 +17,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
