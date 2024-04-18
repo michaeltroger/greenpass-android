@@ -37,7 +37,8 @@
     <string name="changelog_summary">Wijzigingen in deze app-versie</string>
     <string name="delete_all">Verwijder alle</string>
     <string name="dialog_delete_all_confirmation_message">Wil je alle documenten uit de app verwijderen?</string>
-    <string name="dialog_warning">Warning! The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
+    <string name="dialog_warning_title">Warning!</string>
+    <string name="dialog_warning_description">The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
     <string name="lock">Vergrendelen</string>
     <string name="export_all">Alle exporteren</string>
     <string name="preference_add_documents_front">Documenten vooraan toevoegen</string>
