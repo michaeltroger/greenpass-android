@@ -41,11 +41,11 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
 
     override fun showDoYouWantToDeleteAllDialog(context: Context, onDeleteAllConfirmed: () -> Unit) {
         val dialog = MaterialAlertDialogBuilder(context)
-            .setMessage(context.getString(R.string.dialog_delete_all_confirmation_message))
+            .setMessage(R.string.dialog_delete_all_confirmation_message)
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteAllConfirmed()
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {
                 this.dialog = null
             }
@@ -68,7 +68,7 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteFilteredConfirmed()
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {
                 this.dialog = null
             }
@@ -79,7 +79,8 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
 
     override fun showWarningDialog(context: Context) {
         val dialog = MaterialAlertDialogBuilder(context)
-            .setMessage(context.getString(R.string.dialog_warning))
+            .setTitle(R.string.dialog_warning_title)
+            .setMessage(R.string.dialog_warning_description)
             .setPositiveButton(R.string.ok, null)
             .setOnDismissListener {
                 this.dialog = null
@@ -91,11 +92,11 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
 
     override fun showDoYouWantToDeleteDialog(context: Context, id: String, onDeleteConfirmed: (String) -> Unit) {
         val dialog = MaterialAlertDialogBuilder(context)
-            .setMessage(context.getString(R.string.dialog_delete_confirmation_message))
+            .setMessage(R.string.dialog_delete_confirmation_message)
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDeleteConfirmed(id)
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {
                 this.dialog = null
             }
@@ -117,12 +118,12 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         }
 
         val dialog = MaterialAlertDialogBuilder(context)
-            .setTitle(context.getString(R.string.dialog_document_name_title))
+            .setTitle(R.string.dialog_document_name_title)
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok) { _, _ ->
                 onDocumentNameChanged(textField.editText!!.text.toString())
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {
                 this.dialog = null
             }
@@ -186,12 +187,12 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         customAlertDialogView.findViewById<RecyclerView>(R.id.document_order).adapter = myAdapter
 
         val dialog = MaterialAlertDialogBuilder(context)
-            .setTitle(context.getString(R.string.dialog_document_order_title))
+            .setTitle(R.string.dialog_document_order_title)
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok) { _, _ ->
                 onOrderChanged(list.map { it.id })
             }
-            .setNegativeButton(context.getString(R.string.cancel), null)
+            .setNegativeButton(R.string.cancel, null)
             .setOnDismissListener {
                 this.dialog = null
             }
@@ -211,12 +212,12 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         val passwordTextField = customAlertDialogView.findViewById<TextInputLayout>(R.id.password_text_field)
 
         val dialog = MaterialAlertDialogBuilder(context)
-            .setTitle(context.getString(R.string.dialog_password_protection_title))
+            .setTitle(R.string.dialog_password_protection_title)
             .setView(customAlertDialogView)
             .setPositiveButton(R.string.ok) { _, _ ->
                 onPasswordEntered(passwordTextField.editText!!.text.toString())
             }
-            .setNegativeButton(context.getString(R.string.cancel)) { _, _ ->
+            .setNegativeButton(R.string.cancel) { _, _ ->
                 onCancelled()
             }
             .setOnCancelListener {
