@@ -102,7 +102,7 @@ class CertificateFragment : Fragment(R.layout.fragment_certificate) {
             ViewEvent.ShowPasswordDialog -> certificateDialogs.showEnterPasswordDialog(
                 context = requireContext(),
                 onPasswordEntered = vm::onPasswordEntered,
-                onCancelled = vm::deletePendingFileIfExists
+                onCancelled = vm::onPasswordDialogAborted
             )
 
             ViewEvent.ShowParsingFileError -> showFileCanNotBeReadError()

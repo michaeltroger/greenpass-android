@@ -30,7 +30,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun deletePendingFile() {
+    override fun onCleared() {
         pdfImporter.deletePendingFile()
     }
 }

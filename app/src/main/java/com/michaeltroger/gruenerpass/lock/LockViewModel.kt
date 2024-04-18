@@ -20,7 +20,7 @@ class LockViewModel @Inject constructor(
         }
     }
 
-    fun deletePendingFile() {
+    fun onAuthenticationError() {
         pdfImporter.deletePendingFile()
     }
 }

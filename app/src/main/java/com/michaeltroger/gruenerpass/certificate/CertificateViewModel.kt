@@ -205,7 +205,7 @@ class CertificateViewModel @Inject constructor(
         }
     }
 
-    fun deletePendingFileIfExists() {
+    fun onPasswordDialogAborted() {
         pdfImporter.deletePendingFile()
     }
 

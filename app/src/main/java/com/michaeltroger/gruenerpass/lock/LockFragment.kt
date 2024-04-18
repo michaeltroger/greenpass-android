@@ -56,7 +56,7 @@ class LockFragment : Fragment(R.layout.fragment_lock) {
         }
 
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-            vm.deletePendingFile()
+            vm.onAuthenticationError()
         }
     }
 }

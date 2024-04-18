@@ -96,7 +96,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     }
 
     override fun onDestroy() {
-        vm.deletePendingFile()
         timeoutHandler.removeCallbacks(interactionTimeoutRunnable)
         super.onDestroy()
     }
