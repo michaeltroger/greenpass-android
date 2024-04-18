@@ -32,7 +32,10 @@ class LockFragment : Fragment(R.layout.fragment_lock) {
         binding!!.authenticate.setOnClickListener {
             authenticate(0L)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         authenticate()
     }
 
