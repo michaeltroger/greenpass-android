@@ -24,7 +24,6 @@ import javax.inject.Inject
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
-@Suppress("TooManyFunctions")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
@@ -67,19 +66,20 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         startTimeoutHandler()
 
         lifecycleScope.launch {
-            vm.lockedState.first().let { isLocked ->
-                when (isLocked) {
-                    true -> navController.navigate(R.id.navigate_to_lock)
-                    false -> navController.navigate(R.id.navigate_to_certificate)
-                }
-            }
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.lockedState.collect { isLocked: Boolean ->
-                    if (isLocked && navController.currentDestination?.id != R.id.lockFragment) {
-                        navController.navigate(R.id.navigate_to_lock)
-                    } else if (!isLocked && navController.currentDestination?.id == R.id.lockFragment) {
-                        navController.navigate(R.id.navigate_to_certificate)
+                    when {
+                        isLocked && navController.currentDestination?.id != R.id.lockFragment -> {
+                            navController.navigate(R.id.navigate_to_lock)
+                        }
+                        !isLocked && navController.currentDestination?.id == R.id.lockFragment -> {
+                            navController.navigate(R.id.navigate_to_certificate)
+                        }
+                        !isLocked && navController.currentDestination?.id == R.id.startFragment -> {
+                            navController.navigate(R.id.navigate_to_certificate)
+                        }
                     }
+
                 }
             }
         }
