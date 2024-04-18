@@ -201,7 +201,6 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         }
     }
 
-
     override fun showEnterPasswordDialog(
         context: Context,
         onPasswordEntered: (String) -> Unit,
