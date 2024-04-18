@@ -37,7 +37,8 @@
     <string name="changelog_summary">Αλλαγές σε αυτήν την έκδοση εφαρμογής</string>
     <string name="delete_all">Διαγραφή όλων</string>
     <string name="dialog_delete_all_confirmation_message">Θέλετε πράγματι να διαγράψετε όλα τα έγγραφα από την εφαρμογή;</string>
-    <string name="dialog_warning">Προσοχή! Η εφαρμογή έχει ρυθμιστεί για να εμφανίζεται πάνω από την οθόνη κλειδώματος. Αυτό σημαίνει ότι είναι πιθανόν τα έγγραφά σας να μπορούν να προσπελαστούν χωρίς να ξεκλειδώσετε το τηλέφωνό σας. Μεταβείτε στις ρυθμίσεις για να το αλλάξετε αυτό.</string>
+    <string name="dialog_warning_title">Warning!</string>
+    <string name="dialog_warning_description">The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
     <string name="lock">Κλείδωμα</string>
     <string name="export_all">Εξαγωγή όλων</string>
     <string name="preference_add_documents_front">Προσθήκη εγγράφων στην αρχή</string>
