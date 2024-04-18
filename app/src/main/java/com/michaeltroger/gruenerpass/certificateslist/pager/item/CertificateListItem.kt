@@ -2,7 +2,6 @@ package com.michaeltroger.gruenerpass.certificateslist.pager.item
 
 import android.view.View
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.ItemCertificateListBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
@@ -30,9 +29,17 @@ class CertificateListItem(
                       payloads: MutableList<Any>) {
         super.bind(viewHolder, position, payloads)
         viewHolder.binding.apply {
-            documentNameTextField.text = documentName
-            documentNameTextField.setOnClickListener {
+            name.text = documentName
+            name.setOnClickListener {
                 onDocumentNameClicked()
+            }
+
+            deleteIcon.setOnClickListener {
+                onDeleteCalled()
+            }
+
+            shareIcon.setOnClickListener {
+                onShareCalled()
             }
         }
     }
