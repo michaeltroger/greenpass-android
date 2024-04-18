@@ -8,8 +8,7 @@ androidx-core-ktx = "1.12.0"
 androidx-datastore-preferences = "1.0.0"
 androidx-fragment-ktx = "1.6.2"
 androidx-lifecycle = "2.7.0"
-androidx-navigation-fragment-ktx = "2.7.7"
-androidx-navigation-ui-ktx = "2.7.7"
+androidx-navigation = "2.7.7"
 androidx-preference-ktx = "1.2.1"
 androidx-room = "2.6.1"
 androidx-test-espresso = "3.5.1"
@@ -44,8 +43,8 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "androidx-fragment-ktx" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
-androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation-fragment-ktx" }
-androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation-ui-ktx" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "androidx-preference-ktx" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
@@ -74,6 +73,7 @@ org-jetbrains-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kot
 org-jetbrains-kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "org-jetbrains-kotlinx-coroutines" }
 org-jetbrains-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
 org-robolectric = { module = "org.robolectric:robolectric", version.ref = "org-robolectric" }
+plugin-androidx-navigation-safe-args = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
 plugin-com-android-application = { module = "com.android.application:com.android.application.gradle.plugin", version.ref = "android-gradle-plugin" }
 plugin-com-android-library = { module = "com.android.library:com.android.library.gradle.plugin", version.ref = "android-gradle-plugin" }
 plugin-com-github-jk1-dependency-license-report = { module = "com.github.jk1.dependency-license-report:com.github.jk1.dependency-license-report.gradle.plugin", version.ref = "com-github-jk1-dependency-license-report" }

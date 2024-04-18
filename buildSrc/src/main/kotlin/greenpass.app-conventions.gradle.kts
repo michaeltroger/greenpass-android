@@ -9,6 +9,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("com.google.dagger.hilt.android")
+    id("androidx.navigation.safeargs.kotlin")
 
     id("com.github.jk1.dependency-license-report")
     id("io.gitlab.arturbosch.detekt")
