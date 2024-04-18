@@ -52,10 +52,21 @@
     <fragment
         android:id="@+id/moreFragment"
         android:name="com.michaeltroger.gruenerpass.more.MoreFragment"
-        android:label="@string/more"
-        />
+        android:label="@string/more">
+        <action
+            android:id="@+id/navigate_to_lock"
+            app:destination="@id/lockFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.michaeltroger.gruenerpass.settings.SettingsFragment"
-        android:label="@string/settings" />
+        android:label="@string/settings">
+        <action
+            android:id="@+id/navigate_to_lock"
+            app:destination="@id/lockFragment"
+            app:popUpTo="@+id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

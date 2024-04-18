@@ -21,6 +21,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -63,19 +64,18 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         startTimeoutHandler()
 
         lifecycleScope.launch {
+            vm.lockedState.first().let { isLocked ->
+                when (isLocked) {
+                    true -> navController.navigate(R.id.navigate_to_lock)
+                    false -> navController.navigate(R.id.navigate_to_certificate)
+                }
+            }
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.lockedState.collect { isLocked: Boolean ->
-                    when (isLocked) {
-                        true -> {
-                            if (navController.currentDestination?.id != R.id.lockFragment) {
-                                navController.navigate(R.id.navigate_to_lock)
-                            }
-                        }
-                        false -> {
-                            if (navController.currentDestination?.id != R.id.certificateFragment) {
-                                navController.navigate(R.id.navigate_to_certificate)
-                            }
-                        }
+                    if (isLocked && navController.currentDestination?.id != R.id.lockFragment) {
+                        navController.navigate(R.id.navigate_to_lock)
+                    } else if (!isLocked && navController.currentDestination?.id == R.id.lockFragment) {
+                        navController.navigate(R.id.navigate_to_certificate)
                     }
                 }
             }
