@@ -35,7 +35,7 @@ internal class PdfImporterImpl @Inject constructor(
 
     override suspend fun preparePendingFile(uri: Uri) {
         _pendingFile.value = fileRepo.copyToApp(uri)
-        logger.logDebug(pendingFile)
+        logger.logDebug(pendingFile.value)
     }
 
     override fun hasPendingFile(): Flow<Boolean> = pendingFile.map {
