@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         setupActionBarWithNavController(
             navController = navController,
             configuration = AppBarConfiguration.Builder(
-                R.id.certificateFragment,
+                R.id.certificatesFragment,
                 R.id.lockFragment,
                 R.id.startFragment,
             ).build()
