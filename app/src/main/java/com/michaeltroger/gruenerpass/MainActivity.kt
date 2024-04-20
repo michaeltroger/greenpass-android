@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         super.onDestroy()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         vm.setPendingFile(intent)
     }
