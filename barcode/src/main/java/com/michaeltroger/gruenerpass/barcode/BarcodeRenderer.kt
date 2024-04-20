@@ -15,6 +15,15 @@ private val preferredPriority = listOf(
     ZxingCpp.BarcodeFormat.DATA_MATRIX,
     ZxingCpp.BarcodeFormat.PDF_417,
     ZxingCpp.BarcodeFormat.QR_CODE,
+    ZxingCpp.BarcodeFormat.UPC_A,
+    ZxingCpp.BarcodeFormat.UPC_E,
+    ZxingCpp.BarcodeFormat.EAN_8,
+    ZxingCpp.BarcodeFormat.EAN_13,
+    ZxingCpp.BarcodeFormat.CODE_39,
+    ZxingCpp.BarcodeFormat.CODE_93,
+    ZxingCpp.BarcodeFormat.CODE_128,
+    ZxingCpp.BarcodeFormat.CODABAR,
+    ZxingCpp.BarcodeFormat.ITF,
 )
 private val readerOptions = ZxingCpp.ReaderOptions(
     formats = preferredPriority.toSet(),
