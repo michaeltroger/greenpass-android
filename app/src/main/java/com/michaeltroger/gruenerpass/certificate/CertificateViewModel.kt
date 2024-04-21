@@ -43,7 +43,7 @@ class CertificateViewModel @Inject constructor(
         ViewState.Initial
     )
     val viewState: StateFlow<ViewState> = _viewState
-    
+
     private val filter = MutableStateFlow("")
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
