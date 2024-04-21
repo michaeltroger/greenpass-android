@@ -43,7 +43,8 @@ class CertificateViewModel @Inject constructor(
         ViewState.Initial
     )
     val viewState: StateFlow<ViewState> = _viewState
-    private var filter = ""
+    
+    private val filter = MutableStateFlow("")
 
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
@@ -73,6 +74,7 @@ class CertificateViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 db.getAll(),
+                filter,
                 shouldAuthenticate,
                 searchForQrCode,
                 showOnLockedScreen,
@@ -89,6 +91,7 @@ class CertificateViewModel @Inject constructor(
 
     private suspend fun updateState(
         docs: List<Certificate>,
+        filter: String,
         shouldAuthenticate: Boolean,
         searchForBarcode: Boolean,
         showOnLockedScreen: Boolean,
@@ -100,7 +103,6 @@ class CertificateViewModel @Inject constructor(
                 )
             )
         } else {
-            val filter = filter
             val filteredDocs = docs.filter {
                 if (filter.isEmpty()) {
                     true
@@ -235,8 +237,7 @@ class CertificateViewModel @Inject constructor(
 
     fun onSearchQueryChanged(query: String) {
         viewModelScope.launch {
-            filter = query
-            //updateState()
+            filter.value = query
         }
     }
 
