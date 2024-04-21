@@ -129,8 +129,8 @@ class CertificateViewModel @Inject constructor(
         }
     }
 
-    private suspend fun processPendingFile() {
-        when (val result = pdfImporter.importPdf()) {
+    private suspend fun processPendingFile(password: String? = null) {
+        when (val result = pdfImporter.importPendingFile(password = password)) {
             PdfImportResult.ParsingError -> {
                 _viewEvent.emit(ViewEvent.ShowParsingFileError)
             }
@@ -148,20 +148,7 @@ class CertificateViewModel @Inject constructor(
 
     fun onPasswordEntered(password: String) {
         viewModelScope.launch {
-            when (val result = pdfImporter.importPasswordProtectedPdf(password)) {
-                PdfImportResult.ParsingError -> {
-                    _viewEvent.emit(ViewEvent.ShowParsingFileError)
-                }
-                is PdfImportResult.PasswordRequired -> {
-                    _viewEvent.emit(ViewEvent.ShowPasswordDialog)
-                }
-                is PdfImportResult.Success -> {
-                    insertIntoDatabase(result.pendingCertificate.toCertificate())
-                }
-                PdfImportResult.NoFileToImport -> {
-                    // ignore
-                }
-            }
+            processPendingFile(password = password)
         }
     }
 
