@@ -4,11 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CertificateDao {
     @Query("SELECT * FROM certificates")
-    suspend fun getAll(): List<Certificate>
+    fun getAll(): Flow<List<Certificate>>
 
     @Insert
     suspend fun insertAll(vararg certificates: Certificate)

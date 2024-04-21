@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.first
 
 @Suppress("TooManyFunctions")
 @HiltViewModel
@@ -44,7 +45,9 @@ class CertificateViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             preferenceObserver.init(this@CertificateViewModel)
-            updateState()
+            db.getAll().collect {
+                updateState(it)
+            }
         }
         viewModelScope.launch {
             pdfImporter.hasPendingFile().filter { it }.collect {
@@ -54,9 +57,8 @@ class CertificateViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateState() {
+    private suspend fun updateState(docs: List<Certificate>) {
         val shouldAuthenticate = preferenceObserver.shouldAuthenticate()
-        val docs = db.getAll()
         if (docs.isEmpty()) {
             _viewState.emit(
                 ViewState.Empty(
@@ -131,12 +133,11 @@ class CertificateViewModel @Inject constructor(
     private suspend fun insertIntoDatabase(certificate: Certificate) {
         val addDocumentsInFront = preferenceObserver.addDocumentsInFront()
         if (addDocumentsInFront) {
-            val all = listOf(certificate) + db.getAll()
+            val all = listOf(certificate) + db.getAll().first()
             db.replaceAll(*all.toTypedArray())
         } else {
             db.insertAll(certificate)
         }
-        updateState()
 
         if (addDocumentsInFront) {
             _viewEvent.emit(ViewEvent.ScrollToFirstCertificate())
@@ -148,22 +149,19 @@ class CertificateViewModel @Inject constructor(
     fun onDocumentNameChangeConfirmed(filename: String, documentName: String) {
         viewModelScope.launch {
             db.updateName(id = filename, name = documentName)
-            updateState()
         }
     }
 
     fun onDeleteConfirmed(fileName: String) {
         viewModelScope.launch {
             db.delete(fileName)
-            updateState()
             fileRepo.deleteFile(fileName)
         }
     }
 
     fun onDeleteAllConfirmed() = viewModelScope.launch {
-        val certificates = db.getAll()
+        val certificates = db.getAll().first()
         db.deleteAll()
-        updateState()
         certificates.forEach {
             fileRepo.deleteFile(it.id)
         }
@@ -175,21 +173,19 @@ class CertificateViewModel @Inject constructor(
             db.delete(it.id)
             fileRepo.deleteFile(it.id)
         }
-        updateState()
     }
 
     @Suppress("SpreadOperator")
     fun onOrderChangeConfirmed(sortedIdList: List<String>) {
         viewModelScope.launch {
             val originalMap = mutableMapOf<String, String>()
-            db.getAll().forEach {
+            db.getAll().first().forEach {
                 originalMap[it.id] = it.name
             }
             val sortedList: List<Certificate> = sortedIdList.map {
                 Certificate(id = it, name = originalMap[it]!!)
             }
             db.replaceAll(*sortedList.toTypedArray())
-            updateState()
         }
     }
 
@@ -201,7 +197,7 @@ class CertificateViewModel @Inject constructor(
 
     override fun refreshUi() {
         viewModelScope.launch {
-            updateState()
+            //updateState()
         }
     }
 
@@ -212,7 +208,7 @@ class CertificateViewModel @Inject constructor(
     fun onSearchQueryChanged(query: String) {
         viewModelScope.launch {
             filter = query
-            updateState()
+            //updateState()
         }
     }
 
@@ -230,7 +226,7 @@ class CertificateViewModel @Inject constructor(
 
     fun onExportAllSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ShareMultiple(db.getAll())
+            ViewEvent.ShareMultiple(db.getAll().first())
         )
     }
 
@@ -260,9 +256,8 @@ class CertificateViewModel @Inject constructor(
     }
 
     fun onChangeOrderSelected() = viewModelScope.launch {
-        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
         _viewEvent.emit(
-            ViewEvent.ShowChangeDocumentOrderDialog(originalOrder = docs)
+            ViewEvent.ShowChangeDocumentOrderDialog(originalOrder = db.getAll().first())
         )
     }
 
