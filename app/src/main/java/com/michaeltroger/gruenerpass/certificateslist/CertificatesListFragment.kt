@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.R
@@ -24,9 +25,9 @@ import com.michaeltroger.gruenerpass.databinding.FragmentCertificatesListBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
@@ -54,6 +55,13 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
         val binding = binding!!
 
         binding.certificates.adapter = adapter
+        
+        binding.certificates.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
         binding.addButton.setOnClickListener {
             vm.onAddFileSelected()
