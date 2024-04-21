@@ -107,7 +107,7 @@ class CertificateViewModel @Inject constructor(
                 if (filter.isEmpty()) {
                     true
                 } else {
-                    it.name.contains(filter.trim(), ignoreCase = true)
+                    it.name.contains(filter, ignoreCase = true)
                 }
             }
             val areDocumentsFilteredOut = filteredDocs.size != docs.size
@@ -224,7 +224,7 @@ class CertificateViewModel @Inject constructor(
 
     fun onSearchQueryChanged(query: String) {
         viewModelScope.launch {
-            filter.value = query
+            filter.value = query.trim()
         }
     }
 
