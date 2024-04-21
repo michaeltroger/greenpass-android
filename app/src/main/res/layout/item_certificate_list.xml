@@ -17,26 +17,26 @@
         android:singleLine="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/deleteIcon"
+        app:layout_constraintEnd_toStartOf="@id/editNameIcon"
         tools:text="Document name with very very very long text"/>
+
+    <ImageView
+        android:id="@+id/editNameIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/edit_24px"
+        android:paddingStart="@dimen/space_small"
+        android:paddingEnd="@dimen/space_small"
+        android:contentDescription="@string/delete"
+        app:layout_constraintEnd_toStartOf="@id/deleteIcon"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/name"/>
 
     <ImageView
         android:id="@+id/deleteIcon"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@drawable/baseline_delete_24"
-        android:paddingStart="@dimen/space_small"
-        android:paddingEnd="@dimen/space_small"
-        android:contentDescription="@string/delete"
-        app:layout_constraintEnd_toStartOf="@id/editNameIcon"
-        app:layout_constraintTop_toTopOf="@id/name"
-        app:layout_constraintBottom_toBottomOf="@id/name"/>
-
-    <ImageView
-        android:id="@+id/editNameIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:src="@drawable/share_24px"
         android:paddingStart="@dimen/space_small"
         android:paddingEnd="@dimen/space_small"
         android:contentDescription="@string/delete"

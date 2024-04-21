@@ -55,7 +55,7 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
         val binding = binding!!
 
         binding.certificates.adapter = adapter
-        
+
         binding.certificates.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
