@@ -58,7 +58,7 @@ internal class PdfImporterImpl @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught", "ReturnCount")
-    suspend fun importRegularPdf(): PdfImportResult {
+    private suspend fun importRegularPdf(): PdfImportResult {
         val pendingFile = pendingFile.value ?: return PdfImportResult.NoFileToImport
         try {
             val file = fileRepo.getFile(pendingFile.fileName)
@@ -80,7 +80,7 @@ internal class PdfImporterImpl @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    suspend fun importPasswordProtectedPdf(password: String): PdfImportResult {
+    private suspend fun importPasswordProtectedPdf(password: String): PdfImportResult {
         val pendingFile = pendingFile.value ?: return PdfImportResult.NoFileToImport
         return try {
             val file = fileRepo.getFile(pendingFile.fileName)
