@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     private lateinit var navController: NavController
     private val appBarConfiguration = AppBarConfiguration.Builder(
         R.id.certificatesFragment,
+        R.id.certificatesListFragment,
         R.id.lockFragment,
         R.id.startFragment,
     )
@@ -75,11 +76,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
                             NavGraphDirections.actionGlobalLockFragment()
                         }
                         !isLocked && navController.currentDestination?.id == R.id.lockFragment -> {
-                            LockFragmentDirections.actionGlobalCertificateFragment()
+                            LockFragmentDirections.actionGlobalCertificatesFragment()
                         }
                         !isLocked && navController.currentDestination?.id == R.id.startFragment -> {
-                            //navController.navigate(R.id.certificatesListFragment)
-                            StartFragmentDirections.actionGlobalCertificateFragment()
+                            StartFragmentDirections.actionGlobalCertificatesListFragment()
+                            //StartFragmentDirections.actionGlobalCertificatesFragment()
                         }
                         else -> {
                             null

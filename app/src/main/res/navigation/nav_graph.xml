@@ -6,8 +6,13 @@
     app:startDestination="@id/startFragment">
 
     <action
-        android:id="@+id/action_global_certificateFragment"
+        android:id="@+id/action_global_certificatesFragment"
         app:destination="@id/certificatesFragment"
+        app:popUpTo="@+id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/action_global_certificatesListFragment"
+        app:destination="@id/certificatesListFragment"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
     <action
