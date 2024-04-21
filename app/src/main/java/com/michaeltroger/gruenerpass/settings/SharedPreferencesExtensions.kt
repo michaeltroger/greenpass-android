@@ -6,13 +6,16 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
 
-fun SharedPreferences.getBooleanFlow(prefKey: String) = callbackFlow {
+fun SharedPreferences.getBooleanFlow(
+    prefKey: String,
+    defaultValue: Boolean,
+) = callbackFlow {
     val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (prefKey == key) {
-            trySend(getBoolean(key, false))
+            trySend(getBoolean(key, defaultValue))
         }
     }
     registerOnSharedPreferenceChangeListener(listener)
-    send(getBoolean(prefKey, false))
+    send(getBoolean(prefKey, defaultValue))
     awaitClose { unregisterOnSharedPreferenceChangeListener(listener) }
 }.buffer(Channel.UNLIMITED)
