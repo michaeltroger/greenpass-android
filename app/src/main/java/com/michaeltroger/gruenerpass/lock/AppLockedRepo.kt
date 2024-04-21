@@ -19,7 +19,7 @@ interface AppLockedRepo {
 }
 
 class AppLockedRepoImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @ApplicationContext context: Context,
     sharedPrefs: SharedPreferences,
 ) : AppLockedRepo {
     
@@ -29,7 +29,10 @@ class AppLockedRepoImpl @Inject constructor(
     private val isLocked: StateFlow<Boolean> = _isLocked
 
     private val shouldAuthenticate =
-        sharedPrefs.getBooleanFlow(context.getString(R.string.key_preference_biometric))
+        sharedPrefs.getBooleanFlow(
+            context.getString(R.string.key_preference_biometric),
+            false
+        )
 
     override fun isAppLocked() = shouldAuthenticate.combine(isLocked) {
         shouldAuthenticate: Boolean, isLocked: Boolean ->
