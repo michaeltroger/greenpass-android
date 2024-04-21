@@ -17,7 +17,7 @@ public interface PdfImporter {
     public suspend fun preparePendingFile(uri: Uri)
     public fun hasPendingFile(): Flow<Boolean>
     public fun deletePendingFile()
-    public suspend fun importPdf(password: String? = null): PdfImportResult
+    public suspend fun importPdf(password: String?): PdfImportResult
 }
 
 internal class PdfImporterImpl @Inject constructor(
