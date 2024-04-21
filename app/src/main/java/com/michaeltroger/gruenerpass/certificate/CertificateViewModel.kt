@@ -130,7 +130,7 @@ class CertificateViewModel @Inject constructor(
     }
 
     private suspend fun processPendingFile(password: String? = null) {
-        when (val result = pdfImporter.importPdf(password = password)) {
+        when (val result = pdfImporter.importPendingFile(password = password)) {
             PdfImportResult.ParsingError -> {
                 _viewEvent.emit(ViewEvent.ShowParsingFileError)
             }

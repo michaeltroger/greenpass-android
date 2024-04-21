@@ -17,7 +17,7 @@ public interface PdfImporter {
     public suspend fun preparePendingFile(uri: Uri)
     public fun hasPendingFile(): Flow<Boolean>
     public fun deletePendingFile()
-    public suspend fun importPdf(password: String?): PdfImportResult
+    public suspend fun importPendingFile(password: String?): PdfImportResult
 }
 
 internal class PdfImporterImpl @Inject constructor(
@@ -49,7 +49,7 @@ internal class PdfImporterImpl @Inject constructor(
         }
     }
 
-    override suspend fun importPdf(password: String?): PdfImportResult {
+    override suspend fun importPendingFile(password: String?): PdfImportResult {
         return if (password == null) {
             importRegularPdf()
         } else {
