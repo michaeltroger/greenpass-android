@@ -15,7 +15,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
+import com.michaeltroger.gruenerpass.lock.LockFragmentDirections
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
+import com.michaeltroger.gruenerpass.start.StartFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +36,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
     private lateinit var navController: NavController
+    private val appBarConfiguration = AppBarConfiguration.Builder(
+        R.id.certificatesFragment,
+        R.id.lockFragment,
+        R.id.startFragment,
+    )
 
     private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri == null) return@registerForActivityResult
@@ -50,11 +57,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         navController = navHost.navController
         setupActionBarWithNavController(
             navController = navController,
-            configuration = AppBarConfiguration.Builder(
-                R.id.certificatesFragment,
-                R.id.lockFragment,
-                R.id.startFragment,
-            ).build()
+            configuration = appBarConfiguration.build()
         )
 
         updateSettings()
@@ -67,19 +70,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 vm.lockedState.collect { isLocked: Boolean ->
-                    when {
+                    val destination = when {
                         isLocked && navController.currentDestination?.id != R.id.lockFragment -> {
-                            navController.navigate(R.id.navigate_to_lock)
+                            NavGraphDirections.actionGlobalLockFragment()
                         }
                         !isLocked && navController.currentDestination?.id == R.id.lockFragment -> {
-                            navController.navigate(R.id.navigate_to_certificate)
+                            LockFragmentDirections.actionGlobalCertificateFragment()
                         }
                         !isLocked && navController.currentDestination?.id == R.id.startFragment -> {
-                            navController.navigate(R.id.certificatesListFragment)
-                            //navController.navigate(R.id.navigate_to_certificate)
+                            //navController.navigate(R.id.certificatesListFragment)
+                            StartFragmentDirections.actionGlobalCertificateFragment()
                         }
-                    }
-
+                        else -> {
+                            null
+                        }
+                    } ?: return@collect
+                    navController.navigate(destination)
                 }
             }
         }
@@ -101,7 +107,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         super.onDestroy()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         vm.setPendingFile(intent)
     }

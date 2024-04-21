@@ -14,7 +14,7 @@
     <string name="dialog_delete_confirmation_message">Θέλετε πράγματι να διαγράψετε το έγγραφο από την εφαρμογή;</string>
     <string name="require_authentication">Απαίτηση πιστοποίησης</string>
     <string name="preference_search_barcode">Εξαγωγή barcode</string>
-    <string name="preference_search_barcode_description">Σαρώστε κάθε σελίδα PDF για ένα barcode. Επί του παρόντος υποστηριζόμενες μορφές είναι QR και Aztec (πειραματικό).</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR, Aztec, DataMatrix and PDF417.</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="authenticate">Ταυτοποίηση</string>
     <string name="report_issue_summary">Έχετε πρόβλημα με τη χρήση της εφαρμογής; Αφήστε μας να σας βοηθήσουμε</string>
@@ -37,7 +37,8 @@
     <string name="changelog_summary">Αλλαγές σε αυτήν την έκδοση εφαρμογής</string>
     <string name="delete_all">Διαγραφή όλων</string>
     <string name="dialog_delete_all_confirmation_message">Θέλετε πράγματι να διαγράψετε όλα τα έγγραφα από την εφαρμογή;</string>
-    <string name="dialog_warning">Προσοχή! Η εφαρμογή έχει ρυθμιστεί για να εμφανίζεται πάνω από την οθόνη κλειδώματος. Αυτό σημαίνει ότι είναι πιθανόν τα έγγραφά σας να μπορούν να προσπελαστούν χωρίς να ξεκλειδώσετε το τηλέφωνό σας. Μεταβείτε στις ρυθμίσεις για να το αλλάξετε αυτό.</string>
+    <string name="dialog_warning_title">Warning!</string>
+    <string name="dialog_warning_description">The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
     <string name="lock">Κλείδωμα</string>
     <string name="export_all">Εξαγωγή όλων</string>
     <string name="preference_add_documents_front">Προσθήκη εγγράφων στην αρχή</string>

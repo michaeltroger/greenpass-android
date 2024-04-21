@@ -10,4 +10,5 @@ dependencies {
     implementation(libs.plugin.com.google.devtools.ksp)
     implementation(libs.plugin.com.github.jk1.dependency.license.report)
     implementation(libs.plugin.io.gitlab.arturbosch.detekt)
+    implementation(libs.plugin.androidx.navigation.safe.args)
 }

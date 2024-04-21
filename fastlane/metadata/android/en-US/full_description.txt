@@ -14,9 +14,13 @@ Unofficial app that is fully open source. This app is a simple to use PDF Wallet
 Very simple app, that does nothing more than conveniently storing and displaying PDF certificates. You can use it for public transport tickets, bills, contracts, certificates and any other PDF file.
 The PDF file has to be imported into the app. Following the barcode is displayed in fullscreen, as well as the PDF document itself. That's already it.
 
+Currently supported barcode formats are:
+- Matrix (2D) codes: QR, Aztec, DataMatrix and PDF417
+- Linear (1D) codes: UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF and Codabar
+
 <b>More Features</b>
-- Can detect Aztec, QR, DataMatrix and PDF417 barcodes
-- Authentication
+- Can detect and extract barcodes in PDFs
+- (Optional) fingerprint authentication
 - PDFs can be individually sorted and named
 - PDFs can be opened
 - PDFs can be shared from other apps
