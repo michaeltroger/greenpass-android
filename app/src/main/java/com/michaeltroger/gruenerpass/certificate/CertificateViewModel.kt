@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.first
 @Suppress("TooManyFunctions")
 @HiltViewModel
 class CertificateViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @ApplicationContext context: Context,
     private val db: CertificateDao,
     private val fileRepo: FileRepo,
     private val pdfImporter: PdfImporter,

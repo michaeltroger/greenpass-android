@@ -19,7 +19,7 @@ interface AppLockedRepo {
 }
 
 class AppLockedRepoImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @ApplicationContext context: Context,
     sharedPrefs: SharedPreferences,
 ) : AppLockedRepo {
     
