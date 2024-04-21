@@ -1,7 +1,10 @@
 package com.michaeltroger.gruenerpass.certificate
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.certificate.file.FileRepo
 import com.michaeltroger.gruenerpass.certificate.mapper.toCertificate
 import com.michaeltroger.gruenerpass.certificate.states.ViewEvent
@@ -11,9 +14,9 @@ import com.michaeltroger.gruenerpass.db.CertificateDao
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
-import com.michaeltroger.gruenerpass.settings.PreferenceChangeListener
-import com.michaeltroger.gruenerpass.settings.PreferenceObserver
+import com.michaeltroger.gruenerpass.settings.getBooleanFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,17 +24,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 
 @Suppress("TooManyFunctions")
 @HiltViewModel
 class CertificateViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val db: CertificateDao,
     private val fileRepo: FileRepo,
     private val pdfImporter: PdfImporter,
     private val lockedRepo: AppLockedRepo,
-    private val preferenceObserver: PreferenceObserver
-): ViewModel(), PreferenceChangeListener {
+    sharedPrefs: SharedPreferences,
+): ViewModel() {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
         ViewState.Initial
@@ -42,12 +48,36 @@ class CertificateViewModel @Inject constructor(
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
+    private val shouldAuthenticate =
+        sharedPrefs.getBooleanFlow(
+            context.getString(R.string.key_preference_biometric),
+            false
+        )
+    private val searchForQrCode =
+        sharedPrefs.getBooleanFlow(
+            context.getString(R.string.key_preference_search_for_barcode),
+            true
+        )
+    private val addDocumentsInFront =
+        sharedPrefs.getBooleanFlow(
+            context.getString(R.string.key_preference_add_documents_front),
+            false
+        )
+    private val showOnLockedScreen =
+        sharedPrefs.getBooleanFlow(
+            context.getString(R.string.key_preference_show_on_locked_screen),
+            false
+        )
+
     init {
         viewModelScope.launch {
-            preferenceObserver.init(this@CertificateViewModel)
-            db.getAll().collect {
-                updateState(it)
-            }
+            combine(
+                db.getAll(),
+                shouldAuthenticate,
+                searchForQrCode,
+                showOnLockedScreen,
+                ::updateState
+            ).collect()
         }
         viewModelScope.launch {
             pdfImporter.hasPendingFile().filter { it }.collect {
@@ -57,8 +87,12 @@ class CertificateViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateState(docs: List<Certificate>) {
-        val shouldAuthenticate = preferenceObserver.shouldAuthenticate()
+    private suspend fun updateState(
+        docs: List<Certificate>,
+        shouldAuthenticate: Boolean,
+        searchForBarcode: Boolean,
+        showOnLockedScreen: Boolean,
+    ) {
         if (docs.isEmpty()) {
             _viewState.emit(
                 ViewState.Empty(
@@ -78,14 +112,14 @@ class CertificateViewModel @Inject constructor(
             _viewState.emit(
                 ViewState.Normal(
                     documents = filteredDocs,
-                    searchBarcode = preferenceObserver.searchForBarcode(),
+                    searchBarcode = searchForBarcode,
                     showLockMenuItem = shouldAuthenticate,
                     showScrollToFirstMenuItem = filteredDocs.size > 1,
                     showScrollToLastMenuItem = filteredDocs.size > 1,
                     showChangeOrderMenuItem = !areDocumentsFilteredOut && docs.size > 1,
                     showSearchMenuItem = docs.size > 1,
                     filter = filter,
-                    showWarningButton = preferenceObserver.showOnLockedScreen(),
+                    showWarningButton = showOnLockedScreen,
                     showExportFilteredMenuItem = areDocumentsFilteredOut,
                     showDeleteFilteredMenuItem = areDocumentsFilteredOut,
                 )
@@ -131,7 +165,7 @@ class CertificateViewModel @Inject constructor(
 
     @Suppress("SpreadOperator")
     private suspend fun insertIntoDatabase(certificate: Certificate) {
-        val addDocumentsInFront = preferenceObserver.addDocumentsInFront()
+        val addDocumentsInFront = addDocumentsInFront.first()
         if (addDocumentsInFront) {
             val all = listOf(certificate) + db.getAll().first()
             db.replaceAll(*all.toTypedArray())
@@ -195,12 +229,6 @@ class CertificateViewModel @Inject constructor(
         }
     }
 
-    override fun refreshUi() {
-        viewModelScope.launch {
-            //updateState()
-        }
-    }
-
     fun onPasswordDialogAborted() {
         pdfImporter.deletePendingFile()
     }
@@ -210,11 +238,6 @@ class CertificateViewModel @Inject constructor(
             filter = query
             //updateState()
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        preferenceObserver.onDestroy()
     }
 
     fun onExportFilteredSelected() = viewModelScope.launch {
