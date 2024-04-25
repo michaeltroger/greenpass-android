@@ -2,7 +2,7 @@ package com.michaeltroger.gruenerpass.pdfimporter
 
 import android.app.Application
 import android.net.Uri
-import com.michaeltroger.gruenerpass.logger.logging.Logger
+import com.michaeltroger.gruenerpass.logger.Logger
 import com.michaeltroger.gruenerpass.pdfdecryptor.PdfDecryptor
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
 import kotlinx.coroutines.Dispatchers
