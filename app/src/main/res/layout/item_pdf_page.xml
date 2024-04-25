@@ -49,7 +49,7 @@
             android:background="@drawable/dotted"/>
     </LinearLayout>
 
-    <com.github.chrisbanes.photoview.PhotoView
+    <com.github.panpf.zoomimage.ZoomImageView
         android:id="@+id/pdf_page"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
