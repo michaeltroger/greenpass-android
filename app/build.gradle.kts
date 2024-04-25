@@ -31,10 +31,10 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.preference.ktx)
-    implementation(libs.com.github.chrisbanes.photoview)
     implementation(libs.com.github.lisawray.groupie)
     implementation(libs.com.github.lisawray.groupie.viewbinding)
     implementation(libs.com.google.android.material)
+    implementation(libs.io.github.panpf.zoomimage.view)
 
     testImplementation(libs.androidx.test.ext.junit.ktx)
     testImplementation(libs.app.cash.turbine)
