@@ -151,10 +151,4 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
 
         adapter.update(listOf(item))
     }
-
-    companion object {
-        fun createBundle(id: String) = Bundle().apply {
-            putString("id", id)
-        }
-    }
 }

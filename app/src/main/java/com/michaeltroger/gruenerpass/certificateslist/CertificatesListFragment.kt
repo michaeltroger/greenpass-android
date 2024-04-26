@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.certificatedetails.CertificateDetailsFragment
 import com.michaeltroger.gruenerpass.certificates.CertificatesMenuProvider
 import com.michaeltroger.gruenerpass.certificates.CertificatesViewModel
 import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateDialogs
@@ -193,7 +192,9 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
                     vm.onChangeDocumentNameSelected(certificate.id, certificate.name)
                 },
                 onOpenDetails = {
-                    findNavController().navigate(R.id.certificateDetailsFragment, CertificateDetailsFragment.createBundle(certificate.id))
+                    findNavController().navigate(
+                        CertificatesListFragmentDirections.navigateToCertificateDetails(certificate.id)
+                    )
                 },
                 onShareCalled = {
                     vm.onShareSelected(certificate)
