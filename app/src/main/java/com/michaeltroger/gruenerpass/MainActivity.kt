@@ -63,9 +63,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
         updateSettings()
 
-        interactionTimeoutRunnable = Runnable {
-            vm.onInteractionTimeout()
-        }
+        interactionTimeoutRunnable = InteractionTimeoutRunnable()
         startTimeoutHandler()
 
         lifecycleScope.launch {
@@ -119,10 +117,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
     override fun onUserInteraction() {
         super.onUserInteraction()
-        resetHandler()
-    }
-
-    private fun resetHandler() {
         timeoutHandler.removeCallbacks(interactionTimeoutRunnable)
         startTimeoutHandler()
     }
@@ -134,6 +128,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     private fun MainViewModel.setPendingFile(intent: Intent?) {
         intent?.getUri()?.let {
             setPendingFile(it)
+        }
+    }
+
+    private inner class InteractionTimeoutRunnable : Runnable {
+        override fun run() {
+            vm.onInteractionTimeout()
         }
     }
 }
