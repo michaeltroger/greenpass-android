@@ -5,12 +5,17 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.certificates.file.FileRepo
 import com.michaeltroger.gruenerpass.certificates.mapper.toCertificate
 import com.michaeltroger.gruenerpass.certificates.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificates.states.ViewState
 import com.michaeltroger.gruenerpass.db.Certificate
-import com.michaeltroger.gruenerpass.db.CertificateDao
+import com.michaeltroger.gruenerpass.db.usecase.ChangeCertificateNameUseCase
+import com.michaeltroger.gruenerpass.db.usecase.ChangeCertificateOrderUseCase
+import com.michaeltroger.gruenerpass.db.usecase.DeleteAllCertificatesUseCase
+import com.michaeltroger.gruenerpass.db.usecase.DeleteSelectedCertificatesUseCase
+import com.michaeltroger.gruenerpass.db.usecase.DeleteSingleCertificateUseCase
+import com.michaeltroger.gruenerpass.db.usecase.GetCertificatesFlowUseCase
+import com.michaeltroger.gruenerpass.db.usecase.InsertIntoDatabaseUseCase
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
@@ -32,9 +37,14 @@ import kotlinx.coroutines.flow.first
 @HiltViewModel
 class CertificatesViewModel @Inject constructor(
     @ApplicationContext context: Context,
-    private val db: CertificateDao,
-    private val fileRepo: FileRepo,
     private val pdfImporter: PdfImporter,
+    private val insertIntoDatabaseUseCase: InsertIntoDatabaseUseCase,
+    private val deleteAllCertificatesUseCase: DeleteAllCertificatesUseCase,
+    private val deleteSingleCertificateUseCase: DeleteSingleCertificateUseCase,
+    private val deleteSelectedCertificatesUseCase: DeleteSelectedCertificatesUseCase,
+    private val changeCertificateNameUseCase: ChangeCertificateNameUseCase,
+    private val changeCertificateOrderUseCase: ChangeCertificateOrderUseCase,
+    private val getCertificatesFlowUseCase: GetCertificatesFlowUseCase,
     private val lockedRepo: AppLockedRepo,
     sharedPrefs: SharedPreferences,
 ): ViewModel() {
@@ -73,7 +83,7 @@ class CertificatesViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             combine(
-                db.getAll(),
+                getCertificatesFlowUseCase(),
                 filter,
                 shouldAuthenticate,
                 searchForQrCode,
@@ -146,22 +156,13 @@ class CertificatesViewModel @Inject constructor(
         }
     }
 
-    fun onPasswordEntered(password: String) {
-        viewModelScope.launch {
-            processPendingFile(password = password)
-        }
+    fun onPasswordEntered(password: String) = viewModelScope.launch {
+        processPendingFile(password = password)
     }
 
-    @Suppress("SpreadOperator")
     private suspend fun insertIntoDatabase(certificate: Certificate) {
         val addDocumentsInFront = addDocumentsInFront.first()
-        if (addDocumentsInFront) {
-            val all = listOf(certificate) + db.getAll().first()
-            db.replaceAll(*all.toTypedArray())
-        } else {
-            db.insertAll(certificate)
-        }
-
+        insertIntoDatabaseUseCase(certificate, addDocumentsInFront)
         if (addDocumentsInFront) {
             _viewEvent.emit(ViewEvent.ScrollToFirstCertificate())
         } else {
@@ -169,63 +170,38 @@ class CertificatesViewModel @Inject constructor(
         }
     }
 
-    fun onDocumentNameChangeConfirmed(filename: String, documentName: String) {
-        viewModelScope.launch {
-            db.updateName(id = filename, name = documentName)
-        }
+    fun onDocumentNameChangeConfirmed(filename: String, documentName: String) = viewModelScope.launch {
+         changeCertificateNameUseCase(filename, documentName)
     }
 
-    fun onDeleteConfirmed(fileName: String) {
-        viewModelScope.launch {
-            db.delete(fileName)
-            fileRepo.deleteFile(fileName)
-        }
+    fun onDeleteConfirmed(fileName: String) = viewModelScope.launch {
+        deleteSingleCertificateUseCase(fileName)
     }
 
     fun onDeleteAllConfirmed() = viewModelScope.launch {
-        val certificates = db.getAll().first()
-        db.deleteAll()
-        certificates.forEach {
-            fileRepo.deleteFile(it.id)
-        }
+        deleteAllCertificatesUseCase()
     }
 
     fun onDeleteFilteredConfirmed() = viewModelScope.launch {
         val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
-        docs.forEach {
-            db.delete(it.id)
-            fileRepo.deleteFile(it.id)
-        }
+        deleteSelectedCertificatesUseCase(docs)
     }
 
     @Suppress("SpreadOperator")
-    fun onOrderChangeConfirmed(sortedIdList: List<String>) {
-        viewModelScope.launch {
-            val originalMap = mutableMapOf<String, String>()
-            db.getAll().first().forEach {
-                originalMap[it.id] = it.name
-            }
-            val sortedList: List<Certificate> = sortedIdList.map {
-                Certificate(id = it, name = originalMap[it]!!)
-            }
-            db.replaceAll(*sortedList.toTypedArray())
-        }
+    fun onOrderChangeConfirmed(sortedIdList: List<String>) = viewModelScope.launch {
+        changeCertificateOrderUseCase(sortedIdList)
     }
 
-    fun lockApp() {
-        viewModelScope.launch {
-            lockedRepo.lockApp()
-        }
+    fun lockApp() = viewModelScope.launch {
+        lockedRepo.lockApp()
     }
 
     fun onPasswordDialogAborted() {
         pdfImporter.deletePendingFile()
     }
 
-    fun onSearchQueryChanged(query: String) {
-        viewModelScope.launch {
-            filter.value = query.trim()
-        }
+    fun onSearchQueryChanged(query: String) = viewModelScope.launch {
+        filter.value = query.trim()
     }
 
     fun onExportFilteredSelected() = viewModelScope.launch {
@@ -237,7 +213,7 @@ class CertificatesViewModel @Inject constructor(
 
     fun onExportAllSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ShareMultiple(db.getAll().first())
+            ViewEvent.ShareMultiple(getCertificatesFlowUseCase().first())
         )
     }
 
@@ -268,7 +244,9 @@ class CertificatesViewModel @Inject constructor(
 
     fun onChangeOrderSelected() = viewModelScope.launch {
         _viewEvent.emit(
-            ViewEvent.ShowChangeDocumentOrderDialog(originalOrder = db.getAll().first())
+            ViewEvent.ShowChangeDocumentOrderDialog(
+                originalOrder = getCertificatesFlowUseCase().first()
+            )
         )
     }
 
