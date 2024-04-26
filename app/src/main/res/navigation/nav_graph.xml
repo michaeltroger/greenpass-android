@@ -21,17 +21,18 @@
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
 
+    <action
+        android:id="@+id/action_global_moreFragment"
+        app:destination="@id/moreFragment" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment" />
+
     <fragment
         android:id="@+id/certificatesFragment"
         android:name="com.michaeltroger.gruenerpass.certificates.CertificatesFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_certificates">
-        <action
-            android:id="@+id/navigate_to_more"
-            app:destination="@id/moreFragment" />
-        <action
-            android:id="@+id/navigate_to_settings"
-            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/startFragment"

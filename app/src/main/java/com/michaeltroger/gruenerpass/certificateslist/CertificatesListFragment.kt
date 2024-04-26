@@ -127,8 +127,12 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
                 )
             }
             ViewEvent.ShowWarningDialog -> certificateDialogs.showWarningDialog(requireContext())
-            ViewEvent.ShowSettingsScreen -> findNavController().navigate(R.id.navigate_to_settings)
-            ViewEvent.ShowMoreScreen -> findNavController().navigate(R.id.navigate_to_more)
+            ViewEvent.ShowSettingsScreen -> findNavController().navigate(
+                CertificatesListFragmentDirections.actionGlobalSettingsFragment()
+            )
+            ViewEvent.ShowMoreScreen -> findNavController().navigate(
+                CertificatesListFragmentDirections.actionGlobalMoreFragment()
+            )
             ViewEvent.AddFile -> (requireActivity() as? AddFile)?.addFile()
             is ViewEvent.ShowDeleteDialog -> {
                 certificateDialogs.showDoYouWantToDeleteDialog(
