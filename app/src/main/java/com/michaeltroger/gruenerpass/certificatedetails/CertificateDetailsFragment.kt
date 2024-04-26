@@ -7,31 +7,28 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.fragment.findNavController
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
-import com.michaeltroger.gruenerpass.certificates.CertificatesViewModel
+import com.michaeltroger.gruenerpass.certificatedetails.states.DetailsViewState
 import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateDialogs
 import com.michaeltroger.gruenerpass.certificates.pager.item.CertificateItem
 import com.michaeltroger.gruenerpass.certificates.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificates.states.ViewEvent
-import com.michaeltroger.gruenerpass.certificates.states.ViewState
 import com.michaeltroger.gruenerpass.databinding.FragmentCertificateDetailsBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_details) {
 
-    private val vm by viewModels<CertificatesViewModel>()
-
-    private val args: CertificateDetailsFragmentArgs by navArgs()
+    private val vm by viewModels<CertificateDetailsViewModel>()
 
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
@@ -46,10 +43,6 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
     lateinit var certificateDialogs: CertificateDialogs
     @Inject
     lateinit var barcodeRenderer: BarcodeRenderer
-
-    private val id by lazy {
-        args.id
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -114,23 +107,22 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
         super.onDestroyView()
     }
 
-    private fun updateState(state: ViewState) {
+    private fun updateState(state: DetailsViewState) {
         when (state) {
-            is ViewState.Initial -> {} // nothing to do
-            is ViewState.Empty -> {
-                adapter.clear()
-            }
-            is ViewState.Normal -> showCertificateState(
-                documents = state.documents,
+            is DetailsViewState.Normal -> showCertificateState(
+                certificate = state.document,
                 searchBarcode = state.searchBarcode,
             )
+            is DetailsViewState.Deleted -> {
+                findNavController().popBackStack() // todo check: adapter.clear()
+            }
+            else -> {
+                // do nothing
+            }
         }
     }
 
-    private fun showCertificateState(documents: List<Certificate>, searchBarcode: Boolean) {
-        val certificate = documents
-            .first { it.id == id }
-
+    private fun showCertificateState(certificate: Certificate, searchBarcode: Boolean) {
         val item = CertificateItem(
             requireContext().applicationContext,
             fileName = certificate.id,

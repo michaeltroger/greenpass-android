@@ -25,7 +25,6 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -94,8 +93,12 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
             )
 
             ViewEvent.ShowParsingFileError -> showFileCanNotBeReadError()
-            is ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate(it.delayMs)
-            is ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate(it.delayMs)
+            is ViewEvent.ScrollToLastCertificate -> {
+                // do nothing
+            }
+            is ViewEvent.ScrollToFirstCertificate -> {
+                // do nothing
+            }
             is ViewEvent.ShareMultiple -> {
                 pdfSharing.openShareAllFilePicker(
                     context = requireContext(),
@@ -202,20 +205,6 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
             )
         }
         adapter.update(items)
-    }
-
-    private fun scrollToLastCertificate(delayMs: Long) {
-        lifecycleScope.launch {
-            delay(delayMs)
-            binding!!.certificates.smoothScrollToPosition(adapter.itemCount - 1)
-        }
-    }
-
-    private fun scrollToFirstCertificate(delayMs: Long) {
-        lifecycleScope.launch {
-            delay(delayMs)
-            binding!!.certificates.smoothScrollToPosition(0)
-        }
     }
 
     private fun showFileCanNotBeReadError() {
