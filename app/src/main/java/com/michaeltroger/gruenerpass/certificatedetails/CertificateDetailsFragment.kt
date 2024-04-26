@@ -116,8 +116,8 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
             is DetailsViewState.Deleted -> {
                 findNavController().popBackStack() // todo check: adapter.clear()
             }
-            else -> {
-                // do nothing
+            DetailsViewState.Initial -> {
+                // nothing to do
             }
         }
     }
