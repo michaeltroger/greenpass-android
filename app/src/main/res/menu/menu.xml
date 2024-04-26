@@ -80,6 +80,12 @@
         app:showAsAction="never"/>
 
     <item
+        android:id="@+id/switchLayout"
+        android:title="@string/switch_layout"
+        android:visible="false"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/lock"
         android:title="@string/lock"
         android:visible="false"

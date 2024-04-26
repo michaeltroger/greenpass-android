@@ -3,6 +3,7 @@ package com.michaeltroger.gruenerpass.certificates.states
 import com.michaeltroger.gruenerpass.db.Certificate
 
 sealed class ViewState {
+    abstract val showSwitchLayoutMenuItem: Boolean
     abstract val showLockMenuItem: Boolean
     abstract val showDeleteFilteredMenuItem: Boolean
     abstract val showDeleteAllMenuItem: Boolean
@@ -19,6 +20,7 @@ sealed class ViewState {
     abstract val showChangeOrderMenuItem: Boolean
 
     data object Initial : ViewState() {
+        override val showSwitchLayoutMenuItem = false
         override val showSearchMenuItem = false
         override val showLockMenuItem = false
         override val showDeleteAllMenuItem = false
@@ -39,6 +41,7 @@ sealed class ViewState {
         override val showLockMenuItem: Boolean,
     ) : ViewState() {
         override val showSearchMenuItem = false
+        override val showSwitchLayoutMenuItem = false
         override val showDeleteFilteredMenuItem = false
         override val showDeleteAllMenuItem = false
         override val showAddMenuItem = false
@@ -66,6 +69,7 @@ sealed class ViewState {
         override val showDeleteFilteredMenuItem: Boolean,
         override val showExportFilteredMenuItem: Boolean,
     ) : ViewState() {
+        override val showSwitchLayoutMenuItem = true
         override val showDeleteAllMenuItem = true
         override val showAddMenuItem = true
         override val showSettingsMenuItem = true

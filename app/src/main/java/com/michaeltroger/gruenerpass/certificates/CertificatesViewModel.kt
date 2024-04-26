@@ -1,8 +1,9 @@
 package com.michaeltroger.gruenerpass.certificates
 
-import android.content.Context
+import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.ViewModel
+import androidx.core.content.edit
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.certificates.mapper.toCertificate
@@ -21,22 +22,21 @@ import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.getBooleanFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
 @HiltViewModel
 class CertificatesViewModel @Inject constructor(
-    @ApplicationContext context: Context,
+    app: Application,
     private val pdfImporter: PdfImporter,
     private val insertIntoDatabaseUseCase: InsertIntoDatabaseUseCase,
     private val deleteAllCertificatesUseCase: DeleteAllCertificatesUseCase,
@@ -46,8 +46,8 @@ class CertificatesViewModel @Inject constructor(
     private val changeCertificateOrderUseCase: ChangeCertificateOrderUseCase,
     private val getCertificatesFlowUseCase: GetCertificatesFlowUseCase,
     private val lockedRepo: AppLockedRepo,
-    sharedPrefs: SharedPreferences,
-): ViewModel() {
+    private val sharedPrefs: SharedPreferences,
+): AndroidViewModel(app) {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(
         ViewState.Initial
@@ -61,22 +61,22 @@ class CertificatesViewModel @Inject constructor(
 
     private val shouldAuthenticate =
         sharedPrefs.getBooleanFlow(
-            context.getString(R.string.key_preference_biometric),
+            app.getString(R.string.key_preference_biometric),
             false
         )
     private val searchForQrCode =
         sharedPrefs.getBooleanFlow(
-            context.getString(R.string.key_preference_search_for_barcode),
+            app.getString(R.string.key_preference_search_for_barcode),
             true
         )
     private val addDocumentsInFront =
         sharedPrefs.getBooleanFlow(
-            context.getString(R.string.key_preference_add_documents_front),
+            app.getString(R.string.key_preference_add_documents_front),
             false
         )
     private val showOnLockedScreen =
         sharedPrefs.getBooleanFlow(
-            context.getString(R.string.key_preference_show_on_locked_screen),
+            app.getString(R.string.key_preference_show_on_locked_screen),
             false
         )
 
@@ -295,5 +295,17 @@ class CertificatesViewModel @Inject constructor(
         _viewEvent.emit(
             ViewEvent.Share(certificate)
         )
+    }
+
+    fun onSwitchLayoutSelected() {
+        sharedPrefs.edit {
+            putBoolean(
+                getApplication<Application>().getString(R.string.key_preference_show_list_layout),
+                !(sharedPrefs.getBoolean(
+                    getApplication<Application>().getString(R.string.key_preference_show_list_layout),
+                    false
+                ))
+            )
+        }
     }
 }

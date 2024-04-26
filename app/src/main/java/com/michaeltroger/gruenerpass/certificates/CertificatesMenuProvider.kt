@@ -94,6 +94,11 @@ class CertificatesMenuProvider(
             true
         }
 
+        R.id.switchLayout -> {
+            vm.onSwitchLayoutSelected()
+            true
+        }
+
         else -> false
     }
 
@@ -138,6 +143,7 @@ class CertificatesMenuProvider(
                 }
             }
             findItem(R.id.openMore)?.isVisible = state.showMoreMenuItem
+            findItem(R.id.switchLayout)?.isVisible = state.showSwitchLayoutMenuItem
         }
     }
 }

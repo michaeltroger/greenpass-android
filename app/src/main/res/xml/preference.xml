@@ -19,6 +19,13 @@
         android:defaultValue="true"/>
 
     <SwitchPreference
+        android:key="@string/key_preference_show_list_layout"
+        android:icon="@drawable/baseline_qr_code_24"
+        android:title="@string/preference_show_list_layout"
+        android:summary="@string/preference_show_list_layout_description"
+        android:defaultValue="false"/>
+
+    <SwitchPreference
         android:key="@string/key_preference_full_brightness"
         android:icon="@drawable/baseline_brightness_high_24"
         android:title="@string/preference_max_brightness"

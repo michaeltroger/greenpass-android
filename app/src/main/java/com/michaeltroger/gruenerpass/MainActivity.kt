@@ -15,12 +15,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
-import com.michaeltroger.gruenerpass.lock.LockFragmentDirections
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
-import com.michaeltroger.gruenerpass.start.StartFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
@@ -68,23 +66,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.lockedState.collect { isLocked: Boolean ->
-                    val destination = when {
-                        isLocked && navController.currentDestination?.id != R.id.lockFragment -> {
-                            NavGraphDirections.actionGlobalLockFragment()
-                        }
-                        !isLocked && navController.currentDestination?.id == R.id.lockFragment -> {
-                            LockFragmentDirections.actionGlobalCertificatesFragment()
-                        }
-                        !isLocked && navController.currentDestination?.id == R.id.startFragment -> {
-                            StartFragmentDirections.actionGlobalCertificatesListFragment()
-                            //StartFragmentDirections.actionGlobalCertificatesFragment()
-                        }
-                        else -> {
-                            null
-                        }
-                    } ?: return@collect
-                    navController.navigate(destination)
+                vm.getMainDestination(navController.currentDestination).collect {
+                    it?.let { navDirections ->
+                        navController.navigate(navDirections)
+                    }
                 }
             }
         }
