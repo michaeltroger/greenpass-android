@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.certificates.CertificatesViewModel
@@ -30,6 +31,8 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
 
     private val vm by viewModels<CertificatesViewModel>()
 
+    private val args: CertificateDetailsFragmentArgs by navArgs()
+
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
     private val thread = newSingleThreadContext("RenderContext")
 
@@ -45,7 +48,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
     lateinit var barcodeRenderer: BarcodeRenderer
 
     private val id by lazy {
-        requireArguments().getString("id") ?: throw IllegalArgumentException("id is required")
+        args.id
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
