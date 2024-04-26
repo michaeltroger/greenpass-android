@@ -8,6 +8,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.certificatedetails.states.DetailsViewState
@@ -50,6 +52,19 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
         binding = FragmentCertificateDetailsBinding.bind(view)
         val binding = binding!!
 
+        binding.certificateFullscreen.layoutManager = object : LinearLayoutManager(
+            requireContext(),
+            RecyclerView.HORIZONTAL,
+            false,
+        ) {
+            override fun canScrollVertically(): Boolean {
+                return false
+            }
+
+            override fun canScrollHorizontally(): Boolean {
+                return false
+            }
+        }
         binding.certificateFullscreen.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
