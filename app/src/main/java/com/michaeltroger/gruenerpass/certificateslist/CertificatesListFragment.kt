@@ -46,7 +46,7 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        menuProvider = CertificatesMenuProvider(requireContext(), vm)
+        menuProvider = CertificatesMenuProvider(requireContext(), vm, forceHiddenScrollButtons = true)
         requireActivity().addMenuProvider(menuProvider, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding = FragmentCertificatesListBinding.bind(view)

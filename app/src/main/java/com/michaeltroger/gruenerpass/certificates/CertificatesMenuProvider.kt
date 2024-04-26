@@ -12,7 +12,8 @@ import com.michaeltroger.gruenerpass.certificates.states.ViewState
 
 class CertificatesMenuProvider(
     private val context: Context,
-    private val vm: CertificatesViewModel
+    private val vm: CertificatesViewModel,
+    private val forceHiddenScrollButtons: Boolean = false,
 ) : MenuProvider {
     private var searchView: SearchView? = null
     private var menu: Menu? = null
@@ -120,8 +121,16 @@ class CertificatesMenuProvider(
             findItem(R.id.export_all)?.isVisible = state.showExportAllMenuItem
             findItem(R.id.export_filtered)?.isVisible = state.showExportFilteredMenuItem
             findItem(R.id.changeOrder)?.isVisible = state.showChangeOrderMenuItem
-            findItem(R.id.scrollToFirst)?.isVisible = state.showScrollToFirstMenuItem
-            findItem(R.id.scrollToLast)?.isVisible = state.showScrollToLastMenuItem
+            findItem(R.id.scrollToFirst)?.isVisible = if (forceHiddenScrollButtons) {
+                false
+            } else {
+                state.showScrollToFirstMenuItem
+            }
+            findItem(R.id.scrollToLast)?.isVisible = if (forceHiddenScrollButtons) {
+                false
+            } else {
+                state.showScrollToLastMenuItem
+            }
             findItem(R.id.search)?.apply {
                 isVisible = state.showSearchMenuItem
                 if (!state.showSearchMenuItem) {
