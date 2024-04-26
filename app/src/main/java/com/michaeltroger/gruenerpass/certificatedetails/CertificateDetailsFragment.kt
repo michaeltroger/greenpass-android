@@ -129,7 +129,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
                 searchBarcode = state.searchBarcode,
             )
             is DetailsViewState.Deleted -> {
-                findNavController().popBackStack() // todo check: adapter.clear()
+                findNavController().popBackStack()
             }
             DetailsViewState.Initial -> {
                 // nothing to do
