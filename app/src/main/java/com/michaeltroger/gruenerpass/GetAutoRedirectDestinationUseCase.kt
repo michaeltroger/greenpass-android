@@ -49,11 +49,6 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
         navBackStackEntry: NavBackStackEntry
     ): NavDirections? {
         val currentDestinationId = navBackStackEntry.destination.id
-        val certificatesDestination = if (showListLayout) {
-            NavGraphDirections.actionGlobalCertificatesListFragment()
-        } else {
-            NavGraphDirections.actionGlobalCertificatesFragment()
-        }
         return when {
             isAppLocked -> {
                 if (currentDestinationId == R.id.lockFragment) {
@@ -63,7 +58,7 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
                 }
             }
             !isAppLocked && currentDestinationId == R.id.lockFragment -> {
-                certificatesDestination
+                getCertificatesDestination(showListLayout)
             }
             currentDestinationId in listOf(
                 R.id.moreFragment,
@@ -71,7 +66,7 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
                 R.id.certificateDetailsFragment,
             ) -> {
                 if (hasPendingFile) {
-                    certificatesDestination
+                    getCertificatesDestination(showListLayout)
                 } else {
                     null
                 }
@@ -85,6 +80,14 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
             else -> {
                 null // do nothing
             }
+        }
+    }
+
+    private fun getCertificatesDestination(showListLayout: Boolean): NavDirections {
+        return if (showListLayout) {
+            NavGraphDirections.actionGlobalCertificatesListFragment()
+        } else {
+            NavGraphDirections.actionGlobalCertificatesFragment()
         }
     }
 }
