@@ -50,6 +50,7 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
     ): NavDirections? {
         val currentDestinationId = navBackStackEntry.destination.id
         return when {
+            // locked:
             isAppLocked -> {
                 if (currentDestinationId == R.id.lockFragment) {
                     null
@@ -57,7 +58,8 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
                     NavGraphDirections.actionGlobalLockFragment()
                 }
             }
-            !isAppLocked && currentDestinationId == R.id.lockFragment -> {
+            // unlocked:
+            currentDestinationId == R.id.lockFragment -> {
                 getCertificatesDestination(showListLayout)
             }
             currentDestinationId in listOf(
