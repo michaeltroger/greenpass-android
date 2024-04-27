@@ -6,12 +6,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.utils.NullableViewTypeSafeMatcher
 import com.michaeltroger.gruenerpass.utils.click
 import com.michaeltroger.gruenerpass.utils.verifyIsDisplayed
 import com.michaeltroger.gruenerpass.utils.waitUntilIdle
 import com.michaeltroger.gruenerpass.utils.waitUntilNoException
 import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
@@ -35,12 +35,14 @@ class MainActivityRobot {
         }
     }
 
-    fun verifyDocumentLoaded(docName: String, expectedDocumentCount: Int = 1, expectBarcode: Boolean = false) = apply {
+    fun verifyDocumentLoaded(docName: String, listLayout: Boolean = false, expectedDocumentCount: Int = 1, expectBarcode: Boolean = false) = apply {
         waitUntilNoException {
-            onView(withIndex(
-                withTagValue(`is`(if (expectBarcode) "barcode_loaded" else "pdf_loaded")),
-                index = expectedDocumentCount - 1
-            )).verifyIsDisplayed()
+            if (!listLayout) {
+                onView(withIndex(
+                    withTagValue(`is`(if (expectBarcode) "barcode_loaded" else "pdf_loaded")),
+                    index = expectedDocumentCount - 1
+                )).verifyIsDisplayed()
+            }
 
             onView(withIndex(
                 withId(R.id.deleteIcon),
@@ -80,6 +82,16 @@ class MainActivityRobot {
         return ChangeDocumentNameDialogRobot()
     }
 
+    fun openDetailView(index: Int = 0): DetailViewRobot {
+        waitUntilNoException {
+            onView(withIndex(
+                withId(R.id.certificate_list_item_root),
+                index = index
+            )).click()
+        }
+        return DetailViewRobot()
+    }
+
     fun selectFirstDocument(): AndroidFileAppRobot {
         waitUntilNoException {
             onView(addButtonMatcher).click()
@@ -96,21 +108,5 @@ class MainActivityRobot {
 
     private fun withIndex(matcher: Matcher<View?>, index: Int): TypeSafeMatcher<View?> {
         return NullableViewTypeSafeMatcher(index, matcher)
-    }
-}
-
-private class NullableViewTypeSafeMatcher(
-    private val index: Int,
-    private val matcher: Matcher<View?>
-) : TypeSafeMatcher<View?>() {
-    private var currentIndex = 0
-    override fun describeTo(description: Description) {
-        description.appendText("with index: ")
-        description.appendValue(index)
-        matcher.describeTo(description)
-    }
-
-    override fun matchesSafely(view: View?): Boolean {
-        return matcher.matches(view) && currentIndex++ == index
     }
 }
