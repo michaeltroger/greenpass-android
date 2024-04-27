@@ -55,6 +55,9 @@
     <string name="change_order">Reihenfolge ändern</string>
     <string name="export_filtered">Aktuell Gefilterte exportieren</string>
     <string name="delete_filtered">Aktuell Gefilterte löschen</string>
+    <string name="switch_layout">Switch layout</string>
+    <string name="preference_show_list_layout">Show PDFs in list layout</string>
+    <string name="preference_show_list_layout_description">Alternative layout in which instead of showing the PDF right away, only the PDF titles are shown in a list.</string>
     <!--suppress MissingQuantity -->
     <plurals name="dialog_delete_filtered_confirmation_text">
         <item quantity="one">Willst du wirklich %d Dokument aus der App löschen?</item>
