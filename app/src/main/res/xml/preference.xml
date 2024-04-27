@@ -20,7 +20,7 @@
 
     <SwitchPreference
         android:key="@string/key_preference_show_list_layout"
-        android:icon="@drawable/baseline_qr_code_24"
+        android:icon="@drawable/list_24px"
         android:title="@string/preference_show_list_layout"
         android:summary="@string/preference_show_list_layout_description"
         android:defaultValue="false"/>
