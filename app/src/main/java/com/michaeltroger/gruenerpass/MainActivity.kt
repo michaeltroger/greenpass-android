@@ -77,12 +77,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
             vm.setPendingFile(intent)
         }
         updateSettings()
+        setUpNavigation()
 
         interactionTimeoutRunnable = InteractionTimeoutRunnable()
         startTimeoutHandler()
 
         lifecycleScope.launch {
-            setUpNavigation()
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(
                     lockedRepo.isAppLocked(),
@@ -97,19 +97,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         }
     }
 
-    private suspend fun setUpNavigation() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val graphInflater = navHostFragment.navController.navInflater
-        val navGraph = graphInflater.inflate(R.navigation.nav_graph)
-        navController = navHostFragment.navController
+    private fun setUpNavigation() {
+        lifecycleScope.launch {
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val graphInflater = navHostFragment.navController.navInflater
+            val navGraph = graphInflater.inflate(R.navigation.nav_graph)
+            navController = navHostFragment.navController
 
-        navGraph.setStartDestination(getStartDestinationUseCase())
-        navController.graph = navGraph
+            navGraph.setStartDestination(getStartDestinationUseCase())
+            navController.graph = navGraph
 
-        setupActionBarWithNavController(
-            navController = navController,
-            configuration = appBarConfiguration.build()
-        )
+            setupActionBarWithNavController(
+                navController = navController,
+                configuration = appBarConfiguration.build()
+            )
+        }
     }
 
     private fun autoRedirect(
@@ -148,7 +150,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
                 null // do nothing
             }
         } ?: return
-        navController.navigate(destination)
+        //navController.navigate(destination)
     }
 
     private fun updateSettings() {
