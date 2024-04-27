@@ -5,17 +5,17 @@
     android:id="@+id/nav_graph">
 
     <action
-        android:id="@+id/action_global_certificatesFragment"
+        android:id="@+id/action_global_certificatesFragment_clearedBackstack"
         app:destination="@id/certificatesFragment"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
     <action
-        android:id="@+id/action_global_certificatesListFragment"
+        android:id="@+id/action_global_certificatesListFragment_clearedBackstack"
         app:destination="@id/certificatesListFragment"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />
     <action
-        android:id="@+id/action_global_lockFragment"
+        android:id="@+id/action_global_lockFragment_clearedBackstack"
         app:destination="@id/lockFragment"
         app:popUpTo="@+id/nav_graph"
         app:popUpToInclusive="true" />

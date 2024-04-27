@@ -32,7 +32,7 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
         )
     }
 
-    operator fun invoke(navController: NavController): Flow<NavDirections?> {
+    operator fun invoke(navController: NavController): Flow<Result> {
         return combine(
             lockedRepo.isAppLocked(),
             showListLayout,
@@ -47,20 +47,24 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
         showListLayout: Boolean,
         hasPendingFile: Boolean,
         navBackStackEntry: NavBackStackEntry
-    ): NavDirections? {
+    ): Result {
         val currentDestinationId = navBackStackEntry.destination.id
-        return when {
+        val destination = when {
             // locked:
             isAppLocked -> {
                 if (currentDestinationId == R.id.lockFragment) {
                     null
                 } else {
-                    NavGraphDirections.actionGlobalLockFragment()
+                    NavGraphDirections.actionGlobalLockFragmentClearedBackstack()
                 }
             }
             // unlocked:
             currentDestinationId == R.id.lockFragment -> {
-                getCertificatesDestination(showListLayout)
+                if (showListLayout) {
+                    NavGraphDirections.actionGlobalCertificatesListFragmentClearedBackstack()
+                } else {
+                    NavGraphDirections.actionGlobalCertificatesFragmentClearedBackstack()
+                }
             }
             currentDestinationId in listOf(
                 R.id.moreFragment,
@@ -68,28 +72,28 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
                 R.id.certificateDetailsFragment,
             ) -> {
                 if (hasPendingFile) {
-                    getCertificatesDestination(showListLayout)
+                    return Result.NavigateBack
                 } else {
                     null
                 }
             }
             currentDestinationId == R.id.certificatesFragment && showListLayout-> {
-                NavGraphDirections.actionGlobalCertificatesListFragment()
+                NavGraphDirections.actionGlobalCertificatesListFragmentClearedBackstack()
             }
             currentDestinationId == R.id.certificatesListFragment && !showListLayout -> {
-                NavGraphDirections.actionGlobalCertificatesFragment()
+                NavGraphDirections.actionGlobalCertificatesFragmentClearedBackstack()
             }
             else -> {
                 null // do nothing
             }
-        }
+        } ?: return Result.NothingTodo
+
+        return Result.NavigateTo(destination)
     }
 
-    private fun getCertificatesDestination(showListLayout: Boolean): NavDirections {
-        return if (showListLayout) {
-            NavGraphDirections.actionGlobalCertificatesListFragment()
-        } else {
-            NavGraphDirections.actionGlobalCertificatesFragment()
-        }
+    sealed class Result {
+        data class NavigateTo(val navDirections: NavDirections): Result()
+        data object NavigateBack: Result()
+        data object NothingTodo: Result()
     }
 }

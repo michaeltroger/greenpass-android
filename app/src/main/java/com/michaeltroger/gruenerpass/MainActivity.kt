@@ -1,7 +1,6 @@
 package com.michaeltroger.gruenerpass
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,19 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
-import com.michaeltroger.gruenerpass.lock.AppLockedRepo
-import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
-import com.michaeltroger.gruenerpass.settings.getBooleanFlow
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
@@ -73,9 +67,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
             setUpNavigation()
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                getAutoRedirectDestinationUseCase(navController!!).collect { navDirections ->
-                    navDirections?.let {
-                        navController?.navigate(it)
+                getAutoRedirectDestinationUseCase(navController!!).collect { navDestination ->
+                    when (navDestination) {
+                        GetAutoRedirectDestinationUseCase.Result.NavigateBack -> {
+                            navController?.popBackStack()
+                        }
+                        is GetAutoRedirectDestinationUseCase.Result.NavigateTo -> {
+                            navController?.navigate(navDestination.navDirections)
+                        }
+                        GetAutoRedirectDestinationUseCase.Result.NothingTodo -> {
+                            // nothing to do
+                        }
                     }
                 }
             }
