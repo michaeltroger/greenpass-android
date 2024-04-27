@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?colorOnPrimary"
-    android:layout_marginEnd="@dimen/space_small"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="?colorOnPrimary"
+    android:paddingHorizontal="@dimen/space_medium">
 
     <TextView
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/space_small"
-        android:textSize="18sp"
-        android:singleLine="true"
-        android:textColor="?colorOnSecondary"
         android:ellipsize="marquee"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/deleteIcon"
+        android:textSize="18sp"
+        android:textColor="?colorOnSecondary"
+        android:singleLine="true"
+        android:paddingVertical="@dimen/space_medium"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/editNameIcon"
         tools:text="Document name with very very very long text"/>
+
+    <ImageView
+        android:id="@+id/editNameIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/edit_24px"
+        android:paddingStart="@dimen/space_small"
+        android:paddingEnd="@dimen/space_small"
+        android:contentDescription="@string/delete"
+        app:layout_constraintEnd_toStartOf="@id/deleteIcon"
+        app:layout_constraintTop_toTopOf="@id/name"
+        app:layout_constraintBottom_toBottomOf="@id/name"/>
 
     <ImageView
         android:id="@+id/deleteIcon"
@@ -45,5 +56,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

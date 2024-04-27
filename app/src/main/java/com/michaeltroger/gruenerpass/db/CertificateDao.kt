@@ -11,6 +11,9 @@ interface CertificateDao {
     @Query("SELECT * FROM certificates")
     fun getAll(): Flow<List<Certificate>>
 
+    @Query("SELECT * FROM certificates WHERE id = :id")
+    fun get(id: String): Flow<Certificate?>
+
     @Insert
     suspend fun insertAll(vararg certificates: Certificate)
 

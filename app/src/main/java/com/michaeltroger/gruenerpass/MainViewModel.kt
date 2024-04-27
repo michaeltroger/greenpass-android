@@ -16,8 +16,6 @@ class MainViewModel @Inject constructor(
     private val lockedRepo: AppLockedRepo,
 ): ViewModel() {
 
-    val lockedState = lockedRepo.isAppLocked()
-
     fun setPendingFile(uri: Uri) {
         viewModelScope.launch {
             pdfImporter.preparePendingFile(uri)

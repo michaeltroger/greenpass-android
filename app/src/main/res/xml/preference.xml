@@ -6,21 +6,28 @@
 
     <com.michaeltroger.gruenerpass.settings.ValidateSwitchPreference
         android:key="@string/key_preference_biometric"
-        android:icon="@drawable/baseline_security_24"
+        android:icon="@drawable/security_24"
         android:title="@string/require_authentication"
         app:isPreferenceVisible="false"
         tools:isPreferenceVisible="true"/>
 
     <SwitchPreference
         android:key="@string/key_preference_search_for_barcode"
-        android:icon="@drawable/baseline_qr_code_24"
+        android:icon="@drawable/qr_code_24"
         android:title="@string/preference_search_barcode"
         android:summary="@string/preference_search_barcode_description"
         android:defaultValue="true"/>
 
     <SwitchPreference
+        android:key="@string/key_preference_show_list_layout"
+        android:icon="@drawable/list_24px"
+        android:title="@string/preference_show_list_layout"
+        android:summary="@string/preference_show_list_layout_description"
+        android:defaultValue="false"/>
+
+    <SwitchPreference
         android:key="@string/key_preference_full_brightness"
-        android:icon="@drawable/baseline_brightness_high_24"
+        android:icon="@drawable/brightness_high_24"
         android:title="@string/preference_max_brightness"
         android:summary="@string/preference_max_brightness_description"
         android:defaultValue="false"/>
