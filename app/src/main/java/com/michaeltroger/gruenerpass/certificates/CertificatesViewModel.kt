@@ -297,7 +297,7 @@ class CertificatesViewModel @Inject constructor(
         )
     }
 
-    fun onSwitchLayoutSelected() {
+    fun onSwitchLayoutSelected() = viewModelScope.launch {
         sharedPrefs.edit {
             putBoolean(
                 getApplication<Application>().getString(R.string.key_preference_show_list_layout),

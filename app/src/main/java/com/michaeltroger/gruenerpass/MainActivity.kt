@@ -38,27 +38,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     lateinit var preferenceUtil: PreferenceUtil
 
     @Inject
-    lateinit var lockedRepo: AppLockedRepo
-
-    @Inject
     lateinit var getStartDestinationUseCase: GetStartDestinationUseCase
 
     @Inject
-    lateinit var pdfImporter: PdfImporter
-
-    @Inject
-    lateinit var sharedPrefs: SharedPreferences
-
-    private val showListLayout by lazy {
-        sharedPrefs.getBooleanFlow(
-            getString(R.string.key_preference_show_list_layout),
-            false
-        )
-    }
+    lateinit var getAutoRedirectDestinationUseCase: GetAutoRedirectDestinationUseCase
 
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
-    private lateinit var navController: NavController
+
+    private var navController: NavController? = null
     private val appBarConfiguration = AppBarConfiguration.Builder(
         R.id.certificatesFragment,
         R.id.certificatesListFragment,
@@ -77,80 +65,36 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
             vm.setPendingFile(intent)
         }
         updateSettings()
-        setUpNavigation()
 
         interactionTimeoutRunnable = InteractionTimeoutRunnable()
         startTimeoutHandler()
 
         lifecycleScope.launch {
+            setUpNavigation()
+
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                combine(
-                    lockedRepo.isAppLocked(),
-                    showListLayout,
-                    pdfImporter.hasPendingFile(),
-                    navController.currentBackStackEntryFlow,
-                    ::autoRedirect
-                ).collect {
-                    // do nothing
+                getAutoRedirectDestinationUseCase(navController!!).collect { navDirections ->
+                    navDirections?.let {
+                        navController?.navigate(it)
+                    }
                 }
             }
         }
     }
 
-    private fun setUpNavigation() {
-        lifecycleScope.launch {
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            val graphInflater = navHostFragment.navController.navInflater
-            val navGraph = graphInflater.inflate(R.navigation.nav_graph)
-            navController = navHostFragment.navController
+    private suspend fun setUpNavigation() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val graphInflater = navHostFragment.navController.navInflater
+        val navGraph = graphInflater.inflate(R.navigation.nav_graph)
+        navController = navHostFragment.navController
 
-            navGraph.setStartDestination(getStartDestinationUseCase())
-            navController.graph = navGraph
+        navGraph.setStartDestination(getStartDestinationUseCase())
+        navController!!.graph = navGraph
 
-            setupActionBarWithNavController(
-                navController = navController,
-                configuration = appBarConfiguration.build()
-            )
-        }
-    }
-
-    private fun autoRedirect(
-        isAppLocked: Boolean,
-        showListLayout: Boolean,
-        hasPendingFile: Boolean,
-        navBackStackEntry: NavBackStackEntry
-    ) {
-        val currentDestinationId = navBackStackEntry.destination.id
-        val certificatesDestination = if (showListLayout) {
-            NavGraphDirections.actionGlobalCertificatesListFragment()
-        } else {
-            NavGraphDirections.actionGlobalCertificatesFragment()
-        }
-        val destination = when {
-            isAppLocked && currentDestinationId != R.id.lockFragment -> {
-                NavGraphDirections.actionGlobalLockFragment()
-            }
-            !isAppLocked && hasPendingFile && currentDestinationId in listOf(
-                R.id.moreFragment,
-                R.id.settingsFragment,
-                R.id.certificateDetailsFragment,
-            ) -> {
-                certificatesDestination
-            }
-            !isAppLocked && currentDestinationId == R.id.lockFragment -> {
-                certificatesDestination
-            }
-            !isAppLocked && currentDestinationId == R.id.certificatesFragment && showListLayout-> {
-                NavGraphDirections.actionGlobalCertificatesListFragment()
-            }
-            !isAppLocked && currentDestinationId == R.id.certificatesListFragment && !showListLayout -> {
-                NavGraphDirections.actionGlobalCertificatesFragment()
-            }
-            else -> {
-                null // do nothing
-            }
-        } ?: return
-        //navController.navigate(destination)
+        setupActionBarWithNavController(
+            navController = navController!!,
+            configuration = appBarConfiguration.build()
+        )
     }
 
     private fun updateSettings() {
@@ -161,7 +105,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return navController?.navigateUp() == true || super.onSupportNavigateUp()
     }
 
     override fun onDestroy() {
