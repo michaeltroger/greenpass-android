@@ -41,6 +41,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     lateinit var lockedRepo: AppLockedRepo
 
     @Inject
+    lateinit var getStartDestinationUseCase: GetStartDestinationUseCase
+
+    @Inject
     lateinit var pdfImporter: PdfImporter
 
     @Inject
@@ -60,7 +63,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         R.id.certificatesFragment,
         R.id.certificatesListFragment,
         R.id.lockFragment,
-        R.id.startFragment,
     )
 
     private val documentPick = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -74,19 +76,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         if (savedInstanceState == null) {
             vm.setPendingFile(intent)
         }
-        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHost.navController
-        setupActionBarWithNavController(
-            navController = navController,
-            configuration = appBarConfiguration.build()
-        )
-
         updateSettings()
 
         interactionTimeoutRunnable = InteractionTimeoutRunnable()
         startTimeoutHandler()
 
         lifecycleScope.launch {
+            setUpNavigation()
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(
                     lockedRepo.isAppLocked(),
@@ -99,6 +95,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
                 }
             }
         }
+    }
+
+    private suspend fun setUpNavigation() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val graphInflater = navHostFragment.navController.navInflater
+        val navGraph = graphInflater.inflate(R.navigation.nav_graph)
+        navController = navHostFragment.navController
+
+        navGraph.setStartDestination(getStartDestinationUseCase())
+        navController.graph = navGraph
+
+        setupActionBarWithNavController(
+            navController = navController,
+            configuration = appBarConfiguration.build()
+        )
     }
 
     private fun autoRedirect(
@@ -125,9 +136,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
                 certificatesDestination
             }
             !isAppLocked && currentDestinationId == R.id.lockFragment -> {
-                certificatesDestination
-            }
-            !isAppLocked && currentDestinationId == R.id.startFragment -> {
                 certificatesDestination
             }
             !isAppLocked && currentDestinationId == R.id.certificatesFragment && showListLayout-> {
