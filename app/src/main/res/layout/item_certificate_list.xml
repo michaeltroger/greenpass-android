@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?colorOnPrimary"
-    android:padding="@dimen/space_medium">
+    android:paddingHorizontal="@dimen/space_medium">
 
     <TextView
         android:id="@+id/name"
@@ -15,6 +15,7 @@
         android:textSize="18sp"
         android:textColor="?colorOnSecondary"
         android:singleLine="true"
+        android:paddingVertical="@dimen/space_medium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/editNameIcon"
