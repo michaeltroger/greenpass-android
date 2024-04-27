@@ -15,6 +15,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
+import com.michaeltroger.gruenerpass.navigation.GetAutoRedirectDestinationUseCase
+import com.michaeltroger.gruenerpass.navigation.GetStartDestinationUseCase
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

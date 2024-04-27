@@ -1,7 +1,8 @@
-package com.michaeltroger.gruenerpass;
+package com.michaeltroger.gruenerpass.navigation;
 
 import android.app.Application
 import android.content.SharedPreferences
+import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import com.michaeltroger.gruenerpass.settings.getBooleanFlow
 import kotlinx.coroutines.flow.combine

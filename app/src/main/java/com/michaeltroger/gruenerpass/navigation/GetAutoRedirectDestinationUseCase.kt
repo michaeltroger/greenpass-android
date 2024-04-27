@@ -1,10 +1,11 @@
-package com.michaeltroger.gruenerpass
+package com.michaeltroger.gruenerpass.navigation
 
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
+import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.getBooleanFlow
