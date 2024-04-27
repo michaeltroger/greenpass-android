@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,14 +11,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.michaeltroger.gruenerpass.extensions.getUri
+import com.michaeltroger.gruenerpass.lock.AppLockedRepo
+import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
+import com.michaeltroger.gruenerpass.settings.getBooleanFlow
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
@@ -30,6 +36,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
     @Inject
     lateinit var preferenceUtil: PreferenceUtil
+
+    @Inject
+    lateinit var lockedRepo: AppLockedRepo
+
+    @Inject
+    lateinit var pdfImporter: PdfImporter
+
+    @Inject
+    lateinit var sharedPrefs: SharedPreferences
+
+    private val showListLayout by lazy {
+        sharedPrefs.getBooleanFlow(
+            getString(R.string.key_preference_show_list_layout),
+            false
+        )
+    }
 
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
@@ -66,13 +88,59 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.getMainDestination(navController.currentDestination).collect {
-                    it?.let { navDirections ->
-                        navController.navigate(navDirections)
-                    }
+                combine(
+                    lockedRepo.isAppLocked(),
+                    showListLayout,
+                    pdfImporter.hasPendingFile(),
+                    navController.currentBackStackEntryFlow,
+                    ::autoRedirect
+                ).collect {
+                    // do nothing
                 }
             }
         }
+    }
+
+    private fun autoRedirect(
+        isAppLocked: Boolean,
+        showListLayout: Boolean,
+        hasPendingFile: Boolean,
+        navBackStackEntry: NavBackStackEntry
+    ) {
+        val currentDestinationId = navBackStackEntry.destination.id
+        val certificatesDestination = if (showListLayout) {
+            NavGraphDirections.actionGlobalCertificatesListFragment()
+        } else {
+            NavGraphDirections.actionGlobalCertificatesFragment()
+        }
+        val destination = when {
+            isAppLocked && currentDestinationId != R.id.lockFragment -> {
+                NavGraphDirections.actionGlobalLockFragment()
+            }
+            !isAppLocked && hasPendingFile && currentDestinationId in listOf(
+                R.id.moreFragment,
+                R.id.settingsFragment,
+                R.id.certificateDetailsFragment,
+            ) -> {
+                certificatesDestination
+            }
+            !isAppLocked && currentDestinationId == R.id.lockFragment -> {
+                certificatesDestination
+            }
+            !isAppLocked && currentDestinationId == R.id.startFragment -> {
+                certificatesDestination
+            }
+            !isAppLocked && currentDestinationId == R.id.certificatesFragment && showListLayout-> {
+                NavGraphDirections.actionGlobalCertificatesListFragment()
+            }
+            !isAppLocked && currentDestinationId == R.id.certificatesListFragment && !showListLayout -> {
+                NavGraphDirections.actionGlobalCertificatesFragment()
+            }
+            else -> {
+                null // do nothing
+            }
+        } ?: return
+        navController.navigate(destination)
     }
 
     private fun updateSettings() {
