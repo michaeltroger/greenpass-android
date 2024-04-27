@@ -42,6 +42,7 @@ class GetAutoRedirectDestinationUseCase @Inject constructor(
         )
     }
 
+    @Suppress("ReturnCount")
     private fun autoRedirect(
         isAppLocked: Boolean,
         showListLayout: Boolean,
