@@ -9,8 +9,11 @@ sealed class ViewEvent {
     data object ShowParsingFileError : ViewEvent()
     data object ShowPasswordDialog : ViewEvent()
     data object CloseAllDialogs : ViewEvent()
-    data class ScrollToLastCertificate(val delayMs: Long = SCROLL_TO_DELAY_MS) : ViewEvent()
-    data class ScrollToFirstCertificate(val delayMs: Long = SCROLL_TO_DELAY_MS) : ViewEvent()
+    data class GoToCertificate(
+        val position: Int,
+        val id: String,
+        val delayMs: Long = SCROLL_TO_DELAY_MS,
+    ) : ViewEvent()
     data class Share(val certificate: Certificate) : ViewEvent()
     data class ShareMultiple(val list: List<Certificate>) : ViewEvent()
     data class ShowDeleteDialog(val id: String) : ViewEvent()

@@ -164,9 +164,14 @@ class CertificatesViewModel @Inject constructor(
         val addDocumentsInFront = addDocumentsInFront.first()
         insertIntoDatabaseUseCase(certificate, addDocumentsInFront)
         if (addDocumentsInFront) {
-            _viewEvent.emit(ViewEvent.ScrollToFirstCertificate())
+            _viewEvent.emit(ViewEvent.GoToCertificate(position = 0, id = certificate.id))
         } else {
-            _viewEvent.emit(ViewEvent.ScrollToLastCertificate())
+            _viewEvent.emit(
+                ViewEvent.GoToCertificate(
+                    position = getCertificatesFlowUseCase().first().size - 1,
+                    id = certificate.id
+                )
+            )
         }
     }
 
@@ -231,14 +236,25 @@ class CertificatesViewModel @Inject constructor(
     }
 
     fun onScrollToFirstSelected() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
         _viewEvent.emit(
-            ViewEvent.ScrollToFirstCertificate(0)
+            ViewEvent.GoToCertificate(
+                position = 0,
+                id = docs[0].id,
+                delayMs = 0,
+            )
         )
     }
 
     fun onScrollToLastSelected() = viewModelScope.launch {
+        val docs = (viewState.value as? ViewState.Normal)?.documents ?: return@launch
+        val indexLast = docs.size - 1
         _viewEvent.emit(
-            ViewEvent.ScrollToLastCertificate(0)
+            ViewEvent.GoToCertificate(
+                position = indexLast,
+                docs[indexLast].id,
+                delayMs = 0,
+            )
         )
     }
 

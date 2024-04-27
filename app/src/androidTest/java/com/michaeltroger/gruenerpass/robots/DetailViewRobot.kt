@@ -35,6 +35,8 @@ class DetailViewRobot {
         }
     }
 
+    fun goBack() = MainActivityRobot()
+
     private fun withIndex(matcher: Matcher<View?>, index: Int): TypeSafeMatcher<View?> {
         return NullableViewTypeSafeMatcher(index, matcher)
     }

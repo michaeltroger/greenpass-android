@@ -4,6 +4,7 @@ import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
+import com.michaeltroger.gruenerpass.robots.DetailViewRobot
 import com.michaeltroger.gruenerpass.robots.MainActivityRobot
 import com.michaeltroger.gruenerpass.utils.FailingTestWatcher
 import com.michaeltroger.gruenerpass.utils.ScreenshotUtil
@@ -40,6 +41,10 @@ class ListScreenshotTest {
             .selectFirstDocument()
             .goToPdfFolder()
             .openPdf(fileName = "demo.pdf")
+
+        DetailViewRobot()
+            .verifyDocumentLoaded(docName = "demo")
+            .goBack()
             .verifyDocumentLoaded(docName = "demo", listLayout = true)
 
         ScreenshotUtil.recordScreenshot("list_layout_normal")
@@ -52,8 +57,8 @@ class ListScreenshotTest {
             .selectFirstDocument()
             .goToPdfFolder()
             .openPdf(fileName = "demo.pdf")
-            .verifyDocumentLoaded(docName = "demo", listLayout = true)
-            .openDetailView()
+
+        DetailViewRobot()
             .verifyDocumentLoaded(docName = "demo")
 
         ScreenshotUtil.recordScreenshot("detail_screen")

@@ -106,8 +106,7 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
             )
 
             ViewEvent.ShowParsingFileError -> showFileCanNotBeReadError()
-            is ViewEvent.ScrollToLastCertificate -> scrollToLastCertificate(it.delayMs)
-            is ViewEvent.ScrollToFirstCertificate -> scrollToFirstCertificate(it.delayMs)
+            is ViewEvent.GoToCertificate -> goToCertificate(it)
             is ViewEvent.ShareMultiple -> {
                 pdfSharing.openShareAllFilePicker(
                     context = requireContext(),
@@ -218,17 +217,10 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
         adapter.update(items)
     }
 
-    private fun scrollToLastCertificate(delayMs: Long) {
+    private fun goToCertificate(event: ViewEvent.GoToCertificate) {
         lifecycleScope.launch {
-            delay(delayMs)
-            binding!!.certificates.smoothScrollToPosition(adapter.itemCount - 1)
-        }
-    }
-
-    private fun scrollToFirstCertificate(delayMs: Long) {
-        lifecycleScope.launch {
-            delay(delayMs)
-            binding!!.certificates.smoothScrollToPosition(0)
+            delay(event.delayMs)
+            binding!!.certificates.smoothScrollToPosition(event.position)
         }
     }
 
