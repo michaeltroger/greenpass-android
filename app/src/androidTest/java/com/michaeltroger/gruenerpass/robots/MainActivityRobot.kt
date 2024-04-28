@@ -10,7 +10,7 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.utils.NullableViewTypeSafeMatcher
 import com.michaeltroger.gruenerpass.utils.click
 import com.michaeltroger.gruenerpass.utils.verifyIsDisplayed
-import com.michaeltroger.gruenerpass.utils.verifyNotDisplayed
+import com.michaeltroger.gruenerpass.utils.verifyDoesNotExist
 import com.michaeltroger.gruenerpass.utils.waitUntilIdle
 import com.michaeltroger.gruenerpass.utils.waitUntilNoException
 import org.hamcrest.CoreMatchers.`is`
@@ -48,7 +48,7 @@ class MainActivityRobot {
 
             onView(withContentDescription(
                 androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description
-            )).verifyNotDisplayed()
+            )).verifyDoesNotExist()
 
             onView(withIndex(
                 withId(R.id.deleteIcon),
