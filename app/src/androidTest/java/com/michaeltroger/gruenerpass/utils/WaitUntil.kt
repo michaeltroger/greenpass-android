@@ -16,7 +16,7 @@ fun waitUntilNoException(timeoutMs: Long = 10000, function: () -> Any?) {
         try {
             function()
             return
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // if exception due to ANR then reset timer
             if (e.toString().contains("RootViewWithoutFocusException")) {
                 val waitButton = uiDevice.findObject(UiSelector().textContains("Wait"))
@@ -38,7 +38,7 @@ private fun waitFor(ms: Long) {
     uiDevice.findObject(UiSelector().className("doesNotExist")).waitForExists(ms)
 }
 
-private class TimeoutException(private val e: Exception) : Exception() {
+private class TimeoutException(private val e: Throwable) : Exception() {
     override fun toString(): String {
         return "Timeout out, original error: $e"
     }
