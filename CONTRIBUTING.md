@@ -16,8 +16,8 @@ Thank you for your interest in contributing to this project!
 
 ## Would you like to implement a new feature?
 - Please wait with implementation until an official collaborator gives the go
-- As a rule of thumb the feature will receive green light if there is enough demand from various users
-- Reference the bug ticket in your pull request
+- As a rule of thumb the feature will receive green light, if there is enough demand from various users
+- Reference the feature request ticket in your pull request
 
 ## Would you like to translate the app
 - Translations can be done on [Crowdin](https://crwd.in/green-pass)
