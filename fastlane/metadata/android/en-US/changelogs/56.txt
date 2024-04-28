@@ -1,6 +1,5 @@
  - New alternative list layout
- - Add support for DataMatrix and PDF417 barcodes
- - Add support for 1D barcodes: UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF and Codabar
+ - Add support for DataMatrix, PDF417, UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF and Codabar barcodes
  - Prioritizes barcodes more common for tickets (like Aztec) if multiple are found
  - Improved detection of small barcodes
  - Documents are shown slightly bigger
