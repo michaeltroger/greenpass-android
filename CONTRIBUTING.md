@@ -15,7 +15,8 @@ Thank you for your interest in contributing to this project!
 - Please use the "Feature request" template for creating the Issue
 
 ## Would you like to implement a new feature?
-- Please wait with implementation until an official collaborator gives the go. As a rule of thumb the feature will receive green light if there is enough demand from various users
+- Please wait with implementation until an official collaborator gives the go
+- As a rule of thumb the feature will receive green light if there is enough demand from various users
 - Reference the bug ticket in your pull request
 
 ## Would you like to translate the app
