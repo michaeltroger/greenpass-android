@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.utils.NullableViewTypeSafeMatcher
+import com.michaeltroger.gruenerpass.utils.click
 import com.michaeltroger.gruenerpass.utils.verifyIsDisplayed
 import com.michaeltroger.gruenerpass.utils.waitUntilNoException
 import org.hamcrest.CoreMatchers.`is`
@@ -15,6 +16,10 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
 class DetailViewRobot {
+
+    private val backButton = onView(withContentDescription(
+        androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description
+    ))
 
     fun verifyDocumentLoaded(docName: String, expectedDocumentCount: Int = 1, expectBarcode: Boolean = false) = apply {
         waitUntilNoException {
@@ -35,7 +40,10 @@ class DetailViewRobot {
         }
     }
 
-    fun goBack() = MainActivityRobot()
+    fun goBack(): MainActivityRobot {
+        backButton.click()
+        return MainActivityRobot()
+    }
 
     private fun withIndex(matcher: Matcher<View?>, index: Int): TypeSafeMatcher<View?> {
         return NullableViewTypeSafeMatcher(index, matcher)
