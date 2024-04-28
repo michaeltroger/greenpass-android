@@ -1,0 +1,9 @@
+ - New alternative list layout
+ - Add support for DataMatrix and PDF417 barcodes
+ - Add support for 1D barcodes: UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF and Codabar
+ - Prioritizes barcodes more common for tickets (like Aztec) if multiple are found
+ - Improved detection of small barcodes
+ - Documents are shown slightly bigger
+ - Fix bug in document ordering with many documents
+ - Redirect app to main screen if user imports a document while on More, Settings, Detail screen
+ - Update of dependencies

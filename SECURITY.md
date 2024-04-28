@@ -5,8 +5,8 @@ In between versions don't receive security updates. Please always use the latest
 
 | Version | Supported          |
 |---------| ------------------ |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 4.1.x   | :white_check_mark: |
+| < 4.1   | :x:                |
 
 ## Reporting a Vulnerability
 You can privately report vulnerabilities on GitHub through the ["Security" -> "Report a vulnerability"](https://github.com/michaeltroger/greenpass-android/security/advisories/new) function (preferred).
