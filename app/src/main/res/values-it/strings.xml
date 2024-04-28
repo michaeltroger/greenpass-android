@@ -14,7 +14,7 @@
     <string name="dialog_delete_confirmation_message">Vuoi davvero rimuovere il documento dall\'app?</string>
     <string name="require_authentication">Richiedi l\'autenticazione</string>
     <string name="preference_search_barcode">Extract barcode</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a barcode. Currently supported formats are QR, Aztec, DataMatrix and PDF417.</string>
+    <string name="preference_search_barcode_description">Scan each PDF page for a barcode like e.g. a QR code.</string>
     <string name="settings">Impostazioni</string>
     <string name="authenticate">Autenticati</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
@@ -55,6 +55,9 @@
     <string name="change_order">Change order</string>
     <string name="export_filtered">Export currently filtered</string>
     <string name="delete_filtered">Delete currently filtered</string>
+    <string name="switch_layout">Switch layout</string>
+    <string name="preference_show_list_layout">Show PDFs in list layout</string>
+    <string name="preference_show_list_layout_description">Alternative layout in which instead of showing the PDF right away, only the PDF titles are shown in a list.</string>
     <!--suppress MissingQuantity -->
     <plurals name="dialog_delete_filtered_confirmation_text">
         <item quantity="one">Do you really want to delete %d document from the app?</item>
