@@ -2,6 +2,7 @@ package com.michaeltroger.gruenerpass.robots
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -9,6 +10,7 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.utils.NullableViewTypeSafeMatcher
 import com.michaeltroger.gruenerpass.utils.click
 import com.michaeltroger.gruenerpass.utils.verifyIsDisplayed
+import com.michaeltroger.gruenerpass.utils.verifyNotDisplayed
 import com.michaeltroger.gruenerpass.utils.waitUntilIdle
 import com.michaeltroger.gruenerpass.utils.waitUntilNoException
 import org.hamcrest.CoreMatchers.`is`
@@ -43,6 +45,10 @@ class MainActivityRobot {
                     index = expectedDocumentCount - 1
                 )).verifyIsDisplayed()
             }
+
+            onView(withContentDescription(
+                androidx.navigation.ui.R.string.nav_app_bar_navigate_up_description
+            )).verifyNotDisplayed()
 
             onView(withIndex(
                 withId(R.id.deleteIcon),
