@@ -27,6 +27,7 @@ Currently supported barcode formats are:
 - PDFs can be shared with other apps (indirectly allows printing)
 - Dark Mode support
 - Supports also password protected PDFs
+- Two different layouts to choose from
 
 <b>Why does the fullscreen barcode look differently than in the PDF?</b>
 The algorithm to display is different. For reading devices the code is identical.

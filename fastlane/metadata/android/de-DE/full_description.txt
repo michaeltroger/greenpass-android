@@ -27,6 +27,7 @@ Zur Zeit unterstützte Barcode-Typen:
 - PDFs mit anderen Apps teilen (ermöglicht indirekt Drucken)
 - Dark Mode
 - Liest auch passwortgeschützte PDFs
+- Zwei verschiedene Layouts zum Auswählen
 
 <b>Warum ist der vollformatige Barcode anders als der im PDF?</b>
 Der Algorithmus zum Darstellen ist anders. Für Lesegeräte ist der Code identisch.
