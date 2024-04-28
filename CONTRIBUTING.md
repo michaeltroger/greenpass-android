@@ -11,7 +11,7 @@ Thank you for your interest in contributing to this project!
 
 ## Would you like a new feature?
 - Check the Issues section if the feature was already requested
-- If there is none yet then create a new ticket
+- If there is none yet then create a new GitHub Issue
 - Please use the Feature request template for creating an Issue
 
 ## Would you like to implement a new feature?
