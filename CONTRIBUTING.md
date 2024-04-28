@@ -22,5 +22,5 @@ Thank you for your interest in contributing to this project!
 ## Would you like to translate the app?
 - Translations can be done on [Crowdin](https://crwd.in/green-pass)
 
-## Need Support?
+## Need support?
 If you need support understanding the code, the CI setup etc. then feel free to [contact me](https://michaeltroger.com/contact).
