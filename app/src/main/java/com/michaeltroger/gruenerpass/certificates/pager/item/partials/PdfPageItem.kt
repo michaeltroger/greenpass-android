@@ -3,8 +3,8 @@ package com.michaeltroger.gruenerpass.certificates.pager.item.partials
 import android.view.View
 import androidx.core.view.isVisible
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.databinding.ItemPdfPageBinding
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
+import com.michaeltroger.gruenerpass.databinding.ItemCertificatePartialPdfPageBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
@@ -23,7 +23,7 @@ class PdfPageItem(
     private val fileName: String,
     private val pageIndex: Int,
     private val searchBarcode: Boolean,
-    ) : BindableItem<ItemPdfPageBinding>() {
+    ) : BindableItem<ItemCertificatePartialPdfPageBinding>() {
 
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main
@@ -31,10 +31,12 @@ class PdfPageItem(
 
     private var job: Job? = null
 
-    override fun initializeViewBinding(view: View): ItemPdfPageBinding = ItemPdfPageBinding.bind(view)
-    override fun getLayout() = R.layout.item_pdf_page
+    override fun initializeViewBinding(view: View): ItemCertificatePartialPdfPageBinding
+        = ItemCertificatePartialPdfPageBinding.bind(view)
 
-    override fun bind(viewBinding: ItemPdfPageBinding, position: Int) {
+    override fun getLayout() = R.layout.item_certificate_partial_pdf_page
+
+    override fun bind(viewBinding: ItemCertificatePartialPdfPageBinding, position: Int) {
         job = scope.launch {
             val page = pdfRenderer.renderPage(pageIndex) ?: return@launch
             if (searchBarcode) {
@@ -51,7 +53,7 @@ class PdfPageItem(
         }
     }
 
-    override fun unbind(viewHolder: GroupieViewHolder<ItemPdfPageBinding>) {
+    override fun unbind(viewHolder: GroupieViewHolder<ItemCertificatePartialPdfPageBinding>) {
         super.unbind(viewHolder)
         job?.cancel()
     }

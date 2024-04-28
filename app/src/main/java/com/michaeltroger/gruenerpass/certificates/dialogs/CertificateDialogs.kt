@@ -116,7 +116,7 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         onDocumentNameChanged: (String) -> Unit
     ) {
         val customAlertDialogView = LayoutInflater.from(context)
-            .inflate(R.layout.layout_document_name_dialog, null, false)
+            .inflate(R.layout.dialog_document_name, null, false)
 
         val textField = customAlertDialogView.findViewById<TextInputLayout>(R.id.document_name_text_field).apply {
             editText!!.setText(originalDocumentName)
@@ -144,7 +144,7 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         onOrderChanged: (List<String>) -> Unit
     ) = scope.launch {
         val customAlertDialogView = LayoutInflater.from(context)
-            .inflate(R.layout.layout_document_order_dialog, null, false)
+            .inflate(R.layout.dialog_document_order, null, false)
 
         val myAdapter = GroupieAdapter()
         customAlertDialogView.findViewById<RecyclerView>(R.id.document_order).adapter = myAdapter
@@ -203,7 +203,7 @@ class CertificateDialogsImpl @Inject constructor() : CertificateDialogs {
         onCancelled: () -> Unit,
     ) {
         val customAlertDialogView = LayoutInflater.from(context)
-            .inflate(R.layout.layout_password_dialog, null, false)
+            .inflate(R.layout.dialog_password, null, false)
 
         val passwordTextField = customAlertDialogView.findViewById<TextInputLayout>(R.id.password_text_field)
 

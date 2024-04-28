@@ -2,7 +2,7 @@ package com.michaeltroger.gruenerpass.certificates.pager.item.partials
 
 import android.view.View
 import com.michaeltroger.gruenerpass.R
-import com.michaeltroger.gruenerpass.databinding.ItemCertificateHeaderBinding
+import com.michaeltroger.gruenerpass.databinding.ItemCertificatePartialHeaderBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 
@@ -13,12 +13,12 @@ class CertificateHeaderItem(
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameClicked: () -> Unit,
     private val onShareCalled: () -> Unit,
-) : BindableItem<ItemCertificateHeaderBinding>() {
+) : BindableItem<ItemCertificatePartialHeaderBinding>() {
 
-    override fun initializeViewBinding(view: View) = ItemCertificateHeaderBinding.bind(view)
-    override fun getLayout() = R.layout.item_certificate_header
+    override fun initializeViewBinding(view: View) = ItemCertificatePartialHeaderBinding.bind(view)
+    override fun getLayout() = R.layout.item_certificate_partial_header
 
-    override fun bind(viewBinding: ItemCertificateHeaderBinding, position: Int) {
+    override fun bind(viewBinding: ItemCertificatePartialHeaderBinding, position: Int) {
         viewBinding.apply {
             deleteIcon.setOnClickListener {
                 onDeleteCalled()
