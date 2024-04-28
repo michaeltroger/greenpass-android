@@ -6,3 +6,4 @@
  - Fix bug in document ordering with many documents
  - Redirect app to main screen if user imports a document while on More, Settings, Detail screen
  - Update of dependencies
+ - Increase of the maximum zoom level for PDF pages

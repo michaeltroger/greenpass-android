@@ -5,3 +5,5 @@
  - Dokumente werden leicht größer angezeigt
  - Behebt Fehler in der Sortier-Funktion bei vielen Dokumenten
  - App wird auf Hauptscreen geleitet bei Import von PDF während die App im Mehr-, Einstellungs- oder Detail-Screen ist
+ - Aktualisierung von Bibliotheken (Dependencies)
+ - Erhöhung der maximalen Vergrößerung von PDF-Seiten
