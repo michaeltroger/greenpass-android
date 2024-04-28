@@ -33,8 +33,6 @@ private val readerOptions = ZxingCpp.ReaderOptions(
     tryDownscale = true,
     maxNumberOfSymbols = 2,
 )
-private const val DIVISOR_LONGER_SIDE = 4
-private const val DIVISOR_SHORTER_SIDE = 2
 
 public interface BarcodeRenderer {
     public suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap?
@@ -74,24 +72,24 @@ internal class BarcodeRendererImpl @Inject constructor(
         val cropRectList = mutableListOf(
             Rect(0, 0, width, height),
         )
-
-        cropRectList += getCropRectangles(divisorX = 2, divisorY = 2)
-
-        val divisorX: Int
-        val divisorY: Int
-        if (width > height) {
-            divisorX = DIVISOR_LONGER_SIDE
-            divisorY = DIVISOR_SHORTER_SIDE
-        } else {
-            divisorX = DIVISOR_SHORTER_SIDE
-            divisorY = DIVISOR_LONGER_SIDE
-        }
-        cropRectList += getCropRectangles(divisorX = divisorX, divisorY = divisorY)
+        cropRectList += getCropRectangles(divisorLongerSize = 2, divisorShorterSize = 2)
+        cropRectList += getCropRectangles(divisorLongerSize = 4, divisorShorterSize = 2)
+        cropRectList += getCropRectangles(divisorLongerSize = 5, divisorShorterSize = 1)
 
         return cropRectList
     }
 
-    private fun Bitmap.getCropRectangles(divisorX: Int, divisorY: Int): List<Rect> {
+    private fun Bitmap.getCropRectangles(divisorLongerSize: Int, divisorShorterSize: Int): List<Rect> {
+        val divisorX: Int
+        val divisorY: Int
+        if (width > height) {
+            divisorX = divisorLongerSize
+            divisorY = divisorShorterSize
+        } else {
+            divisorX = divisorShorterSize
+            divisorY = divisorLongerSize
+        }
+
         val tempX = width / divisorX
         val tempY = height / divisorY
         val cropRectList = mutableListOf<Rect>()
