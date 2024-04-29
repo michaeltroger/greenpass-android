@@ -2,8 +2,6 @@ package com.michaeltroger.gruenerpass.certificates.states
 
 import com.michaeltroger.gruenerpass.db.Certificate
 
-private const val SCROLL_TO_DELAY_MS = 1000L
-
 sealed class ViewEvent {
     data object AddFile : ViewEvent()
     data object ShowParsingFileError : ViewEvent()
@@ -12,7 +10,7 @@ sealed class ViewEvent {
     data class GoToCertificate(
         val position: Int,
         val id: String,
-        val delayMs: Long = SCROLL_TO_DELAY_MS,
+        val isNewDocument: Boolean,
     ) : ViewEvent()
     data class Share(val certificate: Certificate) : ViewEvent()
     data class ShareMultiple(val list: List<Certificate>) : ViewEvent()

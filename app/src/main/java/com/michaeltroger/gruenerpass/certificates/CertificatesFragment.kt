@@ -32,6 +32,7 @@ import kotlinx.coroutines.newSingleThreadContext
 import javax.inject.Inject
 
 private const val TOUCH_SLOP_FACTOR = 8
+private const val SCROLL_TO_DELAY_MS = 500L
 
 @AndroidEntryPoint
 class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
@@ -219,8 +220,10 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
 
     private fun goToCertificate(event: ViewEvent.GoToCertificate) {
         lifecycleScope.launch {
-            delay(event.delayMs)
-            binding!!.certificates.smoothScrollToPosition(event.position)
+            if (event.isNewDocument) {
+                delay(SCROLL_TO_DELAY_MS)
+            }
+            binding?.certificates?.smoothScrollToPosition(event.position)
         }
     }
 
