@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.withStarted
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +25,6 @@ import com.michaeltroger.gruenerpass.databinding.FragmentCertificatesListBinding
 import com.michaeltroger.gruenerpass.db.Certificate
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 
@@ -209,12 +209,12 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
 
     private fun goToCertificate(event: ViewEvent.GoToCertificate) {
         lifecycleScope.launch {
-            delay(event.delayMs)
-            binding!!.certificates.smoothScrollToPosition(event.position)
-            delay(event.delayMs)
-            findNavController().navigate(
-                CertificatesListFragmentDirections.navigateToCertificateDetails(event.id)
-            )
+            withStarted {
+                binding?.certificates?.scrollToPosition(event.position)
+                findNavController().navigate(
+                    CertificatesListFragmentDirections.navigateToCertificateDetails(event.id)
+                )
+            }
         }
     }
 

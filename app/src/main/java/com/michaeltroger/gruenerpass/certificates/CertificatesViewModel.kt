@@ -163,16 +163,20 @@ class CertificatesViewModel @Inject constructor(
     private suspend fun insertIntoDatabase(certificate: Certificate) {
         val addDocumentsInFront = addDocumentsInFront.first()
         insertIntoDatabaseUseCase(certificate, addDocumentsInFront)
-        if (addDocumentsInFront) {
-            _viewEvent.emit(ViewEvent.GoToCertificate(position = 0, id = certificate.id))
+        val event = if (addDocumentsInFront) {
+            ViewEvent.GoToCertificate(
+                position = 0,
+                id = certificate.id,
+                isNewDocument = true,
+            )
         } else {
-            _viewEvent.emit(
-                ViewEvent.GoToCertificate(
-                    position = getCertificatesFlowUseCase().first().size - 1,
-                    id = certificate.id
-                )
+            ViewEvent.GoToCertificate(
+                position = getCertificatesFlowUseCase().first().size - 1,
+                id = certificate.id,
+                isNewDocument = true,
             )
         }
+        _viewEvent.emit(event)
     }
 
     fun onDocumentNameChangeConfirmed(filename: String, documentName: String) = viewModelScope.launch {
@@ -241,7 +245,7 @@ class CertificatesViewModel @Inject constructor(
             ViewEvent.GoToCertificate(
                 position = 0,
                 id = docs[0].id,
-                delayMs = 0,
+                isNewDocument = false,
             )
         )
     }
@@ -253,7 +257,7 @@ class CertificatesViewModel @Inject constructor(
             ViewEvent.GoToCertificate(
                 position = indexLast,
                 docs[indexLast].id,
-                delayMs = 0,
+                isNewDocument = false,
             )
         )
     }
