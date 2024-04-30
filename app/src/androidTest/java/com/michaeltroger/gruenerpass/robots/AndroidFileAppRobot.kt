@@ -31,6 +31,10 @@ class AndroidFileAppRobot {
     fun goToPdfFolder() = apply {
         (1..RETRIALS).forEach { _ ->
             try {
+                if (uiDevice.hasObject(testDataDirSelector)) {
+                    return@apply
+                }
+
                 uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
                 uiDevice.findObject(hamburgerSelector).click()
 
