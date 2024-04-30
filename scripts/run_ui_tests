@@ -25,7 +25,7 @@ done
 
 set +e # don't fail on errors
 
-adb shell screenrecord /sdcard/screenrecording.mp4
+adb shell screenrecord /sdcard/screenrecording.mp4 &
 
 ./gradlew :app:connectedDebugAndroidTest
 exit_code=$?
