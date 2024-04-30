@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
+@Suppress("TooManyFunctions")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
