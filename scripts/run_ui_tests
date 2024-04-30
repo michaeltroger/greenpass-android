@@ -25,7 +25,14 @@ done
 
 set +e # don't fail on errors
 
-adb shell "screenrecord --size 1024x768 /sdcard/screen1.mp4; screenrecord --size 1024x768 /sdcard/screen2.mp4; screenrecord --size 1024x768 /sdcard/screen3.mp4; screenrecord --size 1024x768 /sdcard/screen4.mp4" &
+screenRecord() {
+  for ((i=0;i<5;n++))
+  do
+    adb shell screenrecord --size 1024x768 /sdcard/screen"$i".mp4
+  done
+}
+screenRecord &
+
 
 ./gradlew :app:connectedDebugAndroidTest
 exit_code=$?
