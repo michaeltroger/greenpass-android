@@ -28,19 +28,15 @@ class MainViewModel @Inject constructor(
     fun getAutoRedirectDestination(navController: NavController)
         = getAutoRedirectDestinationUseCase(navController)
 
-    fun setPendingFile(uri: Uri) {
-        viewModelScope.launch {
-            when (pdfImporter.preparePendingFile(uri)) {
-                is PdfImportResult.ParsingError -> _viewEvent.emit(ViewEvent.ShowParsingFileError)
-                else -> Unit
-            }
+    fun setPendingFile(uri: Uri) = viewModelScope.launch {
+        when (pdfImporter.preparePendingFile(uri)) {
+            is PdfImportResult.ParsingError -> _viewEvent.emit(ViewEvent.ShowParsingFileError)
+            else -> Unit
         }
     }
 
-    fun onInteractionTimeout() {
-        viewModelScope.launch {
-            lockedRepo.lockApp()
-        }
+    fun onInteractionTimeout() = viewModelScope.launch {
+        lockedRepo.lockApp()
     }
 
     override fun onCleared() {
