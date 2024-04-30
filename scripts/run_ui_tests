@@ -33,20 +33,16 @@ screenRecord() {
 }
 screenRecord &
 
-
 ./gradlew :app:connectedDebugAndroidTest
 exit_code=$?
 
-for ((n=0;n<5;n++))
+mkdir app/build/screenrecording
+
+for ((i=0;i<5;n++))
 do
   adb shell kill -2 $(adb shell pidof screenrecord)
+  adb pull /sdcard/screen"$i".mp4 app/build/screenrecording/screen"$i".mp4
 done
-
-mkdir app/build/screenrecording
-adb pull /sdcard/screen1.mp4 app/build/screenrecording/screen1.mp4
-adb pull /sdcard/screen2.mp4 app/build/screenrecording/screen2.mp4
-adb pull /sdcard/screen3.mp4 app/build/screenrecording/screen3.mp4
-adb pull /sdcard/screen4.mp4 app/build/screenrecording/screen4.mp4
 
 adb pull /sdcard/Pictures/error_screenshots app/build
 set -e # fail on errors
