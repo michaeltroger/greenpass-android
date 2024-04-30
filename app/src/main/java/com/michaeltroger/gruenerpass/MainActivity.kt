@@ -108,17 +108,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
     private suspend fun setUpNavigation() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val graphInflater = navHostFragment.navController.navInflater
-        val navGraph = graphInflater.inflate(R.navigation.nav_graph)
-        navController = navHostFragment.navController
-
-        navGraph.setStartDestination(getStartDestinationUseCase())
-        navController!!.graph = navGraph
-
-        setupActionBarWithNavController(
-            navController = navController!!,
-            configuration = appBarConfiguration.build()
-        )
+        navController = navHostFragment.navController.apply {
+            val navGraph = navInflater.inflate(R.navigation.nav_graph).apply {
+                setStartDestination(getStartDestinationUseCase())
+            }
+            graph = navGraph
+        }.also {
+            setupActionBarWithNavController(
+                navController = it,
+                configuration = appBarConfiguration.build()
+            )
+        }
     }
 
     private fun updateSettings() {

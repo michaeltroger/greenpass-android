@@ -162,14 +162,14 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
     }
 
     override fun onDestroyView() {
-        binding!!.certificates.adapter = null
+        binding?.certificates?.adapter = null
         binding = null
         super.onDestroyView()
     }
 
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
-        binding!!.addButton.isVisible = state.showAddButton
+        binding?.addButton?.isVisible = state.showAddButton
         when (state) {
             is ViewState.Initial -> {} // nothing to do
             is ViewState.Empty -> {

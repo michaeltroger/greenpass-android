@@ -117,7 +117,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
     }
 
     override fun onDestroyView() {
-        binding!!.certificateFullscreen.adapter = null
+        binding?.certificateFullscreen?.adapter = null
         binding = null
         super.onDestroyView()
     }
