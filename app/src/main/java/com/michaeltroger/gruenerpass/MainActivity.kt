@@ -36,9 +36,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     @Inject
     lateinit var getStartDestinationUseCase: GetStartDestinationUseCase
 
-    @Inject
-    lateinit var getAutoRedirectDestinationUseCase: GetAutoRedirectDestinationUseCase
-
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
 
@@ -69,7 +66,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
             setUpNavigation()
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                getAutoRedirectDestinationUseCase(navController!!).collect { navDestination ->
+                vm.getAutoRedirectDestination(navController!!).collect { navDestination ->
                     when (navDestination) {
                         GetAutoRedirectDestinationUseCase.Result.NavigateBack -> {
                             navController?.popBackStack()
