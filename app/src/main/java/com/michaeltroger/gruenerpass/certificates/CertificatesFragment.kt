@@ -11,11 +11,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateDialogs
+import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateErrors
 import com.michaeltroger.gruenerpass.certificates.pager.item.CertificateItem
 import com.michaeltroger.gruenerpass.certificates.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificates.states.ViewEvent
@@ -50,6 +50,8 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
     lateinit var pdfSharing: PdfSharing
     @Inject
     lateinit var certificateDialogs: CertificateDialogs
+    @Inject
+    lateinit var certificateErrors: CertificateErrors
     @Inject
     lateinit var barcodeRenderer: BarcodeRenderer
 
@@ -106,7 +108,11 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
                 onCancelled = vm::onPasswordDialogAborted
             )
 
-            ViewEvent.ShowParsingFileError -> showFileCanNotBeReadError()
+            ViewEvent.ShowParsingFileError -> {
+                binding?.root?.let {
+                    certificateErrors.showFileErrorSnackbar(it)
+                }
+            }
             is ViewEvent.GoToCertificate -> goToCertificate(it)
             is ViewEvent.ShareMultiple -> {
                 pdfSharing.openShareAllFilePicker(
@@ -170,14 +176,14 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
     }
 
     override fun onDestroyView() {
-        binding!!.certificates.adapter = null
+        binding?.certificates?.adapter = null
         binding = null
         super.onDestroyView()
     }
 
     private fun updateState(state: ViewState) {
         menuProvider.updateMenuState(state)
-        binding!!.addButton.isVisible = state.showAddButton
+        binding?.addButton?.isVisible = state.showAddButton
         when (state) {
             is ViewState.Initial -> {} // nothing to do
             is ViewState.Empty -> {
@@ -224,12 +230,6 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
                 delay(SCROLL_TO_DELAY_MS)
             }
             binding?.certificates?.smoothScrollToPosition(event.position)
-        }
-    }
-
-    private fun showFileCanNotBeReadError() {
-        binding!!.root.let {
-            Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }
 }

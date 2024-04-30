@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 public interface PdfImporter {
-    public suspend fun preparePendingFile(uri: Uri)
+    public suspend fun preparePendingFile(uri: Uri): PdfImportResult
     public fun hasPendingFile(): Flow<Boolean>
     public fun deletePendingFile()
     public suspend fun importPendingFile(password: String?): PdfImportResult
@@ -32,10 +32,17 @@ internal class PdfImporterImpl @Inject constructor(
     )
     private val pendingFile: StateFlow<PendingCertificate?> = _pendingFile
 
-    override suspend fun preparePendingFile(uri: Uri) {
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun preparePendingFile(uri: Uri): PdfImportResult {
         deletePendingFile()
-        _pendingFile.value = fileRepo.copyToApp(uri)
-        logger.logDebug(pendingFile.value)
+        return try {
+            _pendingFile.value = fileRepo.copyToApp(uri)
+            logger.logDebug(pendingFile.value)
+            PdfImportResult.Success(pendingFile.value!!)
+        } catch (e: Exception) {
+            logger.logError(e.toString())
+            PdfImportResult.ParsingError
+        }
     }
 
     override fun hasPendingFile(): Flow<Boolean> = pendingFile.map {

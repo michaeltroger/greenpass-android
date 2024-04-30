@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateErrors
 import com.michaeltroger.gruenerpass.extensions.getUri
 import com.michaeltroger.gruenerpass.navigation.GetAutoRedirectDestinationUseCase
 import com.michaeltroger.gruenerpass.navigation.GetStartDestinationUseCase
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
 
+@Suppress("TooManyFunctions")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
@@ -32,12 +34,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
     @Inject
     lateinit var preferenceUtil: PreferenceUtil
-
+    @Inject
+    lateinit var certificateErrors: CertificateErrors
     @Inject
     lateinit var getStartDestinationUseCase: GetStartDestinationUseCase
-
-    @Inject
-    lateinit var getAutoRedirectDestinationUseCase: GetAutoRedirectDestinationUseCase
 
     private val timeoutHandler: Handler = Handler(Looper.getMainLooper())
     private lateinit var interactionTimeoutRunnable: Runnable
@@ -69,36 +69,57 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
             setUpNavigation()
 
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                getAutoRedirectDestinationUseCase(navController!!).collect { navDestination ->
-                    when (navDestination) {
-                        GetAutoRedirectDestinationUseCase.Result.NavigateBack -> {
-                            navController?.popBackStack()
-                        }
-                        is GetAutoRedirectDestinationUseCase.Result.NavigateTo -> {
-                            navController?.navigate(navDestination.navDirections)
-                        }
-                        GetAutoRedirectDestinationUseCase.Result.NothingTodo -> {
-                            // nothing to do
-                        }
-                    }
+                vm.getAutoRedirectDestination(navController!!).collect {
+                    handleTargetDestination(it)
                 }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                vm.viewEvent.collect {
+                    handleEvent(it)
+                }
+            }
+        }
+    }
+
+    private fun handleEvent(it: ViewEvent) {
+        when (it) {
+            ViewEvent.ShowParsingFileError -> {
+                certificateErrors.showFileErrorSnackbar(window.decorView.rootView)
+            }
+        }
+    }
+
+    private fun handleTargetDestination(navDestination: GetAutoRedirectDestinationUseCase.Result) {
+        when (navDestination) {
+            GetAutoRedirectDestinationUseCase.Result.NavigateBack -> {
+                navController?.popBackStack()
+            }
+
+            is GetAutoRedirectDestinationUseCase.Result.NavigateTo -> {
+                navController?.navigate(navDestination.navDirections)
+            }
+
+            GetAutoRedirectDestinationUseCase.Result.NothingTodo -> {
+                // nothing to do
             }
         }
     }
 
     private suspend fun setUpNavigation() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val graphInflater = navHostFragment.navController.navInflater
-        val navGraph = graphInflater.inflate(R.navigation.nav_graph)
-        navController = navHostFragment.navController
-
-        navGraph.setStartDestination(getStartDestinationUseCase())
-        navController!!.graph = navGraph
-
-        setupActionBarWithNavController(
-            navController = navController!!,
-            configuration = appBarConfiguration.build()
-        )
+        navController = navHostFragment.navController.apply {
+            val navGraph = navInflater.inflate(R.navigation.nav_graph).apply {
+                setStartDestination(getStartDestinationUseCase())
+            }
+            graph = navGraph
+        }.also {
+            setupActionBarWithNavController(
+                navController = it,
+                configuration = appBarConfiguration.build()
+            )
+        }
     }
 
     private fun updateSettings() {
