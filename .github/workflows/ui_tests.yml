@@ -79,4 +79,4 @@ jobs:
         with:
           name: screenrecording
           path: |
-            app/build/screenrecording_compressed.mp4
+            app/build/screenrecording/

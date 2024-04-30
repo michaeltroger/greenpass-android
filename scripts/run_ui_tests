@@ -25,14 +25,21 @@ done
 
 set +e # don't fail on errors
 
-adb shell screenrecord /sdcard/screenrecording.mp4 &
+adb shell "screenrecord --size 1024x768 /sdcard/screen1.mp4; screenrecord --size 1024x768 /sdcard/screen2.mp4; screenrecord --size 1024x768 /sdcard/screen3.mp4; screenrecord --size 1024x768 /sdcard/screen4.mp4" &
 
 ./gradlew :app:connectedDebugAndroidTest
 exit_code=$?
 
-adb shell kill -2 $(adb shell pidof screenrecord)
-adb pull /sdcard/screenrecording.mp4 app/build
-ffmpeg -i app/build/screenrecording.mp4 app/build/screenrecording_compressed.mp4
+for ((n=0;n<5;n++))
+do
+  adb shell kill -2 $(adb shell pidof screenrecord)
+done
+
+mkdir app/build/screenrecording
+adb pull /sdcard/screen1.mp4 app/build/screenrecording/screen1.mp4
+adb pull /sdcard/screen2.mp4 app/build/screenrecording/screen2.mp4
+adb pull /sdcard/screen3.mp4 app/build/screenrecording/screen3.mp4
+adb pull /sdcard/screen4.mp4 app/build/screenrecording/screen4.mp4
 
 adb pull /sdcard/Pictures/error_screenshots app/build
 set -e # fail on errors
