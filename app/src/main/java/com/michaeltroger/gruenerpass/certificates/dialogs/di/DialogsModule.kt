@@ -8,10 +8,10 @@ import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateErrorsImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.FragmentComponent
+import dagger.hilt.android.components.ActivityComponent
 
 @Module
-@InstallIn(FragmentComponent::class)
+@InstallIn(ActivityComponent::class)
 abstract class DialogsModule {
 
     @Binds
