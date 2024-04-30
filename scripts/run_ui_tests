@@ -25,8 +25,14 @@ done
 
 set +e # don't fail on errors
 
+adb shell screenrecord screenrecording.mp4
+
 ./gradlew :app:connectedDebugAndroidTest
 exit_code=$?
+
+adb shell kill -2 $(adb shell pidof screenrecord)
+adb pull /sdcard/screenrecording.mp4 app/build
+ffmpeg -i app/build/screenrecording.mp4 app/build/screenrecording_compressed.mp4
 
 adb pull /sdcard/Pictures/error_screenshots app/build
 set -e # fail on errors

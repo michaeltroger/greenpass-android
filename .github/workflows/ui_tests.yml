@@ -72,3 +72,11 @@ jobs:
           path: |
             app/build/reports/androidTests/connected/
             app/build/error_screenshots/
+
+      - name: Upload screen recording
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenrecording
+          path: |
+            app/build/screenrecording_compressed.mp4
