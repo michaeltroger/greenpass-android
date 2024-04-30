@@ -11,12 +11,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.withStarted
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.google.android.material.snackbar.Snackbar
 import com.michaeltroger.gruenerpass.AddFile
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.certificates.CertificatesMenuProvider
 import com.michaeltroger.gruenerpass.certificates.CertificatesViewModel
 import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateDialogs
+import com.michaeltroger.gruenerpass.certificates.dialogs.CertificateErrors
 import com.michaeltroger.gruenerpass.certificates.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificates.states.ViewEvent
 import com.michaeltroger.gruenerpass.certificates.states.ViewState
@@ -41,6 +41,8 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
     lateinit var pdfSharing: PdfSharing
     @Inject
     lateinit var certificateDialogs: CertificateDialogs
+    @Inject
+    lateinit var certificateErrors: CertificateErrors
 
     private lateinit var menuProvider: CertificatesMenuProvider
 
@@ -92,8 +94,11 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
                 onPasswordEntered = vm::onPasswordEntered,
                 onCancelled = vm::onPasswordDialogAborted
             )
-
-            ViewEvent.ShowParsingFileError -> showFileCanNotBeReadError()
+            ViewEvent.ShowParsingFileError -> {
+                binding?.root?.let {
+                    certificateErrors.showFileErrorSnackbar(it)
+                }
+            }
             is ViewEvent.GoToCertificate -> goToCertificate(it)
             is ViewEvent.ShareMultiple -> {
                 pdfSharing.openShareAllFilePicker(
@@ -215,12 +220,6 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
                     CertificatesListFragmentDirections.navigateToCertificateDetails(event.id)
                 )
             }
-        }
-    }
-
-    private fun showFileCanNotBeReadError() {
-        binding!!.root.let {
-            Snackbar.make(it, R.string.error_reading_pdf, Snackbar.LENGTH_LONG).show()
         }
     }
 }
