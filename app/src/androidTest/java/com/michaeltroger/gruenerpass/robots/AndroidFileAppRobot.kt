@@ -31,7 +31,7 @@ class AndroidFileAppRobot {
     fun goToPdfFolder() = apply {
         (1..RETRIALS).forEach { _ ->
             try {
-                if (uiDevice.hasObject(testDataDirSelector)) {
+                if (uiDevice.hasObject(testDataDirSelector) && uiDevice.hasObject(pdfSelector)) {
                     return@apply
                 }
 
@@ -45,11 +45,7 @@ class AndroidFileAppRobot {
                 uiDevice.findObject(testDataDirSelector).click()
 
                 uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
-                if (!uiDevice.hasObject(pdfSelector)) {
-                    return@forEach
-                }
-
-                return@apply
+                uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
             } catch (e: NullPointerException) {
                 //ignoring
             }
@@ -71,11 +67,24 @@ class AndroidFileAppRobot {
     }
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
-        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
-        uiScrollable.scrollTextIntoView(fileName)
+        uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
 
+        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)
-        uiDevice.wait(Until.hasObject(selector), TIMEOUT)
+
+        (1..RETRIALS).forEach { _ ->
+            try {
+                if (uiDevice.hasObject(selector)) {
+                    return@forEach
+                }
+
+                uiScrollable.scrollTextIntoView(fileName)
+
+                uiDevice.wait(Until.hasObject(selector), TIMEOUT)
+            } catch (e: NullPointerException) {
+                //ignoring
+            }
+        }
 
         if (longClick) {
             uiDevice.findObject(selector).longClick()
