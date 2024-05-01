@@ -30,6 +30,7 @@ class AndroidFileAppRobot {
     }
 
     fun goToPdfFolder() = apply {
+        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         (1..RETRIALS).forEach { _ ->
             try {
                 uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
@@ -38,6 +39,7 @@ class AndroidFileAppRobot {
                 uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
                 uiDevice.findObject(rootDirSelector).click()
 
+                uiScrollable.scrollTextIntoView("testdata")
                 uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
                 uiDevice.findObject(testDataDirSelector).click()
 
