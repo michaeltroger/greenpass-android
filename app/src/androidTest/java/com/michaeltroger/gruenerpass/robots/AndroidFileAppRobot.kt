@@ -22,7 +22,7 @@ class AndroidFileAppRobot {
     private val pdfSelector = By.textEndsWith(".pdf")
     private val greenPassAppSelector = By.text("Green Pass")
     private val shareButtonSelector = By.desc("Share")
-    private val greenPassSelector = By.text("Green Pass")
+    private val listViewSelector = By.desc("List view")
 
     fun openFileManagerApp() = apply {
         val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
@@ -32,10 +32,6 @@ class AndroidFileAppRobot {
     fun goToPdfFolder() = apply {
         (1..RETRIALS).forEach { _ ->
             try {
-                if (uiDevice.hasObject(testDataDirSelector) && uiDevice.hasObject(pdfSelector)) {
-                    return@apply
-                }
-
                 uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
                 uiDevice.findObject(hamburgerSelector).click()
 
@@ -47,6 +43,11 @@ class AndroidFileAppRobot {
 
                 uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
                 uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
+
+                if (uiDevice.hasObject(testDataDirSelector) && uiDevice.hasObject(pdfSelector)) {
+                    uiDevice.findObject(listViewSelector).click()
+                    return@apply
+                }
             } catch (e: NullPointerException) {
                 //ignoring
             }
@@ -55,7 +56,6 @@ class AndroidFileAppRobot {
 
     fun openPdf(fileName: String): MainActivityRobot {
         selectFile(fileName = fileName, longClick = false)
-        uiDevice.wait(Until.hasObject(greenPassSelector), TIMEOUT)
         return MainActivityRobot()
     }
 
@@ -74,6 +74,7 @@ class AndroidFileAppRobot {
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)
 
+        uiScrollable.scrollTextIntoView(fileName)
         uiDevice.wait(Until.hasObject(selector), TIMEOUT)
         if (!uiDevice.hasObject(selector)) {
             uiScrollable.scrollForward(1)
