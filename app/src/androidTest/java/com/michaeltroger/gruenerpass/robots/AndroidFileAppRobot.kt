@@ -8,8 +8,8 @@ import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 
-private const val RETRIALS = 3
 private const val TIMEOUT = 5000L
+private const val testFolder = "testdata"
 
 class AndroidFileAppRobot {
 
@@ -18,10 +18,11 @@ class AndroidFileAppRobot {
 
     private val hamburgerSelector = By.desc("Show roots")
     private val rootDirSelector = By.textStartsWith("Android SDK")
-    private val testDataDirSelector = By.text("testdata")
+    private val testDataDirSelector = By.text(testFolder)
     private val pdfSelector = By.textEndsWith(".pdf")
     private val greenPassAppSelector = By.text("Green Pass")
     private val shareButtonSelector = By.desc("Share")
+    private val listViewSelector = By.desc("List view")
 
     fun openFileManagerApp() = apply {
         val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
@@ -29,26 +30,24 @@ class AndroidFileAppRobot {
     }
 
     fun goToPdfFolder() = apply {
-        (1..RETRIALS).forEach { _ ->
-            try {
-                uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
-                uiDevice.findObject(hamburgerSelector).click()
+        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
+        try {
+            uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
+            uiDevice.findObject(hamburgerSelector).click()
 
-                uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
-                uiDevice.findObject(rootDirSelector).click()
+            uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
+            uiDevice.findObject(rootDirSelector).click()
 
-                uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
-                uiDevice.findObject(testDataDirSelector).click()
+            uiScrollable.scrollTextIntoView(testFolder)
+            uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
+            uiDevice.findObject(testDataDirSelector).click()
 
-                uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
-                if (!uiDevice.hasObject(pdfSelector)) {
-                    return@forEach
-                }
+            uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+            uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
 
-                return@apply
-            } catch (e: NullPointerException) {
-                //ignoring
-            }
+            uiDevice.findObject(listViewSelector).click()
+        } catch (e: NullPointerException) {
+            //ignoring
         }
     }
 
@@ -67,10 +66,12 @@ class AndroidFileAppRobot {
     }
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
-        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
-        uiScrollable.scrollTextIntoView(fileName)
+        uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
 
+        val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)
+
+        uiScrollable.scrollTextIntoView(fileName)
         uiDevice.wait(Until.hasObject(selector), TIMEOUT)
 
         if (longClick) {
