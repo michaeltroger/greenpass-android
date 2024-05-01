@@ -22,6 +22,7 @@ class AndroidFileAppRobot {
     private val pdfSelector = By.textEndsWith(".pdf")
     private val greenPassAppSelector = By.text("Green Pass")
     private val shareButtonSelector = By.desc("Share")
+    private val greenPassSelector = By.text("Green Pass")
 
     fun openFileManagerApp() = apply {
         val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
@@ -54,6 +55,10 @@ class AndroidFileAppRobot {
 
     fun openPdf(fileName: String): MainActivityRobot {
         selectFile(fileName = fileName, longClick = false)
+        uiDevice.wait(Until.hasObject(greenPassSelector), TIMEOUT)
+        if (!uiDevice.hasObject(greenPassSelector)) {
+            openPdf(fileName)
+        }
         return MainActivityRobot()
     }
 
@@ -71,18 +76,19 @@ class AndroidFileAppRobot {
 
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)
+        run loop@{
+            (1..RETRIALS).forEach { _ ->
+                try {
+                    if (uiDevice.hasObject(selector)) {
+                        return@loop
+                    }
 
-        (1..RETRIALS).forEach { _ ->
-            try {
-                if (uiDevice.hasObject(selector)) {
-                    return@forEach
+                    uiScrollable.scrollTextIntoView(fileName)
+
+                    uiDevice.wait(Until.hasObject(selector), TIMEOUT)
+                } catch (e: NullPointerException) {
+                    //ignoring
                 }
-
-                uiScrollable.scrollTextIntoView(fileName)
-
-                uiDevice.wait(Until.hasObject(selector), TIMEOUT)
-            } catch (e: NullPointerException) {
-                //ignoring
             }
         }
 
