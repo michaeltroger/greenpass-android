@@ -8,7 +8,7 @@ import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 
-private const val RETRIALS = 3
+private const val RETRIALS = 1
 private const val TIMEOUT = 5000L
 
 class AndroidFileAppRobot {
@@ -47,7 +47,11 @@ class AndroidFileAppRobot {
                 uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
 
                 if (uiDevice.hasObject(testDataDirSelector) && uiDevice.hasObject(pdfSelector)) {
-                    uiDevice.findObject(listViewSelector).click()
+                    try {
+                        uiDevice.findObject(listViewSelector).click()
+                    } catch (e: NullPointerException) {
+                        //ignoring
+                    }
                     return@apply
                 }
             } catch (e: NullPointerException) {
