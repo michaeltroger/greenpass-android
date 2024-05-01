@@ -8,8 +8,8 @@ import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 
-private const val RETRIALS = 1
 private const val TIMEOUT = 5000L
+private const val testFolder = "testdata"
 
 class AndroidFileAppRobot {
 
@@ -18,7 +18,7 @@ class AndroidFileAppRobot {
 
     private val hamburgerSelector = By.desc("Show roots")
     private val rootDirSelector = By.textStartsWith("Android SDK")
-    private val testDataDirSelector = By.text("testdata")
+    private val testDataDirSelector = By.text(testFolder)
     private val pdfSelector = By.textEndsWith(".pdf")
     private val greenPassAppSelector = By.text("Green Pass")
     private val shareButtonSelector = By.desc("Share")
@@ -38,7 +38,7 @@ class AndroidFileAppRobot {
             uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
             uiDevice.findObject(rootDirSelector).click()
 
-            uiScrollable.scrollTextIntoView("testdata")
+            uiScrollable.scrollTextIntoView(testFolder)
             uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
             uiDevice.findObject(testDataDirSelector).click()
 
