@@ -55,10 +55,6 @@ class AndroidFileAppRobot {
 
     fun openPdf(fileName: String): MainActivityRobot {
         selectFile(fileName = fileName, longClick = false)
-        uiDevice.wait(Until.hasObject(greenPassSelector), TIMEOUT)
-        if (!uiDevice.hasObject(greenPassSelector)) {
-            openPdf(fileName)
-        }
         return MainActivityRobot()
     }
 
@@ -76,26 +72,27 @@ class AndroidFileAppRobot {
 
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)
-        run loop@{
-            (1..RETRIALS).forEach { _ ->
-                try {
-                    if (uiDevice.hasObject(selector)) {
-                        return@loop
-                    }
 
-                    uiScrollable.scrollTextIntoView(fileName)
-
-                    uiDevice.wait(Until.hasObject(selector), TIMEOUT)
-                } catch (e: NullPointerException) {
-                    //ignoring
+        (1..RETRIALS).forEach { _ ->
+            try {
+                if (uiDevice.hasObject(greenPassSelector)) {
+                    return
                 }
-            }
-        }
 
-        if (longClick) {
-            uiDevice.findObject(selector).longClick()
-        } else {
-            uiDevice.findObject(selector).click()
+                uiScrollable.scrollTextIntoView(fileName)
+
+                uiDevice.wait(Until.hasObject(selector), TIMEOUT)
+
+                if (longClick) {
+                    uiDevice.findObject(selector).longClick()
+                } else {
+                    uiDevice.findObject(selector).click()
+                }
+
+                uiDevice.wait(Until.hasObject(greenPassSelector), TIMEOUT)
+            } catch (e: NullPointerException) {
+                //ignoring
+            }
         }
     }
 
