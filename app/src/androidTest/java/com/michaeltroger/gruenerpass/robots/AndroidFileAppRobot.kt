@@ -8,7 +8,6 @@ import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 
-private const val RETRIALS = 1
 private const val TIMEOUT = 5000L
 
 class AndroidFileAppRobot {
@@ -31,32 +30,23 @@ class AndroidFileAppRobot {
 
     fun goToPdfFolder() = apply {
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
-        (1..RETRIALS).forEach { _ ->
-            try {
-                uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
-                uiDevice.findObject(hamburgerSelector).click()
+        uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
+        uiDevice.findObject(hamburgerSelector).click()
 
-                uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
-                uiDevice.findObject(rootDirSelector).click()
+        uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
+        uiDevice.findObject(rootDirSelector).click()
 
-                uiScrollable.scrollTextIntoView("testdata")
-                uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
-                uiDevice.findObject(testDataDirSelector).click()
+        uiScrollable.scrollTextIntoView("testdata")
+        uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
+        uiDevice.findObject(testDataDirSelector).click()
 
-                uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
-                uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
+        uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+        uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
 
-                if (uiDevice.hasObject(testDataDirSelector) && uiDevice.hasObject(pdfSelector)) {
-                    try {
-                        uiDevice.findObject(listViewSelector).click()
-                    } catch (e: NullPointerException) {
-                        //ignoring
-                    }
-                    return@apply
-                }
-            } catch (e: NullPointerException) {
-                //ignoring
-            }
+        try {
+            uiDevice.findObject(listViewSelector).click()
+        } catch (e: NullPointerException) {
+            //ignoring
         }
     }
 
@@ -82,10 +72,6 @@ class AndroidFileAppRobot {
 
         uiScrollable.scrollTextIntoView(fileName)
         uiDevice.wait(Until.hasObject(selector), TIMEOUT)
-        if (!uiDevice.hasObject(selector)) {
-            uiScrollable.scrollForward(1)
-            uiDevice.wait(Until.hasObject(selector), TIMEOUT)
-        }
 
         if (longClick) {
             uiDevice.findObject(selector).longClick()
