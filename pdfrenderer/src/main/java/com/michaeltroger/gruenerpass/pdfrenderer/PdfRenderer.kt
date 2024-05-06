@@ -12,7 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
-private const val PDF_RESOLUTION_MULTIPLIER = 2
+private const val PDF_RESOLUTION_MULTIPLIER = 4
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 public object PdfRendererBuilder {
