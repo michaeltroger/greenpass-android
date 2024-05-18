@@ -5,6 +5,7 @@ import android.graphics.Rect
 import com.michaeltroger.gruenerpass.coroutines.dispatcher.di.IoDispatcher
 import de.markusfisch.android.zxingcpp.ZxingCpp
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -44,28 +45,32 @@ internal class BarcodeRendererImpl @Inject constructor(
 
     override suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap? = withContext(dispatcher) {
         val extractedCode = document?.extractBarcode() ?: return@withContext null
+        if (!isActive) return@withContext null
         encodeBarcodeAsBitmap(extractedCode)
     }
 
-    private fun Bitmap.extractBarcode(): ZxingCpp.Result? {
+    private suspend fun Bitmap.extractBarcode(): ZxingCpp.Result? = withContext(dispatcher) {
         val resultSet = try {
-            getCropRectangles().flatMap { cropRect ->
-                ZxingCpp.readBitmap(
-                    bitmap = this,
-                    cropRect = cropRect,
-                    rotation = 0,
-                    options = readerOptions,
-                )?: emptyList()
-            }
+            getCropRectangles()
+                .onEach {
+                    if (!isActive) return@withContext null
+                }.flatMap { cropRect ->
+                    ZxingCpp.readBitmap(
+                        bitmap = this@extractBarcode,
+                        cropRect = cropRect,
+                        rotation = 0,
+                        options = readerOptions,
+                    )?: emptyList()
+                }
         } catch (ignore: Exception) {
             emptyList()
         } catch (ignore: OutOfMemoryError) {
             emptyList()
         }
 
-        if (resultSet.isEmpty()) return null
+        if (resultSet.isEmpty()) return@withContext null
         val resultsMap = resultSet.associateBy { it.format }
-        return preferredPriority.firstNotNullOfOrNull { resultsMap[it] }
+        preferredPriority.firstNotNullOfOrNull { resultsMap[it] }
     }
 
     private fun Bitmap.getCropRectangles(): List<Rect> {
