@@ -56,6 +56,15 @@ class PdfPageItem(
     override fun unbind(viewHolder: GroupieViewHolder<ItemCertificatePartialPdfPageBinding>) {
         super.unbind(viewHolder)
         job?.cancel()
+
+        viewHolder.binding.barcodeWrapper.isVisible = false
+        viewHolder.binding.barcode.tag = null
+        viewHolder.binding.barcode.setImageBitmap(null)
+
+        viewHolder.binding.pdfPage.tag = null
+        viewHolder.binding.pdfPage.setImageBitmap(null)
+
+        viewHolder.binding.progressIndicatorWrapper.isVisible = true
     }
 
     override fun isSameAs(other: Item<*>): Boolean {
