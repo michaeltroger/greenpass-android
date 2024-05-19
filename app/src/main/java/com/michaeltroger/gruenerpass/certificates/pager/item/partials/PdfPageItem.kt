@@ -46,7 +46,6 @@ class PdfPageItem(
 
     override fun getLayout() = R.layout.item_certificate_partial_pdf_page
 
-    @Suppress("CyclomaticComplexMethod")
     override fun bind(viewBinding: ItemCertificatePartialPdfPageBinding, position: Int) {
         job = scope.launch {
             val context = viewBinding.root.context
@@ -58,27 +57,16 @@ class PdfPageItem(
             if(!isActive) return@launch
 
             if (pdf == null) {
-                val tempPdf = pdfRenderer.renderPage(pageIndex, extraHardBarcodeSearch) ?: return@launch
+                val bitmaps = generateBitmaps(context) { isActive } ?: return@launch
+                pdf = bitmaps.first
+                barcode = bitmaps.second
                 if(!isActive) return@launch
-                if (searchBarcode) {
-                    barcode = barcodeRenderer.getBarcodeIfPresent(tempPdf, extraHardBarcodeSearch)
-                    if(!isActive) return@launch
-                    if (barcode != null) {
-                        imageLoader.memoryCache?.set(
-                            barcodeCacheKey,
-                            MemoryCache.Value(barcode)
-                        )
-                    }
-                }
-                pdf = if (tempPdf.width > context.screenWidth || tempPdf.height > context.screenHeight) {
-                    Bitmap.createScaledBitmap(
-                        tempPdf,
-                        context.screenWidth,
-                        (context.screenWidth.toFloat() / tempPdf.width * tempPdf.height).toInt(),
-                        true
+
+                if (barcode != null) {
+                    imageLoader.memoryCache?.set(
+                        barcodeCacheKey,
+                        MemoryCache.Value(barcode)
                     )
-                } else {
-                    tempPdf
                 }
                 imageLoader.memoryCache?.set(
                     pdfCacheKey,
@@ -101,6 +89,34 @@ class PdfPageItem(
                 viewBinding.progressIndicatorWrapper.isVisible = false
             }
         }
+    }
+
+    private suspend fun generateBitmaps(context: Context, isActive: () -> Boolean): Pair<Bitmap, Bitmap?>? {
+        val pdf: Bitmap
+        val barcode: Bitmap?
+
+        val tempPdf = pdfRenderer.renderPage(pageIndex, extraHardBarcodeSearch) ?: return null
+        if(!isActive()) return null
+
+        barcode = if (searchBarcode) {
+            barcodeRenderer.getBarcodeIfPresent(tempPdf, extraHardBarcodeSearch)
+        } else {
+            null
+        }
+        if(!isActive()) return null
+
+        pdf = if (tempPdf.width > context.screenWidth || tempPdf.height > context.screenHeight) {
+            Bitmap.createScaledBitmap(
+                tempPdf,
+                context.screenWidth,
+                (context.screenWidth.toFloat() / tempPdf.width * tempPdf.height).toInt(),
+                true
+            )
+        } else {
+            tempPdf
+        }
+
+        return pdf to barcode
     }
 
     override fun unbind(viewHolder: GroupieViewHolder<ItemCertificatePartialPdfPageBinding>) {
