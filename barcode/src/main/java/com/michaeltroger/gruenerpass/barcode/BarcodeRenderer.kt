@@ -77,8 +77,8 @@ internal class BarcodeRendererImpl @Inject constructor(
         val cropRectList = mutableListOf(
             Rect(0, 0, width, height),
         )
-        cropRectList += getCropRectangles(divisorLongerSize = 2, divisorShorterSize = 2)
-        cropRectList += getCropRectangles(divisorLongerSize = 4, divisorShorterSize = 2)
+        cropRectList += getCropRectangles(divisorLongerSize = 3, divisorShorterSize = 1)
+        cropRectList += getCropRectangles(divisorLongerSize = 4, divisorShorterSize = 1)
         cropRectList += getCropRectangles(divisorLongerSize = 5, divisorShorterSize = 1)
 
         return cropRectList
