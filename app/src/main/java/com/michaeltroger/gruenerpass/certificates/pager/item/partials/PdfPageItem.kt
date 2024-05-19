@@ -1,7 +1,11 @@
 package com.michaeltroger.gruenerpass.certificates.pager.item.partials
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.view.View
 import androidx.core.view.isVisible
+import coil.imageLoader
+import coil.memory.MemoryCache
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.databinding.ItemCertificatePartialPdfPageBinding
@@ -12,7 +16,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG_PDF_LOADED = "pdf_loaded"
 private const val TAG_BARCODE_LOADED = "barcode_loaded"
@@ -26,10 +32,13 @@ class PdfPageItem(
     ) : BindableItem<ItemCertificatePartialPdfPageBinding>() {
 
     private val scope = CoroutineScope(
-        SupervisorJob() + Dispatchers.Main
+        SupervisorJob() + Dispatchers.IO
     )
 
     private var job: Job? = null
+
+    private val barcodeCacheKey = MemoryCache.Key("barcode-$fileName-$pageIndex")
+    private val pdfCacheKey = MemoryCache.Key("pdf-$fileName-$pageIndex")
 
     override fun initializeViewBinding(view: View): ItemCertificatePartialPdfPageBinding
         = ItemCertificatePartialPdfPageBinding.bind(view)
@@ -38,18 +47,52 @@ class PdfPageItem(
 
     override fun bind(viewBinding: ItemCertificatePartialPdfPageBinding, position: Int) {
         job = scope.launch {
-            val page = pdfRenderer.renderPage(pageIndex) ?: return@launch
-            if (searchBarcode) {
-                barcodeRenderer.getBarcodeIfPresent(page)?.let { barcode ->
+            val context = viewBinding.root.context
+            val imageLoader = context.imageLoader
+
+            var pdf: Bitmap? = imageLoader.memoryCache?.get(pdfCacheKey)?.bitmap
+            if(!isActive) return@launch
+            var barcode: Bitmap? = imageLoader.memoryCache?.get(barcodeCacheKey)?.bitmap
+            if(!isActive) return@launch
+
+            if (pdf == null) {
+                val tempPdf = pdfRenderer.renderPage(pageIndex) ?: return@launch
+                if(!isActive) return@launch
+                if (searchBarcode) {
+                    barcode = barcodeRenderer.getBarcodeIfPresent(tempPdf)
+                    if(!isActive) return@launch
+                    if (barcode != null) {
+                        imageLoader.memoryCache?.set(
+                            barcodeCacheKey,
+                            MemoryCache.Value(barcode)
+                        )
+                    }
+                }
+                pdf = if (tempPdf.width > context.screenWidth || tempPdf.height > context.screenHeight) {
+                    Bitmap.createScaledBitmap(tempPdf, context.screenWidth, (context.screenWidth.toFloat() / tempPdf.width * tempPdf.height).toInt(), true)
+                } else {
+                    tempPdf
+                }
+                imageLoader.memoryCache?.set(
+                    pdfCacheKey,
+                    MemoryCache.Value(pdf)
+                )
+                if(!isActive) return@launch
+            }
+
+            withContext(Dispatchers.Main) {
+                if(!isActive) return@withContext
+                viewBinding.pdfPage.setImageBitmap(pdf)
+                viewBinding.pdfPage.tag = TAG_PDF_LOADED
+
+                if (searchBarcode && barcode != null) {
                     viewBinding.barcode.setImageBitmap(barcode)
                     viewBinding.barcodeWrapper.isVisible = true
                     viewBinding.barcode.tag = TAG_BARCODE_LOADED
                 }
-            }
-            viewBinding.pdfPage.setImageBitmap(page)
-            viewBinding.pdfPage.tag = TAG_PDF_LOADED
 
-            viewBinding.progressIndicatorWrapper.isVisible = false
+                viewBinding.progressIndicatorWrapper.isVisible = false
+            }
         }
     }
 
@@ -74,4 +117,10 @@ class PdfPageItem(
     override fun hasSameContentAs(other: Item<*>): Boolean {
         return (other as? PdfPageItem)?.pageIndex == pageIndex && (other as? PdfPageItem)?.fileName == fileName
     }
+
+    private val Context.screenWidth: Int
+        get() = resources.displayMetrics.widthPixels
+
+    private val Context.screenHeight: Int
+        get() = resources.displayMetrics.heightPixels
 }
