@@ -46,6 +46,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preferenceTryHard.isEnabled = preferenceBarcode.isChecked
         preferenceBarcode.setOnPreferenceClickListener {
             preferenceTryHard.isEnabled = preferenceBarcode.isChecked
+            if (!preferenceBarcode.isChecked) {
+                preferenceTryHard.isChecked = false
+            }
             true
         }
         preferenceTryHard.setOnPreferenceClickListener {
