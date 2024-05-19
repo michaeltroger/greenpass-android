@@ -15,6 +15,8 @@
     <string name="require_authentication">Vyžadovat ověření</string>
     <string name="preference_search_barcode">Extract barcode</string>
     <string name="preference_search_barcode_description">Scan each PDF page for a barcode like e.g. a QR code.</string>
+    <string name="preference_try_hard_barcode">Extended barcode search</string>
+    <string name="preference_try_hard_barcode_description">Try extra hard to find barcodes. Makes document loading time a little slower.</string>
     <string name="settings">Nastavení</string>
     <string name="authenticate">Přihlásit se</string>
     <string name="report_issue_summary">Jakýkoliv problém s používáním aplikace? Nechte mě vyzkoušet vám pomoct</string>
