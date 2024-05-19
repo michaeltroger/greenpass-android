@@ -46,7 +46,7 @@ class PdfPageItem(
 
     override fun getLayout() = R.layout.item_certificate_partial_pdf_page
 
-    @Suppress("CyclomaticComplexity")
+    @Suppress("CyclomaticComplexMethod")
     override fun bind(viewBinding: ItemCertificatePartialPdfPageBinding, position: Int) {
         job = scope.launch {
             val context = viewBinding.root.context
