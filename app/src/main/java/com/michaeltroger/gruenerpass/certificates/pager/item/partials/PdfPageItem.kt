@@ -91,6 +91,7 @@ class PdfPageItem(
         }
     }
 
+    @Suppress("ReturnCount")
     private suspend fun generateBitmaps(context: Context, isActive: () -> Boolean): Pair<Bitmap, Bitmap?>? {
         val pdf: Bitmap
         val barcode: Bitmap?
