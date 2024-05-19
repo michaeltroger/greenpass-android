@@ -49,6 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (!preferenceBarcode.isChecked) {
                 preferenceTryHard.isChecked = false
             }
+            requireContext().imageLoader.memoryCache?.clear()
             true
         }
         preferenceTryHard.setOnPreferenceClickListener {
