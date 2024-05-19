@@ -6,4 +6,5 @@
     </issue>
     <issue id="MissingTranslation" severity="ignore" />
     <issue id="GradleDependency" severity="ignore" />
+    <issue id="VectorPath" severity="ignore" />
 </lint>

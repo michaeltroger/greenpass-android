@@ -64,9 +64,14 @@ class CertificatesViewModel @Inject constructor(
             app.getString(R.string.key_preference_biometric),
             false
         )
-    private val searchForQrCode =
+    private val searchForBarcode =
         sharedPrefs.getBooleanFlow(
             app.getString(R.string.key_preference_search_for_barcode),
+            true
+        )
+    private val extraHardBarcodeSearch =
+        sharedPrefs.getBooleanFlow(
+            app.getString(R.string.key_preference_try_hard_barcode),
             true
         )
     private val addDocumentsInFront =
@@ -86,9 +91,10 @@ class CertificatesViewModel @Inject constructor(
                 getCertificatesFlowUseCase(),
                 filter,
                 shouldAuthenticate,
-                searchForQrCode,
+                searchForBarcode,
+                extraHardBarcodeSearch,
                 showOnLockedScreen,
-                ::updateState
+                transform = ::updateState
             ).collect()
         }
         viewModelScope.launch {
@@ -99,13 +105,17 @@ class CertificatesViewModel @Inject constructor(
         }
     }
 
+    @Suppress("MagicNumber")
     private suspend fun updateState(
-        docs: List<Certificate>,
-        filter: String,
-        shouldAuthenticate: Boolean,
-        searchForBarcode: Boolean,
-        showOnLockedScreen: Boolean,
+        array: Array<Any>
     ) {
+        @Suppress("UNCHECKED_CAST") val docs: List<Certificate> = array[0] as List<Certificate>
+        val filter: String = array[1] as String
+        val shouldAuthenticate: Boolean = array[2] as Boolean
+        val searchForBarcode: Boolean = array[3] as Boolean
+        val extraHardBarcodeSearch: Boolean = array[4] as Boolean
+        val showOnLockedScreen: Boolean = array[5] as Boolean
+
         if (docs.isEmpty()) {
             _viewState.emit(
                 ViewState.Empty(
@@ -134,6 +144,7 @@ class CertificatesViewModel @Inject constructor(
                     showWarningButton = showOnLockedScreen,
                     showExportFilteredMenuItem = areDocumentsFilteredOut,
                     showDeleteFilteredMenuItem = areDocumentsFilteredOut,
+                    extraHardBarcodeSearch = extraHardBarcodeSearch,
                 )
             )
         }

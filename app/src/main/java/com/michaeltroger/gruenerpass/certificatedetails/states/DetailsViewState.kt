@@ -11,5 +11,6 @@ sealed class DetailsViewState {
     data class Normal(
         val document: Certificate,
         val searchBarcode: Boolean,
+        val extraHardBarcodeSearch: Boolean,
     ) : DetailsViewState()
 }

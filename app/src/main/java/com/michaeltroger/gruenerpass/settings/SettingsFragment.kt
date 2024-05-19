@@ -7,6 +7,8 @@ import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
+import coil.imageLoader
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,8 +29,29 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.preference, rootKey)
 
         setupBiometricSetting()
+        setupBarcodeSetting()
         setupLockscreenSetting()
         setupBrightnessSetting()
+    }
+
+    private fun setupBarcodeSetting() {
+        val preferenceBarcode = findPreference<SwitchPreference>(
+            getString(R.string.key_preference_search_for_barcode)
+        ) ?: error("Preference is required")
+
+        val preferenceTryHard = findPreference<SwitchPreference>(
+            getString(R.string.key_preference_try_hard_barcode)
+        ) ?: error("Preference is required")
+
+        preferenceTryHard.isEnabled = preferenceBarcode.isChecked
+        preferenceBarcode.setOnPreferenceClickListener {
+            preferenceTryHard.isEnabled = preferenceBarcode.isChecked
+            true
+        }
+        preferenceTryHard.setOnPreferenceClickListener {
+            requireContext().imageLoader.memoryCache?.clear()
+            true
+        }
     }
 
     private fun setupBrightnessSetting() {

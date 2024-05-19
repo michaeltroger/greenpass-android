@@ -19,6 +19,13 @@
         android:defaultValue="true"/>
 
     <SwitchPreference
+        android:key="@string/key_preference_try_hard_barcode"
+        android:icon="@drawable/exercise_24"
+        android:title="@string/preference_try_hard_barcode"
+        android:summary="@string/preference_try_hard_barcode_description"
+        android:defaultValue="true"/>
+
+    <SwitchPreference
         android:key="@string/key_preference_show_list_layout"
         android:icon="@drawable/list_24px"
         android:title="@string/preference_show_list_layout"

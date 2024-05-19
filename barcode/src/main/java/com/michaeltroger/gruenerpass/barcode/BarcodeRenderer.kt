@@ -36,22 +36,25 @@ private val readerOptions = ZxingCpp.ReaderOptions(
 )
 
 public interface BarcodeRenderer {
-    public suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap?
+    public suspend fun getBarcodeIfPresent(document: Bitmap?, tryExtraHard: Boolean): Bitmap?
 }
 
 internal class BarcodeRendererImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : BarcodeRenderer {
 
-    override suspend fun getBarcodeIfPresent(document: Bitmap?): Bitmap? = withContext(dispatcher) {
-        val extractedCode = document?.extractBarcode() ?: return@withContext null
+    override suspend fun getBarcodeIfPresent(
+        document: Bitmap?,
+        tryExtraHard: Boolean,
+    ): Bitmap? = withContext(dispatcher) {
+        val extractedCode = document?.extractBarcode(tryExtraHard) ?: return@withContext null
         if (!isActive) return@withContext null
         encodeBarcodeAsBitmap(extractedCode)
     }
 
-    private suspend fun Bitmap.extractBarcode(): ZxingCpp.Result? = withContext(dispatcher) {
+    private suspend fun Bitmap.extractBarcode(tryExtraHard: Boolean): ZxingCpp.Result? = withContext(dispatcher) {
         val resultSet = try {
-            getCropRectangles()
+            getCropRectangles(tryExtraHard)
                 .onEach {
                     if (!isActive) return@withContext null
                 }.flatMap { cropRect ->
@@ -73,13 +76,15 @@ internal class BarcodeRendererImpl @Inject constructor(
         preferredPriority.firstNotNullOfOrNull { resultsMap[it] }
     }
 
-    private fun Bitmap.getCropRectangles(): List<Rect> {
+    private fun Bitmap.getCropRectangles(tryExtraHard: Boolean): List<Rect> {
         val cropRectList = mutableListOf(
             Rect(0, 0, width, height),
         )
-        cropRectList += getCropRectangles(divisorLongerSize = 2, divisorShorterSize = 2)
-        cropRectList += getCropRectangles(divisorLongerSize = 4, divisorShorterSize = 2)
-        cropRectList += getCropRectangles(divisorLongerSize = 5, divisorShorterSize = 1)
+        if (tryExtraHard) {
+            cropRectList += getCropRectangles(divisorLongerSize = 3, divisorShorterSize = 1)
+            cropRectList += getCropRectangles(divisorLongerSize = 4, divisorShorterSize = 1)
+            cropRectList += getCropRectangles(divisorLongerSize = 5, divisorShorterSize = 1)
+        }
 
         return cropRectList
     }

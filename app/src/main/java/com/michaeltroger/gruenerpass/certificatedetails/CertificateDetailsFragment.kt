@@ -127,6 +127,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
             is DetailsViewState.Normal -> showCertificateState(
                 certificate = state.document,
                 searchBarcode = state.searchBarcode,
+                extraHardBarcodeSearch = state.extraHardBarcodeSearch,
             )
             is DetailsViewState.Deleted -> {
                 findNavController().popBackStack()
@@ -137,7 +138,11 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
         }
     }
 
-    private fun showCertificateState(certificate: Certificate, searchBarcode: Boolean) {
+    private fun showCertificateState(
+        certificate: Certificate,
+        searchBarcode: Boolean,
+        extraHardBarcodeSearch: Boolean,
+    ) {
         val item = CertificateItem(
             requireContext().applicationContext,
             fileName = certificate.id,
@@ -154,6 +159,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
             onShareCalled = {
                 vm.onShareSelected(certificate)
             },
+            extraHardBarcodeSearch = extraHardBarcodeSearch,
         )
 
         adapter.update(listOf(item))

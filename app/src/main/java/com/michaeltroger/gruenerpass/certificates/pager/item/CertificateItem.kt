@@ -29,6 +29,7 @@ class CertificateItem(
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
     private val searchBarcode: Boolean,
+    private val extraHardBarcodeSearch: Boolean,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameClicked: () -> Unit,
     private val onShareCalled: () -> Unit,
@@ -73,7 +74,8 @@ class CertificateItem(
                         barcodeRenderer = barcodeRenderer,
                         pageIndex = pageIndex,
                         fileName = fileName,
-                        searchBarcode = searchBarcode
+                        searchBarcode = searchBarcode,
+                        extraHardBarcodeSearch = extraHardBarcodeSearch
                     )
                 )
             }
@@ -93,6 +95,5 @@ class CertificateItem(
     override fun hasSameContentAs(other: Item<*>): Boolean {
         return (other as? CertificateItem)?.fileName == fileName
             && (other as? CertificateItem)?.documentName == documentName
-            && (other as? CertificateItem)?.searchBarcode == searchBarcode
     }
 }

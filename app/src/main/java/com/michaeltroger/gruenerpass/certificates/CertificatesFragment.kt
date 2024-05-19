@@ -192,6 +192,7 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
                 searchBarcode = state.searchBarcode,
+                extraHardBarcodeSearch = state.extraHardBarcodeSearch,
             )
         }
     }
@@ -201,7 +202,11 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
         menuProvider.onPause()
     }
 
-    private fun showCertificateState(documents: List<Certificate>, searchBarcode: Boolean) {
+    private fun showCertificateState(
+        documents: List<Certificate>,
+        searchBarcode: Boolean,
+        extraHardBarcodeSearch: Boolean,
+    ) {
         val items = documents.map { certificate ->
             CertificateItem(
                 requireContext().applicationContext,
@@ -219,6 +224,7 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
                 onShareCalled = {
                     vm.onShareSelected(certificate)
                 },
+                extraHardBarcodeSearch = extraHardBarcodeSearch
             )
         }
         adapter.update(items)
