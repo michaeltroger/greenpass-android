@@ -29,6 +29,7 @@ class PdfPageItem(
     private val fileName: String,
     private val pageIndex: Int,
     private val searchBarcode: Boolean,
+    private val extraHardBarcodeSearch: Boolean,
     ) : BindableItem<ItemCertificatePartialPdfPageBinding>() {
 
     private val scope = CoroutineScope(
@@ -56,10 +57,10 @@ class PdfPageItem(
             if(!isActive) return@launch
 
             if (pdf == null) {
-                val tempPdf = pdfRenderer.renderPage(pageIndex) ?: return@launch
+                val tempPdf = pdfRenderer.renderPage(pageIndex, extraHardBarcodeSearch) ?: return@launch
                 if(!isActive) return@launch
                 if (searchBarcode) {
-                    barcode = barcodeRenderer.getBarcodeIfPresent(tempPdf)
+                    barcode = barcodeRenderer.getBarcodeIfPresent(tempPdf, extraHardBarcodeSearch)
                     if(!isActive) return@launch
                     if (barcode != null) {
                         imageLoader.memoryCache?.set(
@@ -115,7 +116,8 @@ class PdfPageItem(
     }
 
     override fun hasSameContentAs(other: Item<*>): Boolean {
-        return (other as? PdfPageItem)?.pageIndex == pageIndex && (other as? PdfPageItem)?.fileName == fileName
+        return (other as? PdfPageItem)?.pageIndex == pageIndex &&
+                (other as? PdfPageItem)?.fileName == fileName
     }
 
     private val Context.screenWidth: Int

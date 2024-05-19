@@ -50,11 +50,18 @@ class CertificateDetailsViewModel @Inject constructor(
             true
         )
 
+    private val extraHardBarcodeSearch =
+        sharedPrefs.getBooleanFlow(
+            context.getString(R.string.key_preference_try_hard_barcode),
+            true
+        )
+
     init {
         viewModelScope.launch {
             combine(
                 getSingleCertificateFlowUseCase(id),
                 searchForQrCode,
+                extraHardBarcodeSearch,
                 ::updateState
             ).collect()
         }
@@ -63,6 +70,7 @@ class CertificateDetailsViewModel @Inject constructor(
     private suspend fun updateState(
         document: Certificate?,
         searchForBarcode: Boolean,
+        extraHardBarcodeSearch: Boolean,
     ) {
         if (document == null) {
             _viewState.emit(DetailsViewState.Deleted)
@@ -71,6 +79,7 @@ class CertificateDetailsViewModel @Inject constructor(
                 DetailsViewState.Normal(
                     document = document,
                     searchBarcode = searchForBarcode,
+                    extraHardBarcodeSearch = extraHardBarcodeSearch,
                 )
             )
         }

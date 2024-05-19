@@ -12,7 +12,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
-private const val PDF_RESOLUTION_MULTIPLIER = 4
+private const val REGULAR_PDF_RESOLUTION_MULTIPLIER = 2
+private const val IMPROVED_PDF_RESOLUTION_MULTIPLIER = 4
 private const val MAX_BITMAP_SIZE = 100 * 1024 * 1024
 
 public object PdfRendererBuilder {
@@ -32,13 +33,13 @@ public interface PdfRenderer {
     public suspend fun loadFile()
     public suspend fun getPageCount(): Int
     public fun close()
-    public suspend fun renderPage(pageIndex: Int): Bitmap?
+    public suspend fun renderPage(pageIndex: Int, highResolution: Boolean): Bitmap?
 }
 
 private class PdfRendererImpl(
     private val context: Context,
     fileName: String,
-    private val renderContext: CoroutineDispatcher
+    private val renderContext: CoroutineDispatcher,
 ): com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer {
 
     private val file = File(context.filesDir, fileName)
@@ -74,7 +75,10 @@ private class PdfRendererImpl(
         } catch (ignore: Exception) {}
     }
 
-    override suspend fun renderPage(pageIndex: Int): Bitmap? = withContext(renderContext) {
+    override suspend fun renderPage(
+        pageIndex: Int,
+        highResolution: Boolean,
+    ): Bitmap? = withContext(renderContext) {
         if (renderer == null) {
             try {
                 loadFile()
@@ -82,24 +86,25 @@ private class PdfRendererImpl(
             catch (ignore: Exception) {}
             if (!isActive) return@withContext null
         }
-        renderer?.openPage(pageIndex)?.renderAndClose { isActive }
+        renderer?.openPage(pageIndex)?.renderAndClose(highResolution) { isActive }
     }
 
-    private fun PdfRenderer.Page.renderAndClose(isActive: () -> Boolean): Bitmap? = use {
+    private fun PdfRenderer.Page.renderAndClose(highResolution: Boolean, isActive: () -> Boolean): Bitmap? = use {
         if (!isActive()) return@use null
-        val bitmap = createBitmap()
+        val bitmap = createBitmap(highResolution)
         if (!isActive()) return@use null
         render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
         bitmap
     }
 
     @Suppress("SwallowedException")
-    private fun PdfRenderer.Page.createBitmap(): Bitmap {
+    private fun PdfRenderer.Page.createBitmap(highResolution: Boolean): Bitmap {
         var renderWidth: Int = width
         var renderHeight: Int = height
         if (activityManager?.isLowRamDevice == false) {
-            renderWidth *= PDF_RESOLUTION_MULTIPLIER
-            renderHeight *= PDF_RESOLUTION_MULTIPLIER
+            val multiplier = if (highResolution) IMPROVED_PDF_RESOLUTION_MULTIPLIER else REGULAR_PDF_RESOLUTION_MULTIPLIER
+            renderWidth *= multiplier
+            renderHeight *= multiplier
         }
         var bitmap = try {
             Bitmap.createBitmap(renderWidth, renderHeight, Bitmap.Config.ARGB_8888)

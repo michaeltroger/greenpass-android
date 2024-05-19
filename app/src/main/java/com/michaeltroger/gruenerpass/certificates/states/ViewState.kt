@@ -59,6 +59,7 @@ sealed class ViewState {
     data class Normal(
         val documents: List<Certificate>,
         val searchBarcode: Boolean,
+        val extraHardBarcodeSearch: Boolean,
         override val showChangeOrderMenuItem: Boolean,
         val filter: String,
         override val showLockMenuItem: Boolean,
