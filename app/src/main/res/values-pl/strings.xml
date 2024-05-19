@@ -15,6 +15,8 @@
     <string name="require_authentication">Wymagaj autoryzacji</string>
     <string name="preference_search_barcode">Extract barcode</string>
     <string name="preference_search_barcode_description">Scan each PDF page for a barcode like e.g. a QR code.</string>
+    <string name="preference_try_hard_barcode">Extended barcode search</string>
+    <string name="preference_try_hard_barcode_description">Try extra hard to find barcodes. Makes document loading time a little slower.</string>
     <string name="settings">Ustawienia</string>
     <string name="authenticate">Uwierzytelnij</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
