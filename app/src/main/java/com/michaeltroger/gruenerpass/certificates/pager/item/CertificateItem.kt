@@ -60,12 +60,12 @@ class CertificateItem(
             val itemList = mutableListOf<Group>()
             itemList.add(
                 CertificateHeaderItem(
-                documentName = documentName,
-                fileName = fileName,
-                onDeleteCalled = onDeleteCalled,
-                onDocumentNameClicked = onDocumentNameClicked,
-                onShareCalled = onShareCalled,
-            )
+                    documentName = documentName,
+                    fileName = fileName,
+                    onDeleteCalled = onDeleteCalled,
+                    onDocumentNameClicked = onDocumentNameClicked,
+                    onShareCalled = onShareCalled,
+                )
             )
             for (pageIndex in 0 until renderer.getPageCount()) {
                 itemList.add(
@@ -75,7 +75,7 @@ class CertificateItem(
                         pageIndex = pageIndex,
                         fileName = fileName,
                         searchBarcode = searchBarcode,
-                        extraHardBarcodeSearch = extraHardBarcodeSearch
+                        extraHardBarcodeSearch = extraHardBarcodeSearch,
                     )
                 )
             }
