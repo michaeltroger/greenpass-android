@@ -102,7 +102,11 @@ private class PdfRendererImpl(
         var renderWidth: Int = width
         var renderHeight: Int = height
         if (activityManager?.isLowRamDevice == false) {
-            val multiplier = if (highResolution) IMPROVED_PDF_RESOLUTION_MULTIPLIER else REGULAR_PDF_RESOLUTION_MULTIPLIER
+            val multiplier = if (highResolution) {
+                IMPROVED_PDF_RESOLUTION_MULTIPLIER
+            } else {
+                REGULAR_PDF_RESOLUTION_MULTIPLIER
+            }
             renderWidth *= multiplier
             renderHeight *= multiplier
         }

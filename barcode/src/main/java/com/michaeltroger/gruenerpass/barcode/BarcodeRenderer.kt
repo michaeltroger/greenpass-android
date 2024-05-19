@@ -43,7 +43,10 @@ internal class BarcodeRendererImpl @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : BarcodeRenderer {
 
-    override suspend fun getBarcodeIfPresent(document: Bitmap?, tryExtraHard: Boolean): Bitmap? = withContext(dispatcher) {
+    override suspend fun getBarcodeIfPresent(
+        document: Bitmap?,
+        tryExtraHard: Boolean,
+    ): Bitmap? = withContext(dispatcher) {
         val extractedCode = document?.extractBarcode(tryExtraHard) ?: return@withContext null
         if (!isActive) return@withContext null
         encodeBarcodeAsBitmap(extractedCode)

@@ -105,6 +105,7 @@ class CertificatesViewModel @Inject constructor(
         }
     }
 
+    @Suppress("MagicNumber")
     private suspend fun updateState(
         array: Array<Any>
     ) {

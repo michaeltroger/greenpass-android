@@ -46,6 +46,7 @@ class PdfPageItem(
 
     override fun getLayout() = R.layout.item_certificate_partial_pdf_page
 
+    @Suppress("CyclomaticComplexity")
     override fun bind(viewBinding: ItemCertificatePartialPdfPageBinding, position: Int) {
         job = scope.launch {
             val context = viewBinding.root.context
@@ -70,7 +71,12 @@ class PdfPageItem(
                     }
                 }
                 pdf = if (tempPdf.width > context.screenWidth || tempPdf.height > context.screenHeight) {
-                    Bitmap.createScaledBitmap(tempPdf, context.screenWidth, (context.screenWidth.toFloat() / tempPdf.width * tempPdf.height).toInt(), true)
+                    Bitmap.createScaledBitmap(
+                        tempPdf,
+                        context.screenWidth,
+                        (context.screenWidth.toFloat() / tempPdf.width * tempPdf.height).toInt(),
+                        true
+                    )
                 } else {
                     tempPdf
                 }
