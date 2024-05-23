@@ -25,6 +25,7 @@ class AndroidFileAppRobot {
     private val listViewSelector = By.desc("List view")
 
     fun openFileManagerApp() = apply {
+        uiDevice.executeShellCommand("am force-stop com.android.documentsui")
         val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
         context.startActivity(intent)
     }
