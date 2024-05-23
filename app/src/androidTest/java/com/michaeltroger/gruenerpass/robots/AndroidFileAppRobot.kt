@@ -25,7 +25,6 @@ class AndroidFileAppRobot {
     private val listViewSelector = By.desc("List view")
 
     fun openFileManagerApp() = apply {
-        uiDevice.executeShellCommand("am force-stop com.android.documentsui")
         val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
         context.startActivity(intent)
     }
@@ -67,6 +66,9 @@ class AndroidFileAppRobot {
     }
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
+        if (!uiDevice.hasObject(testDataDirSelector)) {
+            goToPdfFolder()
+        }
         uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
 
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
