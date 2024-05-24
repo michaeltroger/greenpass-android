@@ -15,8 +15,6 @@
     <string name="require_authentication">Απαίτηση πιστοποίησης</string>
     <string name="preference_search_barcode">Εξαγωγή barcode</string>
     <string name="preference_search_barcode_description">Σαρώστε κάθε σελίδα PDF για ένα barcode όπως π.χ. έναν κωδικό QR.</string>
-    <string name="preference_try_hard_barcode">Extended barcode search</string>
-    <string name="preference_try_hard_barcode_description">Try extra hard to find barcodes. Makes document loading time a little slower.</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="authenticate">Ταυτοποίηση</string>
     <string name="report_issue_summary">Έχετε πρόβλημα με τη χρήση της εφαρμογής; Αφήστε μας να σας βοηθήσουμε</string>
@@ -59,7 +57,6 @@
     <string name="delete_filtered">Εξαγωγή φιλτραρισμένων</string>
     <string name="switch_layout">Αλλαγή διάταξης</string>
     <string name="preference_show_list_layout">Εμφάνιση των PDF σε διάταξη λίστας</string>
-    <string name="preference_show_list_layout_description">Alternative layout in which instead of showing the PDF right away, only the PDF titles are shown in a list.</string>
     <!--suppress MissingQuantity -->
     <plurals name="dialog_delete_filtered_confirmation_text">
         <item quantity="one">Θέλετε πράγματι να διαγράψετε %d έγγραφο από την εφαρμογή;</item>
