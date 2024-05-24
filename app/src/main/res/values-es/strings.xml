@@ -2,10 +2,7 @@
 <resources>
     <string name="app_name">Green Pass</string>
     <string name="delete">Eliminar</string>
-    <string name="document_name">Document name</string>
-    <string name="barcode">Barcode</string>
     <string name="add">Añadir</string>
-    <string name="warning">Warning</string>
     <string name="error_reading_pdf">Error al leer el PDF. Inténtalo con otro fichero u origen</string>
     <string name="dialog_password_protection_title">Descifrar PDF protegido por contraseña</string>
     <string name="dialog_password_protection_hint">Escribe la contraseña</string>
@@ -13,10 +10,6 @@
     <string name="cancel">Cancelar</string>
     <string name="dialog_delete_confirmation_message">¿Estás seguro de que quieres eliminar este documento de la app?</string>
     <string name="require_authentication">Wymagaj uwierzytelnienia</string>
-    <string name="preference_search_barcode">Extract barcode</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a barcode like e.g. a QR code.</string>
-    <string name="preference_try_hard_barcode">Extended barcode search</string>
-    <string name="preference_try_hard_barcode_description">Try extra hard to find barcodes. Makes document loading time a little slower.</string>
     <string name="settings">Ajustes</string>
     <string name="authenticate">Autenticar</string>
     <string name="report_issue_summary">¿Problema con la aplicación? Déjame intentar ayudarte</string>
@@ -29,40 +22,5 @@
     <string name="contributing_summary">Esta app es de código abierto. Contribuye!</string>
     <string name="more">Más</string>
     <string name="privacy_policy">Política de Privacidad</string>
-    <string name="preference_max_brightness">100\u0025 brightness</string>
-    <string name="preference_max_brightness_description">Always display the app with full screen brightness.</string>
-    <string name="licenses">Licenses</string>
-    <string name="licenses_summary">Display the open-source licenses used in this project</string>
-    <string name="version">Version %1$s</string>
-    <string name="share">Share</string>
-    <string name="changelog">Changelog</string>
-    <string name="changelog_summary">Changes in this app version</string>
-    <string name="delete_all">Delete all</string>
-    <string name="dialog_delete_all_confirmation_message">Do you really want to delete all documents from the app?</string>
-    <string name="dialog_warning_title">Warning!</string>
-    <string name="dialog_warning_description">The app is currently configured to be shown on top of the lock screen. That means your documents can potentially be accessed without unlocking your phone. Go to settings to change this.</string>
-    <string name="lock">Lock</string>
-    <string name="export_all">Export all</string>
-    <string name="preference_add_documents_front">Add documents in front</string>
-    <string name="preference_add_documents_front_description">New PDFs are inserted in the front instead of the back.</string>
-    <string name="preference_add_show_on_locked_screen">Show over lock screen</string>
-    <string name="preference_add_show_on_locked_screen_description">Allows to access the app without unlocking your phone. Don\'t use this setting permanently.</string>
-    <string name="scroll_to_first">Scroll to first PDF</string>
-    <string name="scroll_to_last">Scroll to last PDF</string>
-    <string name="pdfs">PDFs</string>
-    <string name="search">Search</string>
-    <string name="search_query_hint">Document name</string>
-    <string name="dialog_document_name_title">Change document name</string>
-    <string name="dialog_document_order_title">Change document order</string>
-    <string name="change_order">Change order</string>
-    <string name="export_filtered">Export currently filtered</string>
-    <string name="delete_filtered">Delete currently filtered</string>
-    <string name="switch_layout">Switch layout</string>
-    <string name="preference_show_list_layout">Show PDFs in list layout</string>
-    <string name="preference_show_list_layout_description">Alternative layout in which instead of showing the PDF right away, only the PDF titles are shown in a list.</string>
     <!--suppress MissingQuantity -->
-    <plurals name="dialog_delete_filtered_confirmation_text">
-        <item quantity="one">Do you really want to delete %d document from the app?</item>
-        <item quantity="other">Do you really want to delete %d documents from the app?</item>
-    </plurals>
 </resources>
