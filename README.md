@@ -8,7 +8,7 @@ Currently supported formats are:
 - Matrix (2D) codes: QR, Aztec, DataMatrix and PDF417
 - Linear (1D) codes: UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF and Codabar
 
-Help translating the app: https://crwd.in/green-pass
+[Help translating the app on Crowdin](https://crwd.in/green-pass)
 
 Get it on:
 
