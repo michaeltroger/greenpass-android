@@ -34,7 +34,6 @@ dependencies {
     implementation(libs.com.github.lisawray.groupie)
     implementation(libs.com.github.lisawray.groupie.viewbinding)
     implementation(libs.com.google.android.material)
-    implementation(libs.io.coil)
     implementation(libs.io.github.panpf.zoomimage.view)
 
     testImplementation(libs.androidx.test.ext.junit.ktx)
