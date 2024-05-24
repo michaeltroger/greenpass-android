@@ -71,10 +71,12 @@ class AndroidFileAppRobot {
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
         uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
-        if (!uiDevice.hasObject(pdfSelector)) {
+        uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
+        if (!uiDevice.hasObject(pdfSelector) || !uiDevice.hasObject(testDataDirSelector)) {
             goToPdfFolder()
         }
         uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+        uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
 
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)
