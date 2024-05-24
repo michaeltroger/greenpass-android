@@ -10,6 +10,8 @@ Currently supported formats are:
 
 Help translating the app: https://crwd.in/green-pass
 
+Get it on:
+
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
     alt="Get it on Google Play"
     height="80">](https://play.google.com/store/apps/details?id=com.michaeltroger.gruenerpass&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
@@ -21,6 +23,8 @@ Help translating the app: https://crwd.in/green-pass
     alt="Available at Amazon Appstore" height="55">](http://www.amazon.com/gp/mas/dl/android?p=com.michaeltroger.gruenerpass)
 [<img src="https://developer.huawei.com/consumer/cn/service/josp/csp/activity/img/Badge-Black.9d53c6f4.png"
     alt="Explore it on Huawei AppGallery" height="55">](https://appgallery.huawei.com/app/C108212859)
+    
+__or directly from [GitHub Releases](https://github.com/michaeltroger/greenpass-android/releases)__
 
 <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg" width="200">
 
