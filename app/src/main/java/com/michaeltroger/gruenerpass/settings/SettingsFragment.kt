@@ -8,8 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import coil.imageLoader
 import com.michaeltroger.gruenerpass.R
+import com.michaeltroger.gruenerpass.cache.BitmapCache
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -49,11 +49,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             if (!preferenceBarcode.isChecked) {
                 preferenceTryHard.isChecked = false
             }
-            requireContext().imageLoader.memoryCache?.clear()
+            BitmapCache.memoryCache.evictAll()
             true
         }
         preferenceTryHard.setOnPreferenceClickListener {
-            requireContext().imageLoader.memoryCache?.clear()
+            BitmapCache.memoryCache.evictAll()
             true
         }
     }

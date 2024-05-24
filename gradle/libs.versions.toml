@@ -24,7 +24,6 @@ com-google-dagger-hilt-android = "2.51.1"
 com-google-devtools-ksp = "1.9.23-1.0.20"
 com-squareup-leakcanary-android = "2.13"
 com-tom-roush-pdfbox-android = "2.0.27.0"
-io-coil = "2.6.0"
 io-gitlab-arturbosch-detekt = "1.23.6"
 io-github-panpf-zoomimage-view = "1.0.2"
 io-kotest-assertions-core = "5.8.1"
@@ -63,7 +62,6 @@ com-google-dagger-hilt-android = { module = "com.google.dagger:hilt-android", ve
 com-google-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "com-google-dagger-hilt-android" }
 com-squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "com-squareup-leakcanary-android" }
 com-tom-roush-pdfbox-android = { module = "com.tom-roush:pdfbox-android", version.ref = "com-tom-roush-pdfbox-android" }
-io-coil = { module = "io.coil-kt:coil", version.ref = "io-coil" }
 io-github-panpf-zoomimage-view = { module = "io.github.panpf.zoomimage:zoomimage-view", version.ref = "io-github-panpf-zoomimage-view" }
 io-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "io-kotest-assertions-core" }
 io-mockk = { module = "io.mockk:mockk", version.ref = "io-mockk" }

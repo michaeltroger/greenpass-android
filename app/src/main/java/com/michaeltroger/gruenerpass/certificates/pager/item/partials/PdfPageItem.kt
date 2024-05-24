@@ -4,10 +4,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
 import androidx.core.view.isVisible
-import coil.imageLoader
-import coil.memory.MemoryCache
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
+import com.michaeltroger.gruenerpass.cache.BitmapCache
 import com.michaeltroger.gruenerpass.databinding.ItemCertificatePartialPdfPageBinding
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
@@ -38,8 +37,8 @@ class PdfPageItem(
 
     private var job: Job? = null
 
-    private val barcodeCacheKey = MemoryCache.Key("barcode-$fileName-$pageIndex")
-    private val pdfCacheKey = MemoryCache.Key("pdf-$fileName-$pageIndex")
+    private val barcodeCacheKey = "barcode-$fileName-$pageIndex"
+    private val pdfCacheKey = "pdf-$fileName-$pageIndex"
 
     override fun initializeViewBinding(view: View): ItemCertificatePartialPdfPageBinding
         = ItemCertificatePartialPdfPageBinding.bind(view)
@@ -49,11 +48,10 @@ class PdfPageItem(
     override fun bind(viewBinding: ItemCertificatePartialPdfPageBinding, position: Int) {
         job = scope.launch {
             val context = viewBinding.root.context
-            val imageLoader = context.imageLoader
 
-            var pdf: Bitmap? = imageLoader.memoryCache?.get(pdfCacheKey)?.bitmap
+            var pdf: Bitmap? = BitmapCache.memoryCache.get(pdfCacheKey)
             if(!isActive) return@launch
-            var barcode: Bitmap? = imageLoader.memoryCache?.get(barcodeCacheKey)?.bitmap
+            var barcode: Bitmap? = BitmapCache.memoryCache.get(barcodeCacheKey)
             if(!isActive) return@launch
 
             if (pdf == null) {
@@ -63,14 +61,14 @@ class PdfPageItem(
                 if(!isActive) return@launch
 
                 if (barcode != null) {
-                    imageLoader.memoryCache?.set(
+                    BitmapCache.memoryCache.put(
                         barcodeCacheKey,
-                        MemoryCache.Value(barcode)
+                        barcode
                     )
                 }
-                imageLoader.memoryCache?.set(
+                BitmapCache.memoryCache.put(
                     pdfCacheKey,
-                    MemoryCache.Value(pdf)
+                    pdf
                 )
                 if(!isActive) return@launch
             }
