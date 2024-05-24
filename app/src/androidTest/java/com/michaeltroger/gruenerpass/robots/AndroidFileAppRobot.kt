@@ -10,6 +10,7 @@ import androidx.test.uiautomator.Until
 
 private const val TIMEOUT = 5000L
 private const val testFolder = "testdata"
+private const val filesApp = "com.android.documentsui"
 
 class AndroidFileAppRobot {
 
@@ -25,7 +26,8 @@ class AndroidFileAppRobot {
     private val listViewSelector = By.desc("List view")
 
     fun openFileManagerApp() = apply {
-        val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
+        uiDevice.executeShellCommand("pm clear $filesApp")
+        val intent: Intent = context.packageManager.getLaunchIntentForPackage(filesApp)!!
         context.startActivity(intent)
     }
 
@@ -34,18 +36,21 @@ class AndroidFileAppRobot {
         try {
             uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
             uiDevice.findObject(hamburgerSelector).click()
+            uiDevice.waitForIdle()
 
             uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
             uiDevice.findObject(rootDirSelector).click()
+            uiDevice.waitForIdle()
 
             uiScrollable.scrollTextIntoView(testFolder)
             uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
             uiDevice.findObject(testDataDirSelector).click()
+            uiDevice.waitForIdle()
 
             uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
             uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
-
             uiDevice.findObject(listViewSelector).click()
+            uiDevice.waitForIdle()
         } catch (e: NullPointerException) {
             //ignoring
         }
@@ -67,6 +72,12 @@ class AndroidFileAppRobot {
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
         uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+        uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
+        if (!uiDevice.hasObject(pdfSelector) || !uiDevice.hasObject(testDataDirSelector)) {
+            goToPdfFolder()
+        }
+        uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+        uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
 
         val uiScrollable = UiScrollable(UiSelector().scrollable(true))
         val selector = By.text(fileName)

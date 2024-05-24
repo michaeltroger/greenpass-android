@@ -6,6 +6,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.utils.NullableViewTypeSafeMatcher
 import com.michaeltroger.gruenerpass.utils.click
@@ -17,7 +19,10 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
+private const val filesApp = "com.android.documentsui"
+
 class MainActivityRobot {
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     private val addButtonMatcher = withId(R.id.add_button)
     private val menuAddButtonMatcher = withId(R.id.add)
@@ -99,6 +104,7 @@ class MainActivityRobot {
     }
 
     fun selectFirstDocument(): AndroidFileAppRobot {
+        uiDevice.executeShellCommand("pm clear $filesApp")
         waitUntilNoException {
             onView(addButtonMatcher).click()
         }
@@ -106,6 +112,7 @@ class MainActivityRobot {
     }
 
     fun selectAnotherDocument(): AndroidFileAppRobot {
+        uiDevice.executeShellCommand("pm clear $filesApp")
         waitUntilNoException {
             onView(menuAddButtonMatcher).click()
         }
