@@ -1,0 +1,3 @@
+ - Improves barcode detection, powered by a new setting that is enabled by default
+ - Fixes Aztec Code not recognized on D-Ticket (German public transport ticket)
+ - Fixes wrong page content shortly shown when scrolling through big document

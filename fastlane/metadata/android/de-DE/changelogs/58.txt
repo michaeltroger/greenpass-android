@@ -1,0 +1,3 @@
+ - Verbesserte Barcode-Erkennung durch eine neue Einstellung, die standardmäßig aktiv ist
+ - Behebt, dass der Aztec-Code auf dem D-Ticket nicht erkannt wird (Deutsches Öffi-Ticket)
+ - Behebt, dass die falsche Dokumentenseite kurz angezeigt wird, wenn durch ein großes Dokument gescrollt wird
