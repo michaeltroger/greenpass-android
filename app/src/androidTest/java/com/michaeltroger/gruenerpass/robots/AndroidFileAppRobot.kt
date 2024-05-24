@@ -10,6 +10,7 @@ import androidx.test.uiautomator.Until
 
 private const val TIMEOUT = 5000L
 private const val testFolder = "testdata"
+private const val filesApp = "com.android.documentsui"
 
 class AndroidFileAppRobot {
 
@@ -25,7 +26,8 @@ class AndroidFileAppRobot {
     private val listViewSelector = By.desc("List view")
 
     fun openFileManagerApp() = apply {
-        val intent: Intent = context.packageManager.getLaunchIntentForPackage("com.android.documentsui")!!
+        uiDevice.executeShellCommand("pm clear $filesApp")
+        val intent: Intent = context.packageManager.getLaunchIntentForPackage(filesApp)!!
         context.startActivity(intent)
     }
 
