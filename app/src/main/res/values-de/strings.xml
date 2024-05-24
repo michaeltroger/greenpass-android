@@ -15,8 +15,6 @@
     <string name="require_authentication">Authentifizierung erforderlich</string>
     <string name="preference_search_barcode">Barcode extrahieren</string>
     <string name="preference_search_barcode_description">Scannen Sie jede PDF-Seite nach einem Barcode wie z.B. einem QR-Code.</string>
-    <string name="preference_try_hard_barcode">Extended barcode search</string>
-    <string name="preference_try_hard_barcode_description">Try extra hard to find barcodes. Makes document loading time a little slower.</string>
     <string name="settings">Einstellungen</string>
     <string name="authenticate">Authentifizieren</string>
     <string name="report_issue_summary">Probleme bei Verwendung der App? Lass uns helfen</string>
