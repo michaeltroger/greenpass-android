@@ -47,6 +47,7 @@ class AndroidFileAppRobot {
             uiDevice.findObject(testDataDirSelector).click()
             uiDevice.waitForIdle()
 
+            uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
             uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
             uiDevice.findObject(listViewSelector).click()
             uiDevice.waitForIdle()
