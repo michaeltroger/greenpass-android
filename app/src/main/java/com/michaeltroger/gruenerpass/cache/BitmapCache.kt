@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.LruCache
 
 object BitmapCache {
+    @Suppress("MagicNumber")
     val memoryCache: LruCache<String, Bitmap> by lazy {
         val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
 
