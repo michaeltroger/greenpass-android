@@ -34,18 +34,20 @@ class AndroidFileAppRobot {
         try {
             uiDevice.wait(Until.hasObject(hamburgerSelector), TIMEOUT)
             uiDevice.findObject(hamburgerSelector).click()
+            uiDevice.waitForIdle()
 
             uiDevice.wait(Until.hasObject(rootDirSelector), TIMEOUT)
             uiDevice.findObject(rootDirSelector).click()
+            uiDevice.waitForIdle()
 
             uiScrollable.scrollTextIntoView(testFolder)
             uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
             uiDevice.findObject(testDataDirSelector).click()
+            uiDevice.waitForIdle()
 
-            uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
             uiDevice.wait(Until.hasObject(testDataDirSelector), TIMEOUT)
-
             uiDevice.findObject(listViewSelector).click()
+            uiDevice.waitForIdle()
         } catch (e: NullPointerException) {
             //ignoring
         }
@@ -66,7 +68,8 @@ class AndroidFileAppRobot {
     }
 
     private fun selectFile(fileName: String, longClick: Boolean = false) {
-        if (!uiDevice.hasObject(testDataDirSelector)) {
+        uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
+        if (!uiDevice.hasObject(pdfSelector)) {
             goToPdfFolder()
         }
         uiDevice.wait(Until.hasObject(pdfSelector), TIMEOUT)
