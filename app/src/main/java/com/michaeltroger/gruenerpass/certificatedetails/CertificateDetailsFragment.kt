@@ -138,6 +138,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun showCertificateState(
         certificate: Certificate,
         searchBarcode: Boolean,
