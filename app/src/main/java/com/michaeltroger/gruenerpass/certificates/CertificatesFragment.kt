@@ -202,6 +202,7 @@ class CertificatesFragment : Fragment(R.layout.fragment_certificates) {
         menuProvider.onPause()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun showCertificateState(
         documents: List<Certificate>,
         searchBarcode: Boolean,
