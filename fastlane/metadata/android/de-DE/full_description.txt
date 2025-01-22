@@ -1,13 +1,13 @@
-Inoffizielle App, deren Quellcode vollständig öffentlich ist. Diese App ist ein einfach zu bedienendes PDF-Wallet. Sie übernimmt damit die Aufgabe Ihre wichtigsten PDF Zertifikate aufzubewahren und anzuzeigen. Sie inkludiert eine bequeme, formatfüllende Barcode Anzeige, falls ein Barcode im PDF vorhanden ist.
+Eine App, deren Quellcode vollständig öffentlich ist. Diese App ist ein einfach zu bedienendes PDF-Wallet. Sie übernimmt damit die Aufgabe Ihre wichtigsten PDF Zertifikate aufzubewahren und anzuzeigen. Sie inkludiert eine bequeme, formatfüllende Barcode Anzeige, falls ein Barcode im PDF vorhanden ist.
 
 <b>Kurzanleitung</b>
-- "Grüner Pass" öffnen
+- "PDF Wallet" öffnen
 - PDF importieren
 - Fertig
 
 <b>Kurzanleitung Alternativ</b>
 - Dateibrowser, Email-App, Web-Browser, Adobe Reader oder ähnliche App öffnen
-- PDF mit "Grüner Pass" öffnen/teilen
+- PDF mit "PDF Wallet" öffnen/teilen
 - Fertig
 
 <b>Beschreibung</b>
@@ -29,7 +29,7 @@ Zur Zeit unterstützte Barcode-Typen:
 - Liest auch passwortgeschützte PDFs
 - Zwei verschiedene Layouts zum Auswählen
 
-<b>Warum ist der vollformatige Barcode anders als der im PDF?</b>
+<b>Warum ist der generierte Barcode anders als der im PDF?</b>
 Der Algorithmus zum Darstellen ist anders. Für Lesegeräte ist der Code identisch.
 
 <b>Privatsphäre</b>

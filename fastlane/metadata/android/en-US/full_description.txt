@@ -1,13 +1,13 @@
-Unofficial app that is fully open source. This app is a simple to use PDF Wallet. That means it takes over the task to store and display your most important PDF certificates. It includes a convenient fullscreen barcode rendering, if a barcode is present in the PDF.
+An app that is fully open source. This app is a simple to use PDF Wallet. That means it takes over the task to store and display your most important PDF certificates. It includes a convenient fullscreen barcode rendering, if a barcode is present in the PDF.
 
 <b>Brief Instruction</b>
-- Open "Green Pass"
+- Open "PDF Wallet"
 - Import PDF
 - Done
 
 <b>Alternative Brief Instruction</b>
 - Go to your file browser, email, web browser or PDF reader app
-- Open/Share the PDF with "Green Pass"
+- Open/Share the PDF with "PDF Wallet"
 - Done
 
 <b>Description</b>
@@ -29,7 +29,7 @@ Currently supported barcode formats are:
 - Supports also password protected PDFs
 - Two different layouts to choose from
 
-<b>Why does the fullscreen barcode look differently than in the PDF?</b>
+<b>Why does the generated barcode look differently than the one in the PDF?</b>
 The algorithm to display is different. For reading devices the code is identical.
 
 <b>Privacy</b>
