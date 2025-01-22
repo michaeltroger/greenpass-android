@@ -1,4 +1,5 @@
-# Green Pass PDF Wallet Android App
+# PDF Wallet (Android App)
+(previously known as Green Pass PDF Wallet)
 [![Android CI](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml/badge.svg)](https://github.com/michaeltroger/greenpass-android/actions/workflows/android.yml) [![UI tests](https://github.com/michaeltroger/greenpass-android/actions/workflows/ui_tests.yml/badge.svg)](https://github.com/michaeltroger/greenpass-android/actions/workflows/ui_tests.yml) [![Crowdin](https://badges.crowdin.net/green-pass/localized.svg)](https://crowdin.com/project/green-pass)
 
 Unofficial app that is fully open source. This app is a simple to use PDF Wallet.
