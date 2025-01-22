@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="delete">Löschen Test</string>
+    <string name="delete">Löschen</string>
     <string name="document_name">Dokumentenname</string>
     <string name="barcode">Barcode</string>
     <string name="add">Hinzufügen</string>
