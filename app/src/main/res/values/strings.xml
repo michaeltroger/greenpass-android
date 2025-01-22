@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Green Pass</string>
     <string name="delete">Delete</string>
     <string name="document_name">Document name</string>
     <string name="barcode">Barcode</string>
