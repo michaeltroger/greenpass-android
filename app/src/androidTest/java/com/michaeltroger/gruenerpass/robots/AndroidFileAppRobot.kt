@@ -21,7 +21,7 @@ class AndroidFileAppRobot {
     private val rootDirSelector = By.textStartsWith("Android SDK")
     private val testDataDirSelector = By.text(testFolder)
     private val pdfSelector = By.textEndsWith(".pdf")
-    private val greenPassAppSelector = By.text("Green Pass")
+    private val greenPassAppSelector = By.text("PDF Wallet")
     private val shareButtonSelector = By.desc("Share")
     private val listViewSelector = By.desc("List view")
 

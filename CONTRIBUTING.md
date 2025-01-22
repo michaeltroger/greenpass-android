@@ -1,4 +1,4 @@
-# How to contribute to Green Pass PDF Wallet
+# How to contribute
 Thank you for your interest in contributing to this project!
 
 ## Did you find a bug?
