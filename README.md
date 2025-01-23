@@ -28,7 +28,7 @@ Get it on:
     
 __or directly from [GitHub Releases](https://github.com/michaeltroger/greenpass-android/releases)__
 
-<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5_en-US.jpeg" width="200">
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3_en-US.jpeg" width="200"> <img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4_en-US.jpeg" width="200">
 
 Demo Video:
 
