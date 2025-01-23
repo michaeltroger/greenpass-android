@@ -29,6 +29,8 @@ class AppMigrator @Inject constructor(@ApplicationContext ctx: Context) {
     lateinit var from6: AppMigrateFrom6
     @Inject
     lateinit var from27: AppMigrateFrom27
+    @Inject
+    lateinit var from58: AppMigrateFrom58
 
     private val appVersionCode = longPreferencesKey("app_version_code")
     private val appVersionCodeFlow: Flow<Long> = context.dataStore.data
@@ -64,6 +66,9 @@ class AppMigrator @Inject constructor(@ApplicationContext ctx: Context) {
         }
         if (previousVersion < 28) {
             from27()
+        }
+        if (previousVersion < 59) {
+            from58()
         }
 
         persistCurrentAppVersionCode()
