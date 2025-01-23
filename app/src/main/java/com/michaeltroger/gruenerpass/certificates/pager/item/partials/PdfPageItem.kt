@@ -94,11 +94,17 @@ class PdfPageItem(
         val pdf: Bitmap
         val barcode: Bitmap?
 
-        val tempPdf = pdfRenderer.renderPage(pageIndex = pageIndex, highResolution = searchBarcode == BarcodeSearchMode.EXTENDED) ?: return null
+        val tempPdf = pdfRenderer.renderPage(
+            pageIndex = pageIndex,
+            highResolution = searchBarcode == BarcodeSearchMode.EXTENDED
+        ) ?: return null
         if(!isActive()) return null
 
         barcode = if (searchBarcode != BarcodeSearchMode.DISABLED) {
-            barcodeRenderer.getBarcodeIfPresent(document = tempPdf, tryExtraHard = searchBarcode == BarcodeSearchMode.EXTENDED)
+            barcodeRenderer.getBarcodeIfPresent(
+                document = tempPdf,
+                tryExtraHard = searchBarcode == BarcodeSearchMode.EXTENDED
+            )
         } else {
             null
         }

@@ -23,7 +23,9 @@ class AppMigrateFrom58 @Inject constructor(
                 val wasBarcodeSearchEnabled = preferenceManager.getBoolean("searchForQrCode", true)
                 val wasExtendedBarcodeSearchEnabled = preferenceManager.getBoolean("tryHardBarcode", true)
                 val prefKey = when {
-                    wasBarcodeSearchEnabled && wasExtendedBarcodeSearchEnabled -> R.string.key_preference_barcodes_extended
+                    wasBarcodeSearchEnabled && wasExtendedBarcodeSearchEnabled -> {
+                        R.string.key_preference_barcodes_extended
+                    }
                     wasBarcodeSearchEnabled -> R.string.key_preference_barcodes_regular
                     !wasBarcodeSearchEnabled -> R.string.key_preference_barcodes_disabled
                     else -> R.string.key_preference_barcodes_extended
