@@ -7,8 +7,6 @@
     <string name="contributing_uri">https://github.com/michaeltroger/greenpass-android</string>
     <string name="privacy_policy_uri">https://michaeltroger.com/greenpass/privacy</string>
     <string name="key_preference_biometric">shouldAuthenticate</string>
-    <string name="key_preference_search_for_barcode">searchForQrCode</string>
-    <string name="key_preference_try_hard_barcode">tryHardBarcode</string>
     <string name="key_preference_full_brightness">fullBrightness</string>
     <string name="key_preference_show_list_layout">showListLayout</string>
     <string name="key_preference_show_on_locked_screen">showOnLockedScreen</string>
@@ -19,4 +17,18 @@
     <string name="key_preference_add_documents_front">addDocumentsFront</string>
     <string name="up">˄</string>
     <string name="down">˅</string>
+    <string-array name="preference_barcode_entries">
+        <item>@string/preference_barcode_disabled</item>
+        <item>@string/preference_barcode_regular</item>
+        <item>@string/preference_barcode_extended</item>
+    </string-array>
+    <string-array name="preference_barcode_entry_values">
+        <item>@string/key_preference_barcodes_disabled</item>
+        <item>@string/key_preference_barcodes_regular</item>
+        <item>@string/key_preference_barcodes_extended</item>
+    </string-array>
+    <string name="key_preference_extract_barcodes">extractBarcodes</string>
+    <string name="key_preference_barcodes_disabled">disabled</string>
+    <string name="key_preference_barcodes_regular">regular</string>
+    <string name="key_preference_barcodes_extended">extended</string>
 </resources>

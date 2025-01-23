@@ -19,6 +19,7 @@ import com.michaeltroger.gruenerpass.certificates.sharing.PdfSharing
 import com.michaeltroger.gruenerpass.certificates.states.ViewEvent
 import com.michaeltroger.gruenerpass.databinding.FragmentCertificateDetailsBinding
 import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -127,7 +128,6 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
             is DetailsViewState.Normal -> showCertificateState(
                 certificate = state.document,
                 searchBarcode = state.searchBarcode,
-                extraHardBarcodeSearch = state.extraHardBarcodeSearch,
             )
             is DetailsViewState.Deleted -> {
                 findNavController().popBackStack()
@@ -141,8 +141,7 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun showCertificateState(
         certificate: Certificate,
-        searchBarcode: Boolean,
-        extraHardBarcodeSearch: Boolean,
+        searchBarcode: BarcodeSearchMode,
     ) {
         val item = CertificateItem(
             requireContext().applicationContext,
@@ -160,7 +159,6 @@ class CertificateDetailsFragment : Fragment(R.layout.fragment_certificate_detail
             onShareCalled = {
                 vm.onShareSelected(certificate)
             },
-            extraHardBarcodeSearch = extraHardBarcodeSearch,
         )
 
         adapter.update(listOf(item))

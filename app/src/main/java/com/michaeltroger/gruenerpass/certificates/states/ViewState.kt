@@ -1,6 +1,7 @@
 package com.michaeltroger.gruenerpass.certificates.states
 
 import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
 
 sealed class ViewState {
     abstract val showSwitchLayoutMenuItem: Boolean
@@ -58,8 +59,7 @@ sealed class ViewState {
 
     data class Normal(
         val documents: List<Certificate>,
-        val searchBarcode: Boolean,
-        val extraHardBarcodeSearch: Boolean,
+        val searchBarcode: BarcodeSearchMode,
         override val showChangeOrderMenuItem: Boolean,
         val filter: String,
         override val showLockMenuItem: Boolean,

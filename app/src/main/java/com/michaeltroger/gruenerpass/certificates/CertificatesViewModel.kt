@@ -20,7 +20,9 @@ import com.michaeltroger.gruenerpass.db.usecase.InsertIntoDatabaseUseCase
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImportResult
 import com.michaeltroger.gruenerpass.pdfimporter.PdfImporter
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
 import com.michaeltroger.gruenerpass.settings.getBooleanFlow
+import com.michaeltroger.gruenerpass.settings.getFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -65,15 +67,12 @@ class CertificatesViewModel @Inject constructor(
             false
         )
     private val searchForBarcode =
-        sharedPrefs.getBooleanFlow(
-            app.getString(R.string.key_preference_search_for_barcode),
-            true
-        )
-    private val extraHardBarcodeSearch =
-        sharedPrefs.getBooleanFlow(
-            app.getString(R.string.key_preference_try_hard_barcode),
-            true
-        )
+        sharedPrefs.getFlow(
+            app.getString(R.string.key_preference_extract_barcodes),
+            app.getString(R.string.key_preference_barcodes_extended)
+        ) { value: String ->
+            BarcodeSearchMode.fromPrefValue(value)
+        }
     private val addDocumentsInFront =
         sharedPrefs.getBooleanFlow(
             app.getString(R.string.key_preference_add_documents_front),
@@ -92,9 +91,8 @@ class CertificatesViewModel @Inject constructor(
                 filter,
                 shouldAuthenticate,
                 searchForBarcode,
-                extraHardBarcodeSearch,
                 showOnLockedScreen,
-                transform = ::updateState
+                ::updateState
             ).collect()
         }
         viewModelScope.launch {
@@ -107,15 +105,12 @@ class CertificatesViewModel @Inject constructor(
 
     @Suppress("MagicNumber")
     private suspend fun updateState(
-        array: Array<Any>
+        docs: List<Certificate>,
+        filter: String,
+        shouldAuthenticate: Boolean,
+        searchForBarcode: BarcodeSearchMode,
+        showOnLockedScreen: Boolean,
     ) {
-        @Suppress("UNCHECKED_CAST") val docs: List<Certificate> = array[0] as List<Certificate>
-        val filter: String = array[1] as String
-        val shouldAuthenticate: Boolean = array[2] as Boolean
-        val searchForBarcode: Boolean = array[3] as Boolean
-        val extraHardBarcodeSearch: Boolean = array[4] as Boolean
-        val showOnLockedScreen: Boolean = array[5] as Boolean
-
         if (docs.isEmpty()) {
             _viewState.emit(
                 ViewState.Empty(
@@ -144,7 +139,6 @@ class CertificatesViewModel @Inject constructor(
                     showWarningButton = showOnLockedScreen,
                     showExportFilteredMenuItem = areDocumentsFilteredOut,
                     showDeleteFilteredMenuItem = areDocumentsFilteredOut,
-                    extraHardBarcodeSearch = extraHardBarcodeSearch,
                 )
             )
         }

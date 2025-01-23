@@ -12,7 +12,8 @@ import com.michaeltroger.gruenerpass.db.Certificate
 import com.michaeltroger.gruenerpass.db.usecase.ChangeCertificateNameUseCase
 import com.michaeltroger.gruenerpass.db.usecase.DeleteSingleCertificateUseCase
 import com.michaeltroger.gruenerpass.db.usecase.GetSingleCertificateFlowUseCase
-import com.michaeltroger.gruenerpass.settings.getBooleanFlow
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
+import com.michaeltroger.gruenerpass.settings.getFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -44,24 +45,19 @@ class CertificateDetailsViewModel @Inject constructor(
     private val _viewEvent = MutableSharedFlow<ViewEvent>(extraBufferCapacity = 1)
     val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
-    private val searchForQrCode =
-        sharedPrefs.getBooleanFlow(
-            context.getString(R.string.key_preference_search_for_barcode),
-            true
-        )
-
-    private val extraHardBarcodeSearch =
-        sharedPrefs.getBooleanFlow(
-            context.getString(R.string.key_preference_try_hard_barcode),
-            true
-        )
+    private val searchForBarcode =
+        sharedPrefs.getFlow(
+            context.getString(R.string.key_preference_extract_barcodes),
+            context.getString(R.string.key_preference_barcodes_extended)
+        ) { value: String ->
+            BarcodeSearchMode.fromPrefValue(value)
+        }
 
     init {
         viewModelScope.launch {
             combine(
                 getSingleCertificateFlowUseCase(id),
-                searchForQrCode,
-                extraHardBarcodeSearch,
+                searchForBarcode,
                 ::updateState
             ).collect()
         }
@@ -69,8 +65,7 @@ class CertificateDetailsViewModel @Inject constructor(
 
     private suspend fun updateState(
         document: Certificate?,
-        searchForBarcode: Boolean,
-        extraHardBarcodeSearch: Boolean,
+        searchForBarcode: BarcodeSearchMode,
     ) {
         if (document == null) {
             _viewState.emit(DetailsViewState.Deleted)
@@ -79,7 +74,6 @@ class CertificateDetailsViewModel @Inject constructor(
                 DetailsViewState.Normal(
                     document = document,
                     searchBarcode = searchForBarcode,
-                    extraHardBarcodeSearch = extraHardBarcodeSearch,
                 )
             )
         }

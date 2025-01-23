@@ -23,6 +23,7 @@ import com.michaeltroger.gruenerpass.certificates.states.ViewState
 import com.michaeltroger.gruenerpass.certificateslist.pager.item.CertificateListItem
 import com.michaeltroger.gruenerpass.databinding.FragmentCertificatesListBinding
 import com.michaeltroger.gruenerpass.db.Certificate
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
 import com.xwray.groupie.GroupieAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -177,7 +178,7 @@ class CertificatesListFragment : Fragment(R.layout.fragment_certificates_list) {
             }
             is ViewState.Normal -> showCertificateState(
                 documents = state.documents,
-                searchBarcode = state.searchBarcode,
+                searchBarcode = state.searchBarcode != BarcodeSearchMode.DISABLED,
             )
         }
     }
