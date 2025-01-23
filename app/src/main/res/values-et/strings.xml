@@ -12,10 +12,6 @@
     <string name="cancel">Katkesta</string>
     <string name="dialog_delete_confirmation_message">Kas sa kindlasti soovid kustutada rakendusest selle dokumendi?</string>
     <string name="require_authentication">Eelda autentimist</string>
-    <string name="preference_search_barcode">Eralda triipkood</string>
-    <string name="preference_search_barcode_description">Otsi kõikidelt PDF-faili lehtedelt triipkoodi või QR-koodi.</string>
-    <string name="preference_try_hard_barcode">Triipkoodi üksikasjalik otsing</string>
-    <string name="preference_try_hard_barcode_description">Proovi eriti põhjalikult tuvastada triipkoode. See teeb dokumendi laadimise natuke aeglasemaks.</string>
     <string name="settings">Seadistused</string>
     <string name="authenticate">Autendi</string>
     <string name="report_issue_summary">Rakenduse kasutamisel tekkis mõni viga? Luba meil sind aidata</string>
