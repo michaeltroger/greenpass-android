@@ -5,9 +5,9 @@ import android.os.Bundle
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.cache.BitmapCache
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
@@ -35,24 +35,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupBarcodeSetting() {
-        val preferenceBarcode = findPreference<SwitchPreference>(
-            getString(R.string.key_preference_search_for_barcode)
+        val preferenceBarcode = findPreference<DropDownPreference>(
+            getString(R.string.key_preference_extract_barcodes)
         ) ?: error("Preference is required")
 
-        val preferenceTryHard = findPreference<SwitchPreference>(
-            getString(R.string.key_preference_try_hard_barcode)
-        ) ?: error("Preference is required")
-
-        preferenceTryHard.isEnabled = preferenceBarcode.isChecked
         preferenceBarcode.setOnPreferenceClickListener {
-            preferenceTryHard.isEnabled = preferenceBarcode.isChecked
-            if (!preferenceBarcode.isChecked) {
-                preferenceTryHard.isChecked = false
-            }
-            BitmapCache.memoryCache.evictAll()
-            true
-        }
-        preferenceTryHard.setOnPreferenceClickListener {
             BitmapCache.memoryCache.evictAll()
             true
         }

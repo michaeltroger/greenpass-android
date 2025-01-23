@@ -11,10 +11,6 @@
     <string name="cancel">Cancel</string>
     <string name="dialog_delete_confirmation_message">Do you really want to delete the document from the app?</string>
     <string name="require_authentication">Require authentication</string>
-    <string name="preference_search_barcode">Extract barcode</string>
-    <string name="preference_search_barcode_description">Scan each PDF page for a barcode like e.g. a QR code.</string>
-    <string name="preference_try_hard_barcode">Extended barcode search</string>
-    <string name="preference_try_hard_barcode_description">Try extra hard to find barcodes. Makes document loading time a little slower.</string>
     <string name="settings">Settings</string>
     <string name="authenticate">Authenticate</string>
     <string name="report_issue_summary">Any problem using the app? Let us try to help you</string>
@@ -63,5 +59,8 @@
         <item quantity="one">Do you really want to delete %d document from the app?</item>
         <item quantity="other">Do you really want to delete %d documents from the app?</item>
     </plurals>
-
+    <string name="preference_barcode">Extract barcodes</string>
+    <string name="preference_barcode_disabled">Disabled</string>
+    <string name="preference_barcode_regular">Regular intensity</string>
+    <string name="preference_barcode_extended">Extended (best possible detection)</string>
 </resources>

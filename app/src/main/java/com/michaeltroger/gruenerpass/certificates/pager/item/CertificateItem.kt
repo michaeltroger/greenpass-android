@@ -9,6 +9,7 @@ import com.michaeltroger.gruenerpass.certificates.pager.item.partials.Certificat
 import com.michaeltroger.gruenerpass.certificates.pager.item.partials.PdfPageItem
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRenderer
 import com.michaeltroger.gruenerpass.pdfrenderer.PdfRendererBuilder
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
 import com.xwray.groupie.Group
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Item
@@ -28,8 +29,7 @@ class CertificateItem(
     private val barcodeRenderer: BarcodeRenderer,
     dispatcher: CoroutineDispatcher,
     private val documentName: String,
-    private val searchBarcode: Boolean,
-    private val extraHardBarcodeSearch: Boolean,
+    private val searchBarcode: BarcodeSearchMode,
     private val onDeleteCalled: () -> Unit,
     private val onDocumentNameClicked: () -> Unit,
     private val onShareCalled: () -> Unit,
@@ -75,7 +75,6 @@ class CertificateItem(
                         pageIndex = pageIndex,
                         fileName = fileName,
                         searchBarcode = searchBarcode,
-                        extraHardBarcodeSearch = extraHardBarcodeSearch,
                     )
                 )
             }

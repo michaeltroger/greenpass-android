@@ -8,6 +8,7 @@ import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.barcode.BarcodeRenderer
 import com.michaeltroger.gruenerpass.cache.BitmapCache
 import com.michaeltroger.gruenerpass.databinding.ItemCertificatePartialPdfPageBinding
+import com.michaeltroger.gruenerpass.settings.BarcodeSearchMode
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import com.xwray.groupie.viewbinding.GroupieViewHolder
@@ -27,8 +28,7 @@ class PdfPageItem(
     private val barcodeRenderer: BarcodeRenderer,
     private val fileName: String,
     private val pageIndex: Int,
-    private val searchBarcode: Boolean,
-    private val extraHardBarcodeSearch: Boolean,
+    private val searchBarcode: BarcodeSearchMode,
     ) : BindableItem<ItemCertificatePartialPdfPageBinding>() {
 
     private val scope = CoroutineScope(
@@ -78,7 +78,7 @@ class PdfPageItem(
                 viewBinding.pdfPage.setImageBitmap(pdf)
                 viewBinding.pdfPage.tag = TAG_PDF_LOADED
 
-                if (searchBarcode && barcode != null) {
+                if (searchBarcode != BarcodeSearchMode.DISABLED && barcode != null) {
                     viewBinding.barcode.setImageBitmap(barcode)
                     viewBinding.barcodeWrapper.isVisible = true
                     viewBinding.barcode.tag = TAG_BARCODE_LOADED
@@ -94,11 +94,17 @@ class PdfPageItem(
         val pdf: Bitmap
         val barcode: Bitmap?
 
-        val tempPdf = pdfRenderer.renderPage(pageIndex, extraHardBarcodeSearch) ?: return null
+        val tempPdf = pdfRenderer.renderPage(
+            pageIndex = pageIndex,
+            highResolution = searchBarcode == BarcodeSearchMode.EXTENDED
+        ) ?: return null
         if(!isActive()) return null
 
-        barcode = if (searchBarcode) {
-            barcodeRenderer.getBarcodeIfPresent(tempPdf, extraHardBarcodeSearch)
+        barcode = if (searchBarcode != BarcodeSearchMode.DISABLED) {
+            barcodeRenderer.getBarcodeIfPresent(
+                document = tempPdf,
+                tryExtraHard = searchBarcode == BarcodeSearchMode.EXTENDED
+            )
         } else {
             null
         }
