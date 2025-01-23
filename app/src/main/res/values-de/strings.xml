@@ -12,10 +12,6 @@
     <string name="cancel">Abbrechen</string>
     <string name="dialog_delete_confirmation_message">Willst du das Dokument wirklich aus der App löschen?</string>
     <string name="require_authentication">Authentifizierung erforderlich</string>
-    <string name="preference_search_barcode">Barcode extrahieren</string>
-    <string name="preference_search_barcode_description">Scannen Sie jede PDF-Seite nach einem Barcode wie z.B. einem QR-Code.</string>
-    <string name="preference_try_hard_barcode">Erweiterte Barcode-Suche</string>
-    <string name="preference_try_hard_barcode_description">Versuche besonders ausführlich Barcodes zu finden. Macht die Dokumenten-Ladezeit ein bisschen langsamer.</string>
     <string name="settings">Einstellungen</string>
     <string name="authenticate">Authentifizieren</string>
     <string name="report_issue_summary">Probleme bei Verwendung der App? Lass uns helfen</string>
@@ -64,4 +60,8 @@
         <item quantity="one">Willst du wirklich %d Dokument aus der App löschen?</item>
         <item quantity="other">Willst du wirklich %d Dokumente aus der App löschen?</item>
     </plurals>
+    <string name="preference_barcode">Barcodes extrahieren</string>
+    <string name="preference_barcode_disabled">Deaktiviert</string>
+    <string name="preference_barcode_regular">Normale Intensität</string>
+    <string name="preference_barcode_extended">Erweitert (bestmögliche Erkennung)</string>
 </resources>
