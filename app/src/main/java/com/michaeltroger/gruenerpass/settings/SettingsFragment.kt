@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.preference.DropDownPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.michaeltroger.gruenerpass.R
 import com.michaeltroger.gruenerpass.cache.BitmapCache
 import com.michaeltroger.gruenerpass.lock.AppLockedRepo
@@ -32,6 +33,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupBarcodeSetting()
         setupLockscreenSetting()
         setupBrightnessSetting()
+        setupPreventScreenshotsSetting()
     }
 
     private fun setupBarcodeSetting() {
@@ -53,6 +55,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         preference.setOnPreferenceClickListener {
             lifecycleScope.launch {
                 preferenceUtil.updateScreenBrightness(requireActivity())
+            }
+            true
+        }
+    }
+
+    private fun setupPreventScreenshotsSetting() {
+        val preference = findPreference<Preference>(
+            getString(R.string.key_preference_prevent_screenshots)
+        ) ?: error("Preference is required")
+
+        preference.setOnPreferenceClickListener {
+            lifecycleScope.launch {
+                preferenceUtil.updatePreventScreenshots(requireActivity())
             }
             true
         }
@@ -85,6 +100,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preference.isVisible = true
         }
 
+        val preventScreenshotsPreference = findPreference<SwitchPreference>(
+            getString(R.string.key_preference_prevent_screenshots)
+        ) ?: error("Preference is required")
+        if (!preference.isChecked) {
+            preventScreenshotsPreference.isEnabled = true
+        }
+
         preference.apply {
             setOnPreferenceClickListener {
                 BiometricPrompt(
@@ -105,6 +127,20 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 requireActivity().onUserInteraction()
                 lockedRepo.unlockApp()
                 preference.isChecked = !preference.isChecked
+
+                val preventScreenshotsPreference = findPreference<SwitchPreference>(
+                    getString(R.string.key_preference_prevent_screenshots)
+                ) ?: error("Preference is required")
+
+                if (preference.isChecked) {
+                    preventScreenshotsPreference.isChecked = true
+                    preventScreenshotsPreference.isEnabled = false
+                    lifecycleScope.launch {
+                        preferenceUtil.updatePreventScreenshots(requireActivity())
+                    }
+                } else {
+                    preventScreenshotsPreference.isEnabled = true
+                }
             }
         }
     }

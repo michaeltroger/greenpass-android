@@ -140,6 +140,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         lifecycleScope.launch {
             preferenceUtil.updateScreenBrightness(this@MainActivity)
             preferenceUtil.updateShowOnLockedScreen(this@MainActivity)
+            preferenceUtil.updatePreventScreenshots(this@MainActivity)
         }
     }
 

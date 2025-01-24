@@ -63,4 +63,6 @@
     <string name="preference_barcode_disabled">Disabled</string>
     <string name="preference_barcode_regular">Regular intensity</string>
     <string name="preference_barcode_extended">Extended (best possible detection)</string>
+    <string name="preference_prevent_screenshots">Prevent screenshots</string>
+    <string name="preference_prevent_screenshots_description">Can\'t be disabled when authentication is enabled.</string>
 </resources>
