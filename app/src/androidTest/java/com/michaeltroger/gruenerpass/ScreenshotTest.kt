@@ -1,19 +1,35 @@
 package com.michaeltroger.gruenerpass
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ActivityScenario
+import androidx.test.platform.app.InstrumentationRegistry
 import com.michaeltroger.gruenerpass.robots.MainActivityRobot
 import com.michaeltroger.gruenerpass.utils.FailingTestWatcher
 import com.michaeltroger.gruenerpass.utils.ScreenshotUtil
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class ScreenshotTest {
 
-    private val scenario = ActivityScenario.launch(MainActivity::class.java)
+    private lateinit var scenario: ActivityScenario<MainActivity>
+
+    private val context by lazy {
+        InstrumentationRegistry.getInstrumentation().targetContext
+    }
 
     @get:Rule
     val failingTestWatcher = FailingTestWatcher()
+
+    @Before
+    fun startUp() {
+        PreferenceManager.getDefaultSharedPreferences(context).edit {
+            putBoolean(context.getString(R.string.key_preference_prevent_screenshots), false)
+        }
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+    }
 
     @Test
     fun emptyState() {
