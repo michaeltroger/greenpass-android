@@ -17,17 +17,21 @@ class ListScreenshotTest {
     @get:Rule
     val failingTestWatcher = FailingTestWatcher()
 
+    private val context by lazy {
+        InstrumentationRegistry.getInstrumentation().targetContext
+    }
+
     @Before
     fun setUp() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
         PreferenceManager.getDefaultSharedPreferences(context).edit {
+            putBoolean(context.getString(R.string.key_preference_prevent_screenshots), false)
             putBoolean(context.getString(R.string.key_preference_show_list_layout), true)
         }
+        ActivityScenario.launch(MainActivity::class.java)
     }
 
     @Test
     fun emptyState() {
-        ActivityScenario.launch(MainActivity::class.java)
         MainActivityRobot()
             .verifyEmptyState()
 
@@ -36,7 +40,6 @@ class ListScreenshotTest {
 
     @Test
     fun normal() {
-        ActivityScenario.launch(MainActivity::class.java)
         MainActivityRobot()
             .selectFirstDocument()
             .goToPdfFolder()
@@ -52,7 +55,6 @@ class ListScreenshotTest {
 
     @Test
     fun detail() {
-        ActivityScenario.launch(MainActivity::class.java)
         MainActivityRobot()
             .selectFirstDocument()
             .goToPdfFolder()
