@@ -36,6 +36,23 @@ class PreferenceUtil @Inject constructor(
         }
     }
 
+    suspend fun updatePreventScreenshots(activity: Activity) {
+        val preventScreenshots = withContext(Dispatchers.IO) {
+            preferenceManager.getBoolean(
+                context.getString(R.string.key_preference_prevent_screenshots),
+                true
+            )
+        }
+
+        activity.window.apply {
+            if (preventScreenshots) {
+                addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            } else {
+                clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
+
     suspend fun updateShowOnLockedScreen(activity: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             val showOnLockedScreen = withContext(Dispatchers.IO) {

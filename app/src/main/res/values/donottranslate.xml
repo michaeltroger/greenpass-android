@@ -31,4 +31,5 @@
     <string name="key_preference_barcodes_disabled">disabled</string>
     <string name="key_preference_barcodes_regular">regular</string>
     <string name="key_preference_barcodes_extended">extended</string>
+    <string name="key_preference_prevent_screenshots">preventScreenshots</string>
 </resources>
