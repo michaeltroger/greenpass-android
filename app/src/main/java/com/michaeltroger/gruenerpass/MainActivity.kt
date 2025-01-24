@@ -1,5 +1,6 @@
 package com.michaeltroger.gruenerpass
 
+import android.app.UiModeManager
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
@@ -24,8 +26,9 @@ import com.michaeltroger.gruenerpass.navigation.GetAutoRedirectDestinationUseCas
 import com.michaeltroger.gruenerpass.navigation.GetStartDestinationUseCase
 import com.michaeltroger.gruenerpass.settings.PreferenceUtil
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 
 private const val INTERACTION_TIMEOUT_MS = 5 * 60 * 1000L
 private const val PDF_MIME_TYPE = "application/pdf"
@@ -60,10 +63,15 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (savedInstanceState == null) {
             vm.setPendingFile(intent)
         }
+
+        val isDarkMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager)
+            .nightMode == UiModeManager.MODE_NIGHT_YES
+
+        WindowCompat.getInsetsController(window, window.decorView)
+            .isAppearanceLightStatusBars = !isDarkMode
         updateSettings()
 
         interactionTimeoutRunnable = InteractionTimeoutRunnable()
