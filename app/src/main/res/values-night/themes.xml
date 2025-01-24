@@ -9,8 +9,6 @@
         <item name="colorSecondary">@color/secondaryColor</item>
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/white</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/black</item>
         <!-- Customize your theme here. -->
         <item name="actionBarTheme">@style/MyThemeOverlay_Toolbar</item>
     </style>

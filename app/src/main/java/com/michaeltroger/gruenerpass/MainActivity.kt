@@ -1,16 +1,15 @@
 package com.michaeltroger.gruenerpass
 
-import android.app.UiModeManager
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
@@ -66,12 +65,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
         if (savedInstanceState == null) {
             vm.setPendingFile(intent)
         }
+        enableEdgeToEdge()
 
-        val isDarkMode = (getSystemService(UI_MODE_SERVICE) as UiModeManager)
-            .nightMode == UiModeManager.MODE_NIGHT_YES
-
-        WindowCompat.getInsetsController(window, window.decorView)
-            .isAppearanceLightStatusBars = !isDarkMode
         updateSettings()
 
         interactionTimeoutRunnable = InteractionTimeoutRunnable()
@@ -94,7 +89,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
             }
         }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.nav_host_fragment)) { v, insets ->
-            val bars: Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val bars: Insets = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+            )
             v.updatePadding(
                 left = bars.left,
                 top = bars.top,
