@@ -132,6 +132,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
                     getString(R.string.key_preference_prevent_screenshots)
                 ) ?: error("Preference is required")
 
+                // don't allow to disable screenshots when authentication is enabled
+                // this is to prevent the app content being leaked in the "recent apps"
                 if (preference.isChecked) {
                     preventScreenshotsPreference.isChecked = true
                     preventScreenshotsPreference.isEnabled = false
