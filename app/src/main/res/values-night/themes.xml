@@ -14,6 +14,7 @@
     <style name="MyThemeOverlay_Toolbar" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <!-- color used by navigation icon and overflow icon -->
         <item name="colorOnPrimary">@color/white</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
     </style>
 
 </resources>
