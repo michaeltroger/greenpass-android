@@ -1,0 +1,7 @@
+ - Neuer App Name: Grüner Pass PDF Wallet ist jetzt PDF Wallet
+ - Verbesserter Android 15 Support
+ - Neue Einstellung um Screenshots zu verhindern (standardmäßig aktiviert)
+ - Aktualisierung von Abhängigkeiten
+ - Entfernen der meisten Übersetzungen. Deutsch bleibt erhalten
+ - Behebt ein Problem wo der App-Inhalt in "Kürzlich geöffnete Apps" zugänglich sein konnte, obwohl die App gesperrt war
+ - Verbietet aus Sicherheitsgründen anderen Apps über der App angezeigt zu werden auf Android 12 und später

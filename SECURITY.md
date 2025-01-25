@@ -5,8 +5,8 @@ In between versions don't receive security updates. Please always use the latest
 
 | Version | Supported          |
 |---------| ------------------ |
-| 4.2.x   | :white_check_mark: |
-| < 4.2   | :x:                |
+| 4.3.x   | :white_check_mark: |
+| < 4.3   | :x:                |
 
 ## Reporting a Vulnerability
 You can privately contact me via [email](https://michaeltroger.com/contact).

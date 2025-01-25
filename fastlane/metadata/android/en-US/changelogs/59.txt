@@ -1,0 +1,7 @@
+ - New app name: Green Pass PDF Wallet is now PDF Wallet
+ - Improved Android 15 support
+ - New preference to prevent screenshots (enabled by default)
+ - Update of dependencies
+ - Removal of most translations due to only partial translations being available
+ - Fixes an issue where the app content could be leaked in the "recent apps" although being in locked mode
+ - Disallows other apps being drawn over the app on Android 12 and later for security reasons
