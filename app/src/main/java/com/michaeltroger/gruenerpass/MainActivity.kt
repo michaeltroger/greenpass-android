@@ -61,11 +61,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main), AddFile {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
             vm.setPendingFile(intent)
         }
-        enableEdgeToEdge()
 
         updateSettings()
 
