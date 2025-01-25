@@ -64,4 +64,6 @@
     <string name="preference_barcode_disabled">Deaktiviert</string>
     <string name="preference_barcode_regular">Normale Intensität</string>
     <string name="preference_barcode_extended">Erweitert (bestmögliche Erkennung)</string>
+    <string name="preference_prevent_screenshots">Screenshots verhindern</string>
+    <string name="preference_prevent_screenshots_description">Screenshots sind niemals erlaubt, falls du Authentifizieren aktiviert hast. Dies hat Sicherheitsgründe.</string>
 </resources>
