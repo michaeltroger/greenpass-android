@@ -135,9 +135,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 if (preference.isChecked) {
                     preventScreenshotsPreference.isChecked = true
                     preventScreenshotsPreference.isEnabled = false
-                    lifecycleScope.launch {
-                        preferenceUtil.updatePreventScreenshots(requireActivity())
-                    }
+                    preferenceUtil.updatePreventScreenshots(requireActivity())
                 } else {
                     preventScreenshotsPreference.isEnabled = true
                 }
