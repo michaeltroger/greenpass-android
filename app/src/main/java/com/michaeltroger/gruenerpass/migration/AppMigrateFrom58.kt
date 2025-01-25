@@ -33,6 +33,16 @@ class AppMigrateFrom58 @Inject constructor(
                 preferenceManager.edit {
                     putString(context.getString(R.string.key_preference_extract_barcodes), context.getString(prefKey))
                 }
+
+                val isAuthenticationEnabled = preferenceManager.getBoolean(
+                    context.getString(R.string.key_preference_biometric),
+                    false
+                )
+                if (isAuthenticationEnabled) {
+                    preferenceManager.edit {
+                        putBoolean(context.getString(R.string.key_preference_prevent_screenshots), true)
+                    }
+                }
             }
         } catch (ignore: Exception) {}
     }
