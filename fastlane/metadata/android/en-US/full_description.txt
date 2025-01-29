@@ -29,7 +29,7 @@ More Features
 - Supports also password protected PDFs
 - Two different layouts to choose from
 
-Why does the generated barcode look differently than the one in the PDF?</b>
+Why does the generated barcode look differently than the one in the PDF?
 The algorithm to display is different. For reading devices the code is identical.
 
 Privacy
