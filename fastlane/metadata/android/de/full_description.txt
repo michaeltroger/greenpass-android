@@ -1,4 +1,4 @@
-Eine App, deren Quellcode vollständig öffentlich ist. Diese App ist ein einfach zu bedienendes PDF-Wallet. Sie übernimmt damit die Aufgabe Ihre wichtigsten PDF Zertifikate aufzubewahren und anzuzeigen. Sie inkludiert eine bequeme, formatfüllende Barcode Anzeige, falls ein Barcode im PDF vorhanden ist.
+Eine App, deren Quellcode vollständig öffentlich ist. Diese App ist ein einfach zu bedienendes PDF-Wallet. Sie übernimmt damit die Aufgabe Ihre wichtigsten PDF-Zertifikate aufzubewahren und anzuzeigen. Sie inkludiert eine bequeme, formatfüllende Barcode Anzeige, falls ein Barcode im PDF vorhanden ist.
 
 <b>Kurzanleitung</b>
 - "PDF Wallet" öffnen
@@ -6,15 +6,15 @@ Eine App, deren Quellcode vollständig öffentlich ist. Diese App ist ein einfac
 - Fertig
 
 <b>Kurzanleitung Alternativ</b>
-- Dateibrowser, Email-App, Web-Browser, Adobe Reader oder ähnliche App öffnen
+- Dateibrowser, E-Mail-App, Webbrowser, Adobe Reader oder ähnliche App öffnen
 - PDF mit "PDF Wallet" öffnen/teilen
 - Fertig
 
 <b>Beschreibung</b>
-Sehr simple App, die nichts anderes macht als PDF Zertifikate bequem aufzubewahren und anzuzeigen. Sie können Sie für Öffi-Tickets, Rechnungen, Verträge, Zertifikate und jeglicher anderer PDF-Datei verwenden.
+Sehr simple App, die nichts anderes macht, als PDF Zertifikate bequem aufzubewahren und anzuzeigen. Sie können Sie für Öffi-Tickets, Rechnungen, Verträge, Zertifikate und jeglicher anderer PDF-Datei verwenden.
 Die PDF-Datei muss in die App importiert werden. Anschließend wird der Barcode im Vollbild angezeigt, sowie das PDF-Dokument selbst. Das war's auch schon.
 
-Zur Zeit unterstützte Barcode-Typen:
+Zurzeit unterstützte Barcode-Typen:
 - 2D-Codes: QR, Aztec, DataMatrix und PDF417
 - Strichcodes (1D-Codes): UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF und Codabar
 
@@ -33,7 +33,7 @@ Zur Zeit unterstützte Barcode-Typen:
 Der Algorithmus zum Darstellen ist anders. Für Lesegeräte ist der Code identisch.
 
 <b>Privatsphäre</b>
-Diese App schätzt Ihre Privatsphäre indem ihr Quellcode vollständig öffentlich ist und indem sie offline funktioniert. Keine Werbung, kein Tracking.
+Diese App schätzt Ihre Privatsphäre, indem ihr Quellcode vollständig öffentlich ist und indem sie offline funktioniert. Keine Werbung, kein Tracking.
 
 <b>Probleme</b>
 Es handelt sich hier um ein Freizeitprojekt eines einzelnen Entwicklers. Bitte um Verständnis, dass die Beantwortung von Anfragen dauern kann.
