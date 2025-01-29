@@ -1,16 +1,16 @@
 An app that is fully open source. This app is a simple to use PDF Wallet. That means it takes over the task to store and display your most important PDF certificates. It includes a convenient fullscreen barcode rendering, if a barcode is present in the PDF.
 
-<b>Brief Instruction</b>
+Brief Instruction
 - Open "PDF Wallet"
 - Import PDF
 - Done
 
-<b>Alternative Brief Instruction</b>
+Alternative Brief Instruction
 - Go to your file browser, email, web browser or PDF reader app
 - Open/Share the PDF with "PDF Wallet"
 - Done
 
-<b>Description</b>
+Description
 Very simple app, that does nothing more than conveniently storing and displaying PDF certificates. You can use it for public transport tickets, bills, contracts, certificates and any other PDF file.
 The PDF file has to be imported into the app. Following the barcode is displayed in fullscreen, as well as the PDF document itself. That's already it.
 
@@ -18,7 +18,7 @@ Currently supported barcode formats are:
 - Matrix (2D) codes: QR, Aztec, DataMatrix and PDF417
 - Linear (1D) codes: UPC-A, UPC-E, EAN-8, EAN-13, CODE-39, CODE-93, CODE-128, ITF and Codabar
 
-<b>More Features</b>
+More Features
 - Can detect and extract barcodes in PDFs
 - (Optional) fingerprint authentication
 - PDFs can be individually sorted and named
@@ -29,11 +29,11 @@ Currently supported barcode formats are:
 - Supports also password protected PDFs
 - Two different layouts to choose from
 
-<b>Why does the generated barcode look differently than the one in the PDF?</b>
+Why does the generated barcode look differently than the one in the PDF?</b>
 The algorithm to display is different. For reading devices the code is identical.
 
-<b>Privacy</b>
+Privacy
 This app values your privacy by being fully open source and working offline. No ads, no tracking.
 
-<b>Issues</b>
+Issues
 This is a free time project of a single developer. Therefore please understand that replies can take a little while.
