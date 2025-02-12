@@ -60,4 +60,10 @@
         <item quantity="one">Kas sa kindlasti soovid kustutada rakendusest %d dokumendi?</item>
         <item quantity="other">Kas sa kindlasti soovid kustutada rakendusest %d dokumenti?</item>
     </plurals>
+    <string name="preference_barcode">Eralda triipkood</string>
+    <string name="preference_barcode_disabled">Pole kasutusel</string>
+    <string name="preference_barcode_regular">Regulaarsus intensiivsus</string>
+    <string name="preference_barcode_extended">Laiendatud (parimav võimalused tuvastamiseks)</string>
+    <string name="preference_prevent_screenshots">Keela ekraanitõmmiste tegemine</string>
+    <string name="preference_prevent_screenshots_description">Kui sa autentimist ei kasuta, siis turvalisuse põhjustel ekraanitõmmiste tegemine pole kunagi lubatud.</string>
 </resources>
