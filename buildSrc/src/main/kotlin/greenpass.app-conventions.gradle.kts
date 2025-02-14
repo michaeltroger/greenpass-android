@@ -1,6 +1,5 @@
 import com.github.jk1.license.filter.LicenseBundleNormalizer
-import java.io.FileInputStream
-import java.io.IOException
+import java.io.ByteArrayInputStream
 import java.util.Properties
 
 plugins {
@@ -55,15 +54,14 @@ android {
             signingConfigs {
                 create("release") {
                     try {
-                        val keystorePropertiesFile = rootProject.file("credentials/keystore.properties")
                         val keystoreProperties = Properties()
-                        keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+                        keystoreProperties.load(ByteArrayInputStream(System.getenv("RELEASE_KEYSTORE_PROPERTIES").toByteArray()))
 
                         keyAlias = keystoreProperties.getProperty("KEY_ALIAS")
                         keyPassword = keystoreProperties.getProperty("KEY_PASSWORD")
-                        storeFile = rootProject.file("credentials/${keystoreProperties.getProperty("STORE_FILE")}")
+                        storeFile = rootProject.file("credentials/keystore.jks")
                         storePassword = keystoreProperties.getProperty("STORE_PASSWORD")
-                    } catch(ignored: IOException) {
+                    } catch(ignored: Exception) {
                         println("No signing configuration found, ignoring: $ignored")
                     }
                 }

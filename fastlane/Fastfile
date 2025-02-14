@@ -1,8 +1,10 @@
+require 'base64'
+
 opt_out_usage
 
 lane :google do
     upload_to_play_store(
-      json_key_data: ENV["PLAYSTORE_KEY"],
+      json_key_data: Base64.decode64(ENV["PLAY_STORE_CREDENTIALS"]),
       aab: ENV["AAB_FILE"],
       track: "internal",
     )
